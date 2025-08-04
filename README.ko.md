@@ -77,7 +77,7 @@
 ├── Chapter07_Friend-Functions-and-Operator-Overloads
 ├── Chapter08_Inheritance
 ├── Chapter09_Virtual-Functions-and-Abstract-Classes
-├── Chapter10_Templates-and-the-Standard-Library-STL
+├── Chapter10_Templates-and-the-Standard-Library(STL)
 ├── LICENSE
 ├── README.ko.md
 ├── README.md
