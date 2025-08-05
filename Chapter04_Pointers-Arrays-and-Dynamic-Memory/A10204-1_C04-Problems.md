@@ -131,6 +131,13 @@ public:
 Program ended with exit code: 0
 ```
 
+```text
+원의 개수 >> -1
+[오류] 사이즈가 너무 작습니다!
+
+Program ended with exit code: 0
+```
+
 
 
 ---
