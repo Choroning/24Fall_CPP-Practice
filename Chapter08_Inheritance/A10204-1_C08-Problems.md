@@ -74,7 +74,7 @@ Program ended with exit code: 0
 
 ## Q2. 학생 성적 관리
 
-예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student`클래스 및 파생 클래스를 완성하시오. `Student`클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student`클래스 상속을 통해 반복 정의되는 부분을 줄여 소스코드를 최적화한다.
+예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student`클래스 및 파생 클래스를 완성하시오. `Student`클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student`클래스 상속을 통해 구현된다.
 
 ![FirstGrade, SecondGrade, ThirdGrade 클래스에 관한 설명이 담긴 사진. 각 클래스는 멤버변수로 이름, 과목별 성적을 가지고 있으며 멤버함수로 생성자, 소멸자, 이름과 성적 평균에 대한 get함수, 성적 출력 함수를 가지고 있다.](/src/images/C08_A10204-1_1.png)
 
