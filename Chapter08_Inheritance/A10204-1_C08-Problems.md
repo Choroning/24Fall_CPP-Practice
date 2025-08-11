@@ -74,11 +74,11 @@ Program ended with exit code: 0
 
 ## Q2. 학생 성적 관리
 
-예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student`클래스를 완성하시오. `Student`클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`가 공통으로 가지고 있는 요소를 포함하며, 세 클래스는 `Student`클래스 상속을 통해 중복으로 정의되는 부분을 줄여 소스코드를 최적화한다.
+예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student`클래스 및 파생 클래스를 완성하시오. `Student`클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student`클래스 상속을 통해 반복 정의되는 부분을 줄여 소스코드를 최적화한다.
 
-![FirstGrade, SecondGrade, ThirdGrade 클래스에 관한 설명이 담긴 사진. 각 클래스는 멤버변수로 이름, 과목별 성적을 가지고 있으며 멤버함수로 이름과 성적 평균에 대한 get함수와 성적 출력 함수를 가지고 있다.](/src/images/C08_A10204-1_1.png)
+![FirstGrade, SecondGrade, ThirdGrade 클래스에 관한 설명이 담긴 사진. 각 클래스는 멤버변수로 이름, 과목별 성적을 가지고 있으며 멤버함수로 생성자, 소멸자, 이름과 성적 평균에 대한 get함수, 성적 출력 함수를 가지고 있다.](/src/images/C08_A10204-1_1.png)
 
-테이블의 각 요소에 대해 빨간색 하이라이트는 `private` 접근 제어, 초록색 하이라이트는 `protected` 접근 제어한다.
+위 클래스 설계도에서 클래스의 각 요소에 대해 빨간색 하이라이트는 `private` 접근 제어, 초록색 하이라이트는 `protected` 접근 제어한다.
 
 
 <br>**프로그램 요구사항**
