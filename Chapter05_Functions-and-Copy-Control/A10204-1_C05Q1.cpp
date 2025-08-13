@@ -11,16 +11,16 @@ using namespace std;
 class Circle {
     int radius;
 public:
-    Circle(int radius){
+    Circle(int radius) {
         this->radius = radius;
     }
     void show() {
         cout << "반지름이 " << radius << "인 원\n";
     }
-    void setRadius(int radius){
+    void setRadius(int radius) {
         this->radius = radius;
     }
-    int getRadius(){
+    int getRadius() {
         return radius;
     }
 };
@@ -63,4 +63,6 @@ int main() {
     x.show();
     cout << "y 객체: "; 
     y.show();
+
+    return 0;
 }

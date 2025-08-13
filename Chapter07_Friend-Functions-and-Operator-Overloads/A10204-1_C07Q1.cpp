@@ -14,10 +14,11 @@ class Fraction {
 public:
     Fraction() { num = denom = 1; }
     Fraction(int n, int d) { num = n; denom = d; }
-    friend ostream& operator <<(ostream& stream, Fraction f) {
+    friend ostream& operator<<(ostream& stream, Fraction f) {
         stream << f.num << "/" << f.denom;
         return stream;
     }
+    // 연산자 함수 선언
     // 이항 연산자 함수
     Fraction operator+(Fraction op);
     bool operator==(Fraction op);
@@ -30,8 +31,8 @@ public:
     Fraction operator++(int notUsed);
     Fraction operator--();
 };
-// 연산자 함수 구현
 
+// 연산자 함수 정의
 // 이항 연산자 함수
 Fraction Fraction::operator+(Fraction op) {
     Fraction tmp;

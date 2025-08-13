@@ -50,4 +50,6 @@ int main()
     java.set("Java완전정복", 12000);
     cpp.show();
     java.show();
+
+    return 0;
 }

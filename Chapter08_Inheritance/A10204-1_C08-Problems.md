@@ -1,18 +1,18 @@
 # Chapter 8. 상속
 
-**문항 출처:** *임영희 교수, 컴퓨터언어Ⅱ 교수자 (DCCS102-04)* <br>
+**문항 출처:** *임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04) 교수자* <br>
 **Source:** *Prof. Younghee&nbsp;Im, Instructor of COMPUTER LANGUAGE Ⅱ (DCCS102-04)*
 
 ---
 
 ## Q1. 점의 색상과 위치 정보
 
-예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 `ColorPoint`클래스를 정의하시오. `ColorPoint`클래스는 `Point`클래스의 파생 클래스이다.
+예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 `ColorPoint` 클래스를 정의하시오. `ColorPoint` 클래스는 `Point` 클래스의 파생 클래스이다.
 
 
 <br>**프로그램 요구사항**
 
-- 주어진 예시 코드는 변경할 수 없습니다.
+- [ 빈칸 ]을 완성하되, 주어진 예시 코드는 변경할 수 없다.
 
 
 <br>**예시 코드**
@@ -22,36 +22,37 @@
 using namespace std;
 
 class Point {
-   int x, y;
+    int x, y;
 public:
-   Point(int x, int y) { this->x = x; this->y = y; }
-   int getX() { return x; }
-   int getY() { return y; }
+    Point(int x, int y) { this->x = x; this->y = y; }
+    int getX() { return x; }
+    int getY() { return y; }
 protected:
-   void move(int x, int y) { this->x = x; this->y = y; }
+    void move(int x, int y) { this->x = x; this->y = y; }
 };
 
 class ColorPoint : public Point {
-   // ColorPoint 클래스 정의
+    // ColorPoint 클래스 정의
+    [ 빈칸 ]
 };
 
 int main() {
-   ColorPoint cp1(5, 5, "RED");  // 색상 "RED", 위치 (5, 5)로 초기화
-   cp1.show();
-   cp1.setPoint(10, 20);         // 위치 (10, 20)으로 설정
-   cp1.setColor("BLUE");         // 색상 "BLUE"로 설정
-   cp1.show();
+    ColorPoint cp1(5, 5, "RED");  // 색상 "RED", 위치 (5, 5)로 초기화
+    cp1.show();
+    cp1.setPoint(10, 20);         // 위치 (10, 20)으로 설정
+    cp1.setColor("BLUE");         // 색상 "BLUE"로 설정
+    cp1.show();
 
-   ColorPoint cp2(5, 5);         // 색상 "BLACK", 위치 (5, 5)로 초기화
-   cp2.show();
-   cp2.setPoint(3, 7);           // 위치 (3, 7)로 설정
-   cp2.setColor("GREEN");        // 색상 "GREEN"으로 설정
-   cp2.show();
+    ColorPoint cp2(5, 5);         // 색상 "BLACK", 위치 (5, 5)로 초기화
+    cp2.show();
+    cp2.setPoint(3, 7);           // 위치 (3, 7)로 설정
+    cp2.setColor("GREEN");        // 색상 "GREEN"으로 설정
+    cp2.show();
 
-   ColorPoint zeroPoint;         // 색상 "BLACK", 위치 (0, 0)로 초기화
-   zeroPoint.show();
+    ColorPoint zeroPoint;         // 색상 "BLACK", 위치 (0, 0)로 초기화
+    zeroPoint.show();
 
-   return 0;
+    return 0;
 }
 ```
 
@@ -74,7 +75,7 @@ Program ended with exit code: 0
 
 ## Q2. 학생 성적 관리
 
-예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student`클래스 및 파생 클래스를 완성하시오. `Student`클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student`클래스 상속을 통해 구현된다.
+예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student` 클래스 및 파생 클래스를 완성하시오. `Student` 클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student` 클래스 상속을 통해 구현된다.
 
 ![FirstGrade, SecondGrade, ThirdGrade 클래스에 관한 설명이 담긴 사진. 각 클래스는 멤버변수로 이름, 과목별 성적을 가지고 있으며 멤버함수로 생성자, 소멸자, 이름과 성적 평균에 대한 get함수, 성적 출력 함수를 가지고 있다.](/src/images/C08_A10204-1_1.png)
 
@@ -83,7 +84,7 @@ Program ended with exit code: 0
 
 <br>**프로그램 요구사항**
 
-- 주어진 예시 코드는 변경할 수 없습니다.
+- 주어진 예시 코드는 변경할 수 없다.
 
 
 <br>**예시 코드**
