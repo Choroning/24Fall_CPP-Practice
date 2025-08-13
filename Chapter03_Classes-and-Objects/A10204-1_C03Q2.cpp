@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-class CoffeeMachine{
+class CoffeeMachine {
 private:
     int coffeeAmount;
     int waterAmount;
@@ -22,56 +22,55 @@ public:
     void fill();
 };
 
-CoffeeMachine::CoffeeMachine(int c, int w, int s){
+CoffeeMachine::CoffeeMachine(int c, int w, int s) {
     coffeeAmount = c;
     waterAmount = w;
     sugarAmount = s;
 }
 
-void CoffeeMachine::drinkAmericano(){
-    if (coffeeAmount >= 1 && waterAmount >= 2){
+void CoffeeMachine::drinkAmericano() {
+    if (coffeeAmount >= 1 && waterAmount >= 2) {
         coffeeAmount -= 1;
         waterAmount -= 2;
-    }else{
+    } else {
         cout << "\n재료가 부족하여 아메리카노를 만들 수 없습니다.\n";
         show();
     }
 }
 
-void CoffeeMachine::drinkSugarCoffee(){
-    if (coffeeAmount >= 1 && waterAmount >= 2 && sugarAmount >= 1){
+void CoffeeMachine::drinkSugarCoffee() {
+    if (coffeeAmount >= 1 && waterAmount >= 2 && sugarAmount >= 1) {
         coffeeAmount -= 1;
         waterAmount -= 2;
         sugarAmount -= 1;
-    }else{
+    } else {
         cout << "\n재료가 부족하여 설탕커피를 만들 수 없습니다.\n";
         show();
     }
 }
 
-void CoffeeMachine::drinkEspresso(){
-    if (coffeeAmount >= 1 && waterAmount >= 1){
+void CoffeeMachine::drinkEspresso() {
+    if (coffeeAmount >= 1 && waterAmount >= 1) {
         coffeeAmount -= 1;
         waterAmount -= 1;
-    }else{
+    } else {
         cout << "\n재료가 부족하여 에스프레소를 만들 수 없습니다.\n";
         show();
     }
 }
 
-void CoffeeMachine::show(){
+void CoffeeMachine::show() {
     cout << "커피머신 상태: 커피 = " << coffeeAmount << "   물 = " << waterAmount << "   설탕 = " << sugarAmount << endl;
 }
 
-void CoffeeMachine::fill(){
+void CoffeeMachine::fill() {
     coffeeAmount = 10;
     waterAmount = 10;
     sugarAmount = 10;
 }
 
 
-int main()
-{
+int main() {
     CoffeeMachine java(5, 8, 2);  // 커피 5, 물 8, 설탕 2로 초기화
     
     java.drinkAmericano();

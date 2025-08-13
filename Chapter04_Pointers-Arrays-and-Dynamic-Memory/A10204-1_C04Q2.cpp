@@ -43,7 +43,7 @@ public:
 CircleManager::CircleManager(int size) {
     this->size = size;
     
-    if (this->size <= 0){
+    if (this->size <= 0) {
         throw 1;
     } else {
         p = new Circle [this->size];

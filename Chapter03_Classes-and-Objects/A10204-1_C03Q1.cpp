@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-class Tower{
+class Tower {
 private:
     int height;
 public:
@@ -17,19 +17,18 @@ public:
     int getHeight();
 };
 
-Tower::Tower():Tower(1){}
+Tower::Tower() : Tower(1){}
 
-Tower::Tower(int h){
+Tower::Tower(int h) {
     height = h;
 }
 
-int Tower::getHeight(){
+int Tower::getHeight() {
     return height;
 }
 
 
-int main()
-{
+int main() {
     Tower myTower;          // 1미터
     Tower seoulTower(100);  // 100미터
     cout << "높이는 " << myTower.getHeight() << "미터" << endl;

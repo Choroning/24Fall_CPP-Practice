@@ -10,7 +10,7 @@ using namespace std;
 
 void print99(int i = 19) {
     
-    if (i != 19){
+    if (i != 19) {
         cout << i << "단" << endl;
         for (int j = 1; j < 10; j++) {
             cout << i << " * " << j << " = " << i * j << endl;

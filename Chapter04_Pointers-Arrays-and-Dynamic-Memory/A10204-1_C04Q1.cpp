@@ -14,7 +14,7 @@ class Sample {
 public:
     Sample(int n) {
         size = n;
-        if (size <= 0){
+        if (size <= 0) {
             throw 1;
         } else {
             p = new int [size];
@@ -49,8 +49,7 @@ Sample::~Sample() {
     p = nullptr;
 }
 
-int main()
-{
+int main() {
     int input;
     try {
         cout << "생성할 정수 배열 사이즈를 입력하세요: ";

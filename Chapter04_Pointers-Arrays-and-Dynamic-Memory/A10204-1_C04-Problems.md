@@ -1,18 +1,18 @@
 # Chapter 4. 객체 활용
 
-**문항 출처:** *임영희 교수, 컴퓨터언어Ⅱ 교수자 (DCCS102-04)* <br>
+**문항 출처:** *임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04) 교수자* <br>
 **Source:** *Prof. Younghee&nbsp;Im, Instructor of COMPUTER LANGUAGE Ⅱ (DCCS102-04)*
 
 ---
 
 ## Q1. 동적 배열을 가진 클래스
 
-예시 코드와 실행 예시를 참고하여 `main()`함수가 정상적으로 실행되도록 `Sample` 클래스를 완성하시오.
+예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 `Sample` 클래스를 완성하시오.
 
 
 <br>**프로그램 요구사항**
 
-- `main()`함수와 `Sample` 클래스에 `try-catch`문을 이용하여 아래 상황에도 오류가 발생하지 않도록 예외 처리하시오.
+- `main()` 함수와 `Sample` 클래스에 `try-catch`문을 이용하여 아래 상황에도 오류가 발생하지 않도록 예외 처리하시오.
    - 동적 할당에 실패하는 경우
    - 사용자로부터 입력받은 정수 배열 크기가 0보다 작거나 같은 경우
 
@@ -37,8 +37,7 @@ public:
    ~Sample();          // 소멸자
 };
 
-int main() 
-{
+int main() {
    int input;
     
    cout << "생성할 정수 배열 사이즈를 입력하세요: ";
@@ -75,12 +74,12 @@ Program ended with exit code: 0
 
 ## Q2. 객체의 동적 생성 및 소멸
 
-예시 코드를 참고하여 실행 예시와 동일하게 실행되도록 `Circle`, `CircleManager` 클래스를 완성하고 `main()`함수를 작성하시오.
+예시 코드를 참고하여 실행 예시와 동일하게 실행되도록 `Circle`, `CircleManager` 클래스를 완성하고 `main()` 함수를 작성하시오.
 
 
 <br>**프로그램 요구사항**
 
-- 예시 코드에 주어진 `Circle`, `CircleManager` 클래스 선언부의 내용은 변경할 수 없습니다.
+- 예시 코드에 주어진 `Circle`, `CircleManager` 클래스 선언부의 내용은 변경할 수 없다.
 - `main()`함수와 `Circle`, `CircleManager` 클래스 선언부에 `try-catch`문을 이용하여 아래 상황에도 오류가 발생하지 않도록 예외 처리하시오.
    - 동적 할당에 실패하는 경우
    - 사용자로부터 입력받은 원의 개수가 0보다 작거나 같은 경우

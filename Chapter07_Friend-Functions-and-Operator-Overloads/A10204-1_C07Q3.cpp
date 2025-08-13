@@ -15,11 +15,11 @@ class Time {
     void normalize();    // 분, 초를 0~59 사이로 조정
 public:
     Time(int h = 0, int m = 0, int s = 0);
-    Time operator - (const Time& op);
-    bool operator <= (const Time& op);
-    int& operator [] (const int op);
-    friend ostream& operator << (ostream& stream, Time op2);
-    friend Time& operator += (Time& op1, Time& op2);
+    Time operator-(const Time& op);
+    bool operator<=(const Time& op);
+    int& operator[](const int op);
+    friend ostream& operator<<(ostream& stream, Time op2);
+    friend Time& operator+=(Time& op1, Time& op2);
 };
 Time::Time(int h, int m, int s) {
     hour = h; min = m; sec = s;
@@ -49,7 +49,7 @@ void Time::normalize() {
     }
 }
 
-Time Time::operator - (const Time& op) {
+Time Time::operator-(const Time& op) {
     Time tmp;
     if (*this <= op) {
         tmp.hour = op.hour - hour;
@@ -63,13 +63,13 @@ Time Time::operator - (const Time& op) {
     tmp.normalize();
     return tmp;
 }
-bool Time::operator <= (const Time& op) {
+bool Time::operator<=(const Time& op) {
     int tmp1, tmp2;
     tmp1 = hour * 3600 + min * 60 + sec;
     tmp2 = op.hour * 3600 + op.min * 60 + op.sec;
     return (tmp1 <= tmp2) ? true : false;
 }
-int& Time::operator [] (const int op) {
+int& Time::operator[](const int op) {
     if (op == 0)
         return hour;
     else if (op == 1)
@@ -77,11 +77,11 @@ int& Time::operator [] (const int op) {
     else
         return sec;
 }
-ostream& operator << (ostream& stream, Time op2) {
+ostream& operator<<(ostream& stream, Time op2) {
     stream << '(' << op2.hour << ':' << op2.min << ':' << op2.sec << ')';
     return stream;
 }
-Time& operator += (Time& op1, Time& op2) {
+Time& operator+=(Time& op1, Time& op2) {
     op1.hour += op2.hour;
     op1.min += op2.min;
     op1.sec += op2.sec;
@@ -122,4 +122,6 @@ int main() {
         cout << t6 << " <= " << t7 << "\n\n";
     else
         cout << t6 << " > " << t7 << "\n\n";
+
+    return 0;
 }

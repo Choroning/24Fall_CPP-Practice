@@ -7,7 +7,7 @@
 
 ## Q1. 제네릭 함수
 
-예시 코드와 실행 예시를 참고하여 `main()`함수를 완성하고, 정상적으로 실행되도록 `reverseArray()`, `display()`함수를 작성하시오.
+예시 코드와 실행 예시를 참고하여 `main()` 함수를 완성하고, 정상적으로 실행되도록 `reverseArray()`, `display()` 함수를 작성하시오.
 
 
 <br>**프로그램 요구사항**
@@ -31,23 +31,23 @@ using namespace std;
 [ 빈칸 ]
 
 int main() {
-   int x[] = { 1, 10, 100, 1000 };
+    int x[] = { 1, 10, 100, 1000 };
 
-   reverseArray(x, 4);
-   cout << "x = ";
-   display(x, 4);
+    reverseArray(x, 4);
+    cout << "x = ";
+    display(x, 4);
 
-   double y[] = { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 };
-   reverseArray(y, 6);
-   cout << "y = ";
-   display(y, 6);
+    double y[] = { 1.1, 2.2, 3.3, 4.4, 5.5, 6.6 };
+    reverseArray(y, 6);
+    cout << "y = ";
+    display(y, 6);
 
-   char str[20] = "C++ is powerful";
-   // str을 뒤집는 reverseArray() 호출문
-   [ 빈칸 ]
-   cout << "str = " << str << endl;
+    char str[20] = "C++ is powerful";
+    // str을 뒤집는 reverseArray() 호출문
+    [ 빈칸 ]
+    cout << "str = " << str << endl;
 
-   return 0;
+    return 0;
 }
 ```
 
@@ -90,11 +90,11 @@ using namespace std;
 
 template <typename T>
 class Rectangle {
-   T width;
-   T height;
+    T width;
+    T height;
 public:
-   Rectangle(T w = 1, T h = 1) { width = w; height = h; }
-   T getArea();
+    Rectangle(T w = 1, T h = 1) { width = w; height = h; }
+    T getArea();
 };
 
 // 멤버함수 getArea() 정의
@@ -102,24 +102,24 @@ public:
 
 template <typename T>
 T bigger(T a, T b) {
-   if (a > b) return a;
-   else return b;
+    if (a > b) return a;
+    else return b;
 }
 
 int main() {
-   int a = 20, b = 50, c;
+    int a = 20, b = 50, c;
 
-   c = bigger(a, b);
-   cout << "20과 50 중 더 큰 값은 " << c << endl;
+    c = bigger(a, b);
+    cout << "20과 50 중 더 큰 값은 " << c << endl;
 
-   // double형 Rectangle 객체 rect1, rect2, rect3 선언
-   // 단, rect1의 width와 height은 각각 10.2와 23.5, rect2는 20.4와 13.7로 초기화
-   [ 빈칸 ]
+    // double형 Rectangle 객체 rect1, rect2, rect3 선언
+    // 단, rect1의 width와 height은 각각 10.2와 23.5, rect2는 20.4와 13.7로 초기화
+    [ 빈칸 ]
 
-   rect3 = bigger(rect1, rect2);
-   cout << "rect1과 rect2 중 더 큰 것의 면적은 " << rect3.getArea() << endl;
+    rect3 = bigger(rect1, rect2);
+    cout << "rect1과 rect2 중 더 큰 것의 면적은 " << rect3.getArea() << endl;
 
-   return 0;
+    return 0;
 }
 ```
 
