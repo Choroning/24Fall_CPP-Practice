@@ -41,11 +41,10 @@ This repository contains code examples developed for a university-level C++ prog
 
 - **📖 References**
   
-| Type | Contents |
-|:----:|:---------|
-|Textbook|"Warming-Up C Programming 2nd Edition" by Jeonga Cheon|
-|Textbook|"문제풀이 중심의 C언어 연습" by Yongil Kim et al.|
-|Other|Lecture Slides by instructors|
+| Type | Contents                                         |
+|:----:|:-------------------------------------------------|
+|Textbook| "명품 C++ Programming(Revised Ed.)" by Kitae Hwang |
+|Other| Lecture Slides by instructors                    |
 
 <br><a name="prerequisites"></a>
 ## ✅ Prerequisites
