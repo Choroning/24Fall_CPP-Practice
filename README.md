@@ -41,11 +41,10 @@ This repository contains code examples developed for a university-level C++ prog
 
 - **📖 References**
   
-| Type | Contents |
-|:----:|:---------|
-|Textbook|"Warming-Up C Programming 2nd Edition" by Jeonga Cheon|
-|Textbook|"문제풀이 중심의 C언어 연습" by Yongil Kim et al.|
-|Other|Lecture Slides by instructors|
+| Type | Contents                                         |
+|:----:|:-------------------------------------------------|
+|Textbook| "명품 C++ Programming(Revised Ed.)" by Kitae Hwang |
+|Other| Lecture Slides by instructors                    |
 
 <br><a name="prerequisites"></a>
 ## ✅ Prerequisites
@@ -66,23 +65,50 @@ This repository contains code examples developed for a university-level C++ prog
 
 ```plaintext
 24Fall_CPP-Practice
-├── Chapter01_Getting-Started
-├── Chapter02_Variables-and-Basic-Types
 ├── Chapter03_Classes-and-Objects
+│   ├── A10204-1_C03-Problems.md
+│   ├── A10204-1_C03Q1.cpp
+│   └── A10204-1_C03Q2.cpp
 ├── Chapter04_Pointers-Arrays-and-Dynamic-Memory
+│   ├── A10204-1_C04-Problems.md
+│   ├── A10204-1_C04Q1.cpp
+│   └── A10204-1_C04Q2.cpp
 ├── Chapter05_Functions-and-Copy-Control
+│   ├── A10204-1_C05-Problems.md
+│   ├── A10204-1_C05Q1.cpp
+│   ├── A10204-1_C05Q2.cpp
+│   └── A10204-1_C05Q3.cpp
 ├── Chapter06_Overloading-and-Static-Members
+│   ├── A10204-1_C06-Problems.md
+│   ├── A10204-1_C06Q1.cpp
+│   └── A10204-1_C06Q2.cpp
 ├── Chapter07_Friend-Functions-and-Operator-Overloads
+│   ├── A10204-1_C07-Problems.md
+│   ├── A10204-1_C07Q1.cpp
+│   ├── A10204-1_C07Q2.cpp
+│   └── A10204-1_C07Q3.cpp
 ├── Chapter08_Inheritance
+│   ├── A10204-1_C08-Problems.md
+│   ├── A10204-1_C08Q1.cpp
+│   └── A10204-1_C08Q2.cpp
 ├── Chapter09_Virtual-Functions-and-Abstract-Classes
+│   ├── A10204-1_C09-Problems.md
+│   ├── A10204-1_C09Q1.cpp
+│   └── A10204-1_C09Q2.cpp
 ├── Chapter10_Templates-and-the-Standard-Library(STL)
+│   ├── A10204-1_C10-Problems.md
+│   ├── A10204-1_C10Q1.cpp
+│   └── A10204-1_C10Q2.cpp
 ├── LICENSE
 ├── README.ko.md
 ├── README.md
 └── src
     └── images
+        ├── C08_A10204-1_1.png
+        ├── C09_A10204-1_1.png
+        └── C09_A10204-1_2.png
 
-12 directories, 3 files
+11 directories, 32 files
 ```
 
 <br><a name="license"></a>
