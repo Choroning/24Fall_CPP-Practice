@@ -24,6 +24,7 @@
   - [4.1 Concept](#41-concept)
   - [4.2 `using namespace std`](#42-using-namespace-std)
 - [5. C++ String](#5-c-string)
+- [6. Modern Variable Declaration with `auto`](#6-modern-variable-declaration-with-auto)
 - [Summary](#summary)
 
 ---
@@ -157,6 +158,47 @@ cout << "Age: " << age << ", GPA: " << gpa << endl;
 ```
 
 > **Tip:** `cout` is type-safe. If you accidentally pass the wrong type, the compiler will either convert it safely or produce a compile error. With `printf`, mismatched format specifiers cause undefined behavior.
+
+#### Modern Output Alternatives: `std::format` and `std::print`
+
+> **[C++20]** This feature requires C++20 or later.
+
+C++20 introduced `std::format`, which provides Python-like string formatting. It combines the type safety of `cout` with the readability of format strings:
+
+```cpp
+#include <format>
+#include <iostream>
+using namespace std;
+
+int age = 20;
+double gpa = 3.8;
+
+// C++20: std::format returns a formatted string
+cout << format("Age: {}, GPA: {:.1f}", age, gpa) << endl;
+// Output: Age: 20, GPA: 3.8
+```
+
+> **[C++23]** This feature requires C++23 or later.
+
+C++23 goes further with `std::print`, which writes directly to the output without needing `cout`:
+
+```cpp
+#include <print>
+
+int age = 20;
+double gpa = 3.8;
+
+// C++23: std::print — direct output with format syntax
+std::print("Age: {}, GPA: {:.1f}\n", age, gpa);
+// Output: Age: 20, GPA: 3.8
+```
+
+| Method | Standard | Header | Type-safe | Format control |
+|:-------|:---------|:-------|:---------:|:--------------:|
+| `printf` | C | `<cstdio>` | No | `%d`, `%f` |
+| `cout <<` | C++98 | `<iostream>` | Yes | Manipulators |
+| `std::format` | C++20 | `<format>` | Yes | `{}` placeholders |
+| `std::print` | C++23 | `<print>` | Yes | `{}` placeholders |
 
 ### 2.2 `endl` vs `'\n'`
 
@@ -301,6 +343,39 @@ cout << age << " " << name << endl;
 ```
 
 > **Warning:** Forgetting `cin.ignore()` between `>>` and `getline` is one of the most common C++ beginner mistakes. The `getline` call will appear to be "skipped" because it immediately reads the leftover newline.
+
+**Step-by-step visualization of the problem:**
+
+```
+User types: 25[Enter]John Doe[Enter]
+
+Step 1: cin >> age;
+  Buffer before: "25\nJohn Doe\n"
+  Reads: 25
+  Buffer after:  "\nJohn Doe\n"    ← '\n' remains!
+
+Step 2 (WITHOUT cin.ignore()):  getline(cin, name);
+  Buffer before: "\nJohn Doe\n"
+  Reads: ""                          ← reads up to the first '\n', which is immediate
+  Buffer after:  "John Doe\n"
+  Result: name is an EMPTY string!
+
+Step 2 (WITH cin.ignore()):  getline(cin, name);
+  cin.ignore() discards '\n'
+  Buffer before: "John Doe\n"
+  Reads: "John Doe"                  ← correct!
+  Buffer after:  ""
+```
+
+**Robust version with `cin.ignore`:** For maximum safety, use `cin.ignore(numeric_limits<streamsize>::max(), '\n')` which discards everything up to and including the next newline, not just a single character:
+
+```cpp
+#include <limits>   // for numeric_limits
+
+cin >> age;
+cin.ignore(numeric_limits<streamsize>::max(), '\n');   // discard rest of line
+getline(cin, name);
+```
 
 ### 3.3 `cin` vs `scanf`
 
@@ -456,6 +531,35 @@ cout << a[0] << endl;             // 'H'
 
 <br>
 
+## 6. Modern Variable Declaration with `auto`
+
+Since C++11, the `auto` keyword lets the compiler **deduce the type** of a variable from its initializer. This reduces redundancy and makes code more maintainable.
+
+```cpp
+auto x = 42;           // int
+auto pi = 3.14;        // double
+auto name = "Hello"s;  // std::string (with s suffix, requires "using namespace std::literals")
+auto greeting = string("Hello");  // std::string
+
+// Especially useful with complex types
+vector<int> nums = {1, 2, 3};
+auto it = nums.begin();   // vector<int>::iterator — much shorter with auto
+```
+
+**When to use `auto`:**
+
+| Use `auto` | Use explicit type |
+|:-----------|:-----------------|
+| When the type is obvious from the right-hand side | When the type is not obvious and readability suffers |
+| With complex types (iterators, lambda, etc.) | When you intentionally want a different type (e.g., `int x = 3.14;` truncates) |
+| With range-based for loops: `for (auto& item : vec)` | In public API / function signatures (clarity matters) |
+
+> **Note:** `auto` does not mean the variable is untyped or dynamically typed. The type is determined at **compile time** and is fixed thereafter. C++ remains a statically-typed language.
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Takeaway |
@@ -472,5 +576,7 @@ cout << a[0] << endl;             // 'H'
 | Namespace | Prevents name collisions; `std` contains standard library; `std::cout` |
 | `using namespace std` | Shorthand to avoid `std::` prefix; `using std::cout` for selective import |
 | `std::string` | Modern alternative to `char[]`; `+` for concat, `==` for compare, `.length()` for size |
+| `std::format` / `std::print` | Modern output formatting (C++20/C++23); `{}` placeholders; type-safe like `cout` but with format strings |
+| `auto` | Compiler deduces the type from the initializer (C++11); useful for iterators and complex types; still statically typed |
 
 ---

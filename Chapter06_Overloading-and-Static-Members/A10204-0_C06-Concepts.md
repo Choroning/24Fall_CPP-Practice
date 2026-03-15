@@ -279,15 +279,15 @@ int main() {
 Memory layout:
 
 Static member (ONE copy):
-┌──────────────────┐
+┌───────────────────┐
 │ Circle::count = 3 │  ← shared by all objects
-└──────────────────┘
+└───────────────────┘
 
 Objects (separate copies):
-┌──────────┐  ┌──────────┐  ┌──────────┐
-│ a        │  │ b        │  │ c        │
-│ radius=10│  │ radius=20│  │ radius=30│
-└──────────┘  └──────────┘  └──────────┘
+┌───────────┐  ┌───────────┐  ┌───────────┐
+│ a         │  │ b         │  │ c         │
+│ radius=10 │  │ radius=20 │  │ radius=30 │
+└───────────┘  └───────────┘  └───────────┘
 ```
 
 **Key rules:**
@@ -301,6 +301,57 @@ Objects (separate copies):
 | Exists even with zero objects | Lifetime is the entire program |
 
 > **Warning:** Forgetting the definition outside the class (`int Circle::count = 0;`) causes a **linker error**, not a compiler error. The declaration inside the class only announces existence; the definition allocates memory.
+
+#### `constexpr` vs `const` for Compile-Time Constants
+
+Since C++11, `constexpr` declares values that are guaranteed to be evaluated at **compile time**. This is stricter than `const`, which only means "cannot be modified after initialization" but may still be initialized at runtime.
+
+```cpp
+const int maxSize = 100;            // const: value set at initialization, maybe at runtime
+constexpr int maxSize = 100;        // constexpr: MUST be known at compile time
+
+const int x = someFunction();       // OK: const allows runtime initialization
+// constexpr int y = someFunction(); // ERROR (unless someFunction is constexpr)
+
+constexpr double pi = 3.14159265;   // OK: literal value known at compile time
+```
+
+| Keyword | Compile-time guarantee | Can initialize from runtime value? | Available since |
+|:--------|:----------------------|:----------------------------------|:---------------|
+| `const` | No (may be runtime) | Yes | C++98 |
+| `constexpr` | **Yes** (must be compile-time) | No (only from constexpr expressions) | C++11 |
+
+Use `constexpr` when the value is truly a compile-time constant (array sizes, template arguments, etc.). Use `const` when you simply want to prevent modification.
+
+```cpp
+constexpr int arraySize = 10;
+int arr[arraySize];                  // OK: constexpr works as array size
+
+const int n = getValue();
+// int arr2[n];                      // ERROR in standard C++: n is not constexpr
+```
+
+#### Inline Variables for Static Member Initialization in Headers (C++17)
+
+Traditionally, static member variables must be defined (and initialized) outside the class in exactly one `.cpp` file. C++17 introduced **`inline` variables**, which allow you to define and initialize a static member variable **directly inside the class** in a header file without causing multiple-definition linker errors.
+
+```cpp
+// Traditional approach (pre-C++17): requires separate definition in .cpp file
+class Circle {
+public:
+    static int count;   // declaration only
+};
+int Circle::count = 0;  // definition in exactly one .cpp file
+
+// C++17 approach: inline static variable — define right in the header
+class Circle {
+public:
+    inline static int count = 0;   // declaration + definition in the header
+};
+// No separate .cpp definition needed!
+```
+
+This simplifies header-only libraries and removes a common source of linker errors.
 
 ### 3.2 Static Member Functions
 
@@ -464,5 +515,7 @@ int main() {
 | Static member function | No `this` pointer; can only access static members; called via `ClassName::func()` |
 | Object counting | Increment static count in constructor, decrement in destructor |
 | Private constructor + static members | Prevents object creation; all data/functions accessed via class name (Board pattern) |
+| `constexpr` vs `const` | `constexpr` guarantees compile-time evaluation (C++11); `const` only prevents modification |
+| `inline static` variables | C++17 allows `inline static int x = 0;` inside the class — no separate `.cpp` definition needed |
 
 ---

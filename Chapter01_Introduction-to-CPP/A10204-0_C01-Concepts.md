@@ -17,6 +17,7 @@
   - [2.2 Features](#22-features)
   - [2.3 Standard C++ Importance](#23-standard-c-importance)
 - [3. C++ Standard Libraries](#3-c-standard-libraries)
+  - [The Future of `#include`: Modules](#the-future-of-include-modules)
 - [4. C++ Development Process](#4-c-development-process)
   - [4.1 Build Pipeline](#41-build-pipeline)
   - [4.2 Error Types](#42-error-types)
@@ -131,10 +132,18 @@ Timeline of C++
 2017    C++17 — structured bindings, std::optional, filesystem
 2020    C++20 — concepts, coroutines, ranges, modules, three-way
                 comparison (<=>)
+2023    C++23 — std::print, deducing this, std::expected,
+                std::flat_map, multidimensional subscript operator
+2026    C++26 — contracts (pre/post/contract_assert), <debugging>,
+                <inplace_vector>, <hive>, <simd>, <linalg>,
+                constexpr containers (map, set, deque, ...),
+                std::execution (async scheduling)
 ──────────────────────────────────────────────────────────────
 ```
 
 > **Key Point:** C++11 is widely considered the dividing line between "classical C++" and "modern C++." Many coding practices changed fundamentally with C++11 features like `auto`, smart pointers, and lambda expressions.
+
+> **[C++26]** C++26 is expected to be ratified in 2026. Its headline feature is **Contracts** — a language-level mechanism for specifying function preconditions and postconditions, replacing the old `assert()` macro with `pre()`, `post()`, and `contract_assert()`. Most compilers do not yet support C++26 features.
 
 ### 2.2 Features
 
@@ -248,6 +257,27 @@ int main() {
 
 > **Key Point:** Always use the C++ form `<cstring>` instead of the C form `<string.h>` in C++ programs. The `<cXXX>` form guarantees that names are placed in the `std` namespace.
 
+### The Future of `#include`: Modules
+
+> **[C++20]** This feature requires C++20 or later.
+
+C++20 introduced **modules**, a modern replacement for the traditional `#include` / header-file model. Modules eliminate many long-standing problems with headers: redundant parsing, macro leakage, and fragile include order dependencies.
+
+```cpp
+// Traditional approach (headers)
+#include <iostream>
+
+// Modern approach (modules, C++20)
+import std;           // import the entire standard library as a module
+
+int main() {
+    std::cout << "Hello from modules!" << std::endl;
+    return 0;
+}
+```
+
+Modules are not yet universally supported across all compilers and build systems, but they represent the direction C++ is heading. For now, `#include` remains the standard practice in most codebases.
+
 ---
 
 <br>
@@ -266,27 +296,27 @@ The process of creating a C++ program follows four main phases:
 ```
 
 ```
-  main.cpp          iostream (header)
-     │                │
-     ▼                │
+   main.cpp        iostream (header)
+      │               │
+      ▼               │
 ┌────────────┐        │
-│Preprocessor│◀───────┘   (#include expansion)
+│Preprocessor│◀───────┘  (#include expansion)
 └────────────┘
-     │
-     ▼
+      │
+      ▼
 ┌────────────┐
-│  Compiler  │             (C++ code → object code)
+│  Compiler  │       (C++ code → object code)
 └────────────┘
-     │
-     ▼
+      │
+      ▼
   main.obj           (object file — machine code, not yet executable)
-     │
-     ▼
+      │
+      ▼
 ┌────────────┐
-│   Linker   │◀─── library files (standard library, etc.)
+│   Linker   │◀───── library files (standard library, etc.)
 └────────────┘
-     │
-     ▼
+      │
+      ▼
   main.exe           (final executable)
 ```
 
@@ -355,7 +385,7 @@ int main() {
 | Software Importance | Software gives hardware purpose; modern life depends on programs |
 | Programming Languages | Machine language (binary) → Assembly (mnemonics) → High-level (C, C++, Python) |
 | Compiler | Translates entire source code to machine code before execution |
-| C++ History | Bjarne Stroustrup, 1979/1983; C with Classes → C++; C++98 → C++11 → C++20 |
+| C++ History | Bjarne Stroustrup, 1979/1983; C with Classes → C++; C++98 → C++11 → C++20 → C++23 → C++26 |
 | C++ = C + OOP | Compatible with C; adds encapsulation, inheritance, polymorphism |
 | Key Features | Templates, operator overloading, references, `new`/`delete`, inline functions, STL |
 | Standard C++ | ANSI/ISO standard ensures portability; avoid compiler-specific extensions |

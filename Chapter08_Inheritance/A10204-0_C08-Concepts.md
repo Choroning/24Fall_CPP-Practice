@@ -25,6 +25,10 @@
   - [4.1 Overriding](#41-overriding)
   - [4.2 Calling the Base Version](#42-calling-the-base-version)
 - [5. Multiple Inheritance](#5-multiple-inheritance)
+- [6. Modern Inheritance Features (C++11)](#6-modern-inheritance-features-c11)
+  - [6.1 The `final` Keyword](#61-the-final-keyword)
+  - [6.2 The `override` Keyword](#62-the-override-keyword)
+  - [6.3 Inheriting Constructors with `using`](#63-inheriting-constructors-with-using)
 - [Summary](#summary)
 
 ---
@@ -40,7 +44,7 @@
 | Benefit | Explanation |
 |:--------|:-----------|
 | Code reuse | Common data and functions are written once in the base class |
-| IS-A relationship | A `ColorPoint` **is a** `Point`; a `FirstGrade` **is a** `Student` |
+| IS-A relationship | A `Car` **is a** `Vehicle`; a `Manager` **is an** `Employee` |
 | Extensibility | New functionality is added in the derived class without modifying the base |
 
 **Terminology:**
@@ -68,25 +72,27 @@ class Derived : public Base {
 - **`public` inheritance** is the most common and preserves the IS-A relationship.
 
 ```cpp
-class Point {
-    int x, y;
+class Vehicle {
+    string brand;
+    int year;
 public:
-    Point(int x, int y) : x(x), y(y) {}
-    int getX() { return x; }
-    int getY() { return y; }
+    Vehicle(string b, int y) : brand(b), year(y) {}
+    string getBrand() { return brand; }
+    int getYear() { return year; }
 protected:
-    void move(int x, int y) { this->x = x; this->y = y; }
+    void updateYear(int y) { year = y; }
 };
 
-class ColorPoint : public Point {
-    string color;
+class Car : public Vehicle {
+    int numDoors;
 public:
-    ColorPoint(int x = 0, int y = 0, string c = "BLACK")
-        : Point(x, y), color(c) {}
-    void setColor(string c) { color = c; }
-    void setPoint(int x, int y) { move(x, y); }   // calls protected base member
+    Car(string b = "Unknown", int y = 2024, int d = 4)
+        : Vehicle(b, y), numDoors(d) {}
+    void setDoors(int d) { numDoors = d; }
+    void setYear(int y) { updateYear(y); }   // calls protected base member
     void show() {
-        cout << color << " at (" << getX() << ", " << getY() << ")" << endl;
+        cout << getBrand() << " (" << getYear() << "), "
+             << numDoors << " doors" << endl;
     }
 };
 ```
@@ -253,45 +259,46 @@ public:
 #include <iostream>
 using namespace std;
 
-class Student {
+class Employee {
     string name;
 protected:
-    int korean, info;
+    double salary;
+    string department;
 public:
-    Student(string n, int kor, int inf)
-        : name(n), korean(kor), info(inf) {
-        cout << "Student constructor" << endl;
+    Employee(string n, double sal, string dept)
+        : name(n), salary(sal), department(dept) {
+        cout << "Employee constructor" << endl;
     }
-    ~Student() { cout << "Student destructor" << endl; }
+    ~Employee() { cout << "Employee destructor" << endl; }
     string getName() { return name; }
-    int getKorean() { return korean; }
-    int getInfo() { return info; }
+    double getSalary() { return salary; }
+    string getDepartment() { return department; }
 };
 
-class FirstGrade : public Student {
-    int math;
+class Manager : public Employee {
+    int teamSize;
 public:
-    FirstGrade(string n, int kor, int inf, int m)
-        : Student(n, kor, inf), math(m) {
-        cout << "FirstGrade constructor" << endl;
+    Manager(string n, double sal, string dept, int ts)
+        : Employee(n, sal, dept), teamSize(ts) {
+        cout << "Manager constructor" << endl;
     }
-    ~FirstGrade() { cout << "FirstGrade destructor" << endl; }
-    double getAverage() {
-        return (korean + info + math) / 3.0;
+    ~Manager() { cout << "Manager destructor" << endl; }
+    double getBonus() {
+        return salary * 0.15;
     }
     void display() {
         cout << "Name: " << getName() << endl;
-        cout << "Korean: " << korean << endl;
-        cout << "Info: " << info << endl;
-        cout << "Math: " << math << endl;
+        cout << "Department: " << department << endl;
+        cout << "Salary: " << salary << endl;
+        cout << "Team size: " << teamSize << endl;
         cout << "---------------" << endl;
-        cout << "Average: " << getAverage() << endl << endl;
+        cout << "Bonus: " << getBonus() << endl << endl;
     }
 };
 
 int main() {
-    FirstGrade f("Alice", 90, 81, 88);
-    f.display();
+    Manager m("Alice", 75000, "Engineering", 8);
+    m.display();
     return 0;
 }
 ```
@@ -299,16 +306,16 @@ int main() {
 **Output:**
 
 ```text
-Student constructor
-FirstGrade constructor
+Employee constructor
+Manager constructor
 Name: Alice
-Korean: 90
-Info: 81
-Math: 88
+Department: Engineering
+Salary: 75000
+Team size: 8
 ---------------
-Average: 86.3333
-FirstGrade destructor
-Student destructor
+Bonus: 11250
+Manager destructor
+Employee destructor
 ```
 
 > **Key Point:** Construction proceeds from base to derived. Destruction proceeds from derived to base. This ensures that derived members that depend on base members are properly initialized and cleaned up.
@@ -421,6 +428,116 @@ class C : public A, public B { };   // only ONE copy of Base
 
 <br>
 
+## 6. Modern Inheritance Features (C++11)
+
+### 6.1 The `final` Keyword
+
+C++11 introduced the `final` specifier to **prevent further inheritance** of a class or **prevent further overriding** of a virtual function.
+
+**Preventing class inheritance:**
+
+```cpp
+class Base final {
+    // ...
+};
+
+// class Derived : public Base { };  // ERROR: Base is marked final
+```
+
+**Preventing function overriding:**
+
+```cpp
+class Animal {
+public:
+    virtual void speak() { }
+};
+
+class Dog : public Animal {
+public:
+    void speak() final { cout << "Woof!" << endl; }  // no further override allowed
+};
+
+class Puppy : public Dog {
+public:
+    // void speak() { }   // ERROR: Dog::speak() is marked final
+};
+```
+
+| Usage | Effect |
+|:------|:-------|
+| `class MyClass final { };` | No class can inherit from `MyClass` |
+| `void func() final;` | No derived class can override `func()` |
+
+`final` is useful for:
+- **Security:** Preventing unintended extension of a critical class.
+- **Performance:** The compiler can devirtualize calls to `final` methods, avoiding the virtual function overhead.
+
+### 6.2 The `override` Keyword
+
+C++11 also introduced the `override` specifier, which tells the compiler that a function is **intended to override** a base class virtual function. If the function does not actually override anything (e.g., due to a typo in the function name or parameter mismatch), the compiler will produce an error.
+
+```cpp
+class Base {
+public:
+    virtual void display() const { }
+};
+
+class Derived : public Base {
+public:
+    void display() const override { }   // OK: correctly overrides Base::display()
+    // void dispaly() const override { } // ERROR: typo — no such function in Base to override
+};
+```
+
+> **Tip:** Always use `override` when overriding virtual functions. It catches subtle bugs at compile time. This keyword is covered in detail in Chapter 09 (Virtual Functions and Abstract Classes).
+
+### 6.3 Inheriting Constructors with `using`
+
+C++11 allows a derived class to **inherit all constructors** from the base class using a `using` declaration, avoiding the need to manually write forwarding constructors.
+
+```cpp
+class Base {
+public:
+    Base(int x) { cout << "Base(int): " << x << endl; }
+    Base(int x, int y) { cout << "Base(int, int): " << x << ", " << y << endl; }
+    Base(string s) { cout << "Base(string): " << s << endl; }
+};
+
+class Derived : public Base {
+public:
+    using Base::Base;   // inherit ALL constructors from Base
+
+    // Derived can still add its own constructors
+    Derived() : Base(0) { cout << "Derived default" << endl; }
+};
+
+int main() {
+    Derived d1(42);          // calls Base(int) via inherited constructor
+    Derived d2(1, 2);        // calls Base(int, int) via inherited constructor
+    Derived d3("hello");     // calls Base(string) via inherited constructor
+    Derived d4;              // calls Derived's own default constructor
+    return 0;
+}
+```
+
+**Without `using Base::Base`**, you would need to write a forwarding constructor for each base constructor:
+
+```cpp
+// Tedious manual forwarding (pre-C++11 style)
+class Derived : public Base {
+public:
+    Derived(int x) : Base(x) { }
+    Derived(int x, int y) : Base(x, y) { }
+    Derived(string s) : Base(s) { }
+};
+```
+
+> **Note:** Inherited constructors only initialize the base class portion. If the derived class has additional member variables that need initialization, you should provide your own constructors or use default member initializers.
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Takeaway |
@@ -437,5 +554,8 @@ class C : public A, public B { };   // only ONE copy of Base
 | Overriding | Derived redefines base function with same signature; hides base version |
 | Calling base version | `Base::functionName()` from inside derived; `obj.Base::func()` from outside |
 | Multiple inheritance | `class C : public A, public B { };` — diamond problem; virtual inheritance; discouraged in practice |
+| `final` (C++11) | `class X final` prevents inheritance; `void f() final` prevents overriding; enables compiler optimizations |
+| `override` (C++11) | Marks a function as intentionally overriding a base virtual function; catches signature mismatches at compile time |
+| Inheriting constructors (C++11) | `using Base::Base;` inherits all base constructors; avoids manual forwarding constructors |
 
 ---
