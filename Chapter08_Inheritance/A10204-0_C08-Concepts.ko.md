@@ -25,6 +25,10 @@
   - [4.1 오버라이딩](#41-오버라이딩)
   - [4.2 기본 클래스 버전 호출](#42-기본-클래스-버전-호출)
 - [5. 다중 상속](#5-다중-상속)
+- [6. 현대적 상속 기능 (C++11)](#6-현대적-상속-기능-c11)
+  - [6.1 `final` 키워드](#61-final-키워드)
+  - [6.2 `override` 키워드](#62-override-키워드)
+  - [6.3 `using`을 사용한 생성자 상속](#63-using을-사용한-생성자-상속)
 - [요약](#요약)
 
 ---
@@ -40,7 +44,7 @@
 | 장점 | 설명 |
 |:----|:----|
 | 코드 재사용 | 공통 데이터와 함수를 기본 클래스에 한 번만 작성 |
-| IS-A 관계 | `ColorPoint`**는** `Point`**이다**; `FirstGrade`**는** `Student`**이다** |
+| IS-A 관계 | `Car`**는** `Vehicle`**이다**; `Manager`**는** `Employee`**이다** |
 | 확장성 | 기본 클래스를 수정하지 않고 파생 클래스에서 새 기능 추가 |
 
 **용어:**
@@ -68,26 +72,27 @@ class Derived : public Base {
 - **`public` 상속**이 가장 일반적이며 IS-A 관계를 유지한다.
 
 ```cpp
-class Point {
-    int x, y;
+class Vehicle {
+    string brand;
+    int year;
 public:
-    Point(int x, int y) : x(x), y(y) {}
-    int getX() { return x; }
-    int getY() { return y; }
+    Vehicle(string b, int y) : brand(b), year(y) {}
+    string getBrand() { return brand; }
+    int getYear() { return year; }
 protected:
-    void move(int x, int y) { this->x = x; this->y = y; }
+    void updateYear(int y) { year = y; }
 };
 
-class ColorPoint : public Point {
-    string color;
+class Car : public Vehicle {
+    int numDoors;
 public:
-    ColorPoint(int x = 0, int y = 0, string c = "BLACK")
-        : Point(x, y), color(c) {}
-    void setColor(string c) { color = c; }
-    void setPoint(int x, int y) { move(x, y); }   // 기본 클래스의 protected 멤버 호출
+    Car(string b = "Unknown", int y = 2024, int d = 4)
+        : Vehicle(b, y), numDoors(d) {}
+    void setDoors(int d) { numDoors = d; }
+    void setYear(int y) { updateYear(y); }   // 기본 클래스의 protected 멤버 호출
     void show() {
-        cout << color << "색으로 (" << getX() << ", " << getY()
-             << ")에 위치한 점입니다." << endl;
+        cout << getBrand() << " (" << getYear() << "), "
+             << numDoors << "도어" << endl;
     }
 };
 ```
@@ -254,45 +259,46 @@ public:
 #include <iostream>
 using namespace std;
 
-class Student {
+class Employee {
     string name;
 protected:
-    int korean, info;
+    double salary;
+    string department;
 public:
-    Student(string n, int kor, int inf)
-        : name(n), korean(kor), info(inf) {
-        cout << "Student 생성자" << endl;
+    Employee(string n, double sal, string dept)
+        : name(n), salary(sal), department(dept) {
+        cout << "Employee 생성자" << endl;
     }
-    ~Student() { cout << "Student 소멸자" << endl; }
+    ~Employee() { cout << "Employee 소멸자" << endl; }
     string getName() { return name; }
-    int getKorean() { return korean; }
-    int getInfo() { return info; }
+    double getSalary() { return salary; }
+    string getDepartment() { return department; }
 };
 
-class FirstGrade : public Student {
-    int math;
+class Manager : public Employee {
+    int teamSize;
 public:
-    FirstGrade(string n, int kor, int inf, int m)
-        : Student(n, kor, inf), math(m) {
-        cout << "FirstGrade 생성자" << endl;
+    Manager(string n, double sal, string dept, int ts)
+        : Employee(n, sal, dept), teamSize(ts) {
+        cout << "Manager 생성자" << endl;
     }
-    ~FirstGrade() { cout << "FirstGrade 소멸자" << endl; }
-    double getAverage() {
-        return (korean + info + math) / 3.0;
+    ~Manager() { cout << "Manager 소멸자" << endl; }
+    double getBonus() {
+        return salary * 0.15;
     }
     void display() {
         cout << "이름: " << getName() << endl;
-        cout << "국어: " << korean << endl;
-        cout << "정보: " << info << endl;
-        cout << "수학: " << math << endl;
+        cout << "부서: " << department << endl;
+        cout << "급여: " << salary << endl;
+        cout << "팀 규모: " << teamSize << endl;
         cout << "---------------" << endl;
-        cout << "평균: " << getAverage() << endl << endl;
+        cout << "보너스: " << getBonus() << endl << endl;
     }
 };
 
 int main() {
-    FirstGrade f("홍길동", 90, 81, 88);
-    f.display();
+    Manager m("홍길동", 75000, "개발부", 8);
+    m.display();
     return 0;
 }
 ```
@@ -300,16 +306,16 @@ int main() {
 **출력:**
 
 ```text
-Student 생성자
-FirstGrade 생성자
+Employee 생성자
+Manager 생성자
 이름: 홍길동
-국어: 90
-정보: 81
-수학: 88
+부서: 개발부
+급여: 75000
+팀 규모: 8
 ---------------
-평균: 86.3333
-FirstGrade 소멸자
-Student 소멸자
+보너스: 11250
+Manager 소멸자
+Employee 소멸자
 ```
 
 > **핵심:** 생성은 기본 → 파생 순서로 진행된다. 소멸은 파생 → 기본 순서로 진행된다. 이렇게 해야 기본 멤버에 의존하는 파생 멤버가 올바르게 초기화되고 정리된다.
@@ -422,6 +428,116 @@ class C : public A, public B { };   // Base의 복사본 하나만 존재
 
 <br>
 
+## 6. 현대적 상속 기능 (C++11)
+
+### 6.1 `final` 키워드
+
+C++11에서는 클래스의 **추가 상속을 방지**하거나 가상 함수의 **추가 오버라이딩을 방지**하는 `final` 지정자가 도입되었다.
+
+**클래스 상속 방지:**
+
+```cpp
+class Base final {
+    // ...
+};
+
+// class Derived : public Base { };  // 오류: Base가 final로 표시됨
+```
+
+**함수 오버라이딩 방지:**
+
+```cpp
+class Animal {
+public:
+    virtual void speak() { }
+};
+
+class Dog : public Animal {
+public:
+    void speak() final { cout << "멍!" << endl; }  // 더 이상 오버라이딩 불가
+};
+
+class Puppy : public Dog {
+public:
+    // void speak() { }   // 오류: Dog::speak()가 final로 표시됨
+};
+```
+
+| 사용법 | 효과 |
+|:------|:----|
+| `class MyClass final { };` | 어떤 클래스도 `MyClass`를 상속할 수 없음 |
+| `void func() final;` | 어떤 파생 클래스도 `func()`를 오버라이딩할 수 없음 |
+
+`final`의 활용:
+- **안전성:** 중요한 클래스의 의도치 않은 확장을 방지.
+- **성능:** 컴파일러가 `final` 메서드에 대한 호출을 비가상화(devirtualize)하여 가상 함수 오버헤드를 제거할 수 있다.
+
+### 6.2 `override` 키워드
+
+C++11에서는 함수가 기본 클래스의 가상 함수를 **오버라이딩하려는 의도**임을 컴파일러에게 알리는 `override` 지정자도 도입되었다. 함수가 실제로 아무것도 오버라이딩하지 않으면 (예: 함수명 오타나 매개변수 불일치) 컴파일러가 오류를 발생시킨다.
+
+```cpp
+class Base {
+public:
+    virtual void display() const { }
+};
+
+class Derived : public Base {
+public:
+    void display() const override { }   // OK: Base::display()를 올바르게 오버라이딩
+    // void dispaly() const override { } // 오류: 오타 — Base에 오버라이딩할 함수 없음
+};
+```
+
+> **팁:** 가상 함수를 오버라이딩할 때는 항상 `override`를 사용하라. 컴파일 시점에 미묘한 버그를 잡아준다. 이 키워드는 9장 (가상 함수와 추상 클래스)에서 자세히 다룬다.
+
+### 6.3 `using`을 사용한 생성자 상속
+
+C++11에서는 `using` 선언을 통해 파생 클래스가 기본 클래스의 **모든 생성자를 상속**받을 수 있다. 수동으로 전달 생성자를 작성할 필요가 없어진다.
+
+```cpp
+class Base {
+public:
+    Base(int x) { cout << "Base(int): " << x << endl; }
+    Base(int x, int y) { cout << "Base(int, int): " << x << ", " << y << endl; }
+    Base(string s) { cout << "Base(string): " << s << endl; }
+};
+
+class Derived : public Base {
+public:
+    using Base::Base;   // Base의 모든 생성자를 상속
+
+    // Derived만의 생성자도 추가 가능
+    Derived() : Base(0) { cout << "Derived 기본 생성자" << endl; }
+};
+
+int main() {
+    Derived d1(42);          // 상속된 생성자를 통해 Base(int) 호출
+    Derived d2(1, 2);        // 상속된 생성자를 통해 Base(int, int) 호출
+    Derived d3("hello");     // 상속된 생성자를 통해 Base(string) 호출
+    Derived d4;              // Derived 자체의 기본 생성자 호출
+    return 0;
+}
+```
+
+**`using Base::Base` 없이는** 각 기본 클래스 생성자에 대해 전달 생성자를 작성해야 한다:
+
+```cpp
+// 번거로운 수동 전달 (C++11 이전 스타일)
+class Derived : public Base {
+public:
+    Derived(int x) : Base(x) { }
+    Derived(int x, int y) : Base(x, y) { }
+    Derived(string s) : Base(s) { }
+};
+```
+
+> **참고:** 상속된 생성자는 기본 클래스 부분만 초기화한다. 파생 클래스에 초기화가 필요한 추가 멤버 변수가 있다면, 자체 생성자를 제공하거나 기본 멤버 초기화자(default member initializer)를 사용해야 한다.
+
+---
+
+<br>
+
 ## 요약
 
 | 개념 | 핵심 정리 |
@@ -438,5 +554,8 @@ class C : public A, public B { };   // Base의 복사본 하나만 존재
 | 오버라이딩 | 파생이 같은 시그니처로 기본 함수를 재정의; 기본 버전을 숨김 |
 | 기본 버전 호출 | 파생 내부에서 `Base::functionName()`; 외부에서 `obj.Base::func()` |
 | 다중 상속 | `class C : public A, public B { };` — 다이아몬드 문제; 가상 상속; 실무에서 비권장 |
+| `final` (C++11) | `class X final`은 상속 방지; `void f() final`은 오버라이딩 방지; 컴파일러 최적화 가능 |
+| `override` (C++11) | 기본 가상 함수를 오버라이딩하려는 의도를 표시; 시그니처 불일치를 컴파일 시점에 포착 |
+| 생성자 상속 (C++11) | `using Base::Base;`로 기본 클래스의 모든 생성자를 상속; 수동 전달 생성자 불필요 |
 
 ---

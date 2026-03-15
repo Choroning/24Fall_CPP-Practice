@@ -24,6 +24,7 @@
   - [4.1 개념](#41-개념)
   - [4.2 `using namespace std`](#42-using-namespace-std)
 - [5. C++ 문자열](#5-c-문자열)
+- [6. `auto`를 사용한 현대적 변수 선언](#6-auto를-사용한-현대적-변수-선언)
 - [요약](#요약)
 
 ---
@@ -157,6 +158,47 @@ cout << "나이: " << age << ", 학점: " << gpa << endl;
 ```
 
 > **팁:** `cout`은 타입 안전하다. 잘못된 타입을 전달하면 컴파일러가 안전하게 변환하거나 컴파일 오류를 발생시킨다. `printf`의 경우 형식 지정자가 불일치하면 정의되지 않은 동작이 발생한다.
+
+#### 현대적 출력 대안: `std::format`과 `std::print`
+
+> **[C++20]** 이 기능은 C++20 이상이 필요합니다.
+
+C++20에서는 Python 스타일의 문자열 포맷팅을 제공하는 `std::format`이 도입되었다. `cout`의 타입 안전성과 서식 문자열의 가독성을 결합한다:
+
+```cpp
+#include <format>
+#include <iostream>
+using namespace std;
+
+int age = 20;
+double gpa = 3.8;
+
+// C++20: std::format은 서식이 적용된 문자열을 반환
+cout << format("나이: {}, 학점: {:.1f}", age, gpa) << endl;
+// 출력: 나이: 20, 학점: 3.8
+```
+
+> **[C++23]** 이 기능은 C++23 이상이 필요합니다.
+
+C++23에서는 `cout` 없이 직접 출력하는 `std::print`가 추가되었다:
+
+```cpp
+#include <print>
+
+int age = 20;
+double gpa = 3.8;
+
+// C++23: std::print — 서식 구문으로 직접 출력
+std::print("나이: {}, 학점: {:.1f}\n", age, gpa);
+// 출력: 나이: 20, 학점: 3.8
+```
+
+| 방식 | 표준 | 헤더 | 타입 안전 | 서식 제어 |
+|:----|:----|:----|:--------:|:--------:|
+| `printf` | C | `<cstdio>` | 아니오 | `%d`, `%f` |
+| `cout <<` | C++98 | `<iostream>` | 예 | 조작자(manipulator) |
+| `std::format` | C++20 | `<format>` | 예 | `{}` 자리 표시자 |
+| `std::print` | C++23 | `<print>` | 예 | `{}` 자리 표시자 |
 
 ### 2.2 `endl` vs `'\n'`
 
@@ -301,6 +343,39 @@ cout << age << " " << name << endl;
 ```
 
 > **경고:** `>>`와 `getline` 사이에 `cin.ignore()`를 빠뜨리는 것은 C++ 초보자가 가장 흔히 하는 실수 중 하나이다. `getline` 호출이 남은 줄바꿈을 즉시 읽어 "건너뛴 것처럼" 보인다.
+
+**문제 발생 과정을 단계별로 시각화:**
+
+```
+사용자 입력: 25[Enter]홍길동[Enter]
+
+1단계: cin >> age;
+  버퍼 (이전): "25\n홍길동\n"
+  읽은 값: 25
+  버퍼 (이후): "\n홍길동\n"    ← '\n'이 남아 있음!
+
+2단계 (cin.ignore() 없이):  getline(cin, name);
+  버퍼 (이전): "\n홍길동\n"
+  읽은 값: ""                    ← 첫 번째 '\n'까지 읽음 (즉시 만남)
+  버퍼 (이후): "홍길동\n"
+  결과: name은 빈 문자열!
+
+2단계 (cin.ignore() 사용):  getline(cin, name);
+  cin.ignore()가 '\n'을 버림
+  버퍼 (이전): "홍길동\n"
+  읽은 값: "홍길동"              ← 정상!
+  버퍼 (이후): ""
+```
+
+**더 안전한 버전:** 최대한 안전하게 하려면, 단일 문자가 아닌 다음 줄바꿈까지의 모든 내용을 버리는 `cin.ignore(numeric_limits<streamsize>::max(), '\n')`를 사용한다:
+
+```cpp
+#include <limits>   // numeric_limits에 필요
+
+cin >> age;
+cin.ignore(numeric_limits<streamsize>::max(), '\n');   // 나머지 줄 전체 버림
+getline(cin, name);
+```
 
 ### 3.3 `cin` vs `scanf`
 
@@ -456,6 +531,35 @@ cout << a[0] << endl;             // 'H'
 
 <br>
 
+## 6. `auto`를 사용한 현대적 변수 선언
+
+C++11부터 `auto` 키워드를 사용하면 컴파일러가 초기화 값으로부터 변수의 **타입을 추론**한다. 이는 중복을 줄이고 코드 유지보수성을 높인다.
+
+```cpp
+auto x = 42;           // int
+auto pi = 3.14;        // double
+auto name = "Hello"s;  // std::string (s 접미사, "using namespace std::literals" 필요)
+auto greeting = string("Hello");  // std::string
+
+// 복잡한 타입에서 특히 유용
+vector<int> nums = {1, 2, 3};
+auto it = nums.begin();   // vector<int>::iterator — auto로 훨씬 간결
+```
+
+**`auto` 사용 시점:**
+
+| `auto` 사용 | 명시적 타입 사용 |
+|:-----------|:--------------|
+| 우변에서 타입이 명확할 때 | 타입이 불명확하여 가독성이 떨어질 때 |
+| 복잡한 타입 (반복자, 람다 등) | 의도적으로 다른 타입을 원할 때 (예: `int x = 3.14;`로 절삭) |
+| 범위 기반 for 루프: `for (auto& item : vec)` | 공개 API / 함수 시그니처 (명확성이 중요) |
+
+> **참고:** `auto`는 변수가 타입이 없거나 동적 타입이라는 뜻이 아니다. 타입은 **컴파일 시점**에 결정되며 이후 고정된다. C++은 여전히 정적 타입 언어이다.
+
+---
+
+<br>
+
 ## 요약
 
 | 개념 | 핵심 정리 |
@@ -472,5 +576,7 @@ cout << a[0] << endl;             // 'H'
 | 네임스페이스 | 이름 충돌 방지; `std`에 표준 라이브러리 포함; `std::cout` |
 | `using namespace std` | `std::` 접두사 생략 단축어; `using std::cout`으로 선택적 가져오기 |
 | `std::string` | `char[]`의 현대적 대안; `+`로 연결, `==`로 비교, `.length()`로 길이 확인 |
+| `std::format` / `std::print` | 현대적 출력 서식 (C++20/C++23); `{}` 자리 표시자; `cout`처럼 타입 안전하면서 서식 문자열 사용 |
+| `auto` | 컴파일러가 초기화 값에서 타입 추론 (C++11); 반복자와 복잡한 타입에 유용; 여전히 정적 타입 |
 
 ---

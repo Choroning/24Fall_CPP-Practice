@@ -23,6 +23,12 @@
   - [4.2 댕글링 포인터](#42-댕글링-포인터)
   - [4.3 소멸자의 책임](#43-소멸자의-책임)
 - [5. 예외 처리](#5-예외-처리)
+- [6. 스마트 포인터 (현대 C++)](#6-스마트-포인터-현대-c)
+  - [6.1 RAII 개념](#61-raii-개념)
+  - [6.2 `std::unique_ptr` — 단독 소유](#62-stdunique_ptr--단독-소유)
+  - [6.3 `std::shared_ptr` — 공유 소유](#63-stdshared_ptr--공유-소유)
+  - [6.4 `make_unique`와 `make_shared`](#64-make_unique와-make_shared)
+  - [6.5 어떤 것을 사용할까](#65-어떤-것을-사용할까)
 - [요약](#요약)
 
 ---
@@ -46,8 +52,8 @@ p->getArea();      // 화살표 연산자
 ```
 스택
 ┌──────────┐      ┌──────────────┐
-│  p ───────┼─────►│  Circle c    │
-│ (포인터)  │      │  radius = 10 │
+│  p ──────┼─────►│  Circle c    │
+│ (포인터)   │      │  radius = 10 │
 └──────────┘      └──────────────┘
 ```
 
@@ -118,6 +124,8 @@ delete[] arr;            // 배열 해제 (delete가 아닌 delete[] 사용!)
 
 > **핵심:** C++에서는 `malloc`/`free` 대신 `new`/`delete`를 사용한다. `new`는 생성자를, `delete`는 소멸자를 호출하지만, `malloc`과 `free`는 둘 다 호출하지 않는다.
 
+> **참고 (현대 C++):** 직접 `new`/`delete`를 사용하는 것은 현대 C++에서 **레거시 스타일**로 간주된다. C++11부터 **스마트 포인터**(`std::unique_ptr`, `std::shared_ptr`)가 동적 메모리를 관리하는 권장 방법이다. 스마트 포인터는 더 이상 필요하지 않을 때 자동으로 메모리를 해제하여, 메모리 누수, 댕글링 포인터, 이중 해제 등의 버그를 원천적으로 방지한다. 자세한 내용은 아래 [6. 스마트 포인터 (현대 C++)](#6-스마트-포인터-현대-c) 섹션을 참조한다.
+
 ### 2.2 동적 객체
 
 객체를 힙에 동적으로 생성할 수 있다. `new`가 생성자를 호출하고, `delete`가 소멸자를 호출한다.
@@ -131,10 +139,10 @@ delete p;                      // 소멸자 호출 + 메모리 해제
 ```
 스택                  힙
 ┌──────────┐         ┌──────────────┐
-│  p ───────┼────────►│  Circle      │
-│ (포인터)  │         │  radius = 10 │
+│  p ──────┼────────►│  Circle      │
+│ (포인터)   │         │  radius = 10 │
 └──────────┘         └──────────────┘
-                      ↑ new로 할당     delete로 해제 ↑
+                    ↑ new로 할당 / delete로 해제
 ```
 
 ### 2.3 동적 배열
@@ -270,11 +278,11 @@ public:
 ```
 
 ```
-생성자 (new)                   소멸자 (delete)
-    │                               │
-    ▼                               ▼
+   생성자 (new)                소멸자 (delete)
+       │                           │
+       ▼                           ▼
 ┌─ String obj ─┐    ──►    ┌─ String obj ─┐
-│ buf ──► 힙   │           │ buf ──► 해제  │
+│ buf ──► 힙    │           │ buf ──► 해제  │
 │ length = 5   │           │ length = 5   │
 └──────────────┘           └──────────────┘
 ```
@@ -346,6 +354,119 @@ int main() {
 
 <br>
 
+## 6. 스마트 포인터 (현대 C++)
+
+C++11부터 표준 라이브러리의 `<memory>` 헤더에서 **스마트 포인터**를 제공하며, 이를 통해 메모리 관리를 자동화할 수 있다. 스마트 포인터는 **RAII (Resource Acquisition Is Initialization, 자원 획득은 초기화이다)** 원칙을 따른다: 자원(힙 메모리)을 스택의 객체 수명에 연결하여, 스마트 포인터가 스코프를 벗어나면 자동으로 관리하는 메모리를 해제한다.
+
+### 6.1 RAII 개념
+
+**RAII**란 자원 정리를 스택에 할당된 객체의 소멸자가 담당하는 것이다. 이는 예외가 발생하더라도 정리를 보장한다.
+
+```
+           직접 포인터 (레거시)                 스마트 포인터 (현대)
+        ─────────────────────           ─────────────────────
+할당:    int *p = new int(42);           auto p = make_unique<int>(42);
+사용:    *p = 100;                       *p = 100;
+해제:    delete p;  ← 직접 기억해야 함       // p가 스코프를 벗어나면 자동 해제
+위험:    delete 잊음 → 누수                누수 위험 없음
+        delete 후 사용 → UB              소유권이 명확
+```
+
+### 6.2 `std::unique_ptr` — 단독 소유
+
+`unique_ptr`은 객체를 **단독으로 소유**한다. 복사할 수 없고, 이동(move)만 가능하다. 스코프를 벗어나면 관리하는 객체를 삭제한다.
+
+```cpp
+#include <memory>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // C++14: make_unique 사용 (권장)
+    unique_ptr<int> p = make_unique<int>(42);
+    cout << *p << endl;   // 42
+
+    // unique_ptr은 복사 불가
+    // unique_ptr<int> q = p;          // 오류: 복사 불가
+    unique_ptr<int> q = move(p);       // OK: 소유권 이전
+    // p는 이제 nullptr; q가 int를 소유
+
+    cout << *q << endl;   // 42
+    // q가 스코프를 벗어남 → 메모리 자동 해제
+    return 0;
+}
+```
+
+**클래스와 함께 사용:**
+
+```cpp
+unique_ptr<Circle> c = make_unique<Circle>(10);
+cout << c->getArea() << endl;    // 직접 포인터처럼 -> 사용
+// c가 스코프를 벗어나면 delete가 자동 호출됨
+```
+
+### 6.3 `std::shared_ptr` — 공유 소유
+
+`shared_ptr`은 **여러 포인터**가 같은 객체의 소유권을 공유할 수 있게 한다. 내부 **참조 카운트**가 해당 객체를 가리키는 `shared_ptr` 인스턴스의 수를 추적한다. 마지막 `shared_ptr`이 소멸되면 객체가 삭제된다.
+
+```cpp
+#include <memory>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // C++11: make_shared 사용 (권장)
+    shared_ptr<int> a = make_shared<int>(100);
+    cout << a.use_count() << endl;   // 1
+
+    {
+        shared_ptr<int> b = a;       // 소유권 공유
+        cout << a.use_count() << endl;   // 2
+        cout << *b << endl;              // 100
+    }   // b가 스코프를 벗어남 → 참조 카운트가 1로 감소
+
+    cout << a.use_count() << endl;   // 1
+    // a가 스코프를 벗어남 → 참조 카운트 0 → 메모리 해제
+    return 0;
+}
+```
+
+### 6.4 `make_unique`와 `make_shared`
+
+| 팩토리 함수 | 표준 | 용도 |
+|:----------|:----|:----|
+| `std::make_shared<T>(args...)` | C++11 | `shared_ptr<T>` 생성; 객체 + 제어 블록을 단일 할당으로 처리 |
+| `std::make_unique<T>(args...)` | C++14 | `unique_ptr<T>` 생성; `new`보다 예외 안전한 대안 |
+
+이 팩토리 함수들이 `new`를 직접 사용하는 것보다 권장되는 이유:
+1. 여러 할당이 포함된 식에서 메모리 누수를 방지한다.
+2. 더 간결하고 읽기 쉽다.
+3. `make_shared`는 더 효율적이다 (단일 메모리 할당).
+
+```cpp
+// 레거시 스타일 (지양)
+unique_ptr<Circle> p(new Circle(10));
+
+// 현대적 스타일 (권장)
+auto p = make_unique<Circle>(10);     // C++14
+auto q = make_shared<Circle>(20);     // C++11
+```
+
+### 6.5 어떤 것을 사용할까
+
+| 포인터 타입 | 사용 시점 |
+|:----------|:---------|
+| `unique_ptr` | 단일하고 명확한 소유자; 일반적인 기본 선택 |
+| `shared_ptr` | 여러 소유자가 같은 자원을 공유해야 할 때 |
+| 직접 포인터 (비소유) | 소유 없이 관찰할 때 (예: 포인터를 저장하지 않는 함수 매개변수) |
+| 직접 `new`/`delete` | 레거시 코드, 또는 드문 저수준 시나리오 (커스텀 할당자, placement new) |
+
+> **현대 C++의 원칙:** `new`나 `delete`를 쓰려고 한다면, 스마트 포인터로 대체할 수 있는지 먼저 생각하라. 대부분의 경우 가능하다.
+
+---
+
+<br>
+
 ## 요약
 
 | 개념 | 핵심 정리 |
@@ -361,5 +482,9 @@ int main() {
 | 댕글링 포인터 | `delete` 후 포인터 사용; 해제 후 `nullptr`로 설정 |
 | 소멸자의 책임 | 생성자에서 `new` 사용 → 소멸자에서 `delete` 필수 |
 | 예외 처리 | `try { } catch(type e) { }`; `throw`로 발생; 할당 실패 처리에 유용 |
+| RAII | 자원 획득은 초기화이다; 자원의 수명을 스택 객체의 수명에 연결 |
+| `unique_ptr` | 단독 소유; 복사 불가, 이동만 가능; 스코프 종료 시 자동 삭제; `make_unique` 권장 |
+| `shared_ptr` | 참조 카운팅 기반 공유 소유; 마지막 소유자 소멸 시 자동 삭제; `make_shared` 권장 |
+| 스마트 vs 직접 포인터 | 스마트 포인터(C++11)가 현대 C++에서 직접 `new`/`delete`를 대체; 직접 `new`/`delete`는 레거시 스타일 |
 
 ---

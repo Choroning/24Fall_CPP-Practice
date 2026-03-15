@@ -279,15 +279,15 @@ int main() {
 메모리 구조:
 
 static 멤버 (1개만 존재):
-┌──────────────────┐
+┌───────────────────┐
 │ Circle::count = 3 │  ← 모든 객체가 공유
-└──────────────────┘
+└───────────────────┘
 
 객체 (각각 별도 복사본):
-┌──────────┐  ┌──────────┐  ┌──────────┐
-│ a        │  │ b        │  │ c        │
-│ radius=10│  │ radius=20│  │ radius=30│
-└──────────┘  └──────────┘  └──────────┘
+┌───────────┐  ┌───────────┐  ┌───────────┐
+│ a         │  │ b         │  │ c         │
+│ radius=10 │  │ radius=20 │  │ radius=30 │
+└───────────┘  └───────────┘  └───────────┘
 ```
 
 **핵심 규칙:**
@@ -301,6 +301,57 @@ static 멤버 (1개만 존재):
 | 객체가 0개여도 존재 | 프로그램 전체 수명 동안 유지 |
 
 > **경고:** 클래스 외부 정의(`int Circle::count = 0;`)를 빠뜨리면 컴파일 오류가 아닌 **링커 오류**가 발생한다. 클래스 내부의 선언은 존재를 알릴 뿐이고, 외부 정의가 실제로 메모리를 할당한다.
+
+#### `constexpr` vs `const` — 컴파일 타임 상수
+
+C++11부터 `constexpr`은 **컴파일 시점**에 반드시 평가되는 값을 선언한다. 이는 "초기화 후 수정 불가"만을 의미하며 런타임에 초기화될 수도 있는 `const`보다 더 엄격하다.
+
+```cpp
+const int maxSize = 100;            // const: 초기화 시 값 설정, 런타임일 수 있음
+constexpr int maxSize = 100;        // constexpr: 반드시 컴파일 시점에 알려져야 함
+
+const int x = someFunction();       // OK: const는 런타임 초기화 허용
+// constexpr int y = someFunction(); // 오류 (someFunction이 constexpr이 아닌 한)
+
+constexpr double pi = 3.14159265;   // OK: 리터럴 값은 컴파일 시점에 알려짐
+```
+
+| 키워드 | 컴파일 타임 보장 | 런타임 값으로 초기화 가능? | 도입 시점 |
+|:------|:--------------|:---------------------|:---------|
+| `const` | 아니오 (런타임일 수 있음) | 예 | C++98 |
+| `constexpr` | **예** (반드시 컴파일 타임) | 아니오 (constexpr 식에서만) | C++11 |
+
+값이 진정한 컴파일 타임 상수(배열 크기, 템플릿 인수 등)일 때는 `constexpr`을 사용한다. 단순히 수정을 방지하려면 `const`를 사용한다.
+
+```cpp
+constexpr int arraySize = 10;
+int arr[arraySize];                  // OK: constexpr은 배열 크기로 사용 가능
+
+const int n = getValue();
+// int arr2[n];                      // 표준 C++에서 오류: n은 constexpr이 아님
+```
+
+#### 헤더에서 static 멤버 변수 초기화: inline 변수 (C++17)
+
+전통적으로 static 멤버 변수는 정확히 하나의 `.cpp` 파일에서 클래스 외부에 정의(및 초기화)해야 한다. C++17에서는 **`inline` 변수**가 도입되어, 헤더 파일의 **클래스 내부에서 직접** static 멤버 변수를 정의하고 초기화할 수 있게 되었다. 다중 정의로 인한 링커 오류가 발생하지 않는다.
+
+```cpp
+// 전통적 방식 (C++17 이전): 별도의 .cpp 파일에 정의 필요
+class Circle {
+public:
+    static int count;   // 선언만
+};
+int Circle::count = 0;  // 정확히 하나의 .cpp 파일에서 정의
+
+// C++17 방식: inline static 변수 — 헤더에서 바로 정의
+class Circle {
+public:
+    inline static int count = 0;   // 헤더에서 선언 + 정의
+};
+// 별도의 .cpp 정의 불필요!
+```
+
+이는 헤더 전용(header-only) 라이브러리를 간소화하고, 흔한 링커 오류의 원인을 제거한다.
 
 ### 3.2 static 멤버 함수
 
@@ -464,5 +515,7 @@ int main() {
 | static 멤버 함수 | `this` 포인터 없음; static 멤버만 접근 가능; `ClassName::func()`로 호출 |
 | 객체 수 관리 | 생성자에서 static count 증가, 소멸자에서 감소 |
 | private 생성자 + static 멤버 | 객체 생성 방지; 모든 데이터/함수를 클래스 이름으로 접근 (Board 패턴) |
+| `constexpr` vs `const` | `constexpr`은 컴파일 타임 평가를 보장 (C++11); `const`는 수정 방지만 |
+| `inline static` 변수 | C++17에서 `inline static int x = 0;`을 클래스 내부에 작성 가능 — 별도 `.cpp` 정의 불필요 |
 
 ---

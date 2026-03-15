@@ -23,6 +23,12 @@
   - [4.2 Dangling Pointer](#42-dangling-pointer)
   - [4.3 Destructor Responsibility](#43-destructor-responsibility)
 - [5. Exception Handling](#5-exception-handling)
+- [6. Smart Pointers (Modern C++)](#6-smart-pointers-modern-c)
+  - [6.1 RAII Concept](#61-raii-concept)
+  - [6.2 `std::unique_ptr` — Exclusive Ownership](#62-stdunique_ptr--exclusive-ownership)
+  - [6.3 `std::shared_ptr` — Shared Ownership](#63-stdshared_ptr--shared-ownership)
+  - [6.4 `make_unique` and `make_shared`](#64-make_unique-and-make_shared)
+  - [6.5 When to Use Which](#65-when-to-use-which)
 - [Summary](#summary)
 
 ---
@@ -118,6 +124,8 @@ delete[] arr;            // deallocate array (note: delete[], not delete)
 
 > **Key Point:** In C++, prefer `new`/`delete` over `malloc`/`free`. `new` calls the constructor, `delete` calls the destructor — `malloc` and `free` do neither.
 
+> **Note (Modern C++):** Raw `new`/`delete` is considered **legacy style** in modern C++. Since C++11, **smart pointers** (`std::unique_ptr`, `std::shared_ptr`) are the preferred way to manage dynamic memory. They automatically free memory when it is no longer needed, eliminating entire categories of bugs (memory leaks, dangling pointers, double-free). See [Section 6: Smart Pointers (Modern C++)](#6-smart-pointers-modern-c) below for details.
+
 ### 2.2 Dynamic Objects
 
 Objects can be created dynamically on the heap. The constructor is called by `new`, and the destructor is called by `delete`.
@@ -130,11 +138,11 @@ delete p;                      // destructor called + memory freed
 
 ```
 Stack                 Heap
-┌──────────┐         ┌──────────────┐
-│  p ───────┼────────►│  Circle      │
-│ (pointer) │         │  radius = 10 │
-└──────────┘         └──────────────┘
-                      ↑ new allocates    delete frees ↑
+┌───────────┐         ┌──────────────┐
+│  p ───────┼────────►│ Circle       │
+│ (pointer) │         │ radius = 10  │
+└───────────┘         └──────────────┘
+                      ↑ new allocates / delete frees
 ```
 
 ### 2.3 Dynamic Arrays
@@ -270,13 +278,13 @@ public:
 ```
 
 ```
-Constructor (new)              Destructor (delete)
-    │                               │
-    ▼                               ▼
-┌─ String obj ─┐    ──►    ┌─ String obj ─┐
+Constructor (new)          Destructor (delete)
+       │                           │
+       ▼                           ▼
+┌─ String obj ─┐    ──►    ┌─ String obj ──┐
 │ buf ──► heap │           │ buf ──► freed │
-│ length = 5   │           │ length = 5   │
-└──────────────┘           └──────────────┘
+│ length = 5   │           │ length = 5    │
+└──────────────┘           └───────────────┘
 ```
 
 > **Rule of thumb:** If your class uses `new` in any constructor, it needs `delete` in the destructor.
@@ -346,6 +354,119 @@ int main() {
 
 <br>
 
+## 6. Smart Pointers (Modern C++)
+
+Since C++11, the standard library provides **smart pointers** in `<memory>` that automate memory management. They follow the **RAII (Resource Acquisition Is Initialization)** principle: the resource (heap memory) is tied to the lifetime of an object on the stack. When the smart pointer goes out of scope, it automatically frees the managed memory.
+
+### 6.1 RAII Concept
+
+**RAII** means that resource cleanup is handled by the destructor of a stack-allocated object. This guarantees cleanup even when exceptions are thrown.
+
+```
+                Raw pointer (legacy)              Smart pointer (modern)
+                ─────────────────────             ─────────────────────
+Allocation:     int *p = new int(42);             auto p = make_unique<int>(42);
+Usage:          *p = 100;                         *p = 100;
+Deallocation:   delete p;  ← YOU must remember    // automatic when p goes out of scope
+Risk:           forget delete → leak              no risk of leak
+                use after delete → UB             ownership is clear
+```
+
+### 6.2 `std::unique_ptr` — Exclusive Ownership
+
+A `unique_ptr` **owns** the object exclusively. It cannot be copied, only moved. When it goes out of scope, it deletes the managed object.
+
+```cpp
+#include <memory>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // C++14: use make_unique (preferred)
+    unique_ptr<int> p = make_unique<int>(42);
+    cout << *p << endl;   // 42
+
+    // unique_ptr cannot be copied
+    // unique_ptr<int> q = p;          // ERROR: copy not allowed
+    unique_ptr<int> q = move(p);       // OK: transfer ownership
+    // p is now nullptr; q owns the int
+
+    cout << *q << endl;   // 42
+    // q goes out of scope here → memory is automatically freed
+    return 0;
+}
+```
+
+**With classes:**
+
+```cpp
+unique_ptr<Circle> c = make_unique<Circle>(10);
+cout << c->getArea() << endl;    // use -> just like a raw pointer
+// delete is called automatically when c goes out of scope
+```
+
+### 6.3 `std::shared_ptr` — Shared Ownership
+
+A `shared_ptr` allows **multiple pointers** to share ownership of the same object. An internal **reference count** tracks how many `shared_ptr` instances point to the object. The object is deleted when the last `shared_ptr` is destroyed.
+
+```cpp
+#include <memory>
+#include <iostream>
+using namespace std;
+
+int main() {
+    // C++11: use make_shared (preferred)
+    shared_ptr<int> a = make_shared<int>(100);
+    cout << a.use_count() << endl;   // 1
+
+    {
+        shared_ptr<int> b = a;       // shared ownership
+        cout << a.use_count() << endl;   // 2
+        cout << *b << endl;              // 100
+    }   // b goes out of scope → reference count drops to 1
+
+    cout << a.use_count() << endl;   // 1
+    // a goes out of scope → reference count drops to 0 → memory freed
+    return 0;
+}
+```
+
+### 6.4 `make_unique` and `make_shared`
+
+| Factory Function | Standard | Purpose |
+|:----------------|:---------|:--------|
+| `std::make_shared<T>(args...)` | C++11 | Create a `shared_ptr<T>`; single allocation for object + control block |
+| `std::make_unique<T>(args...)` | C++14 | Create a `unique_ptr<T>`; exception-safe alternative to `new` |
+
+These factory functions are preferred over using `new` directly because they:
+1. Prevent memory leaks in expressions with multiple allocations.
+2. Are more concise and readable.
+3. `make_shared` is more efficient (single memory allocation).
+
+```cpp
+// Legacy style (avoid)
+unique_ptr<Circle> p(new Circle(10));
+
+// Modern style (preferred)
+auto p = make_unique<Circle>(10);     // C++14
+auto q = make_shared<Circle>(20);     // C++11
+```
+
+### 6.5 When to Use Which
+
+| Pointer Type | Use When |
+|:------------|:---------|
+| `unique_ptr` | Single, clear owner; the common default choice |
+| `shared_ptr` | Multiple owners need to share the same resource |
+| Raw pointer (non-owning) | Observing without ownership (e.g., function parameters that do not store the pointer) |
+| Raw `new`/`delete` | Legacy code, or rare low-level scenarios (custom allocators, placement new) |
+
+> **Rule of thumb for modern C++:** If you find yourself writing `new` or `delete`, ask whether a smart pointer would work instead. In most cases, it will.
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Takeaway |
@@ -361,5 +482,9 @@ int main() {
 | Dangling pointer | Using pointer after `delete`; set to `nullptr` after freeing |
 | Destructor responsibility | Constructor uses `new` → destructor must use `delete` |
 | Exception handling | `try { } catch(type e) { }`; `throw` to raise; useful for allocation failures |
+| RAII | Resource Acquisition Is Initialization; tie resource lifetime to object lifetime on the stack |
+| `unique_ptr` | Exclusive ownership; cannot copy, only move; auto-deletes on scope exit; prefer `make_unique` |
+| `shared_ptr` | Shared ownership via reference counting; auto-deletes when last owner is destroyed; prefer `make_shared` |
+| Smart vs raw pointers | Smart pointers (C++11) replace raw `new`/`delete` in modern C++; raw `new`/`delete` is legacy style |
 
 ---
