@@ -5,7 +5,7 @@
 
 This repository organizes and stores sample C++ code written for university lectures and assignments.  
 
-*Author: Cheolwon Park (Korea University Sejong, CSE) – Year 1 as of 2024*
+*Author: Cheolwon Park (Korea University Sejong, CSE) – Year 1 (Freshman) as of 2024*
 <br><br>
 
 ## 📑 Table of Contents
@@ -36,8 +36,8 @@ This repository contains code examples developed for a university-level C++ prog
 
 | Course&nbsp;Code| Course            | Type          | Instructor      | Department                              |
 |:----------:|:------------------|:-------------:|:---------------:|:----------------------------------------|
-|`DCCS102-04`|COMPUTER LANGUAGE Ⅱ|General Studies|Prof. Younghee&nbsp;Im|Computer Science and Software Engineering|
-|`DCCS104-03`|COMPUTER LANGUAGE AND TRAINING Ⅱ|General Studies|Prof. Jonguk&nbsp;Lee|Computer Science and Software Engineering|
+|`DCCS102-04`|COMPUTER LANGUAGE Ⅱ|General Studies|Prof. Younghee&nbsp;Im|Department of Computer Convergence Software|
+|`DCCS104-03`|COMPUTER LANGUAGE AND TRAINING Ⅱ|General Studies|Prof. Jonguk&nbsp;Lee|Department of Computer Convergence Software|
 
 - **📖 References**
   
