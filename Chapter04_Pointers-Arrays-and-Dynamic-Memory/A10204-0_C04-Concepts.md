@@ -1,8 +1,6 @@
 # Chapter 04 — Pointers, Arrays, and Dynamic Memory
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpoom C++ Programming (Revised Edition)* — Chapter 4
 
 ---
 

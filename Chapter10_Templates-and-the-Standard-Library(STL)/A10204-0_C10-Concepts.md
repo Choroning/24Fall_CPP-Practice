@@ -1,8 +1,6 @@
 # Chapter 10 — Templates and the Standard Library (STL)
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpoom C++ Programming (Revised Edition)* — Chapter 10
 
 ---
 

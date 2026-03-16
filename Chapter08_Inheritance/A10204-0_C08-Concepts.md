@@ -1,8 +1,6 @@
 # Chapter 08 — Inheritance
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpum C++ Programming, Revised Edition* — Chapter 8
 
 ---
 

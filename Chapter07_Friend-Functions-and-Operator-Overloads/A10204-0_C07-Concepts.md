@@ -1,8 +1,6 @@
 # Chapter 07 — Friend Functions and Operator Overloads
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpum C++ Programming, Revised Edition* — Chapter 7
 
 ---
 

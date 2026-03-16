@@ -1,8 +1,6 @@
 # Chapter 06 — Overloading and Static Members
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpum C++ Programming (Revised Edition)* by Hwang Kitae — Chapter 6
 
 ---
 
