@@ -3,7 +3,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Choroning/24Fall_CPP-Practice)
 ![Languages](https://img.shields.io/github/languages/top/Choroning/24Fall_CPP-Practice)
 
-This repository organizes and stores sample C++ code written for university lectures and assignments.  
+This repository organizes and stores concept notes and sample C++ code written for university lectures and assignments.
 
 *Author: Cheolwon Park (Korea University Sejong, CSE) – Year 1 (Freshman) as of 2024*
 <br><br>
@@ -22,10 +22,10 @@ This repository organizes and stores sample C++ code written for university lect
 <br><a name="about-this-repository"></a>
 ## 📝 About This Repository
 
-This repository contains code examples developed for a university-level C++ programming course, including:
+This repository contains concept explanations and code examples developed for a university-level C++ programming course, including:
 
-- Lecture demonstration codes
-- Assignment solutions
+- Chapter-by-chapter concept notes (EN/KR bilingual)
+- Assignment problems and solutions
 - Additional practice exercises
 
 <br><a name="course-information"></a>
