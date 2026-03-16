@@ -1,8 +1,6 @@
 # Chapter 05 — Functions and Copy Control
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpum C++ Programming (Revised Edition)* by Hwang Kitae — Chapter 5
 
 ---
 
@@ -756,7 +754,6 @@ Each destructor frees its own memory — no conflict.
 > 1. A **copy constructor** (deep copy)
 > 2. A **destructor** (to `delete` the memory)
 > 3. An **assignment operator** (for the same reason as the copy constructor)
->
 > This is known as the **Rule of Three**.
 
 ### 3.6 Full Deep Copy Example: Person Class

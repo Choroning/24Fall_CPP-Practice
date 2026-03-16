@@ -1,8 +1,6 @@
 # Chapter 09 — Virtual Functions and Abstract Classes
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpoom C++ Programming (Revised Edition)* — Chapter 9
 
 ---
 

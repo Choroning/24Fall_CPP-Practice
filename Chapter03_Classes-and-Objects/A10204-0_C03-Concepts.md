@@ -1,8 +1,6 @@
 # Chapter 03 — Classes and Objects
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *Myungpoom C++ Programming (Revised Edition)* — Chapter 3
 
 ---
 

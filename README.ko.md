@@ -3,7 +3,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Choroning/24Fall_CPP-Practice)
 ![Languages](https://img.shields.io/github/languages/top/Choroning/24Fall_CPP-Practice)
 
-이 레포지토리는 대학 강의 및 과제를 위해 작성된 C++ 예제 및 실습 코드를 체계적으로 정리하고 보관합니다. 
+이 레포지토리는 대학 강의 및 과제를 위해 작성된 C++ 개념 정리 및 예제 코드를 체계적으로 정리하고 보관합니다.
 
 *작성자: 박철원 (고려대학교(세종), 컴퓨터융합소프트웨어학과) - 2024년 기준 1학년*
 <br><br>
@@ -22,10 +22,10 @@
 <br><a name="about-this-repository"></a>
 ## 📝 레포지토리 소개
 
-이 레포지토리에는 대학 수준의 C++ 프로그래밍 과목을 위해 작성된 코드가 포함되어 있습니다:
+이 레포지토리에는 대학 수준의 C++ 프로그래밍 과목을 위해 작성된 개념 정리와 코드가 포함되어 있습니다:
 
-- 강의에서 소개한 코드  
-- 각 과제의 솔루션  
+- 챕터별 개념 정리 노트 (영문/한국어 이중 언어)
+- 과제 문제 및 솔루션
 - 추가적인 연습 문제
 
 <br><a name="course-information"></a>
@@ -67,40 +67,62 @@
 
 ```plaintext
 24Fall_CPP-Practice
+├── Chapter01_Introduction-to-CPP
+│   ├── A10204-0_C01-Concepts.ko.md     < 이 파일에 기초 이론설명이 있습니다.
+│   └── A10204-0_C01-Concepts.md          설명은 영어/한국어로 제공됩니다.
+├── Chapter02_CPP-Programming-Basics
+│   ├── A10204-0_C02-Concepts.ko.md
+│   └── A10204-0_C02-Concepts.md
 ├── Chapter03_Classes-and-Objects
-│   ├── A10204-1_C03-Problems.md
-│   ├── A10204-1_C03Q1.cpp
-│   └── A10204-1_C03Q2.cpp
+│   ├── A10204-0_C03-Concepts.ko.md
+│   ├── A10204-0_C03-Concepts.md
+│   ├── A10204-1_C03-Problems.md        < 이 파일에 예제가 있습니다.
+│   ├── A10204-1_C03Q1.cpp              < 이 파일에 예제에 대한 솔루션이 있습니다.
+│   └── A10204-1_C03Q2.cpp              < 예제 문제 수만큼 솔루션이 이어집니다.
 ├── Chapter04_Pointers-Arrays-and-Dynamic-Memory
-│   ├── A10204-1_C04-Problems.md
-│   ├── A10204-1_C04Q1.cpp
-│   └── A10204-1_C04Q2.cpp
+│   ├── A10204-0_C04-Concepts.ko.md
+│   ├── A10204-0_C04-Concepts.md
+│   ├── A10204-1_C04-Problems.md
+│   ├── A10204-1_C04Q1.cpp
+│   └── A10204-1_C04Q2.cpp
 ├── Chapter05_Functions-and-Copy-Control
-│   ├── A10204-1_C05-Problems.md
-│   ├── A10204-1_C05Q1.cpp
-│   ├── A10204-1_C05Q2.cpp
-│   └── A10204-1_C05Q3.cpp
+│   ├── A10204-0_C05-Concepts.ko.md
+│   ├── A10204-0_C05-Concepts.md
+│   ├── A10204-1_C05-Problems.md
+│   ├── A10204-1_C05Q1.cpp
+│   ├── A10204-1_C05Q2.cpp
+│   └── A10204-1_C05Q3.cpp
 ├── Chapter06_Overloading-and-Static-Members
-│   ├── A10204-1_C06-Problems.md
-│   ├── A10204-1_C06Q1.cpp
-│   └── A10204-1_C06Q2.cpp
+│   ├── A10204-0_C06-Concepts.ko.md
+│   ├── A10204-0_C06-Concepts.md
+│   ├── A10204-1_C06-Problems.md
+│   ├── A10204-1_C06Q1.cpp
+│   └── A10204-1_C06Q2.cpp
 ├── Chapter07_Friend-Functions-and-Operator-Overloads
-│   ├── A10204-1_C07-Problems.md
-│   ├── A10204-1_C07Q1.cpp
-│   ├── A10204-1_C07Q2.cpp
-│   └── A10204-1_C07Q3.cpp
+│   ├── A10204-0_C07-Concepts.ko.md
+│   ├── A10204-0_C07-Concepts.md
+│   ├── A10204-1_C07-Problems.md
+│   ├── A10204-1_C07Q1.cpp
+│   ├── A10204-1_C07Q2.cpp
+│   └── A10204-1_C07Q3.cpp
 ├── Chapter08_Inheritance
-│   ├── A10204-1_C08-Problems.md
-│   ├── A10204-1_C08Q1.cpp
-│   └── A10204-1_C08Q2.cpp
+│   ├── A10204-0_C08-Concepts.ko.md
+│   ├── A10204-0_C08-Concepts.md
+│   ├── A10204-1_C08-Problems.md
+│   ├── A10204-1_C08Q1.cpp
+│   └── A10204-1_C08Q2.cpp
 ├── Chapter09_Virtual-Functions-and-Abstract-Classes
-│   ├── A10204-1_C09-Problems.md
-│   ├── A10204-1_C09Q1.cpp
-│   └── A10204-1_C09Q2.cpp
+│   ├── A10204-0_C09-Concepts.ko.md
+│   ├── A10204-0_C09-Concepts.md
+│   ├── A10204-1_C09-Problems.md
+│   ├── A10204-1_C09Q1.cpp
+│   └── A10204-1_C09Q2.cpp
 ├── Chapter10_Templates-and-the-Standard-Library(STL)
-│   ├── A10204-1_C10-Problems.md
-│   ├── A10204-1_C10Q1.cpp
-│   └── A10204-1_C10Q2.cpp
+│   ├── A10204-0_C10-Concepts.ko.md
+│   ├── A10204-0_C10-Concepts.md
+│   ├── A10204-1_C10-Problems.md
+│   ├── A10204-1_C10Q1.cpp
+│   └── A10204-1_C10Q2.cpp
 ├── LICENSE
 ├── README.ko.md
 ├── README.md
@@ -110,7 +132,7 @@
         ├── C09_A10204-1_1.png
         └── C09_A10204-1_2.png
 
-11개의 디렉토리, 32개의 파일
+13개의 디렉토리, 52개의 파일
 ```
 
 <br><a name="license"></a>

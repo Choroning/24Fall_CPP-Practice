@@ -3,7 +3,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Choroning/24Fall_CPP-Practice)
 ![Languages](https://img.shields.io/github/languages/top/Choroning/24Fall_CPP-Practice)
 
-This repository organizes and stores sample C++ code written for university lectures and assignments.  
+This repository organizes and stores concept notes and sample C++ code written for university lectures and assignments.
 
 *Author: Cheolwon Park (Korea University Sejong, CSE) – Year 1 (Freshman) as of 2024*
 <br><br>
@@ -22,10 +22,10 @@ This repository organizes and stores sample C++ code written for university lect
 <br><a name="about-this-repository"></a>
 ## 📝 About This Repository
 
-This repository contains code examples developed for a university-level C++ programming course, including:
+This repository contains concept explanations and code examples developed for a university-level C++ programming course, including:
 
-- Lecture demonstration codes
-- Assignment solutions
+- Chapter-by-chapter concept notes (EN/KR bilingual)
+- Assignment problems and solutions
 - Additional practice exercises
 
 <br><a name="course-information"></a>
@@ -65,40 +65,62 @@ This repository contains code examples developed for a university-level C++ prog
 
 ```plaintext
 24Fall_CPP-Practice
+├── Chapter01_Introduction-to-CPP
+│   ├── A10204-0_C01-Concepts.ko.md
+│   └── A10204-0_C01-Concepts.md
+├── Chapter02_CPP-Programming-Basics
+│   ├── A10204-0_C02-Concepts.ko.md
+│   └── A10204-0_C02-Concepts.md
 ├── Chapter03_Classes-and-Objects
-│   ├── A10204-1_C03-Problems.md
-│   ├── A10204-1_C03Q1.cpp
-│   └── A10204-1_C03Q2.cpp
+│   ├── A10204-0_C03-Concepts.ko.md
+│   ├── A10204-0_C03-Concepts.md
+│   ├── A10204-1_C03-Problems.md
+│   ├── A10204-1_C03Q1.cpp
+│   └── A10204-1_C03Q2.cpp
 ├── Chapter04_Pointers-Arrays-and-Dynamic-Memory
-│   ├── A10204-1_C04-Problems.md
-│   ├── A10204-1_C04Q1.cpp
-│   └── A10204-1_C04Q2.cpp
+│   ├── A10204-0_C04-Concepts.ko.md
+│   ├── A10204-0_C04-Concepts.md
+│   ├── A10204-1_C04-Problems.md
+│   ├── A10204-1_C04Q1.cpp
+│   └── A10204-1_C04Q2.cpp
 ├── Chapter05_Functions-and-Copy-Control
-│   ├── A10204-1_C05-Problems.md
-│   ├── A10204-1_C05Q1.cpp
-│   ├── A10204-1_C05Q2.cpp
-│   └── A10204-1_C05Q3.cpp
+│   ├── A10204-0_C05-Concepts.ko.md
+│   ├── A10204-0_C05-Concepts.md
+│   ├── A10204-1_C05-Problems.md
+│   ├── A10204-1_C05Q1.cpp
+│   ├── A10204-1_C05Q2.cpp
+│   └── A10204-1_C05Q3.cpp
 ├── Chapter06_Overloading-and-Static-Members
-│   ├── A10204-1_C06-Problems.md
-│   ├── A10204-1_C06Q1.cpp
-│   └── A10204-1_C06Q2.cpp
+│   ├── A10204-0_C06-Concepts.ko.md
+│   ├── A10204-0_C06-Concepts.md
+│   ├── A10204-1_C06-Problems.md
+│   ├── A10204-1_C06Q1.cpp
+│   └── A10204-1_C06Q2.cpp
 ├── Chapter07_Friend-Functions-and-Operator-Overloads
-│   ├── A10204-1_C07-Problems.md
-│   ├── A10204-1_C07Q1.cpp
-│   ├── A10204-1_C07Q2.cpp
-│   └── A10204-1_C07Q3.cpp
+│   ├── A10204-0_C07-Concepts.ko.md
+│   ├── A10204-0_C07-Concepts.md
+│   ├── A10204-1_C07-Problems.md
+│   ├── A10204-1_C07Q1.cpp
+│   ├── A10204-1_C07Q2.cpp
+│   └── A10204-1_C07Q3.cpp
 ├── Chapter08_Inheritance
-│   ├── A10204-1_C08-Problems.md
-│   ├── A10204-1_C08Q1.cpp
-│   └── A10204-1_C08Q2.cpp
+│   ├── A10204-0_C08-Concepts.ko.md
+│   ├── A10204-0_C08-Concepts.md
+│   ├── A10204-1_C08-Problems.md
+│   ├── A10204-1_C08Q1.cpp
+│   └── A10204-1_C08Q2.cpp
 ├── Chapter09_Virtual-Functions-and-Abstract-Classes
-│   ├── A10204-1_C09-Problems.md
-│   ├── A10204-1_C09Q1.cpp
-│   └── A10204-1_C09Q2.cpp
+│   ├── A10204-0_C09-Concepts.ko.md
+│   ├── A10204-0_C09-Concepts.md
+│   ├── A10204-1_C09-Problems.md
+│   ├── A10204-1_C09Q1.cpp
+│   └── A10204-1_C09Q2.cpp
 ├── Chapter10_Templates-and-the-Standard-Library(STL)
-│   ├── A10204-1_C10-Problems.md
-│   ├── A10204-1_C10Q1.cpp
-│   └── A10204-1_C10Q2.cpp
+│   ├── A10204-0_C10-Concepts.ko.md
+│   ├── A10204-0_C10-Concepts.md
+│   ├── A10204-1_C10-Problems.md
+│   ├── A10204-1_C10Q1.cpp
+│   └── A10204-1_C10Q2.cpp
 ├── LICENSE
 ├── README.ko.md
 ├── README.md
@@ -108,7 +130,7 @@ This repository contains code examples developed for a university-level C++ prog
         ├── C09_A10204-1_1.png
         └── C09_A10204-1_2.png
 
-11 directories, 32 files
+13 directories, 52 files
 ```
 
 <br><a name="license"></a>

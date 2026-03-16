@@ -1,8 +1,6 @@
 # Chapter 01 — Introduction to C++
 
 > **Last Updated:** 2026-03-16
->
-> **Textbook Reference:** *명품 C++ Programming (Revised Edition)* — Chapter 1
 
 ---
 
