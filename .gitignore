@@ -1,0 +1,17 @@
+# OS generated
+**/.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Language specific
+*.class
+*.jar
+*.war
+out/
+.idea/
