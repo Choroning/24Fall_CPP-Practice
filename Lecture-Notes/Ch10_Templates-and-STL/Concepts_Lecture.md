@@ -1,6 +1,18 @@
 # Chapter 10 — Templates and the Standard Library (STL)
 
-> **Last Updated:** 2026-03-16
+[Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
+
+> **Last Updated:** 2026-10-19
+>
+> 명품 C++ Programming, 황기태, Ch 10
+
+> **Learning Objectives:**
+> 1. Write function templates and class templates and explain how the compiler instantiates a template
+> 2. Determine which function is called when a template and an ordinary function share a name
+> 3. Distinguish STL containers, iterators, and algorithms and use vector, string, map, and set
+> 4. Apply algorithm functions such as sort, find, and binary_search to iterator ranges
+> 5. Write concise STL code with auto, range-based for, and lambda expressions
+> 6. Explain why template definitions belong in headers and recognize common errors such as iterator invalidation
 
 ---
 
@@ -11,64 +23,76 @@
   - [1.2 Syntax](#12-syntax)
   - [1.3 Template Instantiation](#13-template-instantiation)
   - [1.4 Multiple Template Parameters](#14-multiple-template-parameters)
-  - [1.5 Examples](#15-examples)
+  - [1.5 Overloading Template Functions with Ordinary Functions](#15-overloading-template-functions-with-ordinary-functions)
+  - [1.6 Examples](#16-examples)
+  - [1.7 Advantages and Disadvantages of Templates](#17-advantages-and-disadvantages-of-templates)
 - [2. Class Templates](#2-class-templates)
   - [2.1 Syntax](#21-syntax)
   - [2.2 Instantiation](#22-instantiation)
   - [2.3 Operator Overloading in Templates](#23-operator-overloading-in-templates)
   - [2.4 Default Template Parameters](#24-default-template-parameters)
-- [3. vector (In Depth)](#3-vector-in-depth)
-  - [3.1 Declaration and Initialization](#31-declaration-and-initialization)
-  - [3.2 Element Access](#32-element-access)
-  - [3.3 Modifiers](#33-modifiers)
-  - [3.4 Size and Capacity](#34-size-and-capacity)
-  - [3.5 2D vector](#35-2d-vector)
-  - [3.6 Iterating](#36-iterating)
-  - [3.7 Passing to Functions](#37-passing-to-functions)
-  - [3.8 Complete Example](#38-complete-example)
-- [4. string](#4-string)
-  - [4.1 std::string vs C-style char\[\]](#41-stdstring-vs-c-style-char)
-  - [4.2 Construction and Concatenation](#42-construction-and-concatenation)
-  - [4.3 Access and Search](#43-access-and-search)
-  - [4.4 Comparison](#44-comparison)
-  - [4.5 Conversion](#45-conversion)
-  - [4.6 Iteration and Input](#46-iteration-and-input)
-- [5. map and set](#5-map-and-set)
-  - [5.1 map](#51-map)
-  - [5.2 unordered_map](#52-unordered_map)
-  - [5.3 set](#53-set)
-  - [5.4 unordered_set](#54-unordered_set)
-  - [5.5 Practical Example: Word Frequency](#55-practical-example-word-frequency)
-- [6. algorithm](#6-algorithm)
-  - [6.1 Sorting](#61-sorting)
-  - [6.2 Searching](#62-searching)
-  - [6.3 Counting and Accumulating](#63-counting-and-accumulating)
-  - [6.4 Modifying Sequences](#64-modifying-sequences)
-  - [6.5 Binary Search](#65-binary-search)
-  - [6.6 Complete Example: Sort Students by Score](#66-complete-example-sort-students-by-score)
-- [7. Modern C++ Features](#7-modern-c-features)
-  - [7.1 auto (C++11)](#71-auto-c11)
-  - [7.2 Range-based for (C++11)](#72-range-based-for-c11)
-  - [7.3 Lambda Expressions (C++11)](#73-lambda-expressions-c11)
-  - [7.4 Structured Bindings (C++17)](#74-structured-bindings-c17)
-  - [7.5 std::optional (C++17)](#75-stdoptional-c17)
-  - [7.6 Concepts (C++20)](#76-concepts-c20)
-  - [7.7 std::ranges (C++20)](#77-stdranges-c20)
-  - [7.8 std::print (C++23)](#78-stdprint-c23)
-  - [7.9 C++26 Preview](#79-c26-preview)
-- [8. Practical Patterns for Coding Tests](#8-practical-patterns-for-coding-tests)
-  - [8.1 Reading Input Until EOF](#81-reading-input-until-eof)
-  - [8.2 Sorting Custom Objects](#82-sorting-custom-objects)
-  - [8.3 Frequency Counting with map](#83-frequency-counting-with-map)
-  - [8.4 Unique Elements with set](#84-unique-elements-with-set)
-  - [8.5 Stack and Queue](#85-stack-and-queue)
-  - [8.6 priority_queue for Top-K Problems](#86-priority_queue-for-top-k-problems)
-  - [8.7 pair and make_pair](#87-pair-and-make_pair)
-- [9. Template Compilation Notes](#9-template-compilation-notes)
-  - [9.1 Template Definition Must Be in Header](#91-template-definition-must-be-in-header)
-  - [9.2 Common Errors](#92-common-errors)
-- [10. Common Mistakes](#10-common-mistakes)
+- [3. Components of the STL](#3-components-of-the-stl)
+  - [3.1 STL Components](#31-stl-components)
+  - [3.2 Header Files and Namespace](#32-header-files-and-namespace)
+  - [3.3 Iterators](#33-iterators)
+- [4. vector (In Depth)](#4-vector-in-depth)
+  - [4.1 Declaration and Initialization](#41-declaration-and-initialization)
+  - [4.2 Element Access](#42-element-access)
+  - [4.3 Modifiers](#43-modifiers)
+  - [4.4 Size and Capacity](#44-size-and-capacity)
+  - [4.5 2D vector](#45-2d-vector)
+  - [4.6 Iterating](#46-iterating)
+  - [4.7 Passing to Functions](#47-passing-to-functions)
+  - [4.8 Complete Example](#48-complete-example)
+- [5. string](#5-string)
+  - [5.1 std::string vs C-style char\[\]](#51-stdstring-vs-c-style-char)
+  - [5.2 Construction and Concatenation](#52-construction-and-concatenation)
+  - [5.3 Access and Search](#53-access-and-search)
+  - [5.4 Comparison](#54-comparison)
+  - [5.5 Conversion](#55-conversion)
+  - [5.6 Iteration and Input](#56-iteration-and-input)
+- [6. map and set](#6-map-and-set)
+  - [6.1 map](#61-map)
+  - [6.2 unordered_map](#62-unordered_map)
+  - [6.3 set](#63-set)
+  - [6.4 unordered_set](#64-unordered_set)
+  - [6.5 Practical Example: Word Frequency](#65-practical-example-word-frequency)
+- [7. algorithm](#7-algorithm)
+  - [7.1 Sorting](#71-sorting)
+  - [7.2 Searching](#72-searching)
+  - [7.3 Counting and Accumulating](#73-counting-and-accumulating)
+  - [7.4 Modifying Sequences](#74-modifying-sequences)
+  - [7.5 Binary Search](#75-binary-search)
+  - [7.6 Complete Example: Sort Students by Score](#76-complete-example-sort-students-by-score)
+- [8. Modern C++ Features](#8-modern-c-features)
+  - [8.1 auto (C++11)](#81-auto-c11)
+  - [8.2 Range-based for (C++11)](#82-range-based-for-c11)
+  - [8.3 Lambda Expressions (C++11)](#83-lambda-expressions-c11)
+  - [8.4 Structured Bindings (C++17)](#84-structured-bindings-c17)
+  - [8.5 std::optional (C++17)](#85-stdoptional-c17)
+  - [8.6 Concepts (C++20)](#86-concepts-c20)
+  - [8.7 std::ranges (C++20)](#87-stdranges-c20)
+  - [8.8 std::print (C++23)](#88-stdprint-c23)
+  - [8.9 C++26 Preview](#89-c26-preview)
+- [9. Practical Patterns for Coding Tests](#9-practical-patterns-for-coding-tests)
+  - [9.1 Reading Input Until EOF](#91-reading-input-until-eof)
+  - [9.2 Sorting Custom Objects](#92-sorting-custom-objects)
+  - [9.3 Frequency Counting with map](#93-frequency-counting-with-map)
+  - [9.4 Unique Elements with set](#94-unique-elements-with-set)
+  - [9.5 Stack and Queue](#95-stack-and-queue)
+  - [9.6 priority_queue for Top-K Problems](#96-priority_queue-for-top-k-problems)
+  - [9.7 pair and make_pair](#97-pair-and-make_pair)
+- [10. Template Compilation Notes](#10-template-compilation-notes)
+  - [10.1 Template Definition Must Be in Header](#101-template-definition-must-be-in-header)
+  - [10.2 Common Errors](#102-common-errors)
+- [11. Common Mistakes](#11-common-mistakes)
+  - [11.1 Iterator Invalidation After insert/erase](#111-iterator-invalidation-after-inserterase)
+  - [11.2 Using \[\] on map Creates Default Entry](#112-using--on-map-creates-default-entry)
+  - [11.3 Forgetting #include for Each STL Component](#113-forgetting-include-for-each-stl-component)
+  - [11.4 Range-based for: Copy vs Reference](#114-range-based-for-copy-vs-reference)
 - [Summary](#summary)
+- [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -78,7 +102,7 @@
 
 ### 1.1 Generic Programming
 
-**Generic programming** allows you to write a function once and have it work for **any type**. Without templates, you would need to duplicate the same logic for each type (`int`, `double`, `char`, etc.).
+**Generic programming** is a technique that lets you write a function or class once and have it work for **any type**. Without templates, you would need to duplicate the same logic for each type (`int`, `double`, `char`, etc.). Function overloading does not solve this either: you still write a separate function for each type, and the functions differ only in their parameter types while their bodies are the same.
 
 ```cpp
 // Without templates — duplicated code
@@ -88,6 +112,8 @@ char maxChar(char a, char b) { return (a > b) ? a : b; }
 ```
 
 Templates eliminate this redundancy by letting the compiler generate type-specific versions automatically.
+
+> **Definition:** **Generic** programming, or generalization, is a technique that generalizes a function or class and, given the parameter types, produces function or class code from it like stamping copies from a mold. A **template** is the C++ tool that generalizes functions and classes and is declared with the `template` keyword; the data type used for the generalization is called a **generic type**.
 
 ### 1.2 Syntax
 
@@ -100,22 +126,32 @@ T myMax(T a, T b) {
 }
 ```
 
-- `template <typename T>` — declares a template with one type parameter `T`.
-- `typename` and `class` are interchangeable in this context: `template <class T>` is equivalent.
-- `T` is a **placeholder** that will be replaced with the actual type when the function is called.
+- `template <typename T>` declares a template with one type parameter `T`.
+- `typename` and `class` mean the same thing in this context, so `template <class T>` is equivalent. The textbook uses `class`.
+- `T` is a **placeholder** that is replaced with the actual type when the function is called.
 
 ### 1.3 Template Instantiation
 
-When a template function is called with a specific type, the compiler generates a **concrete function** for that type. This process is called **instantiation**.
+When a template function is called with a specific type, the compiler generates a **concrete function** for that type. This process is called **instantiation**, and it happens at compile time. Figure 1 shows how a single `myMax` template yields a different function for each argument type.
 
-**Implicit instantiation** — the compiler deduces `T` from the argument types:
+```mermaid
+flowchart LR
+    T["template #lt;typename T#gt;<br>T myMax(T a, T b)"]
+    T -- "myMax(3, 7)<br>T = int" --> I["int myMax(int a, int b)"]
+    T -- "myMax(3.5, 7.2)<br>T = double" --> D["double myMax(double a, double b)"]
+    T -- "myMax('a', 'z')<br>T = char" --> C["char myMax(char a, char b)"]
+```
+
+*Figure 1. Functions instantiated from the myMax template for each argument type*
+
+**Implicit instantiation:** the compiler deduces `T` from the argument types.
 
 ```cpp
 int result1 = myMax(3, 7);        // T deduced as int → myMax<int>(3, 7)
 double result2 = myMax(3.5, 7.2); // T deduced as double → myMax<double>(3.5, 7.2)
 ```
 
-**Explicit instantiation** — the programmer specifies `T` directly:
+**Explicit template arguments:** the programmer specifies `T` directly, as in `myMax<double>`. The compiler still instantiates the function `myMax<double>` implicitly. What C++ calls explicit instantiation is a different construct, covered in Section 10.1.
 
 ```cpp
 double result3 = myMax<double>(3, 7.2);  // T explicitly set to double
@@ -137,7 +173,56 @@ printPair(10, 3.14);       // T1=int, T2=double
 printPair("Hello", 42);    // T1=const char*, T2=int
 ```
 
-### 1.5 Examples
+The following `mcopy()` uses `T1` and `T2` for the element types of the source and destination arrays, so it can copy an array of one type into an array of another type. Three type parameters are declared as `template <class T1, class T2, class T3>`.
+
+```cpp
+template <class T1, class T2>
+void mcopy(T1 src[], T2 dest[], int n) {   // copy n elements of src[] to dest[]
+    for (int i = 0; i < n; i++)
+        dest[i] = (T2)src[i];             // convert the T1 value to type T2
+}
+
+int x[] = {1, 2, 3, 4, 5};
+double d[5];
+mcopy(x, d, 5);   // instantiated with T1 = int, T2 = double
+char c[5] = {'H', 'e', 'l', 'l', 'o'}, e[5];
+mcopy(c, e, 5);   // instantiated with T1 and T2 both char
+```
+
+### 1.5 Overloading Template Functions with Ordinary Functions
+
+A template does not behave correctly for every type. The following `print()` template prints `int` and `double` arrays as numbers, but when `T` is instantiated as `char`, it treats the elements 1, 2, 3, 4, 5 as character codes and prints the corresponding characters (invisible control characters) instead of numbers. The fix is to overload `print()` with an ordinary function that takes a `char` array.
+
+```cpp
+template <class T>
+void print(T array[], int n) {
+    for (int i = 0; i < n; i++)
+        cout << array[i] << '\t';
+    cout << endl;
+}
+
+void print(char array[], int n) {         // overloaded function for char arrays
+    for (int i = 0; i < n; i++)
+        cout << (int)array[i] << '\t';    // convert to int and print the integer
+    cout << endl;
+}
+
+int x[] = {1, 2, 3, 4, 5};
+double d[5] = {1.1, 2.2, 3.3, 4.4, 5.5};
+char c[5] = {1, 2, 3, 4, 5};
+print(x, 5);   // instantiated from the template: 1  2  3  4  5
+print(d, 5);   // instantiated from the template: 1.1  2.2  3.3  4.4  5.5
+print(c, 5);   // calls the overloaded function: 1  2  3  4  5
+```
+
+When an ordinary function and a template have the same name, the compiler chooses the function to call by the following rules.
+
+1. If the ordinary function and the function instantiated from the template match the arguments equally well, the ordinary function wins. `print(c, 5)` above is this case. Conversely, if the ordinary function needs a type conversion and the template matches as is, the template is chosen.
+2. If several templates can be called and match equally well, the more specialized template is chosen. For example, if both `T bigger(T a, T b)` and `Rectangle<T> bigger(Rectangle<T> a, Rectangle<T> b)` exist, the second template is used for `Rectangle<double>` arguments.
+
+> **Key Point:** If a template does not behave as intended for a particular type, overload it with an ordinary function for that type. When both match the arguments equally well, the ordinary function is bound in preference to the template.
+
+### 1.6 Examples
 
 **Generic swap:**
 
@@ -190,6 +275,15 @@ int data[] = {1, 10, 100, 1000};
 reverseArray(data, 4);      // {1000, 100, 10, 1}
 ```
 
+### 1.7 Advantages and Disadvantages of Templates
+
+Templates let you reuse function and class code, which raises the productivity and usefulness of software. On the other hand, they have the following disadvantages.
+
+- Some compilers may not support templates or may support them only partly, so template code is weak in portability. Modern standard-conforming compilers support templates, but older compilers can cause problems.
+- Compile error messages for template code are long and hard to read, which makes debugging difficult. C++20 Concepts (Section 8.6) were introduced to reduce this problem.
+
+This programming technique, which makes use of generic functions and generic classes, is the generic programming of Section 1.1. C++ provides the STL (Section 3) for it, and many other languages such as Java and C# also support generics.
+
 ---
 
 <br>
@@ -226,6 +320,8 @@ void Container<T>::setData(T d) {
 }
 ```
 
+A class template with two or more type parameters is declared in the same way. For example, it is declared as `template <class T1, class T2> class GClass { T1 data1; T2 data2; ... };`, used by listing the types in order as in `GClass<int, double> x;`, and its member functions are defined as `GClass<T1, T2>::set(T1 a, T2 b)`.
+
 ### 2.2 Instantiation
 
 Each time a class template is used with a specific type, the compiler generates a **separate class**.
@@ -236,7 +332,21 @@ Container<string> c2("hello", 5); // generates Container class for string
 Container<double> c3(3.14, 1);  // generates Container class for double
 ```
 
-`Container<int>` and `Container<string>` are entirely different classes — they do not share code at runtime.
+`Container<int>` and `Container<string>` are entirely different classes, and they do not share code at runtime.
+
+A generic type can be a pointer type or a class type as well as a built-in type, and an object of an instantiated class can be created dynamically with `new`. The following example instantiates the `Stack` template of Section 2.4 with several types. `Point` is a class whose constructor `Point(int x = 0, int y = 0)` has default arguments.
+
+```cpp
+Stack<int*> ipStack;           // stack that stores only int* pointers
+Stack<Point> pointStack;       // stack that stores copies of Point objects
+Stack<Point*> pStack;          // stack that stores Point* pointers
+Stack<string> stringStack;     // stack that stores strings
+
+Stack<char>* p = new Stack<char>();   // create an object of the instantiated class dynamically
+p->push('a');
+cout << p->pop() << endl;             // a
+delete p;
+```
 
 ### 2.3 Operator Overloading in Templates
 
@@ -248,7 +358,7 @@ class Rectangle {
     T width, height;
 public:
     Rectangle(T w = 1, T h = 1) : width(w), height(h) { }
-    T getArea() { return width * height; }
+    T getArea() const { return width * height; }
     bool operator>(const Rectangle<T>& other) const {
         return this->getArea() > other.getArea();
     }
@@ -267,6 +377,8 @@ cout << r3.getArea() << endl;            // 279.48 (area of r2)
 ```
 
 > **Key Point:** When using a template function that relies on operators (like `>`, `==`, `<`), the type `T` must have those operators defined. For built-in types this is automatic; for custom classes you must overload them.
+
+Because `other` in `operator>` is a `const` reference, `getArea()`, which is called on that object, must also be declared as a `const` member function for the code to compile. Instead of defining the operator, you can also define a separate `bigger()` template that takes `Rectangle<T>` parameters. When both `bigger()` templates can be called, the more specialized one is chosen (Section 1.5).
 
 ### 2.4 Default Template Parameters
 
@@ -288,19 +400,87 @@ Stack<double> s2;      // T is double
 Stack<string> s3;      // T is string
 ```
 
-> **Note:** When using the default, you still need the angle brackets: `Stack<>`, not just `Stack`.
+> **Note:** Up to C++14, you still need the angle brackets when using the default, as in `Stack<>`. Since C++17, class template argument deduction (CTAD) lets you write just `Stack s1;`, and `T` becomes the default `int`.
+
+> **Caution:** If one output statement calls `pop()` twice, as in `cout << s.pop() << ' ' << s.pop();`, the two calls may run in a different order from the output order. Up to C++14, the order in which the operands of `<<` are evaluated is unspecified, so for a stack into which `"c++"` and then `"java"` were pushed, a compiler that runs the right `pop()` first prints `c++ java`. This behavior is sometimes explained as cout pushing the data onto a stack and popping it, but the actual cause is the evaluation order of the operands. Since C++17, the left operand of `<<` is evaluated first, so the statement prints `java c++`. If the order matters, put the `pop()` calls in separate statements.
 
 ---
 
 <br>
 
-## 3. vector (In Depth)
+## 3. Components of the STL
+
+The **STL (Standard Template Library)** is the part of the C++ standard library that collects generic classes and generic functions. With the STL, developers can write applications easily without implementing data structures and algorithms themselves.
+
+### 3.1 STL Components
+
+The STL consists of three components.
+
+- **Container:** a template class that implements a data structure for holding data. Examples are `vector`, `list`, `stack`, `queue`, `map`, and `set`.
+- **Iterator:** an object for traversing and accessing the elements of a container; it acts as a pointer to an element.
+- **Algorithm:** a template function that implements operations on container elements such as copying, searching, deleting, and sorting. Algorithms are global functions, not member functions of containers, and they access elements through iterators.
+
+```mermaid
+flowchart LR
+    A["Algorithm<br>sort, find, reverse, etc."] -- "access through an iterator range" --> I["Iterator<br>begin(), end()"]
+    I -- "points to elements" --> C["Container<br>vector, map, set, etc."]
+```
+
+*Figure 2. Relationship between STL containers, iterators, and algorithms*
+
+Because an algorithm accesses elements only through iterators instead of handling the container directly, one algorithm function works with many kinds of containers.
+
+### 3.2 Header Files and Namespace
+
+To use a container class, include the header file in which the class is declared. For example, `vector` needs `#include <vector>` and `list` needs `#include <list>`. Most algorithm functions are available through the single header `#include <algorithm>`; functions in `<numeric>`, such as `accumulate`, are the exception. All of the STL is declared in the namespace `std`.
+
+### 3.3 Iterators
+
+An iterator is an object for accessing the elements of a container in sequence. An iterator variable is declared by naming the specific container type.
+
+```cpp
+vector<int> v = {5, 4, 0, 9};
+vector<int>::iterator it;   // iterator to elements of a vector whose elements are int
+it = v.begin();             // points to the first element
+```
+
+`v.begin()` points to the first element, and `v.end()` points to the position **after** the last element. The iterator range `[v.begin(), v.end())` therefore contains all elements. While `it != v.end()`, you move with `it++` and read or write the element with `*it`. Because `v.end()` does not point to an element, dereferencing it as in `*v.end()` is undefined behavior.
+
+```text
+index        0     1     2     3
+          ┌─────┬─────┬─────┬─────┐
+element   │  5  │  4  │  0  │  9  │
+          └─────┴─────┴─────┴─────┘
+             ▲                       ▲
+         v.begin()                v.end()
+       first element         one past the last
+```
+
+*Figure 3. Positions that begin() and end() point to in a vector*
+
+The following example multiplies every element by 2 using an iterator.
+
+```cpp
+vector<int> v = {1, 2, 3};
+for (vector<int>::iterator it = v.begin(); it != v.end(); it++) {
+    int n = *it;    // read the value of the element it points to
+    n = n * 2;
+    *it = n;        // write a value to the element it points to
+}
+// v = {2, 4, 6}
+```
+
+---
+
+<br>
+
+## 4. vector (In Depth)
 
 `vector` is the **most important STL container** for beginners and arguably the most frequently used container in real-world C++ and coding tests. It is a dynamic array that manages its own memory and grows automatically as elements are added.
 
 **Header:** `#include <vector>`
 
-### 3.1 Declaration and Initialization
+### 4.1 Declaration and Initialization
 
 ```cpp
 #include <vector>
@@ -315,7 +495,7 @@ vector<int> v6(v4);               // copy of v4
 vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3} — from iterator range
 ```
 
-### 3.2 Element Access
+### 4.2 Element Access
 
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
@@ -333,9 +513,11 @@ v.back();       // 50 — last element
 | `v.front()` | First element | No |
 | `v.back()` | Last element | No |
 
-> **Tip:** Use `at()` during debugging; use `[]` in performance-critical code after you have verified the index is valid.
+*Table 1. vector element access methods and bounds checking*
 
-### 3.3 Modifiers
+> **Note:** **Tip.** Use `at()` during debugging; use `[]` in performance-critical code after you have verified the index is valid.
+
+### 4.3 Modifiers
 
 ```cpp
 vector<int> v = {10, 20, 30};
@@ -364,7 +546,9 @@ v.resize(5, 99);                 // {0, 0, 0, 99, 99} — grow to 5, new element
 | `clear()` | Remove all elements | O(n) |
 | `resize(n)` | Resize to `n` elements | O(n) |
 
-### 3.4 Size and Capacity
+*Table 2. vector modifiers and their time complexity*
+
+### 4.4 Size and Capacity
 
 `vector` has two separate concepts: **size** (number of elements currently stored) and **capacity** (total allocated memory slots).
 
@@ -384,6 +568,19 @@ cout << v.capacity();   // >= 100 (still pre-allocated)
 v.shrink_to_fit();      // request to reduce capacity to match size
 ```
 
+Figure 4 shows the state in the code above after `reserve(100)` and two insertions. The size is 2, the number of actual elements, and the capacity is at least 100, the number of allocated slots.
+
+```text
+   0     1     2     3          99
+┌─────┬─────┬─────┬─────┬─────┬─────┐
+│  1  │  2  │     │     │ ... │     │
+└─────┴─────┴─────┴─────┴─────┴─────┘
+├── size ───┤
+├──────────── capacity ─────────────┤
+```
+
+*Figure 4. Size and capacity of a vector holding two elements after reserve(100)*
+
 | Method | Returns / Effect |
 |:-------|:-----------------|
 | `size()` | Number of elements |
@@ -392,9 +589,11 @@ v.shrink_to_fit();      // request to reduce capacity to match size
 | `reserve(n)` | Pre-allocate space for at least `n` elements |
 | `shrink_to_fit()` | Request to reduce capacity to size |
 
-> **Performance Tip:** If you know the number of elements in advance, call `reserve()` before the loop. This avoids repeated reallocations (each reallocation copies all existing elements).
+*Table 3. vector size and capacity methods*
 
-### 3.5 2D vector
+> **Note:** **Performance Tip.** If you know the number of elements in advance, call `reserve()` before the loop. This avoids repeated reallocations (each reallocation copies or moves all existing elements to the new storage).
+
+### 4.5 2D vector
 
 A 2D vector is simply a `vector` of `vector`s.
 
@@ -420,9 +619,9 @@ jagged.push_back({4, 5});         // rows can have different lengths
 jagged.push_back({6, 7, 8, 9});
 ```
 
-### 3.6 Iterating
+### 4.6 Iterating
 
-There are four common ways to iterate over a vector:
+There are five common ways to iterate over a vector:
 
 ```cpp
 vector<int> v = {10, 20, 30, 40};
@@ -454,9 +653,9 @@ for (const int& x : v) {
 }
 ```
 
-> **Best Practice:** Use `for (const auto& x : v)` for read-only access and `for (auto& x : v)` when you need to modify elements.
+> **Note:** **Best Practice.** Use `for (const auto& x : v)` for read-only access and `for (auto& x : v)` when you need to modify elements.
 
-### 3.7 Passing to Functions
+### 4.7 Passing to Functions
 
 Always pass vectors by **reference** to avoid expensive copies. Use `const` if the function only reads the vector.
 
@@ -484,7 +683,7 @@ vector<int> createVector(int n) {
 }
 ```
 
-### 3.8 Complete Example
+### 4.8 Complete Example
 
 **Read N numbers, sort them, and print:**
 
@@ -520,7 +719,7 @@ int main() {
 }
 ```
 
-```
+```text
 Enter count: 5
 Enter 5 numbers: 30 10 50 20 40
 Sorted: 10 20 30 40 50
@@ -532,27 +731,29 @@ Max: 50
 
 <br>
 
-## 4. string
+## 5. string
 
 `std::string` is part of the C++ standard library and behaves like an STL container of characters. It manages its own memory and provides a rich set of operations.
 
 **Header:** `#include <string>`
 
-### 4.1 std::string vs C-style char[]
+### 5.1 std::string vs C-style char[]
 
 | Feature | `std::string` | `char[]` / `char*` |
 |:--------|:--------------|:--------------------|
 | Memory management | Automatic (dynamic) | Manual |
-| Size tracking | `s.size()` / `s.length()` | `strlen(s)` — O(n) each call |
-| Concatenation | `s1 + s2` or `s1 += s2` | `strcat()` — must manage buffer |
+| Size tracking | `s.size()` / `s.length()` | `strlen(s)` (O(n) each call) |
+| Concatenation | `s1 + s2` or `s1 += s2` | `strcat()` (must manage buffer) |
 | Comparison | `==`, `<`, `>` | `strcmp()` |
 | Safety | Bounds-checked with `at()` | Buffer overflow risk |
 | Assignment | `s1 = s2` | Must use `strcpy()` |
 | Pass to function | By reference | By pointer |
 
-> **Recommendation:** Always prefer `std::string` over C-style strings in C++ code.
+*Table 4. Comparison of std::string and C-style strings*
 
-### 4.2 Construction and Concatenation
+> **Note:** **Recommendation.** Always prefer `std::string` over C-style strings in C++ code.
+
+### 5.2 Construction and Concatenation
 
 ```cpp
 #include <string>
@@ -570,7 +771,7 @@ s2 += "!";                         // "Hello!" — append in place
 s2.append(" C++");                 // "Hello! C++" — another way to append
 ```
 
-### 4.3 Access and Search
+### 5.3 Access and Search
 
 ```cpp
 string s = "Hello World";
@@ -599,7 +800,9 @@ s.rfind('o');          // 7 — last occurrence (reverse find)
 | `substr(pos, len)` | Substring of length `len` starting at `pos` |
 | `substr(pos)` | Substring from `pos` to end |
 
-### 4.4 Comparison
+*Table 5. string search and substring methods*
+
+### 5.4 Comparison
 
 ```cpp
 string a = "apple";
@@ -614,7 +817,7 @@ a > b;      // false
 a.compare(b);    // negative value
 ```
 
-### 4.5 Conversion
+### 5.5 Conversion
 
 ```cpp
 #include <string>
@@ -643,7 +846,9 @@ long long ll = stoll("999999999999"); // 999999999999
 | `stod(str)` | String -> `double` |
 | `stof(str)` | String -> `float` |
 
-### 4.6 Iteration and Input
+*Table 6. Conversion functions between strings and numbers*
+
+### 5.6 Iteration and Input
 
 ```cpp
 #include <iostream>
@@ -682,17 +887,17 @@ int main() {
 }
 ```
 
-> **Common Pitfall:** After `cin >> variable`, a newline character remains in the input buffer. If you call `getline()` next, it reads an empty line. Always call `cin.ignore()` between `cin >>` and `getline()`.
+> **Caution:** After `cin >> variable`, a newline character remains in the input buffer. If you call `getline()` next, it reads an empty line. Always call `cin.ignore()` between `cin >>` and `getline()`.
 
 ---
 
 <br>
 
-## 5. map and set
+## 6. map and set
 
-### 5.1 map
+### 6.1 map
 
-`map<K, V>` stores **key-value pairs** sorted by key. Internally it uses a balanced binary search tree (red-black tree), providing O(log n) operations.
+`map<K, V>` stores **key-value pairs** sorted by key. Internally it uses a balanced binary search tree (typically a red-black tree), providing O(log n) operations.
 
 **Header:** `#include <map>`
 
@@ -754,7 +959,9 @@ int main() {
 | `m.erase(key)` | Remove by key | O(log n) |
 | `m.size()` | Number of key-value pairs | O(1) |
 
-### 5.2 unordered_map
+*Table 7. Main map methods and their time complexity*
+
+### 6.2 unordered_map
 
 `unordered_map<K, V>` uses a **hash table** instead of a tree. It provides **O(1) average** lookup but elements are **not sorted**.
 
@@ -772,18 +979,20 @@ freq["banana"] = 5;
 // Same interface as map: [], find, count, erase, insert, size
 ```
 
-**When to use which:**
+**Choosing between map and unordered_map:**
 
-| | `map` | `unordered_map` |
+| Aspect | `map` | `unordered_map` |
 |:--|:------|:----------------|
 | Ordering | Sorted by key | No ordering |
 | Lookup | O(log n) | O(1) average, O(n) worst |
 | Use when | You need sorted order or range queries | You need fastest possible lookup |
 | Key requirement | Must support `operator<` | Must support `std::hash` and `operator==` |
 
-### 5.3 set
+*Table 8. Comparison of map and unordered_map*
 
-`set<T>` stores **unique elements** in sorted order. Internally uses a balanced BST.
+### 6.3 set
+
+`set<T>` stores **unique elements** in sorted order. It is internally implemented as a balanced binary search tree.
 
 **Header:** `#include <set>`
 
@@ -831,9 +1040,11 @@ int main() {
 | `s.erase(val)` | Remove element | O(log n) |
 | `s.size()` | Number of elements | O(1) |
 
-### 5.4 unordered_set
+*Table 9. Main set methods and their time complexity*
 
-`unordered_set<T>` is the hash-based version of `set`. O(1) average operations, no ordering.
+### 6.4 unordered_set
+
+`unordered_set<T>` is the hash-based version of `set`. Its operations take O(1) on average, and its elements have no order.
 
 **Header:** `#include <unordered_set>`
 
@@ -847,7 +1058,7 @@ us.count(3);               // 1
 us.erase(2);               // remove element 2
 ```
 
-### 5.5 Practical Example: Word Frequency
+### 6.5 Practical Example: Word Frequency
 
 ```cpp
 #include <iostream>
@@ -873,7 +1084,7 @@ int main() {
 }
 ```
 
-```
+```text
 Enter words (Ctrl+D to stop):
 the cat sat on the mat the cat
 ^D
@@ -890,13 +1101,15 @@ the: 3
 
 <br>
 
-## 6. algorithm
+## 7. algorithm
 
 The `<algorithm>` header provides generic functions that operate on iterator ranges. These are essential for coding tests and everyday C++ programming.
 
 **Header:** `#include <algorithm>`
 
-### 6.1 Sorting
+### 7.1 Sorting
+
+The two arguments of `sort()` are an iterator to the first element of the range to sort and an iterator to the position **after** the last element (Section 3.3). For example, `sort(v.begin() + 2, v.begin() + 5)` sorts only the three elements from the third to the fifth.
 
 ```cpp
 #include <algorithm>
@@ -920,9 +1133,9 @@ sort(v.begin(), v.end(), [](int a, int b) {
 sort(v.begin(), v.begin() + 3);   // sort only first 3 elements
 ```
 
-> **Note:** `sort` uses IntroSort (hybrid of quicksort, heapsort, and insertion sort) with O(n log n) guaranteed time complexity.
+> **Note:** The standard guarantees that `sort` makes O(n log n) comparisons, and most implementations use IntroSort (a hybrid of quicksort, heapsort, and insertion sort). `sort` does not preserve the original order of elements with equal values (it is not stable), so use `stable_sort` when that order must be kept.
 
-### 6.2 Searching
+### 7.2 Searching
 
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
@@ -940,7 +1153,7 @@ cout << "Min: " << *minIt << endl;   // 10
 cout << "Max: " << *maxIt << endl;   // 50
 ```
 
-### 6.3 Counting and Accumulating
+### 7.3 Counting and Accumulating
 
 ```cpp
 #include <algorithm>
@@ -964,7 +1177,7 @@ int product = accumulate(v.begin(), v.end(), 1, [](int a, int b) {
 // 1 * 1 * 2 * 3 * 2 * 4 * 2 * 5 = 480
 ```
 
-### 6.4 Modifying Sequences
+### 7.4 Modifying Sequences
 
 ```cpp
 vector<int> v = {1, 2, 3, 4, 5};
@@ -984,7 +1197,7 @@ vector<int> u(5);
 fill(u.begin(), u.end(), 42);     // {42, 42, 42, 42, 42}
 ```
 
-### 6.5 Binary Search
+### 7.5 Binary Search
 
 These functions require the range to be **sorted**.
 
@@ -1012,7 +1225,9 @@ int idx = lower_bound(v.begin(), v.end(), 30) - v.begin();   // 2
 | `lower_bound(b, e, val)` | Iterator to first >= val | Yes |
 | `upper_bound(b, e, val)` | Iterator to first > val | Yes |
 
-### 6.6 Complete Example: Sort Students by Score
+*Table 10. Return values of the binary search functions*
+
+### 7.6 Complete Example: Sort Students by Score
 
 ```cpp
 #include <iostream>
@@ -1058,9 +1273,9 @@ int main() {
 
 <br>
 
-## 7. Modern C++ Features
+## 8. Modern C++ Features
 
-### 7.1 auto (C++11)
+### 8.1 auto (C++11)
 
 The `auto` keyword lets the compiler **deduce the type** from the initializer. This is especially useful with complex types like iterators.
 
@@ -1083,9 +1298,24 @@ for (map<string, vector<int>>::iterator it = data.begin(); it != data.end(); it+
 for (auto it = data.begin(); it != data.end(); it++) { }
 ```
 
-> **Guideline:** Use `auto` when the type is obvious from context or overly verbose. Avoid it when the type is not clear (e.g., `auto result = computeSomething();` — what type is `result`?).
+> **Note:** **Guideline.** Use `auto` when the type is obvious from context or overly verbose. Avoid it when the type is not clear; for example, `auto result = computeSomething();` alone does not tell you the type of `result`.
 
-### 7.2 Range-based for (C++11)
+Before C++11, `auto` was a storage class specifier meaning that a local variable is allocated automatically on the stack, and it was rarely written because omitting it meant the same thing. Since C++11, it means that the type should be deduced from the initializer in the variable declaration. Function return types and pointer types are deduced in the same way.
+
+```cpp
+int square(int x) { return x * x; }
+
+auto ret = square(3);   // ret is int because square() returns int
+int n = 10;
+auto* p = &n;           // p is int*
+int& ref = n;           // ref is a reference to n
+auto ref2 = ref;        // ref2 is int (a copy, not a reference)
+auto& ref3 = ref;       // ref3 is int& (refers to n)
+```
+
+> **Caution:** `auto` strips references and top-level `const` from the initializer when it deduces the type. So `ref2`, initialized from the reference variable `ref`, is `int`, not `int&`, and changing `ref2` does not change `n`. Declare the variable with `auto&` when you need a reference.
+
+### 8.2 Range-based for (C++11)
 
 A cleaner syntax for iterating over containers:
 
@@ -1108,11 +1338,11 @@ for (const auto& x : v) {
 }
 ```
 
-Works with any container that provides `begin()` and `end()`, including `string`, `map`, `set`, arrays, etc.
+It works with any container that provides `begin()` and `end()` (such as `string`, `map`, and `set`) and with built-in arrays.
 
-### 7.3 Lambda Expressions (C++11)
+### 8.3 Lambda Expressions (C++11)
 
-A lambda is an **anonymous function** defined inline. Syntax: `[capture](parameters) { body }`
+A lambda is an **anonymous function** defined inline, introduced in C++11. Its basic syntax is `[capture](parameters) { body }`.
 
 ```cpp
 // Basic lambda
@@ -1156,9 +1386,38 @@ for_each(v.begin(), v.end(), [](int x) { cout << x << " "; });
 | `[&]` | Capture all used variables by reference |
 | `[=, &x]` | All by value, except `x` by reference |
 
-### 7.4 Structured Bindings (C++17)
+*Table 11. Lambda capture modes*
 
-> **[C++17]** This feature requires C++17 or later.
+The name lambda comes from lambda expressions in lambda calculus, which express mathematical functions in a simple form. For example, $f(x, y) = x + y$ is written as the lambda expression $(x, y) \to x + y$ and evaluated as $((x, y) \to x + y)(2, 3) = 2 + 3 = 5$. A C++ lambda expression consists of the following four parts.
+
+```text
+[capture list](parameter list) -> return type { function body }
+```
+
+- **Capture list:** the list of outside variables that the lambda uses.
+- **Parameter list:** the same as the parameter list of an ordinary function.
+- **Return type:** written as `-> type`; if omitted, the compiler deduces it from the `return` statement.
+- **Function body:** the code that the lambda executes.
+
+A lambda can be called immediately by appending arguments to its definition. The type of a lambda is an unnamed type known only to the compiler, so declare a variable with `auto` to store a lambda.
+
+```cpp
+[](int x, int y) { cout << "Sum: " << x + y << endl; }(2, 3);   // defined and called at once, Sum: 5
+
+double pi = 3.14;
+auto calc = [pi](int r) -> double { return pi * r * r; };   // capture list and return type
+cout << calc(3) << endl;                                     // 28.26
+
+int sum = 0;
+[&sum](int x, int y) { sum = x + y; }(2, 3);   // store 5 in sum, captured by reference
+cout << sum << endl;                           // 5
+```
+
+The third argument of `for_each()` can also be an ordinary function instead of a lambda. For example, `for_each(v.begin(), v.end(), print);` calls `void print(int n)` with each element as the argument.
+
+### 8.4 Structured Bindings (C++17)
+
+> **Note:** **C++17.** This feature requires C++17 or later.
 
 Structured bindings allow you to decompose a pair, tuple, or struct into named variables.
 
@@ -1185,9 +1444,9 @@ Point pt = {3, 4};
 auto [px, py] = pt;
 ```
 
-### 7.5 std::optional (C++17)
+### 8.5 std::optional (C++17)
 
-> **[C++17]** This feature requires C++17 or later.
+> **Note:** **C++17.** This feature requires C++17 or later.
 
 `std::optional<T>` represents a value that may or may not be present. It is a safe alternative to using special sentinel values (like `-1` or `nullptr`).
 
@@ -1218,9 +1477,9 @@ int main() {
 }
 ```
 
-### 7.6 Concepts (C++20)
+### 8.6 Concepts (C++20)
 
-> **[C++20]** This feature requires C++20 or later.
+> **Note:** **C++20.** This feature requires C++20 or later.
 
 Concepts constrain template parameters, providing clear error messages when a type does not meet requirements.
 
@@ -1249,9 +1508,9 @@ gcd(12, 8);     // OK — int is integral
 // gcd(3.14, 2.0); // compile error — double is not integral (clear message!)
 ```
 
-### 7.7 std::ranges (C++20)
+### 8.7 std::ranges (C++20)
 
-> **[C++20]** This feature requires C++20 or later.
+> **Note:** **C++20.** This feature requires C++20 or later.
 
 The Ranges library provides a cleaner way to work with sequences, eliminating the need to pass `begin()` and `end()` separately.
 
@@ -1279,9 +1538,9 @@ auto result = v | views::filter([](int x) { return x > 2; })
 // result lazily produces: 30, 40, 50
 ```
 
-### 7.8 std::print (C++23)
+### 8.8 std::print (C++23)
 
-> **[C++23]** This feature requires C++23 or later.
+> **Note:** **C++23.** This feature requires C++23 or later.
 
 `std::print` brings Python-like formatted output to C++.
 
@@ -1293,23 +1552,23 @@ std::print("x = {}, y = {}\n", 3, 4);         // x = 3, y = 4
 std::println("No need for \\n with println");  // adds newline automatically
 ```
 
-> **Note:** As of 2026, compiler support for `std::print` is still limited. Most coding tests do not support C++23 features.
+> **Note:** The standard libraries of recent GCC, Clang, and MSVC support `std::print`, but many coding test judges do not yet support C++23 features.
 
-### 7.9 C++26 Preview
+### 8.9 C++26 Preview
 
-> **[C++26]** C++26 is expected to be ratified in 2026. Compiler support is not yet available for most features. The information below is for awareness only.
+> **Note:** **C++26.** C++26 is expected to be ratified in 2026, and compilers do not yet support most of its features. The information below is for awareness only.
 
-C++26 brings significant additions focused on **safety**, **performance**, and **parallel computing**.
+C++26 brings significant additions focused on **safety**, **performance**, and **parallel computing** [1].
 
 #### Contracts (`pre`, `post`, `contract_assert`)
 
-The headline feature of C++26. Contracts replace the old `assert()` macro with language-level preconditions and postconditions.
+Contracts are the headline feature of C++26: they express the checks that the old `assert()` macro performed as language-level preconditions and postconditions.
 
 ```cpp
-// C++26 Contracts syntax (not yet supported by compilers)
-int divide(int a, int b)
+// C++26 Contracts syntax (supported only by some recent compilers)
+int divide(const int a, const int b)
     pre(b != 0)                     // precondition: b must not be zero
-    post(r: r * b == a)             // postcondition: result * b == a
+    post(r: r * b + a % b == a)     // postcondition: result * b + remainder == a
 {
     return a / b;
 }
@@ -1322,31 +1581,37 @@ void process(int* ptr)
 }
 ```
 
+> **Note:** To use a value parameter (`a`, `b`) in a postcondition, that parameter must be declared `const`. Otherwise the function body could change the parameter, and the postcondition would check the changed value instead of the original argument. Also, integer division keeps only the quotient, so writing the postcondition as `r * b == a` would be violated for arguments that do not divide evenly, such as 7 / 2. The code above adds the remainder so that the condition holds for all arguments.
+
 | Feature | Old (`assert`) | New (Contracts) |
 |:--------|:--------------|:----------------|
 | Syntax | Macro (`#include <cassert>`) | Language keyword |
 | Scope | Runtime only | Compile-time + runtime |
-| Works with modules | No (macros not exported) | Yes |
+| Module boundaries | Macros are not exported, so each importer must include `<cassert>` itself | No such restriction because it is a language feature |
 | Precondition | Manual check inside function | `pre(condition)` in signature |
 | Postcondition | Not supported | `post(result: condition)` |
 
-> **Key Point:** Contracts are necessary because C++20 modules don't export macros — the old `assert()` can't be used across module boundaries. `contract_assert` is the standardized replacement.
+*Table 12. Comparison of assert and contracts*
+
+> **Key Point:** One reason contracts are needed is that C++20 modules do not export macros. Code that imports a module must include `<cassert>` itself to use `assert()`, whereas contracts are a language feature without this restriction and they state the conditions a function requires in its declaration. `contract_assert` is the standardized replacement for `assert()`.
 
 #### New Containers and Libraries
 
 | Header | Description |
 |:-------|:------------|
-| `<inplace_vector>` | Fixed-capacity dynamic vector; heap-allocated but no reallocation — combines array performance with vector interface |
-| `<hive>` | High-performance container with bulk allocation, efficient caching via `union`, and skip-on-iterate for deleted elements |
-| `<debugging>` | Standardized debugging utilities; detect debug mode, manage breakpoints programmatically |
+| `<inplace_vector>` | A variable-size vector with fixed capacity. It stores its elements inside the object itself, so there is no heap allocation or reallocation, and it combines array performance with the vector interface |
+| `<hive>` | A high-performance container that allocates elements in bulk blocks, marks erased slots with a skipfield so that iteration skips them, and reuses those slots for later insertions. Insertion and erasure do not invalidate pointers or iterators to other elements |
+| `<debugging>` | Standardized debugging utilities. They check whether a debugger is attached (`is_debugger_present`) and trigger a breakpoint from the program (`breakpoint`, `breakpoint_if_debugging`) |
 | `<simd>` | Unified SIMD (Single Instruction, Multiple Data) interface across CPU architectures (AVX, SSE, NEON, etc.) |
-| `<linalg>` | Linear algebra operations using `<mdspan>` — matrix/vector multiplication, transformations |
-| `<hazard_pointer>` | Lock-free, thread-safe single-writer / multi-reader pointer with RAII ownership |
-| `<rcu>` | Read-Copy-Update: lock-free concurrent read/write/delete with atomic operations |
+| `<linalg>` | Linear algebra operations using `<mdspan>` (matrix and vector multiplication, transformations, etc.) |
+| `<hazard_pointer>` | A safe memory reclamation technique for lock-free data structures that keeps an object from being reclaimed while another thread is reading it. The protecting objects are managed in RAII style |
+| `<rcu>` | Read-Copy-Update: a synchronization technique in which readers read data without locks, writers modify a copy and swap it in atomically, and the old data is reclaimed after the existing readers finish |
+
+*Table 13. Headers added in C++26*
 
 #### `constexpr` Everywhere
 
-In C++26, virtually all standard containers and utilities become `constexpr`:
+In C++26, most standard containers and utilities, such as `deque`, `list`, `map`, and `set`, become usable in `constexpr` contexts.
 
 ```cpp
 // C++26: constexpr containers (not just vector and array)
@@ -1358,9 +1623,11 @@ constexpr std::deque<int> dq = {1, 2, 3};
 // constexpr functions can now throw and catch at compile time
 ```
 
+> **Caution:** Memory allocated during constant evaluation must be freed before that evaluation ends. A declaration like the code above, which leaves a container holding allocated memory in a `constexpr` variable, therefore does not compile even in C++26. Build and use containers inside `constexpr` functions, and return only the computed result or store it in a type that does not allocate, such as `std::array`.
+
 #### `std::execution` (Async Scheduling)
 
-A comprehensive async programming framework with senders, receivers, and schedulers:
+It is a comprehensive asynchronous programming framework with senders, receivers, and schedulers.
 
 ```cpp
 // C++26: std::execution (conceptual — syntax may evolve)
@@ -1372,15 +1639,15 @@ auto work = std::execution::just(42)
 // Schedules: 42 → 84 → 85
 ```
 
-> **Note:** NVIDIA provides an open-source reference implementation at [github.com/NVIDIA/stdexec](https://github.com/NVIDIA/stdexec).
+> **Note:** NVIDIA provides an open-source reference implementation, stdexec [2].
 
 ---
 
 <br>
 
-## 8. Practical Patterns for Coding Tests
+## 9. Practical Patterns for Coding Tests
 
-### 8.1 Reading Input Until EOF
+### 9.1 Reading Input Until EOF
 
 ```cpp
 #include <iostream>
@@ -1411,7 +1678,7 @@ int main() {
 }
 ```
 
-### 8.2 Sorting Custom Objects
+### 9.2 Sorting Custom Objects
 
 ```cpp
 #include <algorithm>
@@ -1447,7 +1714,7 @@ int main() {
 }
 ```
 
-### 8.3 Frequency Counting with map
+### 9.3 Frequency Counting with map
 
 ```cpp
 #include <map>
@@ -1473,7 +1740,7 @@ for (const auto& [key, val] : freq) {   // C++17 structured bindings
 // maxKey = 1, maxVal = 3
 ```
 
-### 8.4 Unique Elements with set
+### 9.4 Unique Elements with set
 
 ```cpp
 #include <set>
@@ -1492,7 +1759,7 @@ nums.erase(unique(nums.begin(), nums.end()), nums.end());
 // nums = {1, 2, 3, 4}
 ```
 
-### 8.5 Stack and Queue
+### 9.5 Stack and Queue
 
 **Header:** `#include <stack>` and `#include <queue>`
 
@@ -1523,18 +1790,20 @@ q.pop();                      // removes 10
 cout << q.front() << endl;   // 20
 ```
 
-| | `stack<T>` | `queue<T>` |
+| Aspect | `stack<T>` | `queue<T>` |
 |:--|:-----------|:-----------|
 | Add | `push(val)` | `push(val)` |
 | Remove | `pop()` | `pop()` |
 | Access | `top()` | `front()`, `back()` |
 | Order | LIFO | FIFO |
 
-### 8.6 priority_queue for Top-K Problems
+*Table 14. Comparison of stack and queue operations*
+
+### 9.6 priority_queue for Top-K Problems
 
 **Header:** `#include <queue>`
 
-`priority_queue` is a **max-heap** by default — the largest element is always on top.
+`priority_queue` is a **max-heap** by default, so the largest element is always on top (`top()`).
 
 ```cpp
 #include <queue>
@@ -1573,7 +1842,7 @@ for (int x : data) {
 // topK contains: {3, 2, 1} — the 3 smallest elements
 ```
 
-### 8.7 pair and make_pair
+### 9.7 pair and make_pair
 
 **Header:** `#include <utility>` (also included automatically by `<map>`, `<algorithm>`, etc.)
 
@@ -1609,9 +1878,9 @@ sort(indexed.begin(), indexed.end());
 
 <br>
 
-## 9. Template Compilation Notes
+## 10. Template Compilation Notes
 
-### 9.1 Template Definition Must Be in Header
+### 10.1 Template Definition Must Be in Header
 
 Unlike regular classes, **template definitions cannot be separated** into `.h` and `.cpp` files in the usual way. The compiler needs to see the full template definition at the point of instantiation to generate the concrete code.
 
@@ -1633,7 +1902,7 @@ T MyTemplate<T>::getData() {
 
 If you put the template member function definitions in a `.cpp` file, the linker will produce an **"undefined reference"** error because the compiler cannot instantiate the template when it compiles other translation units.
 
-```
+```cpp
 // BAD: MyTemplate.cpp — will cause linker error
 template <typename T>
 T MyTemplate<T>::getData() {
@@ -1642,9 +1911,26 @@ T MyTemplate<T>::getData() {
 // Other .cpp files using MyTemplate<int> will fail to link!
 ```
 
-> **Rule:** Keep both template class declarations and member function definitions in the **header file**.
+> **Note:** **Rule.** Unless there is a specific reason, keep both template class declarations and member function definitions in the **header file**.
 
-### 9.2 Common Errors
+As an exception, if the types the template will be used with are known in advance, you can separate the definitions by writing an **explicit instantiation** in the `.cpp` file. An explicit instantiation makes the compiler generate the code for the specified type in that translation unit.
+
+```cpp
+// MyTemplate.cpp
+#include "MyTemplate.h"   // header with the class declaration only
+
+template <typename T>
+T MyTemplate<T>::getData() {
+    return data;
+}
+
+template class MyTemplate<int>;      // generate all members of MyTemplate<int> here
+template class MyTemplate<double>;   // also generate MyTemplate<double>
+```
+
+In this case, using `MyTemplate` with any type other than the explicitly instantiated `int` and `double` causes a linker error again.
+
+### 10.2 Common Errors
 
 **Missing operator for custom types:**
 
@@ -1693,15 +1979,15 @@ T myMax(T a, T b) {
 myMax<double>(3, 7.5);  // OK — explicitly set T to double
 ```
 
-> **Tip:** When a template function is called with arguments of different types and the template has a single type parameter, the compiler cannot deduce `T`. Either use explicit instantiation or add a second template parameter.
+> **Note:** **Tip.** When a template function is called with arguments of different types and the template has a single type parameter, the compiler cannot deduce `T`. Either specify the template argument explicitly, as in `myMax<double>`, or add a second template parameter.
 
 ---
 
 <br>
 
-## 10. Common Mistakes
+## 11. Common Mistakes
 
-### 10.1 Iterator Invalidation After insert/erase
+### 11.1 Iterator Invalidation After insert/erase
 
 Inserting or erasing elements in a `vector` can **invalidate** existing iterators. Using an invalidated iterator causes **undefined behavior**.
 
@@ -1726,7 +2012,7 @@ for (auto it = v.begin(); it != v.end(); ) {
 // v = {1, 3, 5}
 ```
 
-### 10.2 Using [] on map Creates Default Entry
+### 11.2 Using [] on map Creates Default Entry
 
 The `[]` operator on a map **inserts a default-constructed value** if the key does not exist. This is a very common source of bugs.
 
@@ -1749,9 +2035,9 @@ if (m.count("Alice") == 0) {
 }
 ```
 
-### 10.3 Forgetting #include for Each STL Component
+### 11.3 Forgetting #include for Each STL Component
 
-Each STL component requires its own header. Unlike some languages, C++ does not have a single "import all" statement.
+Each STL component requires its own header. Up to C++20, C++ has no single statement that brings in the whole standard library, unlike some languages. C++23 lets you import the whole standard library as a module with `import std;`, but support in compilers and build tools is still uneven.
 
 ```cpp
 // Each needs its own #include
@@ -1769,9 +2055,9 @@ Each STL component requires its own header. Unlike some languages, C++ does not 
 #include <optional>         // optional (C++17)
 ```
 
-> **Tip:** Some compilers (especially with `<bits/stdc++.h>`) may compile even without the correct includes. But this is non-standard and non-portable. Always include the correct headers.
+> **Note:** **Tip.** Code may compile without the correct includes when it uses a header that includes every standard header, such as GCC's `<bits/stdc++.h>`, or when another standard header happens to include the missing one internally. But this is non-standard and non-portable. Always include the correct headers.
 
-### 10.4 Range-based for: Copy vs Reference
+### 11.4 Range-based for: Copy vs Reference
 
 ```cpp
 vector<string> names = {"Alice", "Bob", "Charlie"};
@@ -1795,10 +2081,10 @@ for (const auto& x : names) {
 }
 ```
 
-> **Rule of Thumb:**
-> - `for (auto x : v)` — use only for cheap-to-copy types (`int`, `char`, `double`)
-> - `for (const auto& x : v)` — use for read-only access to any type
-> - `for (auto& x : v)` — use when you need to modify elements
+> **Note:** **Rule of Thumb.**
+> - Use `for (auto x : v)` only for cheap-to-copy types (`int`, `char`, `double`).
+> - Use `for (const auto& x : v)` for read-only access to any type.
+> - Use `for (auto& x : v)` when you need to modify elements.
 
 ---
 
@@ -1806,36 +2092,117 @@ for (const auto& x : names) {
 
 ## Summary
 
-| Concept | Key Takeaway |
+| Concept | Key Summary |
 |:--------|:-------------|
-| Generic programming | Write once, works for any type; eliminates code duplication |
-| Function template syntax | `template <typename T>` before function; `T` is type placeholder |
-| Template instantiation | Compiler generates concrete function per type; implicit or explicit |
-| Multiple parameters | `template <typename T1, typename T2>` for different types |
-| Class template syntax | `template <typename T> class Name { };` member definitions use `Name<T>::` |
-| Class instantiation | `Name<int> obj;` generates a separate class for each type |
-| Operator overloading in templates | Custom types must define operators used by template logic (e.g., `operator>`) |
-| Default template parameters | `template <typename T = int>` — default type if none specified |
-| `vector` | Dynamic array; `push_back`, `[]`, `at()`, `front()`, `back()`, `size()`, `capacity()`, `reserve()` |
-| 2D vector | `vector<vector<int>> matrix(rows, vector<int>(cols, 0));` |
-| `string` | `std::string` replaces C-style `char[]`; `+`, `find`, `substr`, `stoi`, `to_string` |
-| `map` / `unordered_map` | Key-value store; `map` is sorted O(log n), `unordered_map` is hash O(1) average |
-| `set` / `unordered_set` | Unique elements; `set` is sorted O(log n), `unordered_set` is hash O(1) average |
-| `sort` | `sort(begin, end)` or `sort(begin, end, comparator)` with lambda |
-| `find`, `count` | Linear search and count on iterator ranges |
-| `binary_search` | O(log n) search on sorted ranges; `lower_bound`, `upper_bound` |
-| `accumulate` | Sum/reduce from `<numeric>` with initial value |
-| `auto` (C++11) | Type deduction; cleaner code with iterators and complex types |
-| Range-based for (C++11) | `for (const auto& x : container)` — clean iteration |
-| Lambda (C++11) | `[capture](params){ body }` — inline functions for sort, for_each |
-| Structured bindings (C++17) | `auto [key, value] = pair;` — decompose pairs, tuples, structs |
-| `std::optional` (C++17) | Safe nullable values with `has_value()`, `value_or()` |
-| `stack` / `queue` | LIFO and FIFO adapters; `push`, `pop`, `top`/`front` |
-| `priority_queue` | Max-heap by default; `greater<>` for min-heap; useful for top-K |
-| `pair` | `pair<T1,T2>`; compared lexicographically; useful with `sort` |
-| Templates in headers | Full template definition must be in the header; `.cpp` separation causes linker errors |
-| Iterator invalidation | `insert`/`erase` on vector invalidates iterators; use return value of `erase()` |
-| `map[]` creates entries | Use `find()` or `count()` to check existence, not `[]` |
-| Copy vs reference in for | `for(auto x:v)` copies; `for(auto& x:v)` references; `for(const auto& x:v)` read-only |
+| Generic programming | A function or class is written once and used with many types, so the same code does not have to be duplicated for each type. |
+| Function template syntax | `template <typename T>` is placed before the function, and `T` is a placeholder replaced with the actual type. |
+| Template instantiation | The compiler generates a concrete function for each type used in a call, and `T` is either deduced from the arguments or given explicitly as in `myMax<double>`. |
+| Multiple parameters | With several type parameters, as in `template <typename T1, typename T2>`, a template can handle different types together. |
+| Overloading templates with ordinary functions | When an ordinary function and a template instantiation match the arguments equally well, the ordinary function wins, and among templates the more specialized one is chosen. |
+| Advantages and disadvantages of templates | Templates raise productivity through code reuse, but differences in compiler support and hard-to-read error messages are their drawbacks. |
+| Class template syntax | A class template is declared as `template <typename T> class Name { };`, and member definitions outside the class use `Name<T>::`. |
+| Class instantiation | Writing `Name<int> obj;` generates a separate class for each type, and pointer types and class types can also be used. |
+| Operator overloading in templates | Operators used by a template function (e.g., `operator>`) must be defined by custom types themselves. |
+| Default template parameters | `template <typename T = int>` makes the template use the default type when no type is specified. |
+| Components of the STL | The STL consists of containers (template classes), iterators, and algorithms (template functions), all in the namespace `std`. |
+| Iterators | An iterator is a pointer-like object to container elements; `begin()` points to the first element and `end()` to the position after the last. |
+| `vector` | A dynamic array that grows automatically and provides `push_back`, `[]`, `at()`, `front()`, `back()`, `size()`, `capacity()`, and `reserve()`. |
+| 2D vector | A 2D vector is built as a vector of vectors, as in `vector<vector<int>> matrix(rows, vector<int>(cols, 0));`. |
+| `string` | `std::string` replaces C-style `char[]` and provides operations such as `+`, `find`, `substr`, `stoi`, and `to_string`. |
+| `map` / `unordered_map` | They are key-value stores; `map` is sorted by key with O(log n) operations, and `unordered_map` is a hash structure with O(1) average operations. |
+| `set` / `unordered_set` | They store unique elements; `set` is sorted with O(log n) operations, and `unordered_set` is a hash structure with O(1) average operations. |
+| `sort` | `sort(begin, end)` or `sort(begin, end, comp)` with a comparator such as a lambda sorts an iterator range. |
+| `find`, `count` | They perform linear search and counting on iterator ranges. |
+| `binary_search` | It searches a sorted range in O(log n), and `lower_bound` and `upper_bound` give positions when needed. |
+| `accumulate` | It is the sum and reduce function in `<numeric>` and takes an initial value as an argument. |
+| `auto` (C++11) | It deduces the type from the initializer and strips references, so use `auto&` when a reference is needed. |
+| Range-based for (C++11) | Writing `for (const auto& x : container)` traverses a container concisely. |
+| Lambda (C++11) | A lambda written as `[capture](params){ body }` is an anonymous function that is useful as an inline function for `sort` and `for_each`. |
+| Structured bindings (C++17) | `auto [key, value] = pair;` decomposes pairs, tuples, and structs into named variables. |
+| `std::optional` (C++17) | It handles results that may have no value safely with `has_value()` and `value_or()`. |
+| `stack` / `queue` | They are LIFO and FIFO container adapters that provide `push`, `pop`, and `top` or `front`. |
+| `priority_queue` | It is a max-heap by default and becomes a min-heap with `greater<>`, which is useful for top-K problems. |
+| `pair` | `pair<T1,T2>` is compared lexicographically, so it works well with `sort`. |
+| Templates in headers | The full template definition must be in the header, and separating it into a `.cpp` file without explicit instantiation causes linker errors. |
+| Iterator invalidation | `insert` and `erase` on a vector invalidate iterators, so update the iterator with the return value of `erase()`. |
+| `map[]` creates entries | Check existence with `find()` or `count()`, not with `[]`, which creates an entry. |
+| Copy vs reference in for | `for(auto x:v)` traverses by copy, `for(auto& x:v)` by reference, and `for(const auto& x:v)` by read-only reference. |
 
 ---
+
+<br>
+
+## Self-Check Questions
+
+1. **Template argument deduction:** Which of the following three calls causes a compile error, and why? Give two ways to fix that call.
+
+   ```cpp
+   template <typename T>
+   T myMax(T a, T b) { return (a > b) ? a : b; }
+
+   myMax(3, 7);       // (a)
+   myMax(2.5, 1.5);   // (b)
+   myMax(3, 7.5);     // (c)
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   (c) is the error. `T` is deduced as `int` from the first argument 3 and as `double` from the second argument 7.5, so it cannot be fixed to one type. Template argument deduction does not consider implicit conversions. Fix it by specifying the template argument as in `myMax<double>(3, 7.5)` (result 7.5), by using two type parameters as in `template <typename T1, typename T2>`, or by making the argument types match as in `myMax(3.0, 7.5)`.
+
+   </details>
+
+2. **Choosing between a template and an ordinary function:** When the template `template <class T> void print(T array[], int n)` and the ordinary function `void print(char array[], int n)` both exist, which function does `char c[5] = {1, 2, 3, 4, 5}; print(c, 5);` call? How does the output change if the ordinary function does not exist?
+
+   <details>
+   <summary>Answer</summary>
+
+   Both functions match the arguments exactly and equally well, so the ordinary function wins; it converts each element to `int` and prints `1 2 3 4 5`. Without the ordinary function, the template is instantiated with `T = char` and prints each element as a character, so the control characters with codes 1-5 are printed instead of digits and cannot be read on the screen.
+
+   </details>
+
+3. **Iterator ranges:** Write the contents of `v` after running `sort(v.begin() + 1, v.begin() + 4);` on `vector<int> v = {50, 20, 40, 10, 30};`. Also explain the position that `v.end()` points to.
+
+   <details>
+   <summary>Answer</summary>
+
+   The range runs from index 1 up to but not including index 4, that is, the elements 20, 40, 10 at indices 1, 2, 3. Only these three are sorted, so `v = {50, 10, 20, 40, 30}`. `v.end()` points to the position after the last element 30; it does not point to an element and must not be dereferenced.
+
+   </details>
+
+4. **auto and references:** Write the values of `n`, `a`, and `b` after running the following code.
+
+   ```cpp
+   int n = 10;
+   int& ref = n;
+   auto a = ref;
+   auto& b = ref;
+   a = 20;
+   b = 30;
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   `n = 30`, `a = 20`, and `b = 30`. Because `auto` strips references, `a` is an independent `int` that copies the value of `n`, and `a = 20` does not change `n`. `b` is declared with `auto&`, so it is an `int&` that refers to `n`, and `b = 30` changes `n` to 30.
+
+   </details>
+
+5. **Templates and linker errors:** If the member function definitions of the class template `MyTemplate` are only in `MyTemplate.cpp` and `main.cpp` uses `MyTemplate<int>`, what error occurs? Give the reason and two ways to fix it.
+
+   <details>
+   <summary>Answer</summary>
+
+   The link step fails with an "undefined reference" error because it cannot find member functions such as `MyTemplate<int>::getData()`. `main.cpp` sees only the declarations in the header, so it generates only the calls, and `MyTemplate.cpp` has the definitions but never uses them with `int`, so it does not generate the code for `MyTemplate<int>`. Fix it by moving the member function definitions into the header, or by adding the explicit instantiation `template class MyTemplate<int>;` to `MyTemplate.cpp`.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+[1] cppreference.com, "C++26," https://en.cppreference.com/w/cpp/26.
+
+[2] NVIDIA, "stdexec," GitHub, https://github.com/NVIDIA/stdexec.

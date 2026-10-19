@@ -1,6 +1,17 @@
-# Chapter 07 — Friend Functions and Operator Overloads
+# Chapter 7 — Friend Functions and Operator Overloads
 
-> **Last Updated:** 2026-03-16
+[Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
+
+> **Last Updated:** 2026-10-19
+>
+> 명품 C++ Programming, 황기태, Ch 7
+
+> **Learning Objectives:**
+> 1. Understand friend functions and friend classes and declare them
+> 2. Explain the concept and restrictions of operator overloading
+> 3. Write operator functions both as member functions and as friend functions
+> 4. Overload binary and unary operators, distinguishing prefix from postfix forms
+> 5. Overload the stream operators and the subscript operator
 
 ---
 
@@ -9,12 +20,13 @@
 - [1. Friend](#1-friend)
   - [1.1 Friend Function](#11-friend-function)
   - [1.2 Friend Class](#12-friend-class)
-  - [1.3 Guidelines](#13-guidelines)
+  - [1.3 Three Forms of Friend Declaration](#13-three-forms-of-friend-declaration)
+  - [1.4 Guidelines](#14-guidelines)
 - [2. Operator Overloading Basics](#2-operator-overloading-basics)
   - [2.1 Why Operator Overloading?](#21-why-operator-overloading)
   - [2.2 Concept](#22-concept)
   - [2.3 Operators That Can / Cannot Be Overloaded](#23-operators-that-can--cannot-be-overloaded)
-  - [2.4 Member Function vs Friend Function — Decision Guide](#24-member-function-vs-friend-function--decision-guide)
+  - [2.4 Member Function vs Friend Function: Decision Guide](#24-member-function-vs-friend-function-decision-guide)
 - [3. Binary Operator Overloading](#3-binary-operator-overloading)
   - [3.1 As Member Function](#31-as-member-function)
   - [3.2 As Friend Function](#32-as-friend-function)
@@ -24,10 +36,10 @@
   - [4.1 As Member Function](#41-as-member-function)
   - [4.2 As Friend Function](#42-as-friend-function)
   - [4.3 Increment / Decrement](#43-increment--decrement)
-  - [4.4 Prefix vs Postfix — Detailed Trace](#44-prefix-vs-postfix--detailed-trace)
+  - [4.4 Prefix vs Postfix: Detailed Trace](#44-prefix-vs-postfix-detailed-trace)
 - [5. Stream Operator Overloading](#5-stream-operator-overloading)
   - [5.1 `operator<<`](#51-operator)
-  - [5.2 `operator>>`](#52-operator-1)
+  - [5.2 `operator>>`](#52-operator)
 - [6. Subscript Operator](#6-subscript-operator)
 - [7. Complete Runnable Examples](#7-complete-runnable-examples)
   - [7.1 Complete Vector2D Class](#71-complete-vector2d-class)
@@ -35,6 +47,7 @@
   - [7.3 Why operator<< Must Be a Friend](#73-why-operator-must-be-a-friend)
 - [8. Common Mistakes](#8-common-mistakes)
 - [Summary](#summary)
+- [Self-Check Questions](#self-check-questions)
 
 ---
 
@@ -46,6 +59,8 @@
 
 A **friend function** is a non-member function that is granted access to the `private` and `protected` members of a class. It is declared inside the class with the `friend` keyword, but it is **not** a member function.
 
+A function is declared as a friend when it does not fit as a member of the class but still needs free access to all of the class's members.
+
 ```cpp
 class Box {
     int width;
@@ -54,7 +69,7 @@ public:
     friend void printWidth(const Box &b);   // friend declaration
 };
 
-// Definition — NOT a member function (no Box:: scope)
+// Definition: NOT a member function (no Box:: scope)
 void printWidth(const Box &b) {
     cout << b.width << endl;   // direct access to private member
 }
@@ -63,9 +78,11 @@ void printWidth(const Box &b) {
 | Property | Detail |
 |:---------|:-------|
 | Declared with `friend` inside the class | Grants access to private/protected members |
-| Defined **outside** the class without scope `ClassName::` | It is NOT a member function |
+| When defined **outside** the class, no `ClassName::` scope is written | It is NOT a member function; it can also be defined directly inside the class |
 | No `this` pointer | Must receive the object as a parameter |
 | Not affected by `public` / `private` / `protected` sections | The `friend` declaration can appear anywhere in the class |
+
+*Table 1. Properties of a friend function*
 
 > **Key Point:** A friend function can access private members, but it is not a member of the class. It cannot be called through an object using the dot operator.
 
@@ -95,10 +112,62 @@ public:
 | Friendship is **not symmetric** | `A` friends `B` does NOT mean `B` friends `A` |
 | Friendship is **not transitive** | `A` friends `B`, `B` friends `C` does NOT mean `A` friends `C` |
 
-### 1.3 Guidelines
+*Table 2. Rules of friend classes*
 
-- Use `friend` **sparingly** — it breaks encapsulation by exposing private members to external code.
-- It is **necessary** for operator overloading when the left operand is not your class type (e.g., `ostream& operator<<`).
+### 1.3 Three Forms of Friend Declaration
+
+Three kinds of targets can be declared as friends: a global function, a specific member function of another class, and an entire other class.
+
+| Form | Declaration inside class `Rect` | Functions that gain access |
+|:-----|:-----|:-----|
+| Global function | `friend bool equals(Rect r, Rect s);` | The external function `equals()` |
+| Member function of another class | `friend bool RectManager::equals(Rect r, Rect s);` | Only `equals()` of `RectManager` |
+| Entire other class | `friend RectManager;` or `friend class RectManager;` | All member functions of `RectManager` |
+
+*Table 3. Three forms of friend declaration*
+
+The following example declares a member function of another class as a friend. Because `RectManager` is declared before `Rect`, a **forward declaration** `class Rect;` is placed first so that the compiler knows the name `Rect` used in the parameters of `RectManager::equals()`. Without the forward declaration, the code fails to compile because it refers to a name that has not been declared yet.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Rect;   // forward declaration: RectManager refers to Rect first
+
+class RectManager {
+public:
+    bool equals(Rect r, Rect s);
+};
+
+class Rect {
+    int width, height;
+public:
+    Rect(int width, int height) { this->width = width; this->height = height; }
+    friend bool RectManager::equals(Rect r, Rect s);   // member function of another class as friend
+};
+
+bool RectManager::equals(Rect r, Rect s) {
+    return r.width == s.width && r.height == s.height;   // accesses Rect's private members
+}
+
+int main() {
+    Rect a(3, 4), b(3, 4);
+    RectManager man;
+    if (man.equals(a, b)) cout << "equal" << endl;
+    else cout << "not equal" << endl;
+}
+```
+
+Since the two rectangles have the same width and height, the output is as follows.
+
+```text
+equal
+```
+
+### 1.4 Guidelines
+
+- Use `friend` **sparingly**, because it breaks encapsulation by exposing private members to external code.
+- It is **necessary** when an operator whose left operand is not your class type must access private members (e.g., `ostream& operator<<`).
 - Prefer member functions when possible; use `friend` only when member functions are insufficient.
 
 ---
@@ -109,16 +178,16 @@ public:
 
 ### 2.1 Why Operator Overloading?
 
-Without operator overloading, operations on user-defined types require explicit method calls. Compare the two approaches:
+Without operator overloading, operations on user-defined types require explicit method calls. The two approaches compare as follows.
 
 ```cpp
-// WITHOUT operator overloading — verbose, hard to read
+// WITHOUT operator overloading: verbose, hard to read
 Vector2D a(1, 2), b(3, 4), c(5, 6);
 Vector2D result = a.add(b).subtract(c);          // What does this compute?
 if (result.equals(Vector2D(-1, 0)))
     cout << result.toString() << endl;
 
-// WITH operator overloading — natural, reads like math
+// WITH operator overloading: natural, reads like math
 Vector2D a(1, 2), b(3, 4), c(5, 6);
 Vector2D result = a + b - c;                     // Obviously: (1+3-5, 2+4-6)
 if (result == Vector2D(-1, 0))
@@ -135,6 +204,8 @@ Operator overloading is what makes C++ **expressive** for user-defined types. It
 | `cout << a.toString()` | `cout << a` | Seamless stream integration |
 | `a.addAssign(b)` | `a += b` | Chaining works naturally |
 
+*Table 4. Expressions with and without operator overloading*
+
 ### 2.2 Concept
 
 **Operator overloading** lets you redefine the meaning of C++ operators for user-defined types (classes). You use the `operator` keyword followed by the operator symbol.
@@ -142,6 +213,24 @@ Operator overloading is what makes C++ **expressive** for user-defined types. It
 ```cpp
 Vector2D operator+(const Vector2D &rhs);   // overloads + for Vector2D
 ```
+
+The general form of an operator function is `ReturnType operatorSymbol(ParameterList);`, and there are two ways to implement an operator function.
+
+1. Implement it as a member function of the class.
+2. Implement it as an external function, and declare it as a friend of the class if it needs private members.
+
+The compiler handles an operator expression by converting it into a call to the operator function. For a member function, it calls the member function of the left operand object; for an external function, it passes all operands as arguments.
+
+| Expression | Conversion with a member function | Conversion with an external (friend) function |
+|:-----|:-----|:-----|
+| `a + b` | `a.operator+(b)` | `operator+(a, b)` |
+| `a == b` | `a.operator==(b)` | `operator==(a, b)` |
+| `a += b` | `a.operator+=(b)` | `operator+=(a, b)` |
+| `2 + a` | Not possible (members cannot be added to `int`) | `operator+(2, a)` |
+| `!a`, `++a` | `a.operator!()`, `a.operator++()` | `operator!(a)`, `operator++(a)` |
+| `a++` | `a.operator++(0)` | `operator++(a, 0)` |
+
+*Table 5. Conversion of operator expressions into operator function calls*
 
 **Restrictions:**
 
@@ -153,6 +242,8 @@ Vector2D operator+(const Vector2D &rhs);   // overloads + for Vector2D
 | Cannot change **arity** | Binary operators stay binary; unary stay unary |
 | At least one operand must be a user-defined type | You cannot overload `int + int` |
 
+*Table 6. Restrictions of operator overloading*
+
 ### 2.3 Operators That Can / Cannot Be Overloaded
 
 | Category | Operators |
@@ -160,7 +251,9 @@ Vector2D operator+(const Vector2D &rhs);   // overloads + for Vector2D
 | **Can** overload | `+` `-` `*` `/` `%` `==` `!=` `<` `>` `<=` `>=` `<<` `>>` `[]` `()` `~` `!` `&` `\|` `^` `++` `--` `+=` `-=` `*=` `/=` `%=` `=` `->` `new` `delete` ... |
 | **Cannot** overload | `::` (scope resolution), `.` (member access), `.*` (pointer-to-member), `?:` (ternary), `sizeof`, `typeid` |
 
-### 2.4 Member Function vs Friend Function — Decision Guide
+*Table 7. Operators that can and cannot be overloaded*
+
+### 2.4 Member Function vs Friend Function: Decision Guide
 
 | Aspect | Member Function | Friend Function |
 |:-------|:---------------|:----------------|
@@ -168,6 +261,8 @@ Vector2D operator+(const Vector2D &rhs);   // overloads + for Vector2D
 | Right operand | The parameter | The second parameter |
 | Access to privates | Yes (it is a member) | Yes (declared as friend) |
 | When to use | Left operand is **your class** type (e.g., `obj + 3`) | Left operand is **NOT** your class type (e.g., `3 + obj`, `cout << obj`) |
+
+*Table 8. Operator functions as member functions and as friend functions*
 
 ```cpp
 // Member: left operand is *this
@@ -181,7 +276,7 @@ friend Vector2D operator+(const Vector2D &lhs, const Vector2D &rhs);
 
 **Decision Flowchart:**
 
-```
+```text
 Is the LEFT operand your class type?
  |
  +-- YES --> Does the operator modify the left operand? (e.g., +=, ++, =)
@@ -199,6 +294,8 @@ Is the LEFT operand your class type?
               +-- NO  --> Non-member non-friend function
 ```
 
+*Figure 1. Flowchart for choosing how to implement an operator function*
+
 **Quick-reference table:**
 
 | Expression | Left operand | Recommendation | Reason |
@@ -208,9 +305,11 @@ Is the LEFT operand your class type?
 | `3 + obj` | `int` (not your class) | Friend function | Cannot add member to `int` |
 | `cout << obj` | `ostream` (not your class) | Friend function | Cannot add member to `ostream` |
 | `cin >> obj` | `istream` (not your class) | Friend function | Cannot add member to `istream` |
-| `++obj` / `obj++` | Your class | Member function | Left operand is `*this` |
+| `++obj` / `obj++` | Your class | Member function | The operand is `*this` |
 | `obj[i]` | Your class | Member function (required) | `operator[]` must be a member |
 | `obj = obj2` | Your class | Member function (required) | `operator=` must be a member |
+
+*Table 9. Recommended implementation of operator functions by expression*
 
 ---
 
@@ -220,7 +319,7 @@ Is the LEFT operand your class type?
 
 ### 3.1 As Member Function
 
-The left operand is `*this`; the right operand is the parameter. Return by **value** for arithmetic operators.
+The left operand is `*this`; the right operand is the parameter. Arithmetic operators return the result **by value**.
 
 ```cpp
 class Vector2D {
@@ -261,7 +360,7 @@ Color c = 50 + sky;   // calls operator+(50, sky)  →  (150, 200, 250)
 
 ### 3.3 Compound Assignment
 
-Compound assignment operators (`+=`, `-=`, `*=`) modify the left operand and return `*this` by **reference**.
+Compound assignment operators (`+=`, `-=`, `*=`) modify the left operand and return `*this` **by reference**.
 
 ```cpp
 class Vector2D {
@@ -283,7 +382,9 @@ v *= 2;   // v becomes (6, 8)
 
 | Return type | Why |
 |:------------|:----|
-| `ClassName&` (reference) | The object is modified in place; returning `*this` allows chaining (`a += b += c`) |
+| `ClassName&` (reference) | The object is modified in place, and returning `*this` by reference makes chains such as `c = a += b` and `(a += b) += c` work as intended |
+
+*Table 10. Return type of compound assignment operators*
 
 ### 3.4 Comparison Operators
 
@@ -314,7 +415,7 @@ if (v1 == v2)   // true: both components match
 
 ### 4.1 As Member Function
 
-Unary operators take **no parameters** when implemented as member functions — `*this` is the operand.
+Unary operators take **no parameters** when implemented as member functions, and `*this` is the operand.
 
 ```cpp
 class Vector2D {
@@ -331,6 +432,25 @@ public:
 // Usage
 Vector2D v(3, 4);
 Vector2D perp = ~v;   // perp = (-4, 3),  v is unchanged
+```
+
+The logical NOT operator `!` is overloaded the same way. In the following `Power` class, `!a` returns `true` if both `kick` and `punch` are 0 and `false` otherwise.
+
+```cpp
+class Power {
+    int kick, punch;
+public:
+    Power(int kick = 0, int punch = 0) { this->kick = kick; this->punch = punch; }
+
+    bool operator!() const {   // no parameters: *this is the operand
+        return kick == 0 && punch == 0;
+    }
+};
+
+// Usage
+Power a(0, 0), b(5, 5);
+if (!a) cout << "a's power is 0." << endl;   // printed
+if (!b) cout << "b's power is 0." << endl;   // not printed
 ```
 
 ### 4.2 As Friend Function
@@ -386,7 +506,9 @@ public:
 | Prefix `++obj` / `--obj` | `ClassName& operator++()` | Reference to modified object | Modify first, then return |
 | Postfix `obj++` / `obj--` | `ClassName operator++(int)` | Copy of original (before modification) | Save copy, modify, return copy |
 
-> **Key Point:** The `int` parameter in the postfix version is a **dummy** — it is never used. Its sole purpose is to let the compiler distinguish prefix from postfix.
+*Table 11. Forms of prefix and postfix increment and decrement operators*
+
+> **Key Point:** The `int` parameter in the postfix version is a **dummy** and is never used. The compiler calls the postfix operation `a++` as `a.operator++(0)`, passing a meaningless integer, and the parameter's sole purpose is to let the compiler distinguish prefix from postfix.
 
 **As friend functions:**
 
@@ -415,11 +537,13 @@ public:
 };
 ```
 
-### 4.4 Prefix vs Postfix — Detailed Trace
+As friends, the operand must be received as a reference parameter (`Color &obj`) so that the original object is modified. If it is received by value, only the copy inside the function changes.
 
-Understanding the difference between prefix and postfix is critical. Here is a step-by-step trace with built-in `int` to build intuition:
+### 4.4 Prefix vs Postfix: Detailed Trace
 
-```
+Understanding the difference between prefix and postfix is critical. A step-by-step trace with built-in `int` is as follows.
+
+```text
  Expression         Step-by-step                             Result
 --------------     ------------------------------------     -----------
 int x = 5;         x is initialized to 5                     x=5
@@ -429,11 +553,13 @@ int c = --x;       x becomes 6, THEN c gets the value        x=6, c=6
 int d = x--;       d gets the value (6), THEN x becomes 5    x=5, d=6
 ```
 
+*Figure 2. Step-by-step trace of prefix and postfix operations on an `int` variable*
+
 **Key rule:**
 - **Prefix** (`++x`): increment **first**, then use the **new** value.
 - **Postfix** (`x++`): use the **old** value, then increment.
 
-Now the class equivalent — notice how the implementation mirrors the behavior above:
+The following implements the same behavior as a class. Each step of the implementation mirrors the behavior above.
 
 ```cpp
 class Counter {
@@ -457,19 +583,21 @@ public:
 };
 ```
 
-Trace for the class:
+The trace for the class is as follows.
 
-```
+```text
 Code                   value (before)     returned             value (after)
 ------------------     --------------     --------     -----------------------------
-Counter x(5);                —                —                      5
+Counter x(5);                -                -                      5
 Counter a = ++x;             5                6         6 (modify first, return new)
 Counter b = x++;             6                6         7 (return old, then modify)
 ```
 
-> **Why does prefix return by reference but postfix returns by value?**
-> - Prefix returns the **actual modified object** — it still exists, so a reference is safe and efficient.
-> - Postfix must return the **old state** — but the old state no longer exists in the object, so it must be a temporary copy (returned by value).
+*Figure 3. Trace of prefix and postfix operations on a `Counter` object*
+
+> **Note:** **Why prefix returns by reference and postfix returns by value.**
+> - Prefix returns the **actual modified object**. It still exists, so a reference is safe and efficient.
+> - Postfix must return the **old state**, but the old state no longer exists in the object, so it must be a temporary copy (returned by value).
 
 ---
 
@@ -503,6 +631,10 @@ cout << "Value: " << v << endl;   // prints "Value: (3, 4)"
 | Left operand is `ostream&` | Cannot be a member of your class |
 | Returns `ostream&` | Enables chaining: `cout << a << b << c` |
 | Second parameter is `const ClassName&` | Output should not modify the object |
+
+*Table 12. Form of the stream insertion operator function*
+
+> **Note:** **`<<` whose left operand is your class.** `<<` must be a non-member only for stream output, where the left operand is `ostream`. If the left operand is your class, `<<` can also be overloaded as a member function. For example, if `Power& Power::operator<<(int n)` adds `n` to `kick` and `punch` and returns `*this` by reference, `Power a(1, 2); a << 3 << 5 << 6;` adds 3, 5, and 6 to `a` in turn, giving kick=15, punch=16. Because a reference is returned, every chained `<<` applies to the same object `a`.
 
 ### 5.2 `operator>>`
 
@@ -563,6 +695,8 @@ cout << d[0] << "-" << d[1] << "-" << d[2] << endl;   // 2025-12-25
 | Must be a **member function** | `operator[]` cannot be a friend/free function |
 | Parameter is typically `int` | Represents the index |
 
+*Table 13. Form of the subscript operator function*
+
 ---
 
 <br>
@@ -571,7 +705,7 @@ cout << d[0] << "-" << d[1] << "-" << d[2] << endl;   // 2025-12-25
 
 ### 7.1 Complete Vector2D Class
 
-A full program demonstrating `operator+`, `operator==`, and `operator<<` working together naturally:
+A full program in which `operator+`, `operator==`, and `operator<<` work together naturally is as follows.
 
 ```cpp
 #include <iostream>
@@ -618,7 +752,7 @@ int main() {
 
 **Expected output:**
 
-```
+```text
 (1, 2) + (3, 4) = (4, 6)
 Equal!
 (1,2) + (3,4) + (5,4) = (9, 10)
@@ -626,7 +760,7 @@ Equal!
 
 ### 7.2 Prefix vs Postfix Output Trace
 
-A program that clearly demonstrates the difference between `++x` and `x++` with output at each step:
+A program that shows the difference between `++x` and `x++` with output at each step is as follows.
 
 ```cpp
 #include <iostream>
@@ -675,7 +809,7 @@ int main() {
 
 **Expected output:**
 
-```
+```text
 Initial:  x = 5
 After a = ++x:  x = 6, a = 6
 After b = x++:  x = 7, b = 6
@@ -684,7 +818,7 @@ After b = x++:  x = 7, b = 6
 
 ### 7.3 Why operator<< Must Be a Friend
 
-This example shows **why** `operator<<` cannot be a member function, and what happens if you try:
+An example that shows **why** `operator<<` cannot be a member function, and what happens if you try, is as follows.
 
 ```cpp
 #include <iostream>
@@ -716,7 +850,7 @@ public:
 int main() {
     Point p(3, 7);
 
-    // Natural syntax — works because operator<< is a friend
+    // Natural syntax: works because operator<< is a friend
     cout << "Point: " << p << endl;       // Point: (3, 7)
 
     // If it were a member function, you would have to write:
@@ -732,7 +866,7 @@ int main() {
 
 **Expected output:**
 
-```
+```text
 Point: (3, 7)
 (1, 2) and (3, 4)
 ```
@@ -743,8 +877,10 @@ Point: (3, 7)
 |:----------------------|:----------------------|
 | Syntax: `point << cout;` (backwards!) | Syntax: `cout << point;` (natural!) |
 | Left operand is `Point` (`*this`) | Left operand is `ostream` (first parameter) |
-| Cannot chain: `point << cout << endl;` fails | Chains correctly: `cout << point << endl;` |
+| Cannot follow other output: `cout << "Point: " << point;` is a compile error | Chains correctly: `cout << "Point: " << point << endl;` |
 | Breaks convention that every C++ programmer expects | Follows the standard convention |
+
+*Table 14. Stream output operator<< as a member and as a friend*
 
 ---
 
@@ -764,7 +900,7 @@ Counter& operator++();       // Prefix  ++obj
 Counter operator++(int);     // Postfix obj++   (int is the dummy parameter)
 ```
 
-The `int` parameter is never used — its sole purpose is to let the compiler distinguish prefix from postfix.
+The `int` parameter is never used. Its sole purpose is to let the compiler distinguish prefix from postfix.
 
 ### Mistake 2: Returning by value when you should return by reference
 
@@ -773,24 +909,26 @@ The `int` parameter is never used — its sole purpose is to let the compiler di
 Vector2D operator+=(const Vector2D &rhs) {   // Should be Vector2D&
     x += rhs.x;
     y += rhs.y;
-    return *this;   // Returns a COPY — chaining (a += b += c) breaks
+    return *this;   // Returns a COPY: in (a += b) += c, the second += applies to a temporary
 }
 
 // CORRECT: return by reference
 Vector2D& operator+=(const Vector2D &rhs) {
     x += rhs.x;
     y += rhs.y;
-    return *this;   // Returns the actual object — chaining works
+    return *this;   // Returns the actual object: chaining works
 }
 ```
 
-The same applies to `operator<<` and `operator>>` — they must return `ostream&` and `istream&`, not by value.
+Even with return by value, `a += b += c` gives the same result because it is parsed as `a += (b += c)`. In `(a += b) += c`, however, the second `+=` modifies a temporary copy instead of `a`, so `c` is never added to `a`.
+
+Likewise, `operator<<` and `operator>>` must return `ostream&` and `istream&`, not by value. Stream objects cannot be copied, so returning them by value is a compile error.
 
 ### Mistake 3: Forgetting to return `*this` in compound assignment operators
 
 ```cpp
 // WRONG: modifies the object but forgets to return it
-void operator+=(const Vector2D &rhs) {   // void return — cannot chain!
+void operator+=(const Vector2D &rhs) {   // void return: cannot chain!
     x += rhs.x;
     y += rhs.y;
     // Missing: return *this;
@@ -806,7 +944,7 @@ Vector2D& operator+=(const Vector2D &rhs) {
 
 ### Mistake 4: Trying to overload operators that cannot be overloaded
 
-The following operators **cannot** be overloaded:
+The following operators **cannot** be overloaded.
 
 | Operator | Name |
 |:---------|:-----|
@@ -816,6 +954,8 @@ The following operators **cannot** be overloaded:
 | `?:` | Ternary conditional |
 | `sizeof` | Size of object/type |
 | `typeid` | Runtime type identification |
+
+*Table 15. Operators that cannot be overloaded*
 
 Attempting to overload any of these will produce a compiler error.
 
@@ -847,7 +987,7 @@ public:
 // Usage:  cout << v;  // Natural and correct!
 ```
 
-**Remember:** The left operand of `<<` is `ostream`, not your class. Since you cannot add member functions to `ostream`, `operator<<` **must** be a friend or free function.
+> **Key Point:** In stream output, the left operand of `<<` is `ostream`, not your class. Since you cannot add member functions to `ostream`, the stream output `operator<<` **must** be a friend or free function.
 
 ---
 
@@ -855,30 +995,81 @@ public:
 
 ## Summary
 
-| Concept | Key Takeaway |
+| Concept | Key Summary |
 |:--------|:-------------|
-| Why operator overloading | Transforms `a.add(b)` into `a + b`; makes user-defined types as natural to use as built-in types |
-| Friend function | Non-member function with access to private/protected; declared with `friend` inside the class |
-| Friend class | `friend class B;` grants all of B's member functions access; not symmetric, not transitive |
-| Friend guidelines | Use sparingly; breaks encapsulation; necessary for certain operator overloads |
-| Operator overloading concept | Redefine operators for user-defined types; `operator` keyword; cannot create new operators or change precedence/associativity/arity |
-| Cannot overload | `::`, `.`, `.*`, `?:`, `sizeof`, `typeid` |
-| Member vs friend decision | Left operand is your class? Member. Left operand is NOT your class? Friend. Need privates? Friend. Otherwise, non-member non-friend. |
-| Binary as member | `ReturnType operator+(const ClassName &rhs)`; `*this` is left operand |
-| Binary as friend | `friend ReturnType operator+(const ClassName &lhs, const ClassName &rhs)` |
-| Compound assignment (`+=`, `*=`) | Modify `*this` and return `*this` by reference |
-| Comparison (`==`, `!=`, `<=`) | Return `bool`; typically `const` member functions |
-| Unary as member | `ReturnType operator~()`; no parameters; `*this` is the operand |
-| Unary as friend | `friend ReturnType operator~(const ClassName &obj)` |
-| Prefix `++`/`--` | `operator++()` returns reference; modify first, then return |
-| Postfix `++`/`--` | `operator++(int)` returns value; save copy, modify, return copy; `int` is dummy |
-| Prefix vs postfix trace | `int x=5; int a=++x;` gives x=6,a=6. `int b=x++;` gives x=7,b=6. Prefix returns reference, postfix returns value. |
-| `operator<<` | `friend ostream& operator<<(ostream &out, const ClassName &obj)`; must be friend; return `out` for chaining |
-| `operator>>` | `friend istream& operator>>(istream &in, ClassName &obj)`; non-const reference |
-| `operator[]` | `int& operator[](int index)`; returns reference for read/write; must be a member function |
-| Common mistake: postfix dummy | `operator++()`is prefix; `operator++(int)` is postfix — the `int` dummy distinguishes them |
-| Common mistake: return type | Compound assignment and stream operators must return by **reference**, not by value |
-| Common mistake: `*this` | Compound assignment operators must `return *this;` to enable chaining |
-| Common mistake: `<<` as member | `operator<<` as a member reverses the syntax to `obj << cout` — always use friend |
+| Why operator overloading | It lets `a.add(b)` be written as `a + b`, so user-defined types are as natural to use as built-in types. |
+| Friend function | It is a non-member function declared with `friend` inside the class that can access private/protected members. |
+| Friend class | `friend class B;` grants access to all of B's member functions, and friendship is neither symmetric nor transitive. |
+| Three forms of friend declaration | A global function, a specific member function of another class, or an entire other class can be declared a friend, and a forward declaration is needed to refer to a class not yet declared. |
+| Friend guidelines | Friends break encapsulation, so they are used only when needed, but they are necessary for some overloads whose left operand is not your class. |
+| Operator overloading concept | The `operator` keyword redefines operators for user-defined types, and it cannot create new operators or change precedence, associativity, or arity. |
+| Operator function call conversion | `a + b` becomes `a.operator+(b)` for a member function and `operator+(a, b)` for an external function, and `2 + a` can only be implemented as an external function. |
+| Cannot overload | `::`, `.`, `.*`, `?:`, `sizeof`, and `typeid` cannot be overloaded. |
+| Member vs friend decision | If the left operand is your class, write a member function; otherwise write a non-member function, and declare it a friend if it needs private members. |
+| Binary as member | It has the form `ReturnType operator+(const ClassName &rhs)`, and `*this` is the left operand. |
+| Binary as friend | It has the form `friend ReturnType operator+(const ClassName &lhs, const ClassName &rhs)`, and both operands are parameters. |
+| Compound assignment (`+=`, `*=`) | It modifies `*this` and returns `*this` by reference. |
+| Comparison (`==`, `!=`, `<=`) | It returns `bool` and is typically written as a `const` member function. |
+| Unary as member | Like `ReturnType operator~()`, it has no parameters, `*this` is the operand, and `!` is overloaded the same way. |
+| Unary as friend | Like `friend ReturnType operator~(const ClassName &obj)`, the operand is a parameter, received by reference if it must be modified. |
+| Prefix `++`/`--` | `operator++()` modifies first and returns the modified object by reference. |
+| Postfix `++`/`--` | `operator++(int)` saves a copy, modifies, and returns the copy by value, with `int` as a dummy for distinction. |
+| Prefix vs postfix trace | `int x=5; int a=++x;` gives x=6, a=6, and a following `int b=x++;` gives x=7, b=6. |
+| `operator<<` | The stream output version is a non-member function of the form `friend ostream& operator<<(ostream &out, const ClassName &obj)` that returns `out` for chaining. |
+| `operator>>` | It has the form `friend istream& operator>>(istream &in, ClassName &obj)` and takes a non-const reference because it modifies the object. |
+| `operator[]` | Like `int& operator[](int index)`, it returns a reference for reading and writing and must be a member function. |
+| Common mistake: postfix dummy | `operator++()` is prefix and `operator++(int)` is postfix, and the `int` dummy distinguishes them. |
+| Common mistake: return type | Compound assignment and stream operators must return by reference, not by value. |
+| Common mistake: `*this` | Compound assignment operators must `return *this;` to enable chaining. |
+| Common mistake: `<<` as member | Making the stream output `operator<<` a member reverses the syntax to `obj << cout`, so it is written as a non-member (usually a friend). |
 
 ---
+
+<br>
+
+## Self-Check Questions
+
+1. **Friendship:** Class `A` declares `friend class B;`, and class `B` declares `friend class C;`. (1) Can member functions of `B` access the private members of `A`? (2) Can member functions of `A` access the private members of `B`? (3) Can member functions of `C` access the private members of `A`?
+
+   <details>
+   <summary>Answer</summary>
+
+   (1) Yes, because `A` declared `B` as a friend. (2) No. Friendship is not symmetric, so `A` cannot access the private members of `B` unless `B` declares `A` as a friend. (3) No. Friendship is not transitive, so `C` being a friend of `B` does not make it a friend of `A`.
+
+   </details>
+
+2. **Member or non-member:** In a `Power` class with private members `kick` and `punch`, how must the operator function be written to support `b = 2 + a;`? Also state which function call the compiler converts this expression into.
+
+   <details>
+   <summary>Answer</summary>
+
+   The left operand `2` is an `int`, so the expression cannot become a member call like `2.operator+(a)`. The compiler converts it into `operator+(2, a)`, so an external function `Power operator+(int op1, Power op2)` must be written. Because this function needs the private members `kick` and `punch`, it is declared inside `Power` as `friend Power operator+(int op1, Power op2);`.
+
+   </details>
+
+3. **Prefix and postfix trace:** Using the `Counter` class of Section 4.4, give the `value` of `x`, `a`, and `b` after `Counter x(5); Counter a = x++; Counter b = ++x;`.
+
+   <details>
+   <summary>Answer</summary>
+
+   `x` is 7, `a` is 5, and `b` is 7. `x++` returns a copy of the state before the increment (5), so `a` becomes 5 and `x` becomes 6. Then `++x` first increments `x` to 7 and returns the modified `x`, so `b` becomes 7.
+
+   </details>
+
+4. **Reference return and chaining:** If the return type of `Power& Power::operator<<(int n)` in the note box of Section 5.1 is changed to `Power` (by value), what are `a`'s kick and punch after `Power a(1, 2); a << 3 << 5 << 6;`? Explain why.
+
+   <details>
+   <summary>Answer</summary>
+
+   kick is 4 and punch is 5. The expression is parsed as `((a << 3) << 5) << 6`. The first `a << 3` modifies `a` itself to (4, 5) but returns a copy, so the following `<< 5` and `<< 6` are added to temporary copies instead of `a`. With a reference return, all three `<<` apply to `a`, giving kick=15, punch=16.
+
+   </details>
+
+5. **Overloading rules:** From the following operators, pick those that cannot be overloaded and those that must be overloaded as member functions: `+`, `::`, `[]`, `<<`, `?:`, `=`, `sizeof`.
+
+   <details>
+   <summary>Answer</summary>
+
+   The operators that cannot be overloaded are `::`, `?:`, and `sizeof`. The operators that must be overloaded as member functions are `[]` and `=`. `+` and `<<` can be overloaded either as member or as non-member functions, chosen by the type of the left operand.
+
+   </details>

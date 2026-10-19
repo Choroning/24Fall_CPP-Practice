@@ -1,7 +1,6 @@
 # OS generated
 **/.DS_Store
 Thumbs.db
-.Rhistory
 
 # IDE
 .idea/
@@ -11,8 +10,7 @@ Thumbs.db
 *~
 
 # Language specific
-*.class
-*.jar
-*.war
-out/
-.idea/
+*.o
+*.out
+*.exe
+a.out

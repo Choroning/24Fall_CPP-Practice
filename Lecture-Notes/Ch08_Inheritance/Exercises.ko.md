@@ -1,21 +1,26 @@
-# Chapter 8. 상속
+# 8장 연습 문제 — 상속
 
-**문항 출처:** *임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04) 교수자* <br>
-**Source:** *Prof. Younghee&nbsp;Im, Instructor of COMPUTER LANGUAGE Ⅱ (DCCS102-04)*
+[레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
+
+> **최종 수정일:** 2026-10-19
+>
+> 명품 C++ Programming, 황기태, Ch 8
+
+**문항 출처:** 임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04)
 
 ---
 
-## Q1. 점의 색상과 위치 정보
+<br>
 
-예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 `ColorPoint` 클래스를 정의하시오. `ColorPoint` 클래스는 `Point` 클래스의 파생 클래스이다.
+## 연습 문제 1: 점의 색상과 위치 정보
 
+**문제:** 예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 `ColorPoint` 클래스를 정의하라. `ColorPoint` 클래스는 `Point` 클래스의 파생 클래스이다. 교재 8장 실습 문제 3, 4번을 바탕으로 한 문제이다.
 
-<br>**프로그램 요구사항**
+**프로그램 요구사항**
 
 - [ 빈칸 ]을 완성하되, 주어진 예시 코드는 변경할 수 없다.
 
-
-<br>**예시 코드**
+**예시 코드**
 
 ```cpp
 #include <iostream>
@@ -56,8 +61,7 @@ int main() {
 }
 ```
 
-
-<br>**실행 예시**
+**실행 예시**
 
 ```text
 RED색으로 (5, 5)에 위치한 점입니다.
@@ -69,25 +73,29 @@ BLACK색으로 (0, 0)에 위치한 점입니다.
 Program ended with exit code: 0
 ```
 
-
+**[풀이](Solutions.ko.md#연습-문제-1-점의-색상과-위치-정보)**
 
 ---
 
-## Q2. 학생 성적 관리
+<br>
 
-예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student` 클래스 및 파생 클래스를 완성하시오. `Student` 클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student` 클래스 상속을 통해 구현된다.
+## 연습 문제 2: 학생 성적 관리
 
-![FirstGrade, SecondGrade, ThirdGrade 클래스에 관한 설명이 담긴 사진. 각 클래스는 멤버변수로 이름, 과목별 성적을 가지고 있으며 멤버함수로 생성자, 소멸자, 이름과 성적 평균에 대한 get함수, 성적 출력 함수를 가지고 있다.](/src/images/C08_A10204-1_1.png)
+**문제:** 예시 코드와 실행 예시를 참고하여 `main()` 함수가 정상적으로 실행되도록 상속 구조를 고려하여 `Student` 클래스와 파생 클래스를 완성하라. `Student` 클래스는 세 파생 클래스 `FirstGrade`, `SecondGrade`, `ThirdGrade`에서 중복되는 요소를 가지고 있으며, 세 파생 클래스는 `Student` 클래스 상속을 통해 구현된다.
 
-위 클래스 설계도에서 클래스의 각 요소에 대해 빨간색 하이라이트는 `private` 접근 제어, 초록색 하이라이트는 `protected` 접근 제어한다.
+![그림 1. FirstGrade, SecondGrade, ThirdGrade 클래스의 멤버 변수와 멤버 함수](../../images/Ch08_Grade-Classes.png)
 
+*그림 1. FirstGrade, SecondGrade, ThirdGrade 클래스의 멤버 변수와 멤버 함수*
 
-<br>**프로그램 요구사항**
+세 클래스는 모두 이름(`name`), 국어(`kor`), 정보(`pro`) 점수를 멤버 변수로 가지며, `FirstGrade`는 수학(`mat`), `SecondGrade`는 과학(`sci`)과 도덕(`mor`), `ThirdGrade`는 영어(`eng`)와 한국사(`his`) 점수를 더 가진다. 멤버 함수는 세 클래스 모두 생성자, 이름을 반환하는 `getName()`, 성적 평균을 반환하는 `getAverage()`, 성적을 출력하는 `display()`이다.
+
+그림 1에서 빨간색으로 표시한 요소(이름)는 `private`, 초록색으로 표시한 요소(과목별 점수)는 `protected`로 접근을 제어한다.
+
+**프로그램 요구사항**
 
 - 주어진 예시 코드는 변경할 수 없다.
 
-
-<br>**예시 코드**
+**예시 코드**
 
 ```cpp
 #include <iostream>
@@ -111,8 +119,7 @@ int main() {
 }
 ```
 
-
-<br>**실행 예시**
+**실행 예시**
 
 ```text
 이름: 홍길동
@@ -141,6 +148,4 @@ int main() {
 Program ended with exit code: 0
 ```
 
-
-
----
+**[풀이](Solutions.ko.md#연습-문제-2-학생-성적-관리)**

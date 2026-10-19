@@ -1,6 +1,17 @@
-# Chapter 09 — Virtual Functions and Abstract Classes
+# Chapter 9 — Virtual Functions and Abstract Classes
 
-> **Last Updated:** 2026-03-16
+[Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
+
+> **Last Updated:** 2026-10-19
+>
+> 명품 C++ Programming, 황기태, Ch 9
+
+> **Learning Objectives:**
+> 1. Distinguish function redefinition (hiding) from overriding in an inheritance hierarchy
+> 2. Explain how virtual functions produce dynamic binding through the vtable and vptr
+> 3. Explain why virtual destructors are needed and declare them correctly
+> 4. Define an abstract class with pure virtual functions and implement concrete classes that inherit from it
+> 5. Write polymorphic programs with arrays of base class pointers and virtual functions
 
 ---
 
@@ -14,16 +25,21 @@
   - [2.2 Problem Without virtual](#22-problem-without-virtual)
   - [2.3 virtual Keyword](#23-virtual-keyword)
   - [2.4 Static vs Dynamic Binding](#24-static-vs-dynamic-binding)
-  - [2.5 How It Works — vtable and vptr](#25-how-it-works--vtable-and-vptr)
+  - [2.5 How It Works: vtable and vptr](#25-how-it-works-vtable-and-vptr)
   - [2.6 Override Keyword](#26-override-keyword)
+  - [2.7 Conditions for Successful Overriding](#27-conditions-for-successful-overriding)
+  - [2.8 Inheritance of Virtual Functions](#28-inheritance-of-virtual-functions)
+  - [2.9 The final Specifier](#29-the-final-specifier)
+  - [2.10 Calling a Base Class Virtual Function with the Scope Resolution Operator](#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)
 - [3. Virtual Destructors](#3-virtual-destructors)
   - [3.1 Problem](#31-problem)
-  - [3.2 Complete Example — The Memory Leak](#32-complete-example--the-memory-leak)
+  - [3.2 Complete Example: The Memory Leak](#32-complete-example-the-memory-leak)
   - [3.3 Rule](#33-rule)
 - [4. Abstract Classes](#4-abstract-classes)
   - [4.1 Pure Virtual Function](#41-pure-virtual-function)
   - [4.2 Abstract Class](#42-abstract-class)
   - [4.3 Concrete Class](#43-concrete-class)
+  - [4.4 Abstract Class Implementation Examples](#44-abstract-class-implementation-examples)
 - [5. Polymorphism](#5-polymorphism)
   - [5.1 Concept](#51-concept)
   - [5.2 Complete Shape Hierarchy Example](#52-complete-shape-hierarchy-example)
@@ -35,6 +51,7 @@
   - [6.4 Object Slicing](#64-object-slicing)
   - [6.5 Overriding vs Overloading vs Hiding](#65-overriding-vs-overloading-vs-hiding)
 - [Summary](#summary)
+- [Self-Check Questions](#self-check-questions)
 
 ---
 
@@ -44,7 +61,7 @@
 
 ### 1.1 Upcasting
 
-**Upcasting** converts a derived class pointer (or reference) to a base class pointer (or reference). It is **implicit** and always safe because every derived object **is-a** base object.
+**Upcasting** converts a derived class pointer (or reference) to a base class pointer (or reference). It is **implicit** and always **safe** because every derived object **is-a** base object.
 
 ```cpp
 class Base { };
@@ -86,7 +103,7 @@ Base* p = new Derived;
 Derived* dp = (Derived*)p;   // C-style downcast — compiles, but risky
 ```
 
-Use `dynamic_cast` for **safe downcasting**. It performs a runtime check and returns `nullptr` if the cast is invalid (requires at least one virtual function in the base class).
+Use `dynamic_cast` for **safe downcasting**. It performs a runtime check and returns `nullptr` if a pointer cast is invalid (requires at least one virtual function in the base class). A failed cast to a reference throws a `std::bad_cast` exception.
 
 ```cpp
 Base* p = new Base;
@@ -96,7 +113,7 @@ if (dp == nullptr) {
 }
 ```
 
-> **Warning:** Downcasting with `static_cast` or C-style casts bypasses runtime checks. If the actual object is not the derived type, accessing derived members causes **undefined behavior**.
+> **Caution:** Downcasting with `static_cast` or C-style casts bypasses runtime checks. If the actual object is not the derived type, accessing derived members causes **undefined behavior**.
 
 ---
 
@@ -106,7 +123,7 @@ if (dp == nullptr) {
 
 ### 2.1 Why Virtual Functions?
 
-Imagine you are building a drawing program. You have a `Shape` base class and derived classes like `Circle`, `Rectangle`, and `Triangle`. You store all shapes in a single array of `Shape*` pointers and want to draw them all in one loop:
+Consider a drawing program as an example. There is a `Shape` base class and derived classes like `Circle`, `Rectangle`, and `Triangle`. All shapes are stored in a single array of `Shape*` pointers, and the goal is to draw them all in one loop:
 
 ```cpp
 Shape* canvas[100];
@@ -120,15 +137,15 @@ for (int i = 0; i < count; i++) {
 }
 ```
 
-**Without virtual:** Every call to `canvas[i]->draw()` calls `Shape::draw()`, because the compiler only sees the `Shape*` type. It does not matter that the object is actually a `Circle` — the compiler already decided at compile time to call `Shape::draw()`. Every shape draws the same thing. This is useless.
+**Without virtual:** Every call to `canvas[i]->draw()` calls `Shape::draw()`, because the compiler only sees the `Shape*` type. It does not matter that the object is actually a `Circle`; the compiler already decided at compile time to call `Shape::draw()`. Every shape draws the same thing, so the program cannot achieve its purpose of drawing each shape differently.
 
-**With virtual:** Every call to `canvas[i]->draw()` calls the **correct** `draw()` for the actual object — `Circle::draw()` for circles, `Rectangle::draw()` for rectangles, and so on. The decision happens at runtime based on the actual object type.
+**With virtual:** Every call to `canvas[i]->draw()` calls the **correct** `draw()` for the actual object: `Circle::draw()` for circles, `Rectangle::draw()` for rectangles, and so on. The decision happens at runtime based on the actual object type.
 
-This is **the core of OOP polymorphism**: writing code that operates on base class pointers but automatically does the right thing for each derived type. Without virtual functions, inheritance is just code sharing — with virtual functions, inheritance enables *substitutability*.
+This is **the core of OOP polymorphism**: writing code that operates on base class pointers but automatically does the right thing for each derived type. Without virtual functions, inheritance is just code sharing; with virtual functions, inheritance enables **substitutability**.
 
 ### 2.2 Problem Without virtual
 
-Without `virtual`, the function that gets called is determined by the **pointer type**, not the actual object type. This is called **static binding** (or early binding) — the decision is made at compile time.
+Without `virtual`, the function that gets called is determined by the **pointer type**, not the actual object type. This is called **static binding** (or **early binding**), and the decision is made at compile time.
 
 ```cpp
 class Base {
@@ -148,9 +165,11 @@ delete p;
 
 The pointer type is `Base*`, so `Base::func()` is called even though `p` points to a `Derived` object. This defeats the purpose of polymorphism.
 
+The textbook calls this rewriting of a non-virtual base class function with the same prototype in a derived class **function redefinition (redefine)**. The derived object then contains both `func()` functions: calling through a `Derived*` runs `Derived::func()`, and calling through a `Base*` runs `Base::func()`. Section 6.5 treats this as hiding.
+
 ### 2.3 virtual Keyword
 
-Adding `virtual` to the base class function enables **dynamic binding** (or late binding). At runtime, the actual object type determines which function is called.
+Adding `virtual` to the base class function enables **dynamic binding** (or **late binding**). At runtime, the actual object type determines which function is called.
 
 ```cpp
 class Base {
@@ -168,11 +187,13 @@ p->func();    // Output: "Derived::func()" — dynamic binding!
 delete p;
 ```
 
-Once a function is declared `virtual` in the base class, it remains virtual in all derived classes — even without explicitly writing `virtual` again.
+Once a function is declared `virtual` in the base class, it remains virtual in all derived classes, even without explicitly writing `virtual` again.
+
+Defining a function in a derived class with the same prototype as a base class virtual function in this way is called **function overriding**, and it is one form of polymorphism. After overriding, `Base::func()` still exists inside the derived object, but calling through a base class pointer always runs `Derived::func()`, so the base class function loses its presence. To call the base class version on a derived object, use the scope resolution operator of Section 2.10.
 
 ### 2.4 Static vs Dynamic Binding
 
-Understanding the difference between static and dynamic binding is essential. They determine **when** the decision of "which function to call" is made.
+Understanding the difference between static and dynamic binding is essential. The two differ in **when** the function to call is decided.
 
 **Static Binding (Compile-Time Binding)**
 - The compiler decides which function to call based on the **pointer/reference type**.
@@ -186,7 +207,7 @@ Understanding the difference between static and dynamic binding is essential. Th
 
 The `virtual` keyword is the switch that changes a function from static binding to dynamic binding.
 
-**Side-by-Side Comparison — Same Code, Different Behavior:**
+**Side-by-Side Comparison (Same Code, Different Behavior):**
 
 ```cpp
 #include <iostream>
@@ -249,19 +270,19 @@ Woof!
 Meow!
 ```
 
-> **Key Point:** The only difference is the `virtual` keyword on the base class. Everything else — the inheritance, the pointer types, the function calls — is identical. `virtual` is what makes polymorphism work.
+> **Key Point:** The only difference is the `virtual` keyword on the base class. Everything else, including the inheritance, the pointer types, and the function calls, is identical. `virtual` is what makes polymorphism work.
 
-### 2.5 How It Works — vtable and vptr
+### 2.5 How It Works: vtable and vptr
 
-C++ implements dynamic binding through the **vtable** (virtual function table) mechanism:
+C++ compilers typically implement dynamic binding through the **vtable** (virtual function table) mechanism. The C++ standard does not prescribe this technique, but all major compilers use it:
 
-1. **vtable** — Each class that has virtual functions gets a table of function pointers. The table maps each virtual function to the correct implementation for that class.
-2. **vptr** — Each object of a class with virtual functions contains a hidden pointer (`vptr`) that points to its class's vtable.
-3. **Runtime lookup** — When a virtual function is called through a base pointer, the program follows the `vptr` to the vtable, looks up the function, and calls the correct version.
+1. **vtable:** Each class that has virtual functions gets a table of function pointers. The table maps each virtual function to the correct implementation for that class.
+2. **vptr:** Each object of a class with virtual functions contains a hidden pointer (`vptr`) that points to its class's vtable.
+3. **Runtime lookup:** When a virtual function is called through a base pointer, the program follows the `vptr` to the vtable, looks up the function, and calls the correct version.
 
 **Simple vtable diagram (one virtual function):**
 
-```
+```text
 ┌────────────────┐         ┌──────────────────────┐
 │  Base object   │         │   Base vtable        │
 │  ┌──────────┐  │         │   func → Base::func  │
@@ -277,11 +298,13 @@ C++ implements dynamic binding through the **vtable** (virtual function table) m
 └────────────────┘
 ```
 
-**Detailed vtable diagram — Shape hierarchy with multiple virtual functions:**
+*Figure 1. vptr and vtable of a Base object and a Derived object with one virtual function*
+
+**Detailed vtable diagram (Shape hierarchy with multiple virtual functions):**
 
 Consider `class Shape` with `virtual draw()` and `virtual area()`, and derived classes `Circle` and `Rectangle`:
 
-```
+```text
  Shape* p = new Circle(5.0);
  p->draw();   // How does C++ find Circle::draw()?
 
@@ -313,9 +336,11 @@ Consider `class Shape` with `virtual draw()` and `virtual area()`, and derived c
                                   └──────────────────────────┘
 ```
 
-The key insight: **the vtable is per-class** (shared by all objects of that class), but **the vptr is per-object** (each object carries its own pointer to its class's vtable). When you create a `Circle`, its vptr is set to point to `Circle`'s vtable. When you create a `Rectangle`, its vptr points to `Rectangle`'s vtable. This is why the same `p->draw()` call produces different results depending on the actual object.
+*Figure 2. Steps for resolving a virtual function call and the per-class vtables in the Shape hierarchy*
 
-> **Note:** The vtable mechanism adds a small overhead — one pointer per object and one indirect call per virtual function invocation. This is the cost of runtime polymorphism.
+> **Key Point:** **The vtable is per-class** (shared by all objects of that class), but **the vptr is per-object** (each object carries its own pointer to its class's vtable). When you create a `Circle`, its vptr is set to point to `Circle`'s vtable. When you create a `Rectangle`, its vptr points to `Rectangle`'s vtable. This is why the same `p->draw()` call produces different results depending on the actual object.
+
+> **Note:** The vtable mechanism adds a small overhead: one pointer per object and one indirect call per virtual function invocation. This is the cost of runtime polymorphism.
 
 ### 2.6 Override Keyword
 
@@ -335,7 +360,248 @@ public:
 };
 ```
 
-> **Best Practice:** Always use `override` when overriding virtual functions. It is a compile-time safety net at zero runtime cost.
+> **Note:** **Best Practice.** Always use `override` when overriding virtual functions. It is a compile-time safety net at zero runtime cost.
+
+For example, suppose `Rect` is meant to override `virtual void draw()` of `Shape` but the function is mistyped as `void drow()`. Without `override`, this merely adds a new function and no error occurs, so `draw()` called through a `Shape*` runs `Shape::draw()`. Writing `void drow() override;` exposes the mistake as a compile error because no matching virtual function exists.
+
+### 2.7 Conditions for Successful Overriding
+
+Overriding succeeds only if the **name, parameter types and count, and return type** of the derived class function all match the base class virtual function.
+
+```cpp
+class Base {
+public:
+    virtual void fail();
+    virtual void success();
+    virtual void g(int);
+};
+
+class Derived : public Base {
+public:
+    virtual int fail();           // overriding fails: different return type, compile error
+    virtual void success();       // overriding succeeds
+    virtual void g(int, double);  // different parameters, a new function: compiles normally
+};
+```
+
+- `fail()`, which differs only in return type, is a compile error. However, when the base class virtual function returns a pointer or reference to the base class, changing the derived class version to return a pointer or reference to the derived class is allowed; this is a **covariant return type**.
+- The `virtual` keyword of a virtual function is inherited, so it may be omitted in the derived class. Writing `virtual void success();` in `Derived` as `void success();` is the same overriding.
+- A virtual function may have any access specifier: `private`, `protected`, or `public`. The second `Calculator` example in Section 4.4 makes the pure virtual function `calc()` `protected`.
+
+> **Note:** The textbook presents `g(int, double)` as a case of overloading. However, the base class and the derived class have different scopes, so declaring a function with the same name in the derived class hides the base class `g(int)` in the scope of `Derived` (hiding, Section 6.5). Therefore calling `d.g(1)` on a `Derived` object `d` is a compile error, and `Base::g(int)` runs only when `g(1)` is called through a `Base*`. To use both functions together like overloads, declare `using Base::g;` inside `Derived`.
+
+### 2.8 Inheritance of Virtual Functions
+
+A virtual function remains virtual no matter how many levels the inheritance hierarchy has. In the following example (textbook Example 9-3), `Base`, `Derived`, and `GrandDerived` inherit from one another in turn, and all three pointers point to the same `GrandDerived` object.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    virtual void f() { cout << "Base::f() called" << endl; }
+};
+
+class Derived : public Base {
+public:
+    void f() { cout << "Derived::f() called" << endl; }
+};
+
+class GrandDerived : public Derived {
+public:
+    void f() { cout << "GrandDerived::f() called" << endl; }
+};
+
+int main() {
+    GrandDerived g;
+    Base* bp;
+    Derived* dp;
+    GrandDerived* gp;
+
+    bp = dp = gp = &g;
+
+    bp->f();   // dynamic binding
+    dp->f();   // dynamic binding
+    gp->f();
+}
+```
+
+Output:
+
+```text
+GrandDerived::f() called
+GrandDerived::f() called
+GrandDerived::f() called
+```
+
+The `f()` functions of `Derived` and `GrandDerived` have no `virtual`, but both are virtual functions because `Base::f()` is virtual. Therefore, whether the pointer type is `Base*` or `Derived*`, dynamic binding runs the `f()` of the actual object, `GrandDerived`.
+
+If a derived class does not override a virtual function, the function defined by the nearest base class in the inheritance hierarchy is used.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class B {
+public:
+    virtual void who() { cout << "Base\n"; }
+};
+
+class D1 : public B {
+public:
+    void who() { cout << "First derivation\n"; }
+};
+
+class D2 : public B {
+    // who() is not overridden.
+};
+
+int main() {
+    B base_obj;
+    B* p;
+    D1 D1_obj;
+    D2 D2_obj;
+
+    p = &base_obj;
+    p->who();   // calls B's who()
+    p = &D1_obj;
+    p->who();   // calls D1's who()
+    p = &D2_obj;
+    p->who();   // D2 has no who(), so B's who() is called
+    return 0;
+}
+```
+
+Output:
+
+```text
+Base
+First derivation
+Base
+```
+
+Dynamic binding also occurs when a virtual function is called inside a member function of the base class. In the following example, `paint()` is a non-virtual function of `Shape`, but the call to `draw()` inside it is the same as `this->draw()`, so the `draw()` of the actual object that `this` points to runs.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    void paint() {
+        draw();   // this->draw(): dynamic binding
+    }
+    virtual void draw() {
+        cout << "Shape::draw() called" << endl;
+    }
+};
+
+class Circle : public Shape {
+public:
+    virtual void draw() {
+        cout << "Circle::draw() called" << endl;
+    }
+};
+
+int main() {
+    Circle circle;
+    Shape* pShape = &circle;   // upcasting
+    pShape->paint();
+}
+```
+
+Output:
+
+```text
+Circle::draw() called
+```
+
+Calling `paint()` on a `Shape` object prints `Shape::draw() called`. In this way, base class code can call a function that derived classes implement, and the abstract class examples of Section 4.4 rely on this property.
+
+### 2.9 The final Specifier
+
+The `final` specifier, introduced in C++11, can be used in two places. Strictly speaking, `override` and `final` are not reserved words but identifiers with a special meaning only in specific positions, and the textbook calls both of them specifiers.
+
+1. **Right after a virtual function prototype:** derived classes cannot override that virtual function.
+2. **After a class name:** no other class can inherit from that class (inheritance is blocked).
+
+```cpp
+class Shape {
+public:
+    virtual void draw() final;   // can no longer be overridden
+};
+
+class Rect : public Shape {
+public:
+    void draw();                 // compile error: attempts to override a final function
+};
+```
+
+```cpp
+class Shape final {
+    // ...
+};
+
+class Rect : public Shape {      // compile error: Shape cannot be inherited
+    // ...
+};
+```
+
+```cpp
+class Shape {
+    // ...
+};
+
+class Rect final : public Shape {   // Rect can inherit from Shape
+    // ...
+};
+
+class RoundRect : public Rect {     // compile error: Rect cannot be inherited
+    // ...
+};
+```
+
+### 2.10 Calling a Base Class Virtual Function with the Scope Resolution Operator
+
+Calling a function in the form `BaseClass::virtualFunction()` with the scope resolution operator `::` suppresses dynamic binding, and the base class function runs through static binding. This is mainly used when an overriding function in a derived class reuses the base class behavior and adds to it.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() {
+        cout << "--Shape--";
+    }
+};
+
+class Circle : public Shape {
+public:
+    virtual void draw() {
+        Shape::draw();   // calls the base class draw() (static binding)
+        cout << "Circle" << endl;
+    }
+};
+
+int main() {
+    Circle circle;
+    Shape* pShape = &circle;
+
+    pShape->draw();          // dynamic binding: runs Circle::draw()
+    pShape->Shape::draw();   // static binding: runs only Shape::draw()
+}
+```
+
+Output:
+
+```text
+--Shape--Circle
+--Shape--
+```
+
+`pShape->draw()` runs `Circle::draw()` through dynamic binding, and the `Shape::draw()` inside it prints `--Shape--` first through static binding. `pShape->Shape::draw()` is statically bound from the start, so it prints only `--Shape--`.
 
 ---
 
@@ -345,7 +611,7 @@ public:
 
 ### 3.1 Problem
 
-When deleting a derived object through a base pointer, if the destructor is **not virtual**, only the base class destructor is called. The derived class destructor is skipped, potentially **leaking resources** allocated by the derived class.
+When deleting a derived object through a base pointer, if the destructor is **not virtual**, typical compilers call only the base class destructor (the C++ standard defines this case as undefined behavior). The derived class destructor is skipped, potentially **leaking resources** allocated by the derived class.
 
 ```cpp
 class Base {
@@ -364,7 +630,7 @@ Base* p = new Derived;
 delete p;    // Output: "~Base" only! ~Derived never called → memory leak
 ```
 
-### 3.2 Complete Example — The Memory Leak
+### 3.2 Complete Example: The Memory Leak
 
 This complete, runnable program demonstrates the problem and the fix side by side:
 
@@ -441,11 +707,11 @@ Output:
 [GoodBase] destructor
 ```
 
-Notice: in the "BUG" case, `[BadDerived] freeing: leak` never appears — the memory is leaked. In the "CORRECT" case, both destructors run in the proper order.
+Without a virtual destructor, `[BadDerived] freeing: leak` never appears. The destructor of `BadDerived` does not run, so the memory that `name` points to is leaked. With a virtual destructor, both destructors run in the proper order: derived class first, then base class.
 
 ### 3.3 Rule
 
-If a class has **any virtual function**, its destructor **must be virtual**. This ensures that `delete` through a base pointer correctly calls the derived destructor first, then the base destructor.
+If a class has **any virtual function**, it is likely to be handled through base class pointers, so its destructor should also be **virtual**. This ensures that `delete` through a base pointer calls the derived destructor first through dynamic binding, and the base destructor runs when the derived destructor finishes.
 
 ```cpp
 class Base {
@@ -465,7 +731,7 @@ Base* p = new Derived;
 delete p;    // Output: "~Derived" then "~Base" — correct!
 ```
 
-> **Rule of Thumb:** Any class intended to be used as a base class with virtual functions should have a `virtual` destructor. This is one of the most important C++ best practices.
+> **Note:** **Rule of Thumb.** Any class intended to be used as a base class with virtual functions should have a `virtual` destructor. This is one of the most important C++ best practices.
 
 ---
 
@@ -475,7 +741,7 @@ delete p;    // Output: "~Derived" then "~Base" — correct!
 
 ### 4.1 Pure Virtual Function
 
-A **pure virtual function** has no implementation in the base class. It is declared by appending `= 0` to the function declaration. Derived classes **must** provide an implementation.
+A **pure virtual function** is a virtual function that has only a declaration and no implementation in the base class. It is declared by appending `= 0` to the function prototype, and a derived class **must implement** it to become a concrete class (Section 4.3) from which objects can be created. A base class virtual function is declared pure when it only shows the form of the function that derived classes redefine and needs no code to run.
 
 ```cpp
 class Shape {
@@ -489,10 +755,10 @@ public:
 
 A class that contains **at least one pure virtual function** is an **abstract class**. An abstract class:
 
-- **Cannot be instantiated** — you cannot create objects of it directly.
-- **Can have pointers and references** — `Shape* p;` is valid.
-- **Can have non-pure member functions** — it may provide partial implementations.
-- **Serves as an interface/contract** — it defines what derived classes must implement.
+- **Cannot be instantiated:** it is not a complete class, so objects of it cannot be created directly.
+- **Can have pointers and references:** `Shape* p;` is valid.
+- **Can have non-pure member functions:** it may provide partial implementations, and not every member function has to be pure virtual. A non-pure member function may even call a pure virtual function (in the same way as `paint()` in Section 2.8).
+- **Serves as an interface/contract:** it shows the prototypes of the functions that derived classes must implement. An abstract class exists not to create objects but to serve as a base class in inheritance.
 
 ```cpp
 // Shape s;           // compile error — Shape is abstract
@@ -527,6 +793,105 @@ Rectangle r(3.0, 4.0); // OK — Rectangle is concrete
 
 > **Key Point:** If a derived class does not override all pure virtual functions, it is still abstract and cannot be instantiated.
 
+### 4.4 Abstract Class Implementation Examples
+
+Textbook Example 9-6 implements a `GoodCalc` class by inheriting from an abstract class `Calculator` that consists only of pure virtual functions. `GoodCalc` implements all three pure virtual functions, so it is a concrete class.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Calculator {
+public:
+    virtual int add(int a, int b) = 0;              // returns the sum of two integers
+    virtual int subtract(int a, int b) = 0;         // returns the difference of two integers
+    virtual double average(int a[], int size) = 0;  // returns the average of array a; size is the array size
+};
+
+class GoodCalc : public Calculator {
+public:
+    int add(int a, int b) { return a + b; }
+    int subtract(int a, int b) { return a - b; }
+    double average(int a[], int size) {
+        double sum = 0;
+        for (int i = 0; i < size; i++)
+            sum += a[i];
+        return sum / size;
+    }
+};
+
+int main() {
+    int a[] = {1, 2, 3, 4, 5};
+    Calculator* p = new GoodCalc();
+    cout << p->add(2, 3) << endl;
+    cout << p->subtract(2, 3) << endl;
+    cout << p->average(a, 5) << endl;
+    delete p;
+}
+```
+
+Output:
+
+```text
+5
+-1
+3
+```
+
+> **Note:** `Calculator` has no virtual destructor, so the last line, which deletes a `GoodCalc` object through a `Calculator*`, is the undefined behavior described in Section 3.1. `GoodCalc` has no resources to release, so the problem does not show in this example, but the correct fix is to add `virtual ~Calculator() { }` to `Calculator`.
+
+In textbook Example 9-7, `Calculator` implements `run()`, which handles user input and result output, and leaves only the actual calculation as the pure virtual function `calc()`. The derived classes `Adder` and `Subtractor` only need to implement `calc()`. The call `calc(a, b)` inside `run()` is dynamically bound to the `calc()` of the actual object, like `paint()` in Section 2.8.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Calculator {
+    void input() {
+        cout << "Enter two integers>> ";
+        cin >> a >> b;
+    }
+protected:
+    int a, b;
+    virtual int calc(int a, int b) = 0;   // returns the result of calculating two integers
+public:
+    void run() {
+        input();
+        cout << "Calculated value: " << calc(a, b) << endl;
+    }
+};
+
+class Adder : public Calculator {
+protected:
+    int calc(int a, int b) {   // implements the pure virtual function
+        return a + b;
+    }
+};
+
+class Subtractor : public Calculator {
+protected:
+    int calc(int a, int b) {   // implements the pure virtual function
+        return a - b;
+    }
+};
+
+int main() {
+    Adder adder;
+    Subtractor subtractor;
+    adder.run();
+    subtractor.run();
+}
+```
+
+Sample run (entering `5 3` both times):
+
+```text
+Enter two integers>> 5 3
+Calculated value: 8
+Enter two integers>> 5 3
+Calculated value: 2
+```
+
 ---
 
 <br>
@@ -537,7 +902,7 @@ Rectangle r(3.0, 4.0); // OK — Rectangle is concrete
 
 **Polymorphism** means "one interface, multiple implementations." A base class pointer can call different derived class implementations depending on the actual object type at runtime.
 
-```
+```text
             Base* p
                │
      ┌─────────┼─────────┐
@@ -546,7 +911,9 @@ Rectangle r(3.0, 4.0); // OK — Rectangle is concrete
    func()    func()    func()
 ```
 
-Through `p->func()`, the correct derived version is called based on what `p` actually points to — not the pointer type.
+*Figure 3. Structure in which one base class pointer calls func() of several derived classes*
+
+Through `p->func()`, the correct derived version is called based on what `p` actually points to, not on the pointer type.
 
 ### 5.2 Complete Shape Hierarchy Example
 
@@ -638,10 +1005,12 @@ Drawing Rectangle (3x4)
 Drawing Triangle (base=6, height=3)
   Area = 9
 Drawing Circle (radius=2.5)
-  Area = 19.6350
+  Area = 19.635
 ```
 
 The power of this design: if you later add a `Pentagon` class, you only need to write the new class and override `draw()` and `area()`. The `printShapeInfo()` function and the loop in `main()` require **zero changes**. This is the Open-Closed Principle in action: open for extension, closed for modification.
+
+The textbook demonstrates the same principle with a linked list. `Shape` has a `next` pointer to the next shape, `add()`, `getNext()`, and a `paint()` that calls `draw()`, and `Circle`, `Rect`, and `Line` objects are linked one after another with `add()`. Following the list from the start pointer with a `Shape*` pointer and calling `p->paint()` runs the `draw()` that each object overrides, printing `Circle`, `Rectangle`, `Circle`, `Line`, and `Rectangle` in order. When the shapes are deleted, the virtual destructor of `Shape` also ensures that each derived object is destroyed correctly.
 
 ### 5.3 Complete Converter Example
 
@@ -722,9 +1091,9 @@ int main() {
 Output:
 
 ```text
-10 liters = 2.64172 gallons
+10 liters = 2.64173 gallons
 100 C = 212 F
-42.195 km = 26.2188 miles
+42.195 km = 26.2187 miles
 70 kg = 154.323 lbs
 ```
 
@@ -757,6 +1126,8 @@ public:
 Base* p = new Derived;
 delete p;   // ~Derived is NEVER called → 4000 bytes leaked every time
 ```
+
+The 4000 bytes in the comment is the size that `new int[1000]` allocates in an environment where `int` is 4 bytes.
 
 **Fix:** Always declare `virtual ~Base() { }` (or `virtual ~Base() = default;`) when a class has any virtual function.
 
@@ -804,7 +1175,7 @@ public:
 
 ### 6.4 Object Slicing
 
-When a derived object is passed **by value** to a function expecting the base type, the derived part is **sliced off** — only the base part is copied. Virtual functions no longer work as expected because the object is now genuinely a `Base`, not a `Derived`.
+When a derived object is passed **by value** to a function expecting the base type, the derived part is **sliced off** and only the base part is copied. Virtual functions no longer work as expected because the parameter object is now genuinely an object of the base class type, not of the derived class.
 
 ```cpp
 #include <iostream>
@@ -853,10 +1224,12 @@ These three concepts are frequently confused. They have very different meanings:
 
 | | Overriding | Overloading | Hiding |
 |:--|:-----------|:------------|:-------|
-| **What** | Same name, same parameters, base function is `virtual` | Same name, **different** parameters, same scope | Same name, base function is **not** `virtual` |
+| **What** | Same name, same parameters, base function is `virtual` | Same name, **different** parameters, same scope | Same name but not overriding (base function is **not** `virtual`, **or** the parameters differ) |
 | **Where** | Derived class re-implements base virtual function | Same class (or same scope) | Derived class has same-name function as base |
-| **Effect** | Dynamic binding — correct version called at runtime | Compiler picks based on argument types at compile time | Base version is hidden; only derived version is visible |
-| **virtual required?** | Yes | No | No (that is what makes it hiding, not overriding) |
+| **Effect** | Dynamic binding calls the correct version at runtime | Compiler picks based on argument types at compile time | Base version is hidden; only derived version is visible |
+| **virtual required?** | Yes | No | No (redefining a non-virtual function with the same prototype is hiding, not overriding) |
+
+*Table 1. Comparison of overriding, overloading, and hiding*
 
 ```cpp
 class Base {
@@ -890,7 +1263,7 @@ int main() {
 }
 ```
 
-> **Warning:** Hiding is almost always a bug. If you intend to override, use `virtual` in the base and `override` in the derived. If the compiler says `override` does not match anything, you might be hiding instead of overriding.
+> **Caution:** Hiding is almost always a bug. If you intend to override, use `virtual` in the base and `override` in the derived. If the compiler says `override` does not match anything, you might be hiding instead of overriding.
 
 ---
 
@@ -898,21 +1271,115 @@ int main() {
 
 ## Summary
 
-| Concept | Key Takeaway |
+| Concept | Key Summary |
 |:--------|:-------------|
-| Upcasting | Derived pointer/reference to base; implicit and safe; only base members visible |
-| Downcasting | Base pointer to derived; explicit cast required; use `dynamic_cast` for safety |
-| Static binding | Without `virtual`, pointer type determines which function is called (compile time) |
-| Dynamic binding | With `virtual`, actual object type determines which function runs (runtime) |
-| `virtual` keyword | The switch from static to dynamic binding; enables true polymorphism |
-| vtable / vptr | vtable is per-class (function pointer table); vptr is per-object (points to its class's vtable) |
-| `override` (C++11) | Compiler verifies base has matching virtual function; catches typos and mismatches |
-| Virtual destructor | Required if class has any virtual function; ensures correct cleanup through base pointer |
-| Pure virtual function | `virtual void func() = 0;` — no body; derived classes must implement |
-| Abstract class | Has at least one pure virtual function; cannot be instantiated; serves as interface |
-| Concrete class | Implements all pure virtual functions; can be instantiated |
-| Polymorphism | One interface, multiple implementations; base pointer calls correct derived version |
-| Object slicing | Passing derived by value to base parameter loses derived data; use pointer/reference instead |
-| Overriding vs Hiding | Overriding requires `virtual` and uses dynamic binding; hiding is non-virtual and uses static binding |
+| Upcasting | Upcasting converts a derived class pointer or reference to the base class type; it is implicit and safe, but only base class members are accessible. |
+| Downcasting | Downcasting converts a base class pointer to a derived class pointer; it requires an explicit cast, and `dynamic_cast` checks it safely at runtime. |
+| Static binding | Without `virtual`, the pointer type determines the function to call at compile time. |
+| Dynamic binding | With `virtual`, the actual object type determines the function to call at runtime. |
+| `virtual` keyword | The `virtual` keyword is the switch that changes a call from static binding to dynamic binding and enables true polymorphism. |
+| vtable / vptr | The vtable is a function pointer table, one per class, and the vptr is one per object and points to its class's vtable. |
+| `override` (C++11) | The compiler verifies that the base class has a matching virtual function, catching name typos and prototype mismatches. |
+| Conditions for overriding | Overriding succeeds only when the name, parameter types and count, and return type all match, and the inherited `virtual` keyword may be omitted in the derived class. |
+| Inheritance of virtual functions | A virtual function stays virtual at every level of the hierarchy, and a derived class that does not override it uses the function of the nearest base class. |
+| `final` (C++11) | Placed after a virtual function prototype, `final` forbids overriding that function, and placed after a class name, it forbids inheriting from that class. |
+| Scope resolution call | Calling in the form `BaseClass::virtualFunction()` runs the base class function through static binding. |
+| Virtual destructor | A class with virtual functions needs a virtual destructor so that `delete` through a base class pointer also runs the derived class destructor correctly. |
+| Pure virtual function | A pure virtual function such as `virtual void func() = 0;` has only a declaration, and a derived class must implement it to become concrete. |
+| Abstract class | An abstract class has at least one pure virtual function, cannot be instantiated, and serves as an interface that shows the prototypes derived classes implement. |
+| Concrete class | A concrete class implements all inherited pure virtual functions and can be instantiated. |
+| Polymorphism | Polymorphism handles multiple implementations through one interface, with a base class pointer calling the derived class function that matches the actual object. |
+| Object slicing | Passing a derived object by value to a base class parameter slices off the derived part, so objects should be passed by pointer or reference. |
+| Overriding vs Hiding | Overriding redefines a base class virtual function with the same prototype and is dynamically bound, while hiding is a same-name function that is not an override, hides the base class function, and is statically bound. |
+
+---
+
+<br>
+
+## Self-Check Questions
+
+1. **Binding:** In the following code, what do `p->f()` and `p->g()` each print?
+
+   ```cpp
+   class A {
+   public:
+       void f() { cout << "A::f()" << endl; }
+       virtual void g() { cout << "A::g()" << endl; }
+   };
+   class B : public A {
+   public:
+       void f() { cout << "B::f()" << endl; }
+       void g() override { cout << "B::g()" << endl; }
+   };
+
+   A* p = new B;
+   p->f();
+   p->g();
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   `p->f()` prints `A::f()` and `p->g()` prints `B::g()`. `f()` is non-virtual, so it is statically bound to `A::f()` at compile time according to the pointer type `A*`. `g()` is virtual, so at runtime it is dynamically bound to the `g()` of the `B` object that `p` actually points to.
+
+   </details>
+
+2. **Virtual destructor:** Suppose `A` in Question 1 has `~A() { cout << "~A()" << endl; }` and `B` has `~B() { cout << "~B()" << endl; }`. When `delete p;` runs, which destructors run and in what order? Answer for the case where `~A()` is non-virtual and the case of `virtual ~A()`.
+
+   <details>
+   <summary>Answer</summary>
+
+   If `~A()` is non-virtual, the destructor call is also statically bound by the pointer type, so typical compilers run only `~A()` and not `~B()` (undefined behavior under the standard). With `virtual ~A()`, dynamic binding runs `~B()` first, and `~A()` runs after `~B()` finishes.
+
+   </details>
+
+3. **Identifying abstract classes:** Choose every declaration below that causes a compile error and explain why.
+
+   ```cpp
+   class Shape {
+   public:
+       virtual void draw() = 0;
+       virtual double area() = 0;
+   };
+   class Circle : public Shape {
+   public:
+       void draw() override { }
+       double area() override { return 0; }
+   };
+   class Half : public Shape {
+   public:
+       void draw() override { }
+   };
+
+   Shape s;          // (a)
+   Circle c;         // (b)
+   Half h;           // (c)
+   Shape* p = &c;    // (d)
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) and (c) are compile errors. `Shape` is an abstract class with pure virtual functions, so no object of it can be created. `Half` does not override `area()`, so it is still abstract. `Circle` is a concrete class that implements both pure virtual functions, so (b) is fine, and a pointer to an abstract class can be declared, so (d) is also fine.
+
+   </details>
+
+4. **Overriding conditions:** When `Base` has `virtual void f(int);`, is each of the following declarations in `Derived` an override, a compile error, or a new function (hiding)? (a) `void f(int);` (b) `int f(int);` (c) `void f(double);`
+
+   <details>
+   <summary>Answer</summary>
+
+   (a) is an override. The name, parameters, and return type all match, and the `virtual` keyword is inherited, so the function is virtual even without it. (b) has the same parameters and differs only in return type, so it is a compile error. (c) has different parameters, so it is a new function rather than an override, and it hides `Base::f(int)` in the scope of `Derived`.
+
+   </details>
+
+5. **Scope resolution operator:** In the example of Section 2.10, what happens when `pShape->draw()` runs if `Shape::draw();` inside `Circle::draw()` is changed to `draw();`?
+
+   <details>
+   <summary>Answer</summary>
+
+   `draw()` inside `Circle::draw()` is the same as `this->draw()`, and `draw()` is virtual, so dynamic binding calls `Circle::draw()` itself again. This becomes infinite recursion with no termination condition, and the program eventually terminates abnormally with a stack overflow. To run the base class version, static binding must be requested with the scope resolution operator, as in `Shape::draw()`.
+
+   </details>
 
 ---
