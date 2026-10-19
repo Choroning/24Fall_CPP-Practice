@@ -22,16 +22,14 @@ This repository archives bilingual lecture notes and coursework for the Computer
 <br><a name="about-this-repository"></a>
 ## 📝 About This Repository
 
-This repository contains the lecture notes, exercises, and C++ code written for a university-level C++ programming course.
-
-- `Lecture-Notes/` holds, for each chapter, lecture notes that organize the key concepts (`Concepts_Lecture`), and Chapters 3-10 also hold exercises that transcribe the instructor's lab problems for each chapter (`Exercises`) and their solutions (`Solutions`). The units follow the chapter numbers (Chapters 1-10) of the textbook, 명품 C++ Programming, and are numbered `Ch01`-`Ch10`.
-- Every lecture note, exercise set, and solution set comes as an English file (`.md`) and a Korean file (`.ko.md`) with the same structure.
-- `Coursework/` holds the author's own C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`), and the solutions (`Solutions`) of each unit explain this code.
-- The lab code files carry **Doxygen-style headers** that record the problem title, author, and date.
-- All lab code was compiled under the C++11 and C++17 standards.
+- `Lecture-Notes/` holds a lecture note for each chapter, and Chapters 3-10 also hold exercises transcribed from the lab problems with their solutions.
+- `Coursework/` holds the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
+- Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
+- All lab code was compiled and checked with C++11 and C++17.
 
 > **🤖 AI Agent Usage**
-> [Claude Code](https://claude.ai/download) was used to organize and translate the lecture notes and exercises, to write the explanations in the solutions, and to restructure the repository. The lab code was written by the author.
+> [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
+> The lab code was written by the author.
 
 <br><a name="course-information"></a>
 ## 📚 Course Information
@@ -46,14 +44,14 @@ This repository contains the lecture notes, exercises, and C++ code written for 
 
 ### Course Overview
 
-A general studies course on the fundamentals of C++, an object-oriented programming language, and on how to program in it. Starting from the differences between C++ and C, it studies the concepts of classes and inheritance at the core of object-oriented programming, and the lectures, centered on the textbook, aim at an understanding of the three basic concepts of object-oriented languages: encapsulation, inheritance, and polymorphism. Following Chapters 1-10 of the textbook, it covers getting started with C++ and the basics of C++ programming, classes and objects, object pointers, object arrays, and dynamic creation, functions, references, and copy constructors, function overloading and static members, friends and operator overloading, inheritance, virtual functions and abstract classes, and templates and the STL. Classes consist of theory lectures, labs, and quizzes, and students complete theory homework (solving the textbook exercises) and lab assignments for each chapter. Computer Language and Training Ⅱ is a C++ lab course taken in the same semester, and the lecture notes and lab code in this repository are based on the lecture slides and lab assignments of Computer Language Ⅱ. The instructor, schedule and class format, assessment, course policies, weekly plan and progress, and references are in the [course information document](Course-Information.md).
+A general studies course on the fundamentals of C++ and object-oriented programming (encapsulation, inheritance, and polymorphism), with Computer Language and Training Ⅱ as its linked lab course in the same semester. The instructors, schedule, assessment, course policies, and progress are in the [course information document](Course-Information.md).
 
 <br><a name="prerequisites"></a>
 ## ✅ Prerequisites
 
-- A basic understanding of programming concepts is required. The syllabus designates Computer Language 1 and Computer Language 1 Lab as required prerequisites.
-- A C++ compiler (e.g., GCC, Clang, MSVC) must be installed. Compiling the lab code in this repository requires a compiler that supports C++11 or later.
-- Familiarity with command-line tools and an IDE (Visual Studio, VS Code, etc.) is required.
+- Basic understanding of programming concepts
+- C++ compiler (e.g., GCC, Clang, MSVC) installed
+- Familiarity with command-line tools
 
 - **💻 Development Environment**
 
