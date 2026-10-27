@@ -92,7 +92,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, 반지름 `radius`를 `private` 멤버 변수로 둔다. `public` 아래에는 생성자와 `show()`를 두고, `friend` 키워드로 클래스 밖의 `+` 연산자 함수가 `private` 멤버에 접근할 수 있게 하였다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, 반지름 `radius`를 `private` 멤버 변수로 둔다. `public` 아래에는 생성자와 `show()`를 두고, `friend` 키워드로 클래스 밖의 `+` 연산자 함수가 `private` 멤버에 접근할 수 있게 하였다.
 
 - **생성자:** 반지름 `radius`를 받으며 디폴트 값은 0이다. `this->radius = radius;`로 매개변수의 값을 멤버 변수에 대입한다.
 - **`show()`:** `radius = 5 인 원`처럼 반지름을 출력한다.

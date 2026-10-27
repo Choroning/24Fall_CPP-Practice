@@ -97,22 +97,22 @@
 
 | Week | Class Dates (Tue, Wed) | Planned Topic | Lecture Decks Covered |
 |:-----|:-----|:-----|:-----|
-| 1 | 9/3, 9/4 | Getting started with C++ (textbook Ch 1) | 1장 C++ 시작 (Getting Started with C++) |
-| 2 | 9/10, 9/11 | Basics of C++ programs (1), C language review (1) - data types (textbook Ch 2) | No class<br>2장 C++ 프로그래밍의 기본 (Basics of C++ Programming) |
-| 3 | 9/17, 9/18 | Basics of C++ programs (2), C language review (2) - operators & control statements | No class<br>3장 클래스와 객체 (Classes and Objects) |
-| 4 | 9/24, 9/25 | Concepts of classes and objects, C language review (3) - functions & arrays (textbook Ch 3) | [실습과제1] 3장 1번 & 4번 (Lab Assignment 1: Chapter 3 Problems 1 and 4)<br>Theory homework for Chapters 1-2 |
-| 5 | 10/1, 10/2 | C language review (4) - pointers, constructors and destructors (textbook Ch 3) | Makeup classes (10/1, 10/2)<br>4장 객체포인터, 배열, 동적생성 (Object Pointers, Arrays, and Dynamic Creation)<br>5장 함수와 참조, 복사생성자 (Functions and References, Copy Constructors)<br>6장 함수 중복과 static 멤버 (Function Overloading and static Members)<br>Theory homework for Chapter 3 |
-| 6 | 10/8, 10/9 | Object pointers (textbook Ch 4) | Makeup class (10/9)<br>Chapter 4 lab assignment (Chapter 4 Problems 4 and 12)<br>Theory homework for Chapter 4 |
-| 7 | 10/15, 10/16 | Dynamic allocation (textbook Ch 4) | 5장 실습(2024) (Chapter 5 Lab (2024))<br>Theory homework for Chapter 5 |
-| 8 | 10/22, 10/23 | Midterm Exam | Midterm exam |
-| 9 | 10/29, 10/30 | string objects (textbook Ch 4) | [6장 실습] static 멤버와 디폴트매개변수 (Chapter 6 Lab: static Members and Default Parameters)<br>Theory homework for Chapter 6 |
-| 10 | 11/5, 11/6 | Reference parameters, copy constructors (textbook Ch 5) | 7장 프렌드와 연산자 중복 (Friends and Operator Overloading)<br>8장 상속 (Inheritance)<br>9장 가상함수와 추상클래스 (Virtual Functions and Abstract Classes)<br>10장 템플릿과 STL (Templates and STL)<br>[7장 실습1] 멤버함수를 이용한 유리수 클래스 연산자 중복 (Chapter 7 Lab 1: Operator Overloading for a Rational Number Class with Member Functions) |
-| 11 | 11/12, 11/13 | Function polymorphism and static members (textbook Ch 6) | [7장 실습2] 프렌드 함수를 이용한 복소수 클래스 연산자 중복 (Chapter 7 Lab 2: Operator Overloading for a Complex Number Class with Friend Functions)<br>[7장 실습3] Time 클래스 연산자 중복 (Chapter 7 Lab 3: Operator Overloading for the Time Class)<br>Theory homework for Chapter 7 |
-| 12 | 11/19, 11/20 | Friend functions and operator overloading (textbook Ch 7) | [8장 실습] ColorPoint & Student (Chapter 8 Lab: ColorPoint & Student)<br>Theory homework for Chapter 8<br>Inheritance types quiz |
-| 13 | 11/26, 11/27 | Inheritance (1) (textbook Ch 8) | [9장 실습] 가상함수(2024) (Chapter 9 Lab: Virtual Functions (2024))<br>Theory homework for Chapter 9 |
-| 14 | 12/3, 12/4 | Inheritance (2) (textbook Ch 8) | [10장 실습] template 실습(2024) (Chapter 10 Lab: Template Practice (2024)) |
-| 15 | 12/10, 12/11 | Virtual functions and abstract classes (textbook Ch 9) | Last lecture |
-| 16 | 12/17, 12/18 | Final Exam | Final exam |
+| W01 | 9/3, 9/4 | Getting started with C++ (textbook Ch 1) | 1장 C++ 시작 (Getting Started with C++) |
+| W02 | 9/10, 9/11 | Basics of C++ programs (1), C language review (1) - data types (textbook Ch 2) | No class<br>2장 C++ 프로그래밍의 기본 (Basics of C++ Programming) |
+| W03 | 9/17, 9/18 | Basics of C++ programs (2), C language review (2) - operators & control statements | No class<br>3장 클래스와 객체 (Classes and Objects) |
+| W04 | 9/24, 9/25 | Concepts of classes and objects, C language review (3) - functions & arrays (textbook Ch 3) | [실습과제1] 3장 1번 & 4번 (Lab Assignment 1: Chapter 3 Problems 1 and 4)<br>Theory homework for Chapters 1-2 |
+| W05 | 10/1, 10/2 | C language review (4) - pointers, constructors and destructors (textbook Ch 3) | Makeup classes (10/1, 10/2)<br>4장 객체포인터, 배열, 동적생성 (Object Pointers, Arrays, and Dynamic Creation)<br>5장 함수와 참조, 복사생성자 (Functions and References, Copy Constructors)<br>6장 함수 중복과 static 멤버 (Function Overloading and static Members)<br>Theory homework for Chapter 3 |
+| W06 | 10/8, 10/9 | Object pointers (textbook Ch 4) | Makeup class (10/9)<br>Chapter 4 lab assignment (Chapter 4 Problems 4 and 12)<br>Theory homework for Chapter 4 |
+| W07 | 10/15, 10/16 | Dynamic allocation (textbook Ch 4) | 5장 실습(2024) (Chapter 5 Lab (2024))<br>Theory homework for Chapter 5 |
+| W08 | 10/22, 10/23 | Midterm Exam | Midterm exam |
+| W09 | 10/29, 10/30 | string objects (textbook Ch 4) | [6장 실습] static 멤버와 디폴트매개변수 (Chapter 6 Lab: static Members and Default Parameters)<br>Theory homework for Chapter 6 |
+| W10 | 11/5, 11/6 | Reference parameters, copy constructors (textbook Ch 5) | 7장 프렌드와 연산자 중복 (Friends and Operator Overloading)<br>8장 상속 (Inheritance)<br>9장 가상함수와 추상클래스 (Virtual Functions and Abstract Classes)<br>10장 템플릿과 STL (Templates and STL)<br>[7장 실습1] 멤버함수를 이용한 유리수 클래스 연산자 중복 (Chapter 7 Lab 1: Operator Overloading for a Rational Number Class with Member Functions) |
+| W11 | 11/12, 11/13 | Function polymorphism and static members (textbook Ch 6) | [7장 실습2] 프렌드 함수를 이용한 복소수 클래스 연산자 중복 (Chapter 7 Lab 2: Operator Overloading for a Complex Number Class with Friend Functions)<br>[7장 실습3] Time 클래스 연산자 중복 (Chapter 7 Lab 3: Operator Overloading for the Time Class)<br>Theory homework for Chapter 7 |
+| W12 | 11/19, 11/20 | Friend functions and operator overloading (textbook Ch 7) | [8장 실습] ColorPoint & Student (Chapter 8 Lab: ColorPoint & Student)<br>Theory homework for Chapter 8<br>Inheritance types quiz |
+| W13 | 11/26, 11/27 | Inheritance (1) (textbook Ch 8) | [9장 실습] 가상함수(2024) (Chapter 9 Lab: Virtual Functions (2024))<br>Theory homework for Chapter 9 |
+| W14 | 12/3, 12/4 | Inheritance (2) (textbook Ch 8) | [10장 실습] template 실습(2024) (Chapter 10 Lab: Template Practice (2024)) |
+| W15 | 12/10, 12/11 | Virtual functions and abstract classes (textbook Ch 9) | Last lecture |
+| W16 | 12/17, 12/18 | Final Exam | Final exam |
 
 - The planned topics follow the weekly content of the syllabus. The syllabus planned Professionalism as the core competency for weeks 1-3 and Professionalism and Problem Solving for weeks 4-7 and 9-15.
 - Unlike the syllabus, the old version of the course Time Table planned the progress in chapter order without the C language review, from Chapter 1 in week 1 to Chapter 10 in week 15. It spread nine theory homework assignments (solving the chapter exercises) and ten lab assignments over weeks 2-15, and placed the midterm exam in week 8 and the final exam in week 16.

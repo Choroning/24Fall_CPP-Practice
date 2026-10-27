@@ -2,7 +2,9 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
+
+**Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
 ---
 

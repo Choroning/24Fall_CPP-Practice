@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 1
 
@@ -458,6 +458,8 @@ The process of creating a C++ program follows the four phases below.
 The extensions `.obj` and `.exe` are those of Windows (Visual Studio). On Linux and macOS, object files have the extension `.o`, and executables are built without an extension (named `a.out` if no name is given).
 
 > **Key Point:** Compilation and linking are separate stages. The compiler translates one source file at a time into an object file. The linker then combines all object files (and libraries) into a single executable.
+
+> **[Systems Programming]** The linker, studied in systems programming, collects the symbols (functions and global variables) that each object file defines and references, finds for each reference the object file or library that defines the symbol (symbol resolution), and places the code and data in the executable while fixing each reference to an actual address (relocation). The link error of Section 4.2 arises when a reference is left whose definition this symbol resolution cannot find.
 
 ### 4.2 Error Types
 

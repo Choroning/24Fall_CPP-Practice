@@ -12,6 +12,16 @@
 
 <br>
 
+## Table of Contents
+
+- [Exercise 1: Class with a Dynamic Array](#exercise-1-class-with-a-dynamic-array)
+- [Exercise 2: Dynamic Creation and Destruction of Objects](#exercise-2-dynamic-creation-and-destruction-of-objects)
+- [Textbook Theory Problems](#textbook-theory-problems)
+
+---
+
+<br>
+
 ## Exercise 1: Class with a Dynamic Array
 
 **Textbook Problem:** Chapter 4 programming exercise 4
@@ -173,7 +183,7 @@ int Rect::getArea() {
 
 ### Theory Problem 2
 
-We want to write code that reads a width and a height from the user, creates a `Rect` object dynamically, and prints its area. Fill in the blanks (1)-(3) as described below.
+The goal is to write code that reads a width and a height from the user, creates a `Rect` object dynamically, and prints its area. Fill in the blanks (1)-(3) as described below.
 
 ```cpp
 int main() {
@@ -291,7 +301,7 @@ Which header file is needed to use the `string` class?
 
 ### Theory Problem 18
 
-We want to handle strings. Which statement about C-strings and the `string` class is wrong?
+Consider handling strings. Which statement about C-strings and the `string` class is wrong?
 
 - ① A C-string represents a string with an array of characters.
 - ② The `string` class turns a string into an object, so it is easier to use than a C-string.

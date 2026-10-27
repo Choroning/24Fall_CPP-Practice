@@ -3,6 +3,10 @@
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
 > **Last Updated:** 2026-10-27
+>
+> 명품 C++ Programming, 황기태, Ch 9
+
+**Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
 ---
 
@@ -315,7 +319,7 @@ int main() {
 
 **Answer:** ②
 
-Redefining in a derived class a function with the same name, parameter list, and return type as a virtual function of the base class is called **overriding** ([Section 2](Concepts_Lecture.md#2-virtual-functions)). Overloading is having several functions with the same name and different parameters in the same scope, `virtual` is the keyword that declares a virtual function, and dynamic binding is the process of deciding at run time which of the overridden virtual functions to execute.
+Redefining in a derived class a function with the same name, parameter list, and return type as a virtual function of the base class is called **overriding** ([Chapter 9, Section 2](Concepts_Lecture.md#2-virtual-functions)). Overloading is having several functions with the same name and different parameters in the same scope, `virtual` is the keyword that declares a virtual function, and dynamic binding is the process of deciding at run time which of the overridden virtual functions to execute.
 
 ### Theory Problem 4
 
@@ -337,7 +341,7 @@ All three let the same name or symbol behave differently depending on the situat
 `f()` of `A` is declared `virtual`, and a function that redefines, with the same type, a function declared virtual in a base class automatically becomes a virtual function even without `virtual`. So `f()` of `B` and of `C` are virtual functions as well. `func()` is an ordinary member function without `virtual`.
 
 - **(2) `c.f();`:** The type of the object `c` is `C`, so `C::f()` is called.
-- **(3) `pb->f();`, (4) `pa->f();`:** `pa` and `pb` are an `A*` and a `B*`, but the object they actually point to is a `C` and `f()` is a virtual function, so `C::f()` is called through dynamic binding ([Section 2.4](Concepts_Lecture.md#24-static-vs-dynamic-binding)).
+- **(3) `pb->f();`, (4) `pa->f();`:** `pa` and `pb` are an `A*` and a `B*`, but the object they actually point to is a `C` and `f()` is a virtual function, so `C::f()` is called through dynamic binding ([Chapter 9, Section 2.4](Concepts_Lecture.md#24-static-vs-dynamic-binding)).
 - **(5) `pa->func();`:** `func()` is an ordinary function of `A`, so `A::func()` runs, but the call to `f()` inside it is `this->f()`, a virtual function call. The object `this` points to is a `C`, so `C::f()` is called.
 
 ### Theory Problem 8
@@ -346,7 +350,7 @@ All three let the same name or symbol behave differently depending on the situat
 
 **Answer:** (1) `::f();` (2) `A::f();` (3) `f();`
 
-Inside a member function of `B`, the name `f` is first looked up among the members of its own class, `B::f()`, so writing only `f()` calls its own member function, as in (3). To call the function in the global scope, `::f()` is written with nothing before the scope resolution operator. To call the base class version, the scope is given by the class name, as in `A::f()`, and such a qualified call directly calls `A::f()` without dynamic binding, even for a virtual function ([Section 2.10](Concepts_Lecture.md#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)).
+Inside a member function of `B`, the name `f` is first looked up among the members of its own class, `B::f()`, so writing only `f()` calls its own member function, as in (3). To call the function in the global scope, `::f()` is written with nothing before the scope resolution operator. To call the base class version, the scope is given by the class name, as in `A::f()`, and such a qualified call directly calls `A::f()` without dynamic binding, even for a virtual function ([Chapter 9, Section 2.10](Concepts_Lecture.md#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)).
 
 ### Theory Problem 10
 
@@ -362,7 +366,7 @@ Inside a member function of `B`, the name `f` is first looked up among the membe
 virtual ~Person() { cout << "id=" << id << endl; }
 ```
 
-In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and in this environment only `~Person()` ran. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
+In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and in this environment only `~Person()` ran. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Chapter 9, Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
 
 ### Theory Problem 12
 
@@ -370,7 +374,7 @@ In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtu
 
 **Answer:** ③
 
-A pure virtual function is a member function of a class declared as in `virtual void draw() = 0;`, so an external function that does not belong to a class cannot be a pure virtual function. The others are correct. A class with even one pure virtual function is an abstract class (①), a pure virtual function has no body and fixes the form of a function that derived classes must implement (②), and when it is called through a pointer or reference to the base class, dynamic binding runs the function implemented by the derived class (④) ([Section 4](Concepts_Lecture.md#4-abstract-classes)).
+A pure virtual function is a member function of a class declared as in `virtual void draw() = 0;`, so an external function that does not belong to a class cannot be a pure virtual function. The others are correct. A class with even one pure virtual function is an abstract class (①), a pure virtual function has no body and fixes the form of a function that derived classes must implement (②), and when it is called through a pointer or reference to the base class, dynamic binding runs the function implemented by the derived class (④) ([Chapter 9, Section 4](Concepts_Lecture.md#4-abstract-classes)).
 
 ### Theory Problem 14
 

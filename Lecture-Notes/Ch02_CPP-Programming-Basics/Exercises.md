@@ -12,6 +12,14 @@
 
 <br>
 
+## Table of Contents
+
+- [Textbook Theory Problems](#textbook-theory-problems)
+
+---
+
+<br>
+
 ## Textbook Theory Problems
 
 **Textbook:** Even-numbered theory problems of the Chapter 2 exercises
@@ -155,7 +163,7 @@ In standard C++, in which header file are the `cin` and `cout` objects declared?
 
 ### Theory Problem 20
 
-We want to write code that produces the following output. Complete the following C++ program.
+The goal is to write code that produces the following output. Complete the following C++ program.
 
 ```cpp
 #include <iostream>

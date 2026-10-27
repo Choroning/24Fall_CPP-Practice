@@ -29,7 +29,6 @@ This repository archives bilingual lecture notes and coursework for the Computer
 
 > **🤖 AI Agent Usage**
 > [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
-> The lab code was written by the author.
 
 <br><a name="course-information"></a>
 ## 📚 Course Information

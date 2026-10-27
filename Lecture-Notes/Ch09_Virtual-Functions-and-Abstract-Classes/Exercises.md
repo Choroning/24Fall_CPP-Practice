@@ -3,8 +3,20 @@
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
 > **Last Updated:** 2026-10-27
+>
+> 명품 C++ Programming, 황기태, Ch 9
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
+
+---
+
+<br>
+
+## Table of Contents
+
+- [Exercise 1: Student Grade Management with Virtual Functions](#exercise-1-student-grade-management-with-virtual-functions)
+- [Exercise 2: Unit Conversion with Virtual Functions](#exercise-2-unit-conversion-with-virtual-functions)
+- [Textbook Theory Problems](#textbook-theory-problems)
 
 ---
 

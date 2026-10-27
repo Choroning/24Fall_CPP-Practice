@@ -185,7 +185,7 @@ The member variable `ar[4]`, the two constructors, and `show()` of the `Matrix` 
 
 In the member function version of (1), the `Matrix` object that is the left operand is `this`, so the only parameter is the array, the right operand.
 
-- **`int* operator >> (int op[])`:** copies the four elements of `ar` into `op` and returns `op`. The parameter `int op[]` is really a pointer `int*`, so the values are stored in the array `x` of `main()` itself.
+- **`int* operator >> (int op[])`:** copies the four elements of `ar` into `op` and returns `op`. The parameter `int op[]` is in fact a pointer `int*`, so the values are stored in the array `x` of `main()` itself.
 - **`Matrix& operator << (int op[])`:** copies the four elements of `op` into `ar` and returns a reference to `*this`.
 
 The friend function version of (2) is in the block comment inside the class (lines 41-52). A friend function has no `this`, so it receives the `Matrix` that is the left operand as the first parameter `op1` and the array as the second parameter `op2`. Although the bodies are defined inside the class, a function marked `friend` is not a member function, and it accesses `private` members through its parameters, as in `op1.ar` ([Chapter 7, Section 2.4](../../Lecture-Notes/Ch07_Friend-Functions-and-Operator-Overloads/Concepts_Lecture.md#24-member-function-vs-friend-function-decision-guide)).

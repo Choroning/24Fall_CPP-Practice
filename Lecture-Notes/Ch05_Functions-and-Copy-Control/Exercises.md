@@ -12,6 +12,17 @@
 
 <br>
 
+## Table of Contents
+
+- [Exercise 1: Various Ways to Call a Function](#exercise-1-various-ways-to-call-a-function)
+- [Exercise 2: Call by Reference and Reference Return](#exercise-2-call-by-reference-and-reference-return)
+- [Exercise 3: Copy Constructor](#exercise-3-copy-constructor)
+- [Textbook Theory Problems](#textbook-theory-problems)
+
+---
+
+<br>
+
 ## Exercise 1: Various Ways to Call a Function
 
 **Textbook Problem:** Chapter 5 programming exercises 1 and 5

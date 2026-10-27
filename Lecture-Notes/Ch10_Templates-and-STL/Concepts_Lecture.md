@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -990,6 +990,8 @@ freq["banana"] = 5;
 
 *Table 8. Comparison of map and unordered_map*
 
+> **[Data Structures]** A binary search tree, studied in data structures, keeps smaller keys in the left subtree and larger keys in the right subtree of each node, so an inorder traversal yields the keys in order, and a balanced binary search tree such as a red-black tree keeps its height at O(log n), so search, insertion, and deletion finish in O(log n). A hash table converts a key into a bucket number with a hash function and reaches it in O(1) on average, but slows down to O(n) when many keys fall into one bucket, so the differences in ordering and search time between `map` and `unordered_map` in Table 8 come from these properties of the two data structures.
+
 ### 6.3 set
 
 `set<T>` stores **unique elements** in sorted order. It is internally implemented as a balanced binary search tree.
@@ -1928,7 +1930,7 @@ template class MyTemplate<int>;      // generate all members of MyTemplate<int> 
 template class MyTemplate<double>;   // also generate MyTemplate<double>
 ```
 
-In this case, using `MyTemplate` with any type other than the explicitly instantiated `int` and `double` causes a linker error again.
+In this case, using `MyTemplate` with any type other than the explicitly instantiated `int` and `double` causes a link error again.
 
 ### 10.2 Common Errors
 
@@ -2123,7 +2125,7 @@ for (const auto& x : names) {
 | `stack` / `queue` | They are LIFO and FIFO container adapters that provide `push`, `pop`, and `top` or `front`. |
 | `priority_queue` | It is a max-heap by default and becomes a min-heap with `greater<>`, which is useful for top-K problems. |
 | `pair` | `pair<T1,T2>` is compared lexicographically, so it works well with `sort`. |
-| Templates in headers | The full template definition must be in the header, and separating it into a `.cpp` file without explicit instantiation causes linker errors. |
+| Templates in headers | The full template definition must be in the header, and separating it into a `.cpp` file without explicit instantiation causes link errors. |
 | Iterator invalidation | `insert` and `erase` on a vector invalidate iterators, so update the iterator with the return value of `erase()`. |
 | `map[]` creates entries | Check existence with `find()` or `count()`, not with `[]`, which creates an entry. |
 | Copy vs reference in for | `for(auto x:v)` traverses by copy, `for(auto& x:v)` by reference, and `for(const auto& x:v)` by read-only reference. |
@@ -2188,7 +2190,7 @@ for (const auto& x : names) {
 
    </details>
 
-5. **Templates and linker errors:** If the member function definitions of the class template `MyTemplate` are only in `MyTemplate.cpp` and `main.cpp` uses `MyTemplate<int>`, what error occurs? Give the reason and two ways to fix it.
+5. **Templates and link errors:** If the member function definitions of the class template `MyTemplate` are only in `MyTemplate.cpp` and `main.cpp` uses `MyTemplate<int>`, what error occurs? Give the reason and two ways to fix it.
 
    <details>
    <summary>Answer</summary>

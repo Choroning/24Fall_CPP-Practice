@@ -289,7 +289,7 @@ When the source file is UTF-8, `strlen("C++가이드")` is 12 and `strlen("Java�
 
 **Answer:** ①
 
-Call by value copies the value of the actual argument into the parameter. For a built-in type such as `int` the copying cost is small, but passing an object by value runs the copy constructor to create the parameter object, and the destructor of that object also runs when the function ends. The larger the object, the more time and stack space the copying of its members takes ([Section 2.1](Concepts_Lecture.md#21-passing-an-object-by-value)).
+Call by value copies the value of the actual argument into the parameter. For a built-in type such as `int` the copying cost is small, but passing an object by value runs the copy constructor to create the parameter object, and the destructor of that object also runs when the function ends. The larger the object, the more time and stack space the copying of its members takes ([Chapter 5, Section 2.1](Concepts_Lecture.md#21-passing-an-object-by-value)).
 
 - **② Call by address:** It copies only one pointer value (an address), so the cost is constant regardless of the size of the object.
 - **③ Call by reference:** The parameter becomes an alias of the actual argument, so the object is not copied. Compilers usually implement it by passing an address, so the cost is similar to call by address.
@@ -303,7 +303,7 @@ Call by value copies the value of the actual argument into the parameter. For a 
 
 (1) When a function parameter is declared with an array type, the compiler adjusts the type to a pointer to the element type. So `int p[]` is exactly the same type as `int *p`, and both declarations declare the same function, `void f(int*)`. Defining the bodies of both is not overloading but defining the same function twice, which gives the error `redefinition of 'f'`. Even with a size, as in `int p[10]`, the size is ignored. The array notation `p[]` only shows the reader the intent that the starting address of an array is passed.
 
-(2) `int *p` is a pointer parameter, so passing an address, as in `f(&n)`, is call by address, while `int &p` is a reference parameter, so passing a variable, as in `f(n)`, makes `p` an alias of `n`, which is call by reference. The former handles the pointed-to value through `*p`, and the latter handles the original directly through the alias `p` ([Section 1.4](Concepts_Lecture.md#14-from-c-to-c-pointers-vs-references)). The parameter types (`int*` and `int&`) differ, so the two are different functions, and defining both in one program is valid overloading. In that case `f(&n)` calls the pointer version and `f(n)` the reference version.
+(2) `int *p` is a pointer parameter, so passing an address, as in `f(&n)`, is call by address, while `int &p` is a reference parameter, so passing a variable, as in `f(n)`, makes `p` an alias of `n`, which is call by reference. The former handles the pointed-to value through `*p`, and the latter handles the original directly through the alias `p` ([Chapter 5, Section 1.4](Concepts_Lecture.md#14-from-c-to-c-pointers-vs-references)). The parameter types (`int*` and `int&`) differ, so the two are different functions, and defining both in one program is valid overloading. In that case `f(&n)` calls the pointer version and `f(n)` the reference version.
 
 ### Theory Problem 6
 
@@ -336,7 +336,7 @@ In `square(m, 3)`, the array name `m` is converted to the address of its first e
 - (3) `{0, 2, 4, 6, 8, 10, 12, 14, 16, 18}` (unchanged)
 - (4) `{0, 2, 4, 6, 0, 10, 12, 14, 16, 18}`
 
-`f(n)` returns a reference to `array[n]`, so the call expression `f(n)` itself becomes an alias of `array[n]` and can appear on the left side of an assignment. `array` is a global array that still exists after the function ends, so, unlike returning a reference to a local variable, this is safe ([Section 3.3](Concepts_Lecture.md#33-reference-return)).
+`f(n)` returns a reference to `array[n]`, so the call expression `f(n)` itself becomes an alias of `array[n]` and can appear on the left side of an assignment. `array` is a global array that still exists after the function ends, so, unlike returning a reference to a local variable, this is safe ([Chapter 5, Section 3.3](Concepts_Lecture.md#33-reference-return)).
 
 - **(1):** `f(9)` is `array[9]`, so 100 is stored in `array[9]`.
 - **(2):** `i` goes from 1 to 8, running `array[i] = array[i] + 2`. Only elements 1-8 grow by 2, and element 0 (0) and element 9 (18) stay the same.
@@ -351,7 +351,7 @@ In `square(m, 3)`, the array name `m` is converted to the address of its first e
 
 **Answer:** `x` stays 1 and `y` becomes 100. `z = 100;` through the reference returned by `big1()` cannot change `x` or `y` and is undefined behavior, and `w = 100;` through the reference returned by `big2()` changes `y` to 100.
 
-- **`big1(x, y)`:** It is call by value, so the values of `x` and `y` are copied into the local parameters `a` (1) and `b` (2). `a > b` is false, so it returns a reference to `b`, but `b` is a local variable that disappears when the function ends. So `z` becomes a dangling reference to space that no longer exists, and `z = 100;` is undefined behavior ([Section 5.1](Concepts_Lecture.md#51-returning-reference-to-local-variable)). `a` and `b` were copies, so this assignment does not change `x` or `y`. The compiler also warns about this function with `reference to stack memory associated with parameter 'b' returned` (and the same warning for `a`).
+- **`big1(x, y)`:** It is call by value, so the values of `x` and `y` are copied into the local parameters `a` (1) and `b` (2). `a > b` is false, so it returns a reference to `b`, but `b` is a local variable that disappears when the function ends. So `z` becomes a dangling reference to space that no longer exists, and `z = 100;` is undefined behavior ([Chapter 5, Section 5.1](Concepts_Lecture.md#51-returning-reference-to-local-variable)). `a` and `b` were copies, so this assignment does not change `x` or `y`. The compiler also warns about this function with `reference to stack memory associated with parameter 'b' returned` (and the same warning for `a`).
 - **`big2(x, y)`:** It is call by reference, so `a` and `b` are aliases of `x` and `y`. `a > b` is false, so it returns a reference to `b`, that is, to `y`, and `int& w = big2(x, y);` makes `w` an alias of `y`. So running `w = 100;` makes `y` 100. `x` stays 1.
 
 The difference between the two functions is the lifetime of what the returned reference refers to. To return a reference, its target must live longer than the function, so returning a reference parameter bound to the caller's variable, as `big2()` does, is correct, and returning a value parameter by reference, as `big1()` does, is wrong. Running it with `g++ -std=c++17 -Wall` prints `x=1`, `y=2` after `big1()` and `x=1`, `y=100` after `big2()`, and `&w` equals `&y`.
@@ -362,7 +362,7 @@ The difference between the two functions is the lifetime of what the returned re
 
 **Answer:** ②
 
-`void f(MyClass *p);` is a function that receives the address of an object, so calling it as `f(&a)` copies only a pointer value and creates no new object. The copy constructor therefore does not run ([Section 2.2](Concepts_Lecture.md#22-passing-an-object-by-address-and-by-reference)).
+`void f(MyClass *p);` is a function that receives the address of an object, so calling it as `f(&a)` copies only a pointer value and creates no new object. The copy constructor therefore does not run ([Chapter 5, Section 2.2](Concepts_Lecture.md#22-passing-an-object-by-address-and-by-reference)).
 
 - **① `MyClass a = f();`:** If `f()` returns an object by value, a copy of the returned object is made and `a` is initialized with it, so the copy constructor is used.
 - **③ `MyClass b = a;`:** A new object is initialized with an object of the same type, so the copy constructor is called.
@@ -376,7 +376,7 @@ The difference between the two functions is the lifetime of what the returned re
 
 **Answer:** ①
 
-The textbook explains that the parameter of a copy constructor is a single reference to its own class and that only one copy constructor can be declared in a class ([Section 4.1](Concepts_Lecture.md#41-concept)). By this rule, choice ①, which says that copy constructors can be declared by overloading, is the wrong statement.
+The textbook explains that the parameter of a copy constructor is a single reference to its own class and that only one copy constructor can be declared in a class ([Chapter 5, Section 4.1](Concepts_Lecture.md#41-concept)). By this rule, choice ①, which says that copy constructors can be declared by overloading, is the wrong statement.
 
 > **Note:** The textbook's rule is a simplification. In standard C++, a copy constructor is a constructor whose first parameter is one of `X&`, `const X&`, `volatile X&`, and `const volatile X&` and whose other parameters are absent or all have default values. The form of the parameter is therefore not fixed to one, and `X(X&)` and `X(const X&)` can be declared together in one class. In that case `X c(a);` calls `X(X&)`, which fits the non-`const` object `a` better, and `X d(b);` calls `X(const X&)`, which can accept the `const` object `b`. Real code usually keeps only the `const X&` version.
 
@@ -394,8 +394,8 @@ Student(const Student& s) {   // 교재의 표기로는 Student(Student& s)
 }
 ```
 
-The default copy constructor performs member-wise copying, copying the members of the source object one by one as they are, that is, a shallow copy ([Section 4.2](Concepts_Lecture.md#42-default-copy-constructor)). For the pointer members `pName` and `pId`, only the addresses are copied, not the `string` objects they point to, so the source and the copy share the same `string` objects. The textbook writes this constructor without `const`, as `Student(Student& s)`, but all members (the pointers and the `double`) can be copied from a `const` object, so the prototype the compiler actually declares is `Student(const Student& s)`. This can be confirmed by the fact that initializing another `Student` from a `const Student` object compiles.
+The default copy constructor performs member-wise copying, copying the members of the source object one by one as they are, that is, a shallow copy ([Chapter 5, Section 4.2](Concepts_Lecture.md#42-default-copy-constructor)). For the pointer members `pName` and `pId`, only the addresses are copied, not the `string` objects they point to, so the source and the copy share the same `string` objects. The textbook writes this constructor without `const`, as `Student(Student& s)`, but all members (the pointers and the `double`) can be copied from a `const` object, so the prototype the compiler actually declares is `Student(const Student& s)`. This can be confirmed by the fact that initializing another `Student` from a `const Student` object compiles.
 
 Moreover, the copy constructor generated by the compiler does not assign in the body but initializes each member directly from the member of the source. That is, it is the same as writing `Student(const Student& s) : pName(s.pName), pId(s.pId), grade(s.grade) {}` with a member initializer list. For pointer and `double` members, assignment and initialization give the same result, but if there were reference or `const` members, assignment could not be used, so the initializer-list form is the exact description.
 
-> **Caution:** If `Student` allocated `string` objects with `new` in its constructor and released them with `delete` in its destructor, the copy made by the default copy constructor and the source would free the same memory twice when they are destroyed. Such a class needs a deep-copy constructor, written by hand, that allocates and copies the pointed-to contents as well ([Section 4.3](Concepts_Lecture.md#43-shallow-copy-problem)).
+> **Caution:** If `Student` allocated `string` objects with `new` in its constructor and released them with `delete` in its destructor, the copy made by the default copy constructor and the source would free the same memory twice when they are destroyed. Such a class needs a deep-copy constructor, written by hand, that allocates and copies the pointed-to contents as well ([Chapter 5, Section 4.3](Concepts_Lecture.md#43-shallow-copy-problem)).

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -190,6 +190,8 @@ int *q = new int;
 delete q;      // normal deallocation
 delete q;      // error: memory that was already freed cannot be freed again
 ```
+
+> **[Systems Programming]** In systems programming, the address space of a process is divided into code, global data, heap, and stack regions, and the blocks of the heap are managed by a dynamic memory allocator. `new` usually obtains a block from this allocator (the `malloc()` implementation of the C runtime) and `delete` returns the block; the allocator keeps bookkeeping information such as the size and in-use state of each block and hands out returned blocks again, so passing an address that was never allocated or one that was already returned, as in the code above, can corrupt that bookkeeping information.
 
 ### 2.2 Dynamic Objects
 

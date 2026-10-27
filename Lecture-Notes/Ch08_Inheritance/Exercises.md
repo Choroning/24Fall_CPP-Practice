@@ -12,6 +12,16 @@
 
 <br>
 
+## Table of Contents
+
+- [Exercise 1: Color and Position of a Point](#exercise-1-color-and-position-of-a-point)
+- [Exercise 2: Student Grade Management](#exercise-2-student-grade-management)
+- [Textbook Theory Problems](#textbook-theory-problems)
+
+---
+
+<br>
+
 ## Exercise 1: Color and Position of a Point
 
 **Problem:** Referring to the example code and the sample run, define the `ColorPoint` class so that `main()` runs correctly. `ColorPoint` is a derived class of `Point`. The problem is based on programming exercises 3 and 4 of Chapter 8 of the textbook.

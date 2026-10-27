@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -495,7 +495,7 @@ Objects (separate copies):
 
 *Table 6. Comparison of non-static and static members*
 
-> **Caution:** Forgetting the definition outside the class (`int Circle::count = 0;`) causes a **linker error**, not a compiler error. The declaration inside the class only announces existence; the definition allocates memory.
+> **Caution:** Forgetting the definition outside the class (`int Circle::count = 0;`) causes a **link error**, not a compiler error. The declaration inside the class only announces existence; the definition allocates memory.
 
 #### `constexpr` vs `const` for Compile-Time Constants
 
@@ -530,7 +530,7 @@ const int n = getValue();
 
 #### Inline Variables for Static Member Initialization in Headers (C++17)
 
-Traditionally, static member variables must be defined (and initialized) outside the class in exactly one `.cpp` file. C++17 introduced **`inline` variables**, which allow you to define and initialize a static member variable **directly inside the class** in a header file without causing multiple-definition linker errors.
+Traditionally, static member variables must be defined (and initialized) outside the class in exactly one `.cpp` file. C++17 introduced **`inline` variables**, which allow you to define and initialize a static member variable **directly inside the class** in a header file without causing multiple-definition link errors.
 
 ```cpp
 // Traditional approach (pre-C++17): requires separate definition in .cpp file
@@ -548,7 +548,7 @@ public:
 // No separate .cpp definition needed!
 ```
 
-This simplifies header-only libraries and removes a common source of linker errors.
+This simplifies header-only libraries and removes a common source of link errors.
 
 ### 3.2 Accessing Static Members
 
@@ -804,7 +804,7 @@ int main() {
 | Default and overloading ambiguity | With both `f(int)` and `f(int, int = 10)`, the call `f(5)` is ambiguous, so this pattern should be avoided. |
 | Simplifying overloads with defaults | `Circle()` and `Circle(int r)` can be merged into one `Circle(int r = 1)`, but the merged function cannot coexist with the originals. |
 | Static member variable | It is declared with `static` inside the class, exists once per class, and is shared by all objects. |
-| Static member variable definition | It must be defined outside the class, as in `int ClassName::count = 0;`, and forgetting the definition causes a linker error. |
+| Static member variable definition | It must be defined outside the class, as in `int ClassName::count = 0;`, and forgetting the definition causes a link error. |
 | Static member access | Static members can be accessed through an object name, an object pointer, or `ClassName::member`, while non-static members cannot be accessed through the class name. |
 | Static member function | It has no `this` pointer, so by name alone it can access only static members, and it is called without an object as `ClassName::func()`. |
 | Object counting | Incrementing a static count in the constructor and decrementing it in the destructor counts the living objects. |

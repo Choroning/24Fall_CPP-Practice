@@ -79,7 +79,7 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Accumulator` 클래스는 값을 누적하는 객체를 표현하며, 누적값을 저장하는 `value`를 `private` 멤버로 두어 바깥에서 직접 접근하지 못하게 한다. 클래스에서 접근 지정자 없이 선언한 멤버는 `private`이다. `public` 아래에는 생성자, `add()`, `get()`을 둔다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Accumulator` 클래스는 값을 누적하는 객체를 표현하며, 누적값을 저장하는 `value`를 `private` 멤버로 두어 바깥에서 직접 접근하지 못하게 한다. 클래스에서 접근 지정자 없이 선언한 멤버는 `private`이다. `public` 아래에는 생성자, `add()`, `get()`을 둔다.
 
 - **생성자:** 매개변수 `value`를 멤버 변수 `value`에 대입한다. 두 이름이 같으므로 `this->value`로 멤버 변수를 가리켜 매개변수와 구분한다.
 - **`add(n)`:** 클래스 밖에서 `Accumulator::`를 붙여 정의하였다. `value`에 `n`을 더한 뒤 `*this`, 즉 `add()`를 호출한 객체 자신을 참조로 리턴한다.
@@ -118,7 +118,7 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 
 ### 3.2 설계와 해결 방법
 
-입출력과 문자열 처리를 위해 `<iostream>`과 `<cstring>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Book` 클래스는 책을 표현하며, `private` 멤버로 제목 `title`과 가격 `price`를 둔다. `title`은 제목 문자열을 동적으로 할당받아 그 시작 주소를 저장하는 `char` 포인터이다. `public` 아래에는 생성자, 복사 생성자, 소멸자, `set()`, `show()`를 둔다.
+입출력과 문자열 처리를 위해 `<iostream>`과 `<cstring>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Book` 클래스는 책을 표현하며, `private` 멤버로 제목 `title`과 가격 `price`를 둔다. `title`은 제목 문자열을 동적으로 할당받아 그 시작 주소를 저장하는 `char` 포인터이다. `public` 아래에는 생성자, 복사 생성자, 소멸자, `set()`, `show()`를 둔다.
 
 - **생성자:** 받은 제목의 길이에 문자열 끝의 널 문자 자리 하나를 더한 `strlen(title) + 1`바이트를 `new char []`로 할당하고, `strcpy()`로 제목을 복사한 뒤 가격을 저장한다. 매개변수와 멤버의 이름이 같으므로 `this->`로 멤버를 가리킨다.
 - **복사 생성자:** 원본 객체 `b`의 가격을 복사하고, `b.title`의 길이만큼 새 메모리를 할당하여 문자열의 내용을 복사한다. 원본과 사본이 각자의 메모리를 가지므로 **깊은 복사(deep copy)** 이며, 물음 4)의 답이다([5장 4.5절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#45-깊은-복사)).

@@ -256,7 +256,7 @@ The program compiles without warnings with `g++ -std=c++17 -Wall`, and its outpu
 
 **Answer:** ③
 
-It depends on the use, but in general member variables should be `private`, following the principle of encapsulation, so that outside code cannot change them directly, and only the functionality to be offered to the outside should be made public as `public` member functions ([Section 2.4](Concepts_Lecture.md#24-access-specifiers)). The other statements are correct. An object made from a class is called an entity or an instance (①), a class is a blueprint for making objects (②), and a class consists of member variables and member functions (④).
+It depends on the use, but in general member variables should be `private`, following the principle of encapsulation, so that outside code cannot change them directly, and only the functionality to be offered to the outside should be made public as `public` member functions ([Chapter 3, Section 2.4](Concepts_Lecture.md#24-access-specifiers)). The other statements are correct. An object made from a class is called an entity or an instance (①), a class is a blueprint for making objects (②), and a class consists of member variables and member functions (④).
 
 ### Theory Problem 4
 
@@ -298,7 +298,7 @@ public:
 
 Initializing a member variable in the class declaration, as in `int height = 20;`, is not allowed by the standards before C++11. The initial value is therefore set in the constructor. A constructor has no return type, so it cannot return a value. A `return;` without a value is allowed as a statement that ends the constructor, but at the end of the body it has no meaning, so it is removed.
 
-> **Note:** Since C++11, a **default member initializer** is allowed, so the original code also compiles with `-std=c++11` and later. In that case `height` is first initialized to 20 and then changed to 10 in the constructor body, so the height of the object is 10. Compiling with `-std=c++98` makes Clang warn `default member initializer for non-static data member is a C++11 extension` ([Section 4.4](Concepts_Lecture.md#44-ways-to-initialize-member-variables)).
+> **Note:** Since C++11, a **default member initializer** is allowed, so the original code also compiles with `-std=c++11` and later. In that case `height` is first initialized to 20 and then changed to 10 in the constructor body, so the height of the object is 10. Compiling with `-std=c++98` makes Clang warn `default member initializer for non-static data member is a C++11 extension` ([Chapter 3, Section 4.4](Concepts_Lecture.md#44-ways-to-initialize-member-variables)).
 
 ### Theory Problem 8
 
@@ -323,7 +323,7 @@ When a member function is defined outside the class, the class name and the scop
 
 **Answer:** ③
 
-A destructor cannot have parameters, has no return type, and can be declared only in the single form `~ClassName()`. Destructors therefore cannot be overloaded. A destructor is called automatically when an object is destroyed, so the caller has no way to pass values, and there is no need to ([Section 4.6](Concepts_Lecture.md#46-destructor)). The other parts are correct. If no destructor is declared, the compiler generates a default destructor that does nothing (④).
+A destructor cannot have parameters, has no return type, and can be declared only in the single form `~ClassName()`. Destructors therefore cannot be overloaded. A destructor is called automatically when an object is destroyed, so the caller has no way to pass values, and there is no need to ([Chapter 3, Section 4.6](Concepts_Lecture.md#46-destructor)). The other parts are correct. If no destructor is declared, the compiler generates a default destructor that does nothing (④).
 
 ### Theory Problem 12
 
@@ -331,7 +331,7 @@ A destructor cannot have parameters, has no return type, and can be declared onl
 
 **Answer:** `c` created, `b` created, `a` created, `a` destroyed, `b` destroyed, `c` destroyed
 
-A global object is created before `main()` starts and destroyed after `main()` ends. A local object is created when its declaration statement runs and destroyed when the function it belongs to ends ([Section 4.7](Concepts_Lecture.md#47-execution-order)).
+A global object is created before `main()` starts and destroyed after `main()` ends. A local object is created when its declaration statement runs and destroyed when the function it belongs to ends ([Chapter 3, Section 4.7](Concepts_Lecture.md#47-execution-order)).
 
 | When | What happens |
 |:-----|:-----|
@@ -375,7 +375,7 @@ To change `channels`, add the `public` member function `setChannels()` and call 
 
 **Answer:** ②
 
-An inline function inserts its code at the place of each call, so the overhead of a function call (passing arguments, saving the return address, jumping) disappears and the program runs faster ([Section 5](Concepts_Lecture.md#5-inline-functions)). In exchange, the code is copied at every call site, so the program becomes larger (④ is wrong), and the compiler has more expansion work to do, so compilation does not become faster (① is wrong). It has nothing to do with the time needed to write the program (③ is wrong).
+An inline function inserts its code at the place of each call, so the overhead of a function call (passing arguments, saving the return address, jumping) disappears and the program runs faster ([Chapter 3, Section 5](Concepts_Lecture.md#5-inline-functions)). In exchange, the code is copied at every call site, so the program becomes larger (④ is wrong), and the compiler has more expansion work to do, so compilation does not become faster (① is wrong). It has nothing to do with the time needed to write the program (③ is wrong).
 
 ### Theory Problem 18
 
@@ -401,4 +401,4 @@ public:
 };
 ```
 
-The only difference between a C++ structure and a class is the default access. A structure treats members without an access specifier as `public`, and a class treats them as `private` ([Section 6](Concepts_Lecture.md#6-c-struct)). `count` and `address` in the structure come before any access specifier and are `public`, so in the class they go under `public:`. `tel` was `private` in the structure, so in the class it can simply go first, without an access specifier.
+The only difference between a C++ structure and a class is the default access. A structure treats members without an access specifier as `public`, and a class treats them as `private` ([Chapter 3, Section 6](Concepts_Lecture.md#6-c-struct)). `count` and `address` in the structure come before any access specifier and are `public`, so in the class they go under `public:`. `tel` was `private` in the structure, so in the class it can simply go first, without an access specifier.

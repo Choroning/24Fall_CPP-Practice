@@ -103,7 +103,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, 매크로 상수 `MAX`를 2로 정의하며, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Complex` 클래스는 복소수를 표현한다. 접근 지정자 없이 선언한 `real`과 `image`는 `class`의 기본 접근 지정이 `private`이므로 `private` 멤버가 되고, `public` 아래에 두 생성자와 `setReal()`, `setImage()`, `showC()`를 클래스 안에서 선언과 동시에 정의했다.
+입출력을 위해 `<iostream>`을 포함하고, 매크로 상수 `MAX`를 2로 정의하며, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Complex` 클래스는 복소수를 표현한다. 접근 지정자 없이 선언한 `real`과 `image`는 `class`의 기본 접근 지정이 `private`이므로 `private` 멤버가 되고, `public` 아래에 두 생성자와 `setReal()`, `setImage()`, `showC()`를 클래스 안에서 선언과 동시에 정의했다.
 
 - **기본 생성자:** `real = image = 1;`로 두 멤버를 1로 초기화한다.
 - **매개변수 2개 생성자:** 받은 실수부와 허수부를 각 멤버에 대입한다. 이 `main()`에서는 쓰이지 않는다.
@@ -141,7 +141,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 3.2 설계와 해결 방법
 
-입출력과 문자열 처리를 위해 `<iostream>`과 `<string>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Person` 클래스는 사람을 표현하며, `private` 멤버로 이름 `name`과 나이 `age`를 두고 `public` 아래에 생성자, `introduce()`, `setAge()`를 둔다.
+입출력과 문자열 처리를 위해 `<iostream>`과 `<string>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Person` 클래스는 사람을 표현하며, `private` 멤버로 이름 `name`과 나이 `age`를 두고 `public` 아래에 생성자, `introduce()`, `setAge()`를 둔다.
 
 - **생성자:** `Person(string n, int a) : name(n), age(a) {}`는 **멤버 초기화 리스트(member initializer list)** 로 멤버가 만들어지는 시점에 `name`을 `n`으로, `age`를 `a`로 초기화한다. 생성자 몸체에서 대입하는 방식과 결과는 같다([3장 4.4절](../../Lecture-Notes/Ch03_Classes-and-Objects/Concepts_Lecture.ko.md#44-멤버-변수의-초기화-방법)).
 - **`introduce()`:** 이름과 나이를 넣은 자기소개 문장을 출력한다.
@@ -215,7 +215,7 @@ Input size: 5
 
 ### 5.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Counter` 클래스는 계수기를 표현하며, `private` 멤버 `count`에 현재 값을 저장하고 `public` 아래에 생성자, `increment()`, `decrement()`, `display()`를 둔다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Counter` 클래스는 계수기를 표현하며, `private` 멤버 `count`에 현재 값을 저장하고 `public` 아래에 생성자, `increment()`, `decrement()`, `display()`를 둔다.
 
 - **생성자:** 멤버 초기화 리스트 `: count(0)`으로 `count`를 0으로 초기화한다.
 - **`increment()`, `decrement()`:** `this->count`를 1 늘리거나 줄인 뒤 `this`, 즉 멤버 함수가 호출된 객체의 주소를 `Counter*`로 리턴한다.
