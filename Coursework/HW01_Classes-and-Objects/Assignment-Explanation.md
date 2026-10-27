@@ -40,7 +40,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the class definitions, constructors, and access specifiers of Chapter 3. Q1 and Q2 are Programming Exercises 3 and 5 of Chapter 3 of the textbook, and Q3 is [Problem 1-3] of the Week 4 lecture slides. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW1 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the class definitions, constructors, and access specifiers of Chapter 3. Q1 and Q2 are Programming Exercises 3 and 5 of Chapter 3 of the textbook, and Q3 is [Problem 1-3] of the Week 4 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW1 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW01_Classes-and-Objects/
@@ -63,15 +63,15 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | One warning: `-Wunused-variable`, because `money` in `main()` is never used | Same as the submitted screenshot |
-| `Q2.cpp` | No warnings | Same format; the values are random and change with every run |
-| `Q3.cpp` | No warnings | Same as the submitted screenshot for the same inputs (`-3`, `4`) |
+| File | Compilation |
+|:-----|:-----|
+| `Q1.cpp` | One warning: `-Wunused-variable`, because `money` in `main()` is never used |
+| `Q2.cpp` | No warnings |
+| `Q3.cpp` | No warnings |
 
-*Table 1. Compilation and output of the HW1 solutions*
+*Table 1. Compilation results of the HW1 solutions*
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. None of the three `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the three `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -118,7 +118,7 @@ kitae의 잔액은 55000
 kitae의 잔액은 35000
 ```
 
-The output, which reads "kitae's balance is 55000" and "kitae's balance is 35000" in Korean, matches the sample run of the problem and the submitted screenshot. The `-Wall` warning arises because `main()` stores the return value of `withdraw()` in `money` without using it; this is the code of the `main()` given in the textbook.
+The output, which reads "kitae's balance is 55000" and "kitae's balance is 35000" in Korean, matches the sample run of the problem. The `-Wall` warning arises because `main()` stores the return value of `withdraw()` in `money` without using it; this is the code of the `main()` given in the textbook.
 
 ---
 
@@ -157,7 +157,7 @@ One example of the output on macOS is as follows.
 2 3 3 2 2 2 3 2 2 2 
 ```
 
-In the submitted screenshot the first line is `-- 0에서 32767까지의 랜덤 정수 10개 --` and the numbers have at most five digits. The C standard only requires `RAND_MAX` to be at least 32767; the Microsoft Visual C++ runtime defines it as 32767, while the C libraries of macOS and Linux define it as 2147483647 ($2^{31} - 1$). The same code therefore prints a different first line and a different range of numbers depending on the platform. The numbers on the second line are one of 2, 3, and 4 on every platform. Each line ends with one space because `cout << n << ' ';` appends a space after every number.
+With Visual C++ on Windows, the first line is `-- 0에서 32767까지의 랜덤 정수 10개 --` and the numbers have at most five digits. The C standard only requires `RAND_MAX` to be at least 32767; the Microsoft Visual C++ runtime defines it as 32767, while the C libraries of macOS and Linux define it as 2147483647 ($2^{31} - 1$). The same code therefore prints a different first line and a different range of numbers depending on the platform. The numbers on the second line are one of 2, 3, and 4 on every platform. Each line ends with one space because `cout << n << ' ';` appends a space after every number.
 
 ---
 
@@ -192,7 +192,7 @@ The program includes `<iostream>` for input/output. The `Point` class represents
 
 ### 4.3 Output and Review
 
-With the inputs `-3` and `4`, the program prints the following, which matches the submitted screenshot and the sample run in the slides.
+With the inputs `-3` and `4`, the program prints the following, which matches the sample run of the problem.
 
 ```text
 Input p2.x: -3

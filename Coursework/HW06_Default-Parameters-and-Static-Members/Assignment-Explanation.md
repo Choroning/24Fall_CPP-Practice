@@ -44,7 +44,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the default parameters and static members of Chapter 6. Q1-Q4 are [Lab 2-2], [Lab 2-3], [Lab 3], and [Lab 4] of the Week 11 lecture slides. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW6 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the default parameters and static members of Chapter 6. Q1-Q4 are [Lab 2-2], [Lab 2-3], [Lab 3], and [Lab 4] of the Week 11 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW6 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW06_Default-Parameters-and-Static-Members/
@@ -68,16 +68,16 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | No warnings | Same as the submitted screenshot |
-| `Q3.cpp` | No warnings | Same format; the values are random and change with every run |
-| `Q4.cpp` | No warnings | Same as the submitted screenshot |
+| File | Compilation |
+|:-----|:-----|
+| `Q1.cpp` | No warnings |
+| `Q2.cpp` | No warnings |
+| `Q3.cpp` | No warnings |
+| `Q4.cpp` | No warnings |
 
-*Table 1. Compilation and output of the HW6 solutions*
+*Table 1. Compilation results of the HW6 solutions*
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -120,7 +120,7 @@ The following two points are properties of this design that follow from the rule
 3 32.5 Helen
 ```
 
-The output is the same as the sample run of the slides and the submitted screenshot. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks. The weight 20.5 of `ashley` is the default value placed in the slot of the third argument, which was not passed.
+The output is the same as the sample run of the problem. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks. The weight 20.5 of `ashley` is the default value placed in the slot of the third argument, which was not passed.
 
 ---
 
@@ -172,7 +172,7 @@ Two points can be considered to make the code more robust.
 2
 ```
 
-The output is the same as the sample run of the slides and the submitted screenshot. `delete [] p;` calls the destructors of the elements in the reverse order of construction, `p[1]` and then `p[0]`, decreasing `numPerson` from 4 to 2, so the last line is 2. When `main()` then ends, the destructors of `helen` and `grace` are called in turn and `numPerson` becomes 0, but this value is not printed. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+The output is the same as the sample run of the problem. `delete [] p;` calls the destructors of the elements in the reverse order of construction, `p[1]` and then `p[0]`, decreasing `numPerson` from 4 to 2, so the last line is 2. When `main()` then ends, the destructors of `helen` and `grace` are called in turn and `numPerson` becomes 0, but this value is not printed. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
 
 ---
 
@@ -201,7 +201,7 @@ The program includes `<iostream>`, `<cstdlib>`, and `<ctime>` for input/output, 
 - **`nextAlphabet()`:** If `rand() % 2` is 1, it makes a lowercase letter with `'a' + rand() % 26`; if it is 0, an uppercase letter with `'A' + rand() % 26`. The two expressions have type `int`, but they are converted to the return type `char`, so `cout` prints a character rather than a number.
 - **`nextDouble()`:** converts `rand()` to `(double)` and divides it by `RAND_MAX` to make a real number between 0 and 1. The conversion happens before the division, so it is floating-point division, not integer division.
 
-`main()` first calls `Random::seed()` once to initialize the random numbers. In three parts it then makes and prints 10 integers from 1 to 100 with `Random::nextInt(1, 100)`, 10 letters with `Random::nextAlphabet()`, and 10 real numbers with `Random::nextDouble()`, printing the real numbers five per line on two lines. All member functions are static, so it calls them through the class name without creating a `Random` object. The guidance lines differ slightly from the `main()` of the slides: the slides' `"알파벳을 랜덤하게 10개를 출력합니다"` and `"랜덤한 실수를 10개를 출력합니다"` are written in the code as `"랜덤한 알파벳 10개를 출력합니다"` and `"랜덤한 실수 10개를 출력합니다"` (both say "prints 10 random letters/real numbers" in Korean).
+`main()` first calls `Random::seed()` once to initialize the random numbers. In three parts it then makes and prints 10 integers from 1 to 100 with `Random::nextInt(1, 100)`, 10 letters with `Random::nextAlphabet()`, and 10 real numbers with `Random::nextDouble()`, printing the real numbers five per line on two lines. All member functions are static, so it calls them through the class name without creating a `Random` object.
 
 Because setting the seed is split into the static member function `seed()`, it needs to be called only once at the start of `main()`. The `Random` class of HW1 Q2, which set the seed in its constructor, runs `srand()` again every time an object is created, whereas this class creates no objects and sets the seed only once. Grouping functions that could be global functions as static members of a class gathers the related functions under `Random::` and reduces the number of global names ([Chapter 6, Section 3.4](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.md#34-use-cases)).
 
@@ -224,7 +224,7 @@ C r j F j s Y s T F
 0.753511 0.262834 0.444927 0.881017 0.253124 
 ```
 
-The output format is the same as the submitted screenshot, and the values change with every run. Each line ends with one space because `' '` is appended after every value. By default `cout` prints a `double` with six significant digits and omits trailing zeros, so values with fewer digits, such as `0.73853` in the submitted screenshot, and values with seven digits after the decimal point, such as `0.0723063`, also appear. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+The values change with every run. Each line ends with one space because `' '` is appended after every value. By default `cout` prints a `double` with six significant digits and omits trailing zeros, so values with fewer digits, such as `0.73853`, and values with seven digits after the decimal point, such as `0.0723063`, also appear. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
 
 ---
 
@@ -247,7 +247,7 @@ The program includes `<iostream>` for input/output and uses the standard namespa
 
 `main()` creates `a` with the constructor that takes a parameter and prints it with `show()`. It then creates a dynamic array of two `Circle` objects with `new Circle[2]`. There is no initializer list, so the default constructor is called for each element. It prints each element in a `for` loop and prints `a` again, releases the array with `delete[] p;`, and sets `p` to `nullptr`. Finally it prints `a` once more, and when the program ends the destructor of `a` is called.
 
-`delete[] p;` calls the destructor for each element of the array and then returns the memory, so `count` drops from 3 to 1. Writing `delete p;` without `[]` releases an array with `delete`, which is undefined behavior. The `main()` of the slides recommends adding `p = NULL;` after the release, and the code uses `nullptr` from C++11. Assigning `nullptr` to the released pointer keeps it from remaining as a dangling pointer to freed memory. `NULL` is a macro that may be defined as the integer 0, while `nullptr` is a value only for pointers, so there is no risk of it being interpreted as an integer in function overloading ([Chapter 4, Section 4.2](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#42-dangling-pointer)).
+`delete[] p;` calls the destructor for each element of the array and then returns the memory, so `count` drops from 3 to 1. Writing `delete p;` without `[]` releases an array with `delete`, which is undefined behavior. The problem recommends adding `p = NULL;` after the release, and the code uses `nullptr` from C++11. Assigning `nullptr` to the released pointer keeps it from remaining as a dangling pointer to freed memory. `NULL` is a macro that may be defined as the integer 0, while `nullptr` is a value only for pointers, so there is no risk of it being interpreted as an integer in function overloading ([Chapter 4, Section 4.2](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#42-dangling-pointer)).
 
 As in Q2, the default copy constructor does not increase `count`, so passing or copying a `Circle` by value makes the count smaller than the actual number. Adding a copy constructor that increases the count removes this problem.
 
@@ -261,7 +261,7 @@ Radius: 5, Count: 3
 Radius: 5, Count: 1
 ```
 
-The output is the same as the sample run of the slides and the submitted screenshot. The count on the second and third lines is 3 because `a` and both elements of the array exist, and the 1 on the last line is the value after `delete[] p;` destroyed the two elements. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+The output is the same as the sample run of the problem. The count on the second and third lines is 3 because `a` and both elements of the array exist, and the 1 on the last line is the value after `delete[] p;` destroyed the two elements. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
 
 ---
 

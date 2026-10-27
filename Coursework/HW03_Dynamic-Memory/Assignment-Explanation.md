@@ -44,7 +44,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the dynamic objects, dynamic arrays, dynamic arrays of objects, and the `this` pointer of Chapter 4. All four questions are lab problems from the Week 6 lecture slides: Q1 is [Problem 6-1], Q2 is [Problem 6-2], Q3 is [Problem 6-4], and Q4 is [Problem 6-5]. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW3 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the dynamic objects, dynamic arrays, dynamic arrays of objects, and the `this` pointer of Chapter 4. All four questions are lab problems from the Week 6 lecture slides: Q1 is [Problem 6-1], Q2 is [Problem 6-2], Q3 is [Problem 6-4], and Q4 is [Problem 6-5]. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW3 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW03_Dynamic-Memory/
@@ -68,18 +68,18 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output | Leak check |
-|:-----|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot | No leaks |
-| `Q2.cpp` | No warnings | Same as the submitted screenshot | No leaks |
-| `Q3.cpp` | No warnings | Same as the submitted screenshot for the same input (`1 2 4 5 10`) | No leaks |
-| `Q4.cpp` | No warnings | Same as the submitted screenshot for the same input (count 5, radii 3, 7, 2, 9, 1) | 1 leak (32 bytes) |
+| File | Compilation | Leak check |
+|:-----|:-----|:-----|
+| `Q1.cpp` | No warnings | No leaks |
+| `Q2.cpp` | No warnings | No leaks |
+| `Q3.cpp` | No warnings | No leaks |
+| `Q4.cpp` | No warnings | 1 leak (32 bytes) |
 
-*Table 1. Compilation, output, and leak check of the HW3 solutions*
+*Table 1. Compilation and leak check of the HW3 solutions*
 
 The leak check runs each program as in `leaks --atExit -- ./q4` on macOS and finds the heap memory left unreturned when the program ends. When the programs are built with AddressSanitizer (`-fsanitize=address,undefined`) and run, no invalid memory access is reported for any of the four. AddressSanitizer on macOS does not support leak detection, so leaks are checked with `leaks`.
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -131,7 +131,7 @@ The following two points are properties of this design.
 1 + 9i
 ```
 
-The output is the same as the submitted screenshot. The first two lines are the initial state made by the default constructor, and the last two lines show the changed real part of the first object and the changed imaginary part of the second. Running the program with `leaks --atExit` reports no leaks, which confirms that both objects were returned.
+The first two lines are the initial state made by the default constructor, and the last two lines show the changed real part of the first object and the changed imaginary part of the second. Running the program with `leaks --atExit` reports no leaks, which confirms that both objects were returned.
 
 ---
 
@@ -179,7 +179,7 @@ Lee Hi, 2016001, 22
 Kim Haha, 2016020, 29
 ```
 
-The output is the same as the submitted screenshot. The first line shows the initial values of the default constructor, the second line those of the three-parameter constructor, and the third line the information of `Kim` changed by the set functions.
+The first line shows the initial values of the default constructor, the second line those of the three-parameter constructor, and the third line the information of `Kim` changed by the set functions.
 
 ---
 
@@ -205,14 +205,14 @@ The following three points are worth noting when reading the code.
 
 ### 4.3 Output and Review
 
-With the input `1 2 4 5 10`, the program prints the following, which is the same as the submitted screenshot.
+With the input `1 2 4 5 10`, the program prints the following.
 
 ```text
 정수 5개 입력 >> 1 2 4 5 10
 평균 4.4
 ```
 
-The sum of the inputs, 22, divided by 5.0 gives 4.4, which is printed after the Korean word for "average". The output differs from the sample run in the slides only by the space before `>>` in the prompt (which asks for five integers in Korean). When the input comes from a pipe, the entered values are not echoed on the screen, so the prompt and the result run together on one line, as in `정수 5개 입력 >> 평균 4.4`.
+The sum of the inputs, 22, divided by 5.0 gives 4.4, which is printed after the Korean word for "average". The prompt asks for five integers in Korean. When the input comes from a pipe, the entered values are not echoed on the screen, so the prompt and the result run together on one line, as in `정수 5개 입력 >> 평균 4.4`.
 
 ---
 
@@ -234,12 +234,12 @@ The program includes `<iostream>` for input/output and uses the standard namespa
 
 Two more points can be noted.
 
-- **Condition and output wording:** The condition `p[i].getArea() >= 100` follows the problem's "100 or more", but the output sentence says "greater than 100", as in the sample run of the slides. With integer radii the area is 78.5 for radius 5 and 113.04 for radius 6, so it is never exactly 100 and the two conditions give the same result. Still, wording the sentence as "100 or more" to match the condition is more accurate.
+- **Condition and output wording:** The condition `p[i].getArea() >= 100` follows the problem's "100 or more", but the output sentence says "greater than 100", as in the sample run of the problem. With integer radii the area is 78.5 for radius 5 and 113.04 for radius 6, so it is never exactly 100 and the two conditions give the same result. Still, wording the sentence as "100 or more" to match the condition is more accurate.
 - **Invalid count input:** Entering 0 runs the loop zero times and prints a count of 0. Entering a negative number makes `new Circle [size]` fail to allocate memory and throw an exception (`std::bad_alloc` in this environment), and because it is not handled, the program terminates abnormally.
 
 ### 5.3 Output and Review
 
-With 5 as the number of circles and 3, 7, 2, 9, and 1 as the radii, the program prints the following, which is the same as the submitted screenshot.
+With 5 as the number of circles and 3, 7, 2, 9, and 1 as the radii, the program prints the following.
 
 ```text
 원의 개수 >> 5
@@ -251,7 +251,7 @@ With 5 as the number of circles and 3, 7, 2, 9, and 1 as the radii, the program 
 면적이 100보다 큰 원은 2개 입니다.
 ```
 
-The areas of the five circles are 28.26, 153.86, 12.56, 254.34, and 3.14, so the circles whose area is 100 or more are the two with radii 7 and 9, and the last line reads "There are 2 circles whose area is greater than 100" in Korean. The output differs from the sample run of the slides only by the period at the end of the last line. When the input comes from a pipe, the entered values are not echoed, so the prompts run together on one line.
+The areas of the five circles are 28.26, 153.86, 12.56, 254.34, and 3.14, so the circles whose area is 100 or more are the two with radii 7 and 9, and the last line reads "There are 2 circles whose area is greater than 100" in Korean. When the input comes from a pipe, the entered values are not echoed, so the prompts run together on one line.
 
 ---
 

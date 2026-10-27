@@ -40,7 +40,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the operator overloading of Chapter 7. Q1 and Q2 are [Lab 2-2] and [Lab 3] of the Week 12 lecture slides, and Q3 is free code that uses operator overloading. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW7 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the operator overloading of Chapter 7. Q1 and Q2 are [Lab 2-2] and [Lab 3] of the Week 12 lecture slides, and Q3 is free code that uses operator overloading. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW7 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW07_Operator-Overloading/
@@ -63,15 +63,15 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | No warnings | Same as the submitted screenshot |
-| `Q3.cpp` | No warnings | Same as the submitted screenshot |
+| File | Compilation |
+|:-----|:-----|
+| `Q1.cpp` | No warnings |
+| `Q2.cpp` | No warnings |
+| `Q3.cpp` | No warnings |
 
-*Table 1. Compilation and output of the HW7 solutions*
+*Table 1. Compilation results of the HW7 solutions*
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. The `main()` of Q1 has no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0. The `main()` functions of Q2 and Q3 end with `return 0;`.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. The `main()` of Q1 has no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0. The `main()` functions of Q2 and Q3 end with `return 0;`.
 
 ---
 
@@ -117,7 +117,7 @@ For this reason a compound assignment operator usually returns a reference to `*
 미래 29500원 500페이지
 ```
 
-The output, which gives the title, the price in won, and the number of pages of each book in Korean, matches the submitted screenshot. The sample run in the lecture slides has a space between the number of pages and `페이지` (pages), as in `300 페이지`, because the `show()` of the slides prints `" 페이지"` while the `show()` of the solution prints `"페이지"`. The prices of the two books are 20500 won and 29500 won, as in the sample run. The solution uses `string` without including `<string>`; it compiles because `<iostream>` of libc++ on macOS includes `<string>` indirectly. The standard does not guarantee this, so portable code includes `<string>` directly. The same holds for Q2 and Q3.
+The output gives the title, the price in won, and the number of pages of each book in Korean. The prices of the two books are 20500 won and 29500 won, as in the sample run of the problem. The solution uses `string` without including `<string>`; it compiles because `<iostream>` of libc++ on macOS includes `<string>` indirectly. The standard does not guarantee this, so portable code includes `<string>` directly. The same holds for Q2 and Q3.
 
 ---
 
@@ -170,7 +170,7 @@ bool operator != (Book op) {
 두 책은 다른 책입니다.
 ```
 
-The output, which reads "This is 명품 C++." and "The two books are different books." in Korean, matches the submitted screenshot and the sample run in the lecture slides. The `main()` of Q2 does not call `show()`, so the difference in the space before `페이지` seen in Q1 does not appear in the output. The second line results from the different titles of `a` and `b`; if the program runs with two books that have the same title and differ only in price, the current code prints `두 책이 같은 책입니다.` (the two books are the same book).
+The output, which reads "This is 명품 C++." and "The two books are different books." in Korean, matches the sample run of the problem. The second line results from the different titles of `a` and `b`; if the program runs with two books that have the same title and differ only in price, the current code prints `두 책이 같은 책입니다.` (the two books are the same book).
 
 ---
 
@@ -236,7 +236,7 @@ s2의 첫 번째 문자: W
 두 문자열이 같습니다.
 ```
 
-The output, whose headings read "[Initial State]" and "[Operations]" and whose last three lines read "Apple comes before Banana in lexicographic order.", "The first character of s2: W", and "The two strings are equal." in Korean, matches the submitted screenshot. The `s1:` line ends with the space of `"Hello "`, and the `s3:` line ends with the space of the output string `"s3: "`. The single quotes on the line `s1 += 'C++' = Hello C++` are characters contained in the output string `"s1 += 'C++' = "`. `s3` becomes `"Hello World!"`, and `s1` becomes `"Hello C++"` with `"C++"` appended to `"Hello "`. Although it does not show in this output, running the program with `leaks --atExit` on macOS reports 0 leaks, and building and running it with AddressSanitizer (`-fsanitize=address`) reports no errors, so every allocated array is freed exactly once.
+In the output, the headings read "[Initial State]" and "[Operations]", and the last three lines read "Apple comes before Banana in lexicographic order.", "The first character of s2: W", and "The two strings are equal." in Korean. The `s1:` line ends with the space of `"Hello "`, and the `s3:` line ends with the space of the output string `"s3: "`. The single quotes on the line `s1 += 'C++' = Hello C++` are characters contained in the output string `"s1 += 'C++' = "`. `s3` becomes `"Hello World!"`, and `s1` becomes `"Hello C++"` with `"C++"` appended to `"Hello "`. Although it does not show in this output, running the program with `leaks --atExit` on macOS reports 0 leaks, and building and running it with AddressSanitizer (`-fsanitize=address`) reports no errors, so every allocated array is freed exactly once.
 
 ---
 

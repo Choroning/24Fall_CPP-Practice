@@ -36,7 +36,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the reference returns and copy constructors of Chapter 5. Q1 and Q2 are [Lab 2] and [Lab 3] of the Week 10 lecture slides. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW5 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the reference returns and copy constructors of Chapter 5. Q1 and Q2 are [Lab 2] and [Lab 3] of the Week 10 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW5 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW05_Reference-Return-and-Copy-Constructors/
@@ -58,14 +58,14 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | Two warnings: `-Wwritable-strings` at lines 47 and 49, because a string literal is converted to `char*` | Same as the submitted screenshot |
+| File | Compilation |
+|:-----|:-----|
+| `Q1.cpp` | No warnings |
+| `Q2.cpp` | Two warnings: `-Wwritable-strings` at lines 47 and 49, because a string literal is converted to `char*` |
 
-*Table 1. Compilation and output of the HW5 solutions*
+*Table 1. Compilation results of the HW5 solutions*
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. Neither `main()` function has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. Neither `main()` function has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -95,7 +95,7 @@ The `&` in the return type decides this behavior. If `add()` is declared as `Acc
 28
 ```
 
-The output matches the sample run in the slides and the submitted screenshot. Running it under `leaks --atExit` and under AddressSanitizer and UndefinedBehaviorSanitizer (`-fsanitize=address,undefined`) reports no errors and no leaks. The program uses no dynamic memory, and `acc` is destroyed automatically when `main()` ends.
+The output matches the sample run of the problem. Running it under `leaks --atExit` and under AddressSanitizer and UndefinedBehaviorSanitizer (`-fsanitize=address,undefined`) reports no errors and no leaks. The program uses no dynamic memory, and `acc` is destroyed automatically when `main()` ends.
 
 ---
 
@@ -110,8 +110,8 @@ Answer four questions about a `Book` class that stores the title of a book as a 
 | Question | Content | Answer |
 |:-----|:-----|:-----|
 | 1) | Implementing the constructor, the destructor, and `set()` | Lines 22-26, 32-35, and 36-43 of `Q2.cpp` |
-| 2) | The code of the default copy constructor the compiler adds | The submitted answer in Section 3.2 |
-| 3) | The problem that occurs when no copy constructor is defined | The submitted answer in Section 3.2 |
+| 2) | The code of the default copy constructor the compiler adds | The answer in Section 3.2 |
+| 3) | The problem that occurs when no copy constructor is defined | The answer in Section 3.2 |
 | 4) | Defining a copy constructor that causes no error | Lines 27-31 of `Q2.cpp` |
 
 *Table 2. The questions of Q2 and where the answers are*
@@ -128,7 +128,7 @@ The program includes `<iostream>` and `<cstring>` for input/output and string ha
 
 `main()` creates `cpp` and creates `java` by copying `cpp` with `Book java = cpp;`. A new object is initialized with an object of the same class, so the copy constructor is called ([Chapter 5, Section 4.1](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#41-concept)). It then changes the title and the price of `java` with `java.set()` and prints both books. When the program ends, the destructors of the two objects are called in the reverse order of construction.
 
-The submitted answer to question 2) is that the default copy constructor the compiler creates performs a member-by-member copy and is equivalent to the following code.
+The answer to question 2) is that the default copy constructor the compiler creates performs a member-by-member copy and is equivalent to the following code.
 
 ```cpp
 Book::Book(Book& b) {
@@ -137,7 +137,7 @@ Book::Book(Book& b) {
 }
 ```
 
-The submitted answer to question 3) is as follows. In the default copy constructor above, `title` is a pointer, so only a shallow copy is performed: the address `title` points to is copied, and the dynamically allocated contents are not. If the destructor deletes the `title` of one object and then deletes the `title` of the other object again, the same memory is deleted twice, and the submitted answer calls this a memory leak.
+The answer to question 3) is as follows. In the default copy constructor above, `title` is a pointer, so only a shallow copy is performed: the address `title` points to is copied, and the dynamically allocated contents are not. If the destructor deletes the `title` of one object and then deletes the `title` of the other object again, the same memory is deleted twice, and the answer calls this a memory leak.
 
 The two answers can be completed as follows.
 
@@ -158,7 +158,7 @@ Three points can be considered to make the code more robust.
 명품자바 12000원
 ```
 
-The output, which gives each title followed by its price in won, matches the submitted screenshot. The sample run in the slides uses the title `"명품C++"` in `main()`, so its first line is `명품C++ 10000원`; the submitted code uses the lowercase `"명품c++"`. The title of `cpp` stays the same after the title of `java` is changed because the copy constructor made a deep copy. The two `-Wall` warnings arise because lines 47 and 49 pass string literals to `char*` parameters, and they disappear when the parameters are changed to `const char*` as in Section 3.2.
+The output gives each title followed by its price in won. The title of `cpp` stays the same after the title of `java` is changed because the copy constructor made a deep copy. The two `-Wall` warnings arise because lines 47 and 49 pass string literals to `char*` parameters, and they disappear when the parameters are changed to `const char*` as in Section 3.2.
 
 The results of the memory checks are as follows.
 
@@ -170,9 +170,9 @@ The cause of the leak is the condition `if (!title)` of the destructor at lines 
 The situation of question 3) can be checked by deleting the copy constructor at lines 27-31 and its declaration at line 17 and running the program with the default copy constructor.
 
 - **AddressSanitizer:** reports a heap-use-after-free, because `cpp.show()` reads the memory freed in `set()`.
-- **Running without ASan:** on macOS the first line was printed as `명품자바 10000원`. The allocator handed the block freed in `set()` back for the new title of `java`, so `cpp.title` pointed to that string; this is undefined behavior, so the result differs between environments.
+- **Running without ASan:** on macOS the first line can be printed as `명품자바 10000원`. The allocator handed the block freed in `set()` back for the new title of `java`, so `cpp.title` pointed to that string; this is undefined behavior, so the result differs between environments.
 - **With the destructor also fixed:** when the program ends, the destructor of `cpp` frees the already freed memory again. AddressSanitizer reports this as attempting double-free, and without ASan the program terminates abnormally after the output.
-- **With the submitted destructor unchanged:** the destructor frees nothing, so no double free appears, but the use of freed memory still occurs.
+- **With the solution's destructor unchanged:** the destructor frees nothing, so no double free appears, but the use of freed memory still occurs.
 
 ---
 

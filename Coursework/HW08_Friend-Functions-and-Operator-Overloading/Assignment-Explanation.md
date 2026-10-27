@@ -40,7 +40,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the friend functions and operator overloading of Chapter 7. The three problems are [Lab 1], [Lab 2], and [Lab 3] of the Week 13 lecture slides. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW8 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the friend functions and operator overloading of Chapter 7. The three problems are [Lab 1], [Lab 2], and [Lab 3] of the Week 13 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW8 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW08_Friend-Functions-and-Operator-Overloading/
@@ -63,15 +63,15 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | No warnings | Same as the submitted screenshot |
-| `Q3.cpp` | No warnings | Same as the submitted screenshot |
+| File | Compilation |
+|:-----|:-----|
+| `Q1.cpp` | No warnings |
+| `Q2.cpp` | No warnings |
+| `Q3.cpp` | No warnings |
 
-*Table 1. Compilation and output of the HW8 solutions*
+*Table 1. Compilation results of the HW8 solutions*
 
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. None of the three `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the three `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -115,7 +115,7 @@ radius = 5 인 원
 radius = 6 인 원
 ```
 
-The output is the same as the submitted screenshot and the sample run of the slides. The first line is the unchanged `a`, and the second line is `b`, which received the result of `1 + a`. The radius 4 that `b` had at first is lost by the assignment.
+The output is the same as the sample run of the problem. The first line is the unchanged `a`, and the second line is `b`, which received the result of `1 + a`. The radius 4 that `b` had at first is lost by the assignment.
 
 ---
 
@@ -160,7 +160,7 @@ radius = 7 인 원
 radius = 6 인 원
 ```
 
-The output is the same as the submitted screenshot and the sample run of the slides. Both comments in `main()` say that the radius is increased by 1, and indeed both statements increase the radius of `a` by 1, from 5 to 7. The difference between the two statements lies in the return value: `b` receives 6, the value before the second increment.
+The output is the same as the sample run of the problem. Both comments in `main()` say that the radius is increased by 1, and indeed both statements increase the radius of `a` by 1, from 5 to 7. The difference between the two statements lies in the return value: `b` receives 6, the value before the second increment.
 
 ---
 
@@ -214,7 +214,7 @@ To make the code more robust, the size of the array can be considered. `int op[]
 Matrix = { 1 2 3 4 }
 ```
 
-The output is the same as the submitted screenshot and the sample run of the slides. The space at the end of the first line comes from `cout << x[i] << ' ';`, which appends a space after every element. The first line is the result of copying the elements of `a` into `x`, and the second line is `b`, set from the elements of `y`. Switching to the friend function version prints the same two lines.
+The output is the same as the sample run of the problem. The space at the end of the first line comes from `cout << x[i] << ' ';`, which appends a space after every element. The first line is the result of copying the elements of `a` into `x`, and the second line is `b`, set from the elements of `y`. Switching to the friend function version prints the same two lines.
 
 ---
 
