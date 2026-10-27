@@ -147,7 +147,7 @@ int main() {
 높이 뛴다
 ```
 
-`Grasshopper`에는 `breathe()`를 정의하지 않았지만 `Creature`를 상속받았으므로 `g.breathe()`를 호출할 수 있다. 두 프로그램은 `g++ -std=c++17 -Wall`로 경고 없이 컴파일된다. 상속은 8장에서 자세히 다룬다.
+`Grasshopper`에는 `breathe()`를 정의하지 않았지만 `Creature`를 상속받았으므로 `g.breathe()`를 호출할 수 있다. 상속은 8장에서 자세히 다룬다.
 
 ### 이론 문제 14
 

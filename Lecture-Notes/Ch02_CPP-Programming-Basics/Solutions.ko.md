@@ -89,7 +89,7 @@ square.c:6:9: error: mixing declarations and code is a C99 extension [-Werror,-W
 - (1) 이 프로그램은 `cin`을 `std::cin`으로 쓰고 `cout`만 `std::` 없이 쓰므로, `cout` 하나만 가져오는 using 선언 `using std::cout;`이 알맞다. `using namespace std;`를 써도 컴파일된다.
 - (2) `cout`과 `endl`을 모두 `std::` 없이 쓰므로 `std`의 모든 이름을 쓸 수 있게 하는 using 지시문 `using namespace std;`를 쓴다. 한 줄에 `using std::cout; using std::endl;`처럼 두 using 선언을 써도 된다.
 
-빈칸을 채운 두 프로그램은 `g++ -std=c++17 -Wall`로 경고 없이 컴파일되며, (1)은 입력한 정수에 1을 더해 출력한다(4를 입력하면 5).
+빈칸을 채운 두 프로그램 가운데 (1)은 입력한 정수에 1을 더해 출력한다(4를 입력하면 5).
 
 ### 이론 문제 8
 

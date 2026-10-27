@@ -161,7 +161,7 @@ Each function works as follows.
 - `modify(no, newtext)` replaces the string in that slot if the number is less than `Board::no`. Because the parameter name `no` hides the static member `no`, the static member is written as `Board::no`.
 - The static member variables are defined outside the class as `int Board::no = 0;` and `string Board::board[MAX_NO] = {};`. Without these definitions, a link error occurs ([Chapter 6, Section 3.1](Concepts_Lecture.md#31-static-member-variables)).
 
-**Output:** The output matches the sample run except for one spot at the end. With no posts, `print()` prints `"<등록된 게시물이 없습니다.>\n"`, then breaks the line once more with `endl`, and runs `cout << endl;` again at the end of the function. This leaves two blank lines after the message, while the sample run has only one.
+**Output:** The output differs from the sample run in one spot at the end. With no posts, `print()` prints `"<등록된 게시물이 없습니다.>\n"`, then breaks the line once more with `endl`, and runs `cout << endl;` again at the end of the function. This leaves two blank lines after the message, while the sample run has only one.
 
 > **Caution:** **Number check in `del()`.** The condition `(board[i] != "") && (MAX_NO >= i)` has three problems. First, `&&` evaluates from the left, so `board[i]` is read before the range is checked. In an array of size 5, `del(5)` reads `board[5]`, which is out of bounds and undefined behavior; running under AddressSanitizer (`-fsanitize=address`) reports a global-buffer-overflow on this line. That the same "삭제 실패! 존재하지 않는 게시물입니다." (delete failed, nonexistent post) message as in the sample run appears is a coincidence. Second, `MAX_NO >= i` lets `i == 5` through and does not reject negative numbers. Third, validity is judged by `board[i] != ""` rather than `i < no`, so if an old string remains in a slot at or beyond `no`, deleting a nonexistent post such as `del(no)` is treated as a success and `no` is wrongly decremented. For example, after adding `A`, `B`, `C`, `D`, `E` and running `del(2)` and `del(0)`, a copy of `E` remains in `board[3]`, so `del(3)` does not fail and makes the last post `E` disappear from the list.
 
@@ -237,7 +237,7 @@ int main() {
 - `print99(3)` has `i = 3`, so the first branch prints the title `3단` (table of 3) and the expressions from `3 * 1 = 3` to `3 * 9 = 27`, then a blank line.
 - `print99()` is rewritten by the compiler as `print99(19)`, so the second branch varies `k` from 1 to 9 and prints nine tables in the same format.
 
-**Output:** The output matches the sample run. The table of 3 (1 title line, 9 expression lines, 1 blank line) and the nine tables from 1 to 9 total 110 lines, and the part omitted as `(중략)` in the sample run contains `1 * 4 = 4` through `9 * 6 = 54`.
+**Output:** The table of 3 (1 title line, 9 expression lines, 1 blank line) and the nine tables from 1 to 9 total 110 lines, and the part omitted as `(중략)` in the sample run contains `1 * 4 = 4` through `9 * 6 = 54`.
 
 > **Note:** With a marker value as the default, passing that value directly as in `print99(19)` also prints all tables, and an out-of-range table such as `print99(10)` is printed without any check. Handling the two calls in the problem is enough, but to check the range, add a condition that `i` is between 1 and 9 inclusive.
 

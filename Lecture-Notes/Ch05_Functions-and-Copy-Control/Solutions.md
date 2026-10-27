@@ -114,7 +114,7 @@ int main() {
 
 > **Note:** `increaseBy()` does not modify `b`, so taking it as `const Circle& b` would state the intent better. That, however, requires declaring `getRadius()` as `int getRadius() const` so that it can be called on a `const` object.
 
-**Output:** The output is the same as the sample run. The first swap makes `x` 5 and `y` 10, the second swap restores 10 and 5, and after `increaseBy()` `x` is 15. The last line of the sample run, `Program ended with exit code: 0`, is a message Xcode appends after the program ends and is not part of the program's output.
+**Output:** The first swap makes `x` 5 and `y` 10, the second swap restores 10 and 5, and after `increaseBy()` `x` is 15. The last line of the sample run, `Program ended with exit code: 0`, is a message Xcode appends after the program ends and is not part of the program's output.
 
 ---
 
@@ -187,8 +187,6 @@ int main() {
 - **Second call:** `"Mime"` contains no `'k'`, so `b` becomes `false`, and `main()` prints "k를 발견할 수 없음" ("k not found") and ends.
 
 > **Note:** `size` of type `unsigned long` is compared with `i` of type `int`, which is a comparison between integers of different signedness. The result is the same as long as the string length fits in an `int`, but compiling with GCC and `-Wall` gives a `-Wsign-compare` warning (Apple clang's `-Wall` does not enable this warning). Declaring `i` as `size_t` removes the warning.
-
-**Output:** The output is the same as the sample run (`Program ended with exit code: 0` is Xcode's message).
 
 ---
 
@@ -273,8 +271,6 @@ When the source file is UTF-8, `strlen("C++가이드")` is 12 and `strlen("Java�
 
 > **Note:** A copy constructor that takes a non-`const` reference, like `Book(Book& src)`, is valid, but it cannot copy from a `const Book` object or a temporary ([Chapter 5, Section 5.3](Concepts_Lecture.md#53-copy-constructor-parameter-must-be-a-reference)). The class also has no assignment operator, so an assignment such as `cpp = java;` would bring back the shallow copy problem. This program performs no assignment, so it is unaffected, but following the Rule of Three the assignment operator should be defined as well.
 
-**Output:** The output is the same as the sample run (`Program ended with exit code: 0` is Xcode's message).
-
 ---
 
 <br>
@@ -354,7 +350,7 @@ In `square(m, 3)`, the array name `m` is converted to the address of its first e
 - **`big1(x, y)`:** It is call by value, so the values of `x` and `y` are copied into the local parameters `a` (1) and `b` (2). `a > b` is false, so it returns a reference to `b`, but `b` is a local variable that disappears when the function ends. So `z` becomes a dangling reference to space that no longer exists, and `z = 100;` is undefined behavior ([Chapter 5, Section 5.1](Concepts_Lecture.md#51-returning-reference-to-local-variable)). `a` and `b` were copies, so this assignment does not change `x` or `y`. The compiler also warns about this function with `reference to stack memory associated with parameter 'b' returned` (and the same warning for `a`).
 - **`big2(x, y)`:** It is call by reference, so `a` and `b` are aliases of `x` and `y`. `a > b` is false, so it returns a reference to `b`, that is, to `y`, and `int& w = big2(x, y);` makes `w` an alias of `y`. So running `w = 100;` makes `y` 100. `x` stays 1.
 
-The difference between the two functions is the lifetime of what the returned reference refers to. To return a reference, its target must live longer than the function, so returning a reference parameter bound to the caller's variable, as `big2()` does, is correct, and returning a value parameter by reference, as `big1()` does, is wrong. Running it with `g++ -std=c++17 -Wall` prints `x=1`, `y=2` after `big1()` and `x=1`, `y=100` after `big2()`, and `&w` equals `&y`.
+The difference between the two functions is the lifetime of what the returned reference refers to. To return a reference, its target must live longer than the function, so returning a reference parameter bound to the caller's variable, as `big2()` does, is correct, and returning a value parameter by reference, as `big1()` does, is wrong. Running it prints `x=1`, `y=2` after `big1()` and `x=1`, `y=100` after `big2()`, and `&w` equals `&y`.
 
 ### Theory Problem 14
 

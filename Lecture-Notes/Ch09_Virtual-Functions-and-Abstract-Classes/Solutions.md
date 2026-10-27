@@ -153,7 +153,7 @@ int main() {
 }
 ```
 
-**Result:** The code compiles without warnings with `g++ -std=c++17 -Wall`, and running it prints the following, which matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is not printed by the program; it is the message the development environment (Xcode) displays after the program exits.
+**Result:** Running the code prints the following. The last line of the sample run, `Program ended with exit code: 0`, is not printed by the program; it is the message the development environment (Xcode) displays after the program exits.
 
 ```text
 [1학년]
@@ -297,7 +297,7 @@ int main() {
 }
 ```
 
-**Result:** The code compiles without warnings with `g++ -std=c++17 -Wall`, and running it prints the following, which matches the sample run. As in Exercise 1, the last line of the sample run, `Program ended with exit code: 0`, is the message displayed by the development environment (Xcode).
+**Result:** Running the code prints the following. As in Exercise 1, the last line of the sample run, `Program ended with exit code: 0`, is the message displayed by the development environment (Xcode).
 
 ```text
 23.2 마일 = 37.3368 킬로미터

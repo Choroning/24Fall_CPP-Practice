@@ -40,7 +40,7 @@
 
 ## 1. 과제 구성과 실행 방법
 
-이 과제는 5장의 참조 변수, 참조 매개변수, 참조 리턴을 연습한다. Q1은 9주차 강의자료의 [실습 문제 2]이고, Q2와 Q3은 참조를 주제로 자유롭게 작성한 코드이다. 과제 안내문은 [`Original/Assignment.ko.md`](Original/Assignment.ko.md)에 옮겨 두었고, 각 코드를 처음부터 끝까지 따라가는 설명은 [HW4 코드 총정리](Code-Walkthrough.ko.md)에 있다.
+이 과제는 5장의 참조 변수, 참조 매개변수, 참조 리턴을 연습한다. Q1은 9주차 강의자료의 [실습 문제 2]이고, Q2와 Q3은 참조를 주제로 자유롭게 작성한 코드이다. 과제 안내문은 [`Original/Assignment.ko.md`](Original/Assignment.ko.md)에 있고, 각 코드를 처음부터 끝까지 따라가는 설명은 [HW4 코드 총정리](Code-Walkthrough.ko.md)에 있다.
 
 ```text
 Coursework/HW04_References/
@@ -55,7 +55,7 @@ Coursework/HW04_References/
 
 *그림 1. HW4 과제의 디렉토리 구성*
 
-각 풀이는 다음과 같이 컴파일하고 실행한다. 세 파일 모두 macOS의 Apple clang 21에서 `g++ -std=c++11 -Wall`과 `g++ -std=c++17 -Wall`로 컴파일되며, 입력을 받지 않는다.
+각 풀이는 C++11 이상의 표준으로 다음과 같이 컴파일하고 실행한다. 세 프로그램은 입력을 받지 않는다.
 
 ```bash
 cd Coursework/HW04_References/Solution
@@ -63,15 +63,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| 파일 | 컴파일 결과 | 실행 결과 |
-|:-----|:-----|:-----|
-| `Q1.cpp` | 경고 없음 | 제출한 실행 화면과 같다 |
-| `Q2.cpp` | 경고 1개: `constRef`를 쓰지 않는다는 `-Wunused-variable` | 제출한 실행 화면과 같다 |
-| `Q3.cpp` | 경고 없음 | 제출한 실행 화면과 같다 |
-
-*표 1. HW4 풀이의 컴파일과 실행 결과*
-
-세 프로그램은 동적 메모리를 쓰지 않으며, AddressSanitizer와 `leaks --atExit`로 실행해도 오류나 누수가 보고되지 않는다. 제출한 실행 화면의 마지막 줄 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 콘솔에 표시하는 문구이다.
+세 프로그램은 동적 메모리를 쓰지 않는다. Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다.
 
 ---
 
@@ -110,7 +102,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 3번째 시도 stack empty
 ```
 
-출력은 제출한 실행 화면과 같다. 강의자료의 실행 예시와는 `3 번째`의 공백과 구분선의 길이만 다르다. 첫 줄의 0과 1은 푸시에 성공한 값의 에코이고, 세 번째 푸시는 `tos`가 이미 `MAX`(2)이므로 실패한다. 팝은 마지막에 넣은 1부터 꺼내 `1 0`을 출력하고, 세 번째 팝은 `tos`가 0이므로 실패한다.
+첫 줄의 0과 1은 푸시에 성공한 값의 에코이고, 세 번째 푸시는 `tos`가 이미 `MAX`(2)이므로 실패한다. 팝은 마지막에 넣은 1부터 꺼내 `1 0`을 출력하고, 세 번째 팝은 `tos`가 0이므로 실패한다.
 
 ---
 
@@ -120,7 +112,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 3.1 요구사항
 
-참조와 관련된 코드를 자유롭게 작성하고 분석한다. 제출한 코드는 참조 변수, 참조 매개변수, `const` 참조 매개변수의 세 가지 쓰임을 보인다.
+참조와 관련된 코드를 자유롭게 작성하고 분석한다. 풀이 코드는 참조 변수, 참조 매개변수, `const` 참조 매개변수의 세 가지 쓰임을 보인다.
 
 ### 3.2 설계와 해결 방법
 
@@ -132,7 +124,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 | `modifyValue(int& value)` | 참조 매개변수 | 인자의 값을 2배로 만든다 |
 | `printValue(const int& value)` | `const` 참조 매개변수 | 인자의 값을 출력한다 |
 
-*표 2. Q2의 세 함수*
+*표 1. Q2의 세 함수*
 
 `main()`은 참조의 쓰임을 차례로 보인다. 먼저 `int& ref = number;`로 `number`의 별명 `ref`를 만들고, `ref = 100;`을 실행한 뒤 `number`를 출력하여 참조를 통한 변경이 원본에 반영됨을 보인다. 참조 변수는 선언할 때 반드시 초기화해야 하며, 한 번 정한 대상을 다른 변수로 바꿀 수 없다([5장 3.1절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#31-선언)). 그다음 `num1`과 `num2`를 `swapNumbers()`로 교환하고, `value`를 `modifyValue()`로 두 배로 만든다. 두 함수의 매개변수가 참조이므로 함수 안의 변경이 `main()`의 변수에 그대로 반영된다. 마지막으로 `printValue(value)`로 값을 출력한다.
 
@@ -154,7 +146,7 @@ After modification: 10
 Value is: 10
 ```
 
-출력은 제출한 실행 화면과 같다. `ref`를 바꾸자 `number`가 42에서 100이 되었고, 교환 뒤 `num1`과 `num2`가 바뀌었으며, `modifyValue()` 뒤 `value`가 5에서 10이 되었다. 세 결과 모두 참조가 원본을 가리키기 때문에 나온다.
+`ref`를 바꾸자 `number`가 42에서 100이 되었고, 교환 뒤 `num1`과 `num2`가 바뀌었으며, `modifyValue()` 뒤 `value`가 5에서 10이 되었다. 세 결과 모두 참조가 원본을 가리키기 때문에 나온다.
 
 ---
 
@@ -164,7 +156,7 @@ Value is: 10
 
 ### 4.1 요구사항
 
-참조를 클래스와 연계하여 쓰는 코드를 자유롭게 작성하고 분석한다. 제출한 코드는 이름과 나이를 가진 `Person` 클래스로 `const` 참조 매개변수, 참조 리턴, `const` 멤버 함수를 보인다.
+참조를 클래스와 연계하여 쓰는 코드를 자유롭게 작성하고 분석한다. 풀이 코드는 이름과 나이를 가진 `Person` 클래스로 `const` 참조 매개변수, 참조 리턴, `const` 멤버 함수를 보인다.
 
 ### 4.2 설계와 해결 방법
 
@@ -195,7 +187,7 @@ After birthday celebration:
 Name: Alice Johnson, Age: 27
 ```
 
-출력은 제출한 실행 화면과 같다. 참조로 바꾼 이름 `"Alice Smith"`는 곧이어 `setName()`으로 덮어쓰였으므로 출력에 나타나지 않는다. 26은 30보다 크지 않으므로 `isOlderThan()`이 `false`를 리턴하여 `else` 쪽 문장이 출력되고, `celebrateBirthday()`가 참조를 통해 나이를 27로 늘렸다.
+참조로 바꾼 이름 `"Alice Smith"`는 곧이어 `setName()`으로 덮어쓰였으므로 출력에 나타나지 않는다. 26은 30보다 크지 않으므로 `isOlderThan()`이 `false`를 리턴하여 `else` 쪽 문장이 출력되고, `celebrateBirthday()`가 참조를 통해 나이를 27로 늘렸다.
 
 ---
 

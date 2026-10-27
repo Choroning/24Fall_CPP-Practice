@@ -40,7 +40,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the reference variables, reference parameters, and reference returns of Chapter 5. Q1 is [Lab Problem 2] of the Week 9 lecture slides, and Q2 and Q3 are code written freely on the subject of references. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW4 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the reference variables, reference parameters, and reference returns of Chapter 5. Q1 is [Lab Problem 2] of the Week 9 lecture slides, and Q2 and Q3 are code written freely on the subject of references. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW4 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW04_References/
@@ -55,7 +55,7 @@ Coursework/HW04_References/
 
 *Figure 1. Directory layout of HW4*
 
-Each solution is compiled and run as follows. All three files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS and read no input.
+Each solution is compiled and run with C++11 or later as follows. The three programs read no input.
 
 ```bash
 cd Coursework/HW04_References/Solution
@@ -63,15 +63,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | One warning: `-Wunused-variable`, because `constRef` is never used | Same as the submitted screenshot |
-| `Q3.cpp` | No warnings | Same as the submitted screenshot |
-
-*Table 1. Compilation and output of the HW4 solutions*
-
-The three programs use no dynamic memory, and running them with AddressSanitizer and `leaks --atExit` reports no errors or leaks. The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends.
+The three programs use no dynamic memory. When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends.
 
 ---
 
@@ -110,7 +102,7 @@ The following two points are properties of this design.
 3번째 시도 stack empty
 ```
 
-The output is the same as the submitted screenshot ("stack full/empty at the 3rd attempt"). It differs from the sample run of the slides only by the space in `3 번째` and the length of the separator line. The 0 and 1 on the first line echo the values pushed successfully, and the third push fails because `tos` is already `MAX` (2). The pops take out 1, the value put in last, first and print `1 0`, and the third pop fails because `tos` is 0.
+The 0 and 1 on the first line echo the values pushed successfully, and the third push fails because `tos` is already `MAX` (2). The pops take out 1, the value put in last, first and print `1 0`, and the third pop fails because `tos` is 0.
 
 ---
 
@@ -120,7 +112,7 @@ The output is the same as the submitted screenshot ("stack full/empty at the 3rd
 
 ### 3.1 Requirements
 
-Write any code related to references and analyse it. The submitted code shows three uses: a reference variable, reference parameters, and a `const` reference parameter.
+Write any code related to references and analyse it. The solution code shows three uses: a reference variable, reference parameters, and a `const` reference parameter.
 
 ### 3.2 Design and Solution
 
@@ -132,7 +124,7 @@ The program includes `<iostream>` for input/output and declares three functions 
 | `modifyValue(int& value)` | Reference parameter | Doubles the value of the argument |
 | `printValue(const int& value)` | `const` reference parameter | Prints the value of the argument |
 
-*Table 2. The three functions of Q2*
+*Table 1. The three functions of Q2*
 
 `main()` shows the uses of references in turn. It first makes `ref`, an alias of `number`, with `int& ref = number;`, runs `ref = 100;`, and prints `number` to show that a change through the reference reaches the original. A reference variable must be initialized when it is declared, and the object it refers to cannot be changed to another variable afterwards ([Chapter 5, Section 3.1](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#31-declaration)). It then swaps `num1` and `num2` with `swapNumbers()` and doubles `value` with `modifyValue()`. The parameters of both functions are references, so the changes inside the functions reach the variables of `main()` unchanged. Finally it prints the value with `printValue(value)`.
 
@@ -154,7 +146,7 @@ After modification: 10
 Value is: 10
 ```
 
-The output is the same as the submitted screenshot. Changing `ref` turned `number` from 42 into 100, the swap exchanged `num1` and `num2`, and after `modifyValue()` `value` went from 5 to 10. All three results come from the references referring to the originals.
+Changing `ref` turned `number` from 42 into 100, the swap exchanged `num1` and `num2`, and after `modifyValue()` `value` went from 5 to 10. All three results come from the references referring to the originals.
 
 ---
 
@@ -164,7 +156,7 @@ The output is the same as the submitted screenshot. Changing `ref` turned `numbe
 
 ### 4.1 Requirements
 
-Write any code that uses references together with a class and analyse it. The submitted code shows `const` reference parameters, reference returns, and `const` member functions with a `Person` class that has a name and an age.
+Write any code that uses references together with a class and analyse it. The solution code shows `const` reference parameters, reference returns, and `const` member functions with a `Person` class that has a name and an age.
 
 ### 4.2 Design and Solution
 
@@ -195,7 +187,7 @@ After birthday celebration:
 Name: Alice Johnson, Age: 27
 ```
 
-The output is the same as the submitted screenshot. The name `"Alice Smith"` set through the reference was overwritten right away by `setName()`, so it does not appear in the output. 26 is not greater than 30, so `isOlderThan()` returns `false` and the sentence of the `else` branch is printed, and `celebrateBirthday()` increased the age to 27 through the reference.
+The name `"Alice Smith"` set through the reference was overwritten right away by `setName()`, so it does not appear in the output. 26 is not greater than 30, so `isOlderThan()` returns `false` and the sentence of the `else` branch is printed, and `celebrateBirthday()` increased the age to 27 through the reference.
 
 ---
 

@@ -147,7 +147,7 @@ int main() {
 높이 뛴다
 ```
 
-`Grasshopper` does not define `breathe()`, but it inherits from `Creature`, so `g.breathe()` can be called; the output reads "breathes" and "jumps high" in Korean. Both programs compile without warnings with `g++ -std=c++17 -Wall`. Inheritance is covered in detail in Chapter 8.
+`Grasshopper` does not define `breathe()`, but it inherits from `Creature`, so `g.breathe()` can be called; the output reads "breathes" and "jumps high" in Korean. Inheritance is covered in detail in Chapter 8.
 
 ### Theory Problem 14
 

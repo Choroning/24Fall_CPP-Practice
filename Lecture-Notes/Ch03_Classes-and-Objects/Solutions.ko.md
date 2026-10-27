@@ -88,7 +88,7 @@ int main() {
 높이는 100미터
 ```
 
-`g++ -std=c++17 -Wall`로 경고 없이 컴파일되며, 실행 결과는 실행 예시와 같다. 실행 예시의 마지막 줄 `Program ended with exit code: 0`은 프로그램의 출력이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 메시지이다.
+실행 예시의 마지막 줄 `Program ended with exit code: 0`은 프로그램의 출력이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 메시지이다.
 
 ---
 
@@ -240,7 +240,7 @@ int main() {
 커피머신 상태: 커피 = 10   물 = 10   설탕 = 10
 ```
 
-`g++ -std=c++17 -Wall`로 경고 없이 컴파일되며, 실행 결과는 실행 예시와 같다. 실행 예시의 마지막 줄 `Program ended with exit code: 0`은 Xcode가 표시하는 메시지이다. 이 `main()`에서는 에스프레소의 재료가 부족한 경우가 나오지 않으므로 `drinkEspresso()`의 오류 메시지는 출력되지 않는다.
+실행 예시의 마지막 줄 `Program ended with exit code: 0`은 Xcode가 표시하는 메시지이다. 이 `main()`에서는 에스프레소의 재료가 부족한 경우가 나오지 않으므로 `drinkEspresso()`의 오류 메시지는 출력되지 않는다.
 
 ---
 

@@ -45,7 +45,7 @@
 
 ## 1. Assignment Layout and How to Run
 
-This assignment practices the object pointers, dynamic arrays, and the `this` pointer of Chapter 4. Q1 is [Problem 5-2] of the Week 5 lecture slides, Q2 and Q4 are free code on a given topic, and Q3 is an analysis of the dynamic memory code in the Week 5 lecture slides. The assignment handout is transcribed in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW2 Code Walkthrough](Code-Walkthrough.md).
+This assignment practices the object pointers, dynamic arrays, and the `this` pointer of Chapter 4. Q1 is [Problem 5-2] of the Week 5 lecture slides, Q2 and Q4 are free code on a given topic, and Q3 is an analysis of the dynamic memory code in the Week 5 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW2 Code Walkthrough](Code-Walkthrough.md).
 
 ```text
 Coursework/HW02_Object-Pointers-and-This/
@@ -61,7 +61,7 @@ Coursework/HW02_Object-Pointers-and-This/
 
 *Figure 1. Directory layout of HW2*
 
-Each solution is compiled and run as follows. All four files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS. Q3 reads a size, so one integer is entered after it starts.
+Each solution is compiled and run with C++11 or later as follows. Q3 reads a size, so one integer is entered after it starts.
 
 ```bash
 cd Coursework/HW02_Object-Pointers-and-This/Solution
@@ -69,16 +69,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Output |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | Same as the submitted screenshot |
-| `Q2.cpp` | No warnings | Same as the submitted screenshot |
-| `Q3.cpp` | No warnings | There is no submitted screenshot because this is an analysis item; for the input `5` it matches the sample run in the slides |
-| `Q4.cpp` | No warnings | Same as the submitted screenshot |
-
-*Table 1. Compilation and output of the HW2 solutions*
-
-The last line of the submitted screenshots, `Program ended with exit code: 0`, is not program output but a message Xcode shows in the console after the program ends. Except for Q2, the `main()` functions have no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
+When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. Except for Q2, the `main()` functions have no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
 ---
 
@@ -99,7 +90,7 @@ Define a complex number class `Complex` with the `private` integer members `real
 | Update the `image` of the second array object to -8 through the pointer `p` | `(*(p + 1)).setImage(-8);` |
 | Print the information of the object array through the pointer `p` with a `for` loop | `(p + i)->showC();` |
 
-*Table 2. The `main()` skeleton of Q1 and the corresponding code*
+*Table 1. The `main()` skeleton of Q1 and the corresponding code*
 
 ### 2.2 Design and Solution
 
@@ -115,7 +106,7 @@ The program includes `<iostream>` for input/output, defines the macro constant `
 The following two points concern the pointer notation and the output format.
 
 - **Why the dereference needs parentheses:** The dot operator `.` has higher precedence than the dereference operator `*`. Writing `*(p + 1).setImage(-8);` without the outer parentheses is therefore parsed as `*((p + 1).setImage(-8))`, which applies the dot operator to a pointer and is a compile error. In this case Clang reports `member reference type 'Complex *' is a pointer; did you mean to use '->'?`. `(*(p + 1)).setImage(-8)`, `(p + 1)->setImage(-8)`, and `p[1].setImage(-8)` are all the same call.
-- **Printing a negative imaginary part:** `showC()` does not handle the sign separately, so an imaginary part of -8 is printed as `1 + -8i`. The sample run in the slides has the same form, so this meets the requirements. To print `1 - 8i` instead, `showC()` must check whether `image` is negative and, if so, print `" - "` and `-image`.
+- **Printing a negative imaginary part:** `showC()` does not handle the sign separately, so an imaginary part of -8 is printed as `1 + -8i`. The sample run of the problem has the same form, so this meets the requirements. To print `1 - 8i` instead, `showC()` must check whether `image` is negative and, if so, print `" - "` and `-image`.
 
 ### 2.3 Output and Review
 
@@ -127,7 +118,7 @@ The following two points concern the pointer notation and the output format.
 1 + -8i
 ```
 
-The output matches the submitted screenshot. It differs from the sample run in the slides only in the number of `-` characters in the separator line (15 in the code, 14 in the skeleton of the slides). The first two lines are the (1, 1) made by the default constructor, and the last two lines show the result of changing the real part of `data[0]` and the imaginary part of `data[1]`.
+The first two lines are the (1, 1) made by the default constructor, and the last two lines show the result of changing the real part of `data[0]` and the imaginary part of `data[1]`.
 
 ---
 
@@ -162,7 +153,7 @@ The following two points are properties worth knowing when object pointers are u
 안녕하세요, 제 이름은 엘리자베스이고 31살입니다.
 ```
 
-The output, in which each line is a Korean self-introduction that gives a name and an age, matches the submitted screenshot. The second and third lines both come from calling `introduce()` of `person2` through the pointer, and the `setAge(31)` call between them changed only the age from 25 to 31.
+In the output, each line is a Korean self-introduction that gives a name and an age. The second and third lines both come from calling `introduce()` of `person2` through the pointer, and the `setAge(31)` call between them changed only the age from 25 to 31.
 
 ---
 
@@ -172,11 +163,11 @@ The output, in which each line is a Korean self-introduction that gives a name a
 
 ### 4.1 Requirements
 
-Analyze the code in the Week 5 lecture slides that allocates and releases dynamic memory. This item is not about writing code, so `Solution/Q3.cpp` is the code of the slides as it is. The code reads the size of an array, then fills and prints an array of fixed size and a dynamic array of the entered size.
+Analyze the code in the Week 5 lecture slides that allocates and releases dynamic memory. This item is not about writing code, so `Solution/Q3.cpp` is the code of the slides. The code reads the size of an array, then fills and prints an array of fixed size and a dynamic array of the entered size.
 
 ### 4.2 Design and Solution
 
-The submitted answer analyzes this code as a program that shows the difference between static arrays and dynamic arrays. The flow of the code is as follows.
+The answer analyzes this code as a program that shows the difference between static arrays and dynamic arrays. The flow of the code is as follows.
 
 1. It reads the size of the array into `size`.
 2. It initializes the static array `arrStatic`, whose size is fixed at 4, with `{ 1, 3, 5 }` and prints its four elements. The size of the array must be fixed at compile time, so the constant 4 is used instead of the entered `size`.
@@ -193,7 +184,7 @@ Three parts of the code can be explained more precisely as follows.
 
 ### 4.3 Output and Review
 
-With the input `5`, the program prints the following, which matches the sample run in the slides.
+With the input `5`, the program prints the following.
 
 ```text
 Input size: 5
@@ -201,7 +192,7 @@ Input size: 5
 0 3 6 9 12 
 ```
 
-Each line ends with one space because `' '` is printed after every number. Running the program with `leaks --atExit` on macOS reports no leaks, which confirms that the allocated array is fully released. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` in this environment), and since it is not handled, the program terminates abnormally.
+Each line ends with one space because `' '` is printed after every number. The allocated array is fully released by `delete[] pDynamic;` after the output. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` in this environment), and since it is not handled, the program terminates abnormally.
 
 ---
 
@@ -235,8 +226,6 @@ The following three points are properties that depend on the return type.
 Count: 2
 Count: 1
 ```
-
-The output matches the submitted screenshot and the values written in the two comments of the code.
 
 ---
 
