@@ -68,7 +68,7 @@
 - Sections 03 and 04 of Computer Language Ⅱ, the department's sections, are graded together on a relative scale.
 - A student who misses the midterm or final exam or is absent for half or more of the class days receives an F.
 - The assignments are programming assignments and solutions to the chapter exercises. The weeks in which the assignments were given are listed in [5. Weekly Plan and Progress](#5-weekly-plan-and-progress).
-- **Theory Homework:** Students solve the chapter exercises of the textbook and write the answers in the theory homework submission template (.hwp) distributed by the course, and the exercises actually assigned were those of Chapters 1-2, 3, 4, 5, 6, 7, 8, and 9. The problems and their solutions are in the textbook theory problem section of the exercises and solutions (`Exercises`, `Solutions`) of each unit.
+- **Theory Homework:** Students solve the chapter exercises of the textbook and write the answers in the theory homework submission template (.hwp) distributed by the course, and the exercises actually assigned were those of Chapters 1-2, 3, 4, 5, 6, 7, 8, and 9. The problems and their solutions are in the exercises and solutions (`Exercises`, `Solutions`) of each unit.
 - **Lab Assignments:** Students solve the lab problems of Chapters 3-10 in C++ code and submit it. The problems are in the exercises (`Exercises`) of each unit, and the solution code is in the [`Coursework` index](Coursework/README.md).
 - **Quiz:** A quiz on the types of inheritance was given in week 12.
 - **Exam Coverage:** The old version of the course Time Table set the midterm coverage to Chapter 1 through Section 6.1 and the final exam coverage to Section 6.2 through Chapter 10.

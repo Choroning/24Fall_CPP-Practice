@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1 and 2 are lab problems, and Exercises 3-11 are the even-numbered theory problems (2-18) of Chapter 4 of the textbook.
+
 ---
 
 <br>
@@ -16,7 +18,15 @@
 
 - [Exercise 1: Class with a Dynamic Array](#exercise-1-class-with-a-dynamic-array)
 - [Exercise 2: Dynamic Creation and Destruction of Objects](#exercise-2-dynamic-creation-and-destruction-of-objects)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: Creating and Returning a `Rect` Object Dynamically](#exercise-3-creating-and-returning-a-rect-object-dynamically)
+- [Exercise 4: Creating an Array of `Rect` Objects Dynamically](#exercise-4-creating-an-array-of-rect-objects-dynamically)
+- [Exercise 5: Calling Member Functions Through an Object Pointer](#exercise-5-calling-member-functions-through-an-object-pointer)
+- [Exercise 6: Creating and Returning a `Palette` Object Dynamically](#exercise-6-creating-and-returning-a-palette-object-dynamically)
+- [Exercise 7: Returning an Object Array with `delete`](#exercise-7-returning-an-object-array-with-delete)
+- [Exercise 8: Uses of `this`](#exercise-8-uses-of-this)
+- [Exercise 9: Situations That Cause Memory Leaks](#exercise-9-situations-that-cause-memory-leaks)
+- [Exercise 10: The Header File of the `string` Class](#exercise-10-the-header-file-of-the-string-class)
+- [Exercise 11: C-Strings and the `string` Class](#exercise-11-c-strings-and-the-string-class)
 
 ---
 
@@ -161,9 +171,9 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: Creating and Returning a `Rect` Object Dynamically
 
-**Textbook:** Even-numbered theory problems of the Chapter 4 exercises
+**Textbook Problem:** Chapter 4 theory problem 2
 
 Theory problems 1-5 of the textbook use the following `Rect` class, which abstracts a rectangle by its width and height.
 
@@ -181,9 +191,7 @@ int Rect::getArea() {
 }
 ```
 
-### Theory Problem 2
-
-The goal is to write code that reads a width and a height from the user, creates a `Rect` object dynamically, and prints its area. Fill in the blanks (1)-(3) as described below.
+**Problem:** The goal is to write code that reads a width and a height from the user, creates a `Rect` object dynamically, and prints its area. Fill in the blanks (1)-(3) as described below.
 
 ```cpp
 int main() {
@@ -200,21 +208,35 @@ int main() {
 - (2) Print the area of the rectangle through the pointer `q`.
 - (3) Return the created object.
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-3-creating-and-returning-a-rect-object-dynamically)**
 
-### Theory Problem 4
+---
 
-The following code, which creates an array of `Rect` objects, causes a compile error. How must the `Rect` class be changed so that no compile error occurs?
+<br>
+
+## Exercise 4: Creating an Array of `Rect` Objects Dynamically
+
+**Textbook Problem:** Chapter 4 theory problem 4
+
+This problem uses the `Rect` class of [Exercise 3](#exercise-3-creating-and-returning-a-rect-object-dynamically).
+
+**Problem:** The following code, which creates an array of `Rect` objects, causes a compile error. How must the `Rect` class be changed so that no compile error occurs?
 
 ```cpp
 Rect *p = new Rect[10];
 ```
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-4-creating-an-array-of-rect-objects-dynamically)**
 
-### Theory Problem 6
+---
 
-For a `Cube` class with the `public` member function `getVolume()`, there is the following code. Which of the statements that follow causes a compile error?
+<br>
+
+## Exercise 5: Calling Member Functions Through an Object Pointer
+
+**Textbook Problem:** Chapter 4 theory problem 6
+
+**Problem:** For a `Cube` class with the `public` member function `getVolume()`, there is the following code. Which of the statements that follow causes a compile error?
 
 ```cpp
 Cube c;
@@ -226,11 +248,17 @@ Cube *p = &c;
 - ③ `(*p).getVolume();`
 - ④ `c->getVolume();`
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-5-calling-member-functions-through-an-object-pointer)**
 
-### Theory Problem 8
+---
 
-What does the following program print when it runs?
+<br>
+
+## Exercise 6: Creating and Returning a `Palette` Object Dynamically
+
+**Textbook Problem:** Chapter 4 theory problem 8
+
+**Problem:** What does the following program print when it runs?
 
 ```cpp
 #include <iostream>
@@ -258,54 +286,84 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-6-creating-and-returning-a-palette-object-dynamically)**
 
-### Theory Problem 10
+---
 
-What is wrong with the following code?
+<br>
+
+## Exercise 7: Returning an Object Array with `delete`
+
+**Textbook Problem:** Chapter 4 theory problem 10
+
+**Problem:** What is wrong with the following code?
 
 ```cpp
 Cube *p = new Cube [4];
 delete p;
 ```
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-7-returning-an-object-array-with-delete)**
 
-### Theory Problem 12
+---
 
-Which statement about the use of `this` is wrong?
+<br>
+
+## Exercise 8: Uses of `this`
+
+**Textbook Problem:** Chapter 4 theory problem 12
+
+**Problem:** Which statement about the use of `this` is wrong?
 
 - ① `this` cannot be used in functions other than the member functions of a class.
 - ② `this` cannot be used in `static` member functions.
 - ③ `this` cannot be used in constructors.
 - ④ Some member functions return `this`.
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-8-uses-of-this)**
 
-### Theory Problem 14
+---
 
-In what situations does a memory leak occur?
+<br>
 
-**[Solution](Solutions.md#theory-problem-14)**
+## Exercise 9: Situations That Cause Memory Leaks
 
-### Theory Problem 16
+**Textbook Problem:** Chapter 4 theory problem 14
 
-Which header file is needed to use the `string` class?
+**Problem:** In what situations does a memory leak occur?
+
+**[Solution](Solutions.md#exercise-9-situations-that-cause-memory-leaks)**
+
+---
+
+<br>
+
+## Exercise 10: The Header File of the `string` Class
+
+**Textbook Problem:** Chapter 4 theory problem 16
+
+**Problem:** Which header file is needed to use the `string` class?
 
 - ① `<string>`
 - ② `<string.h>`
 - ③ `<cstring>`
 - ④ `<iostream>`
 
-**[Solution](Solutions.md#theory-problem-16)**
+**[Solution](Solutions.md#exercise-10-the-header-file-of-the-string-class)**
 
-### Theory Problem 18
+---
 
-Consider handling strings. Which statement about C-strings and the `string` class is wrong?
+<br>
+
+## Exercise 11: C-Strings and the `string` Class
+
+**Textbook Problem:** Chapter 4 theory problem 18
+
+**Problem:** Consider handling strings. Which statement about C-strings and the `string` class is wrong?
 
 - ① A C-string represents a string with an array of characters.
 - ② The `string` class turns a string into an object, so it is easier to use than a C-string.
 - ③ The `string` class is good, but it is not part of standard C++, so it is better avoided where possible.
 - ④ The `string` class handles only strings and has no functionality for manipulating characters, such as converting uppercase to lowercase.
 
-**[Solution](Solutions.md#theory-problem-18)**
+**[Solution](Solutions.md#exercise-11-c-strings-and-the-string-class)**

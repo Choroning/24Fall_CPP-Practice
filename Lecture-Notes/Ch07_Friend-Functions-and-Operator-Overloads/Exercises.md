@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1-3 are lab problems, and Exercises 4-11 are the even-numbered theory problems (2-16) of Chapter 7 of the textbook.
+
 ---
 
 <br>
@@ -17,7 +19,14 @@
 - [Exercise 1: Operator Overloading for a Fraction Class with Member Functions](#exercise-1-operator-overloading-for-a-fraction-class-with-member-functions)
 - [Exercise 2: Operator Overloading for a Complex Number Class with Friend Functions](#exercise-2-operator-overloading-for-a-complex-number-class-with-friend-functions)
 - [Exercise 3: Operator Overloading for a Time Class](#exercise-3-operator-overloading-for-a-time-class)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 4: When a Friend Function Is Needed](#exercise-4-when-a-friend-function-is-needed)
+- [Exercise 5: Declaring a Member Function of Another Class as a Friend](#exercise-5-declaring-a-member-function-of-another-class-as-a-friend)
+- [Exercise 6: A Function That Accesses the `private` Members of Two Classes](#exercise-6-a-function-that-accesses-the-private-members-of-two-classes)
+- [Exercise 7: The Position of a Friend Declaration](#exercise-7-the-position-of-a-friend-declaration)
+- [Exercise 8: Whether a Friend Declaration Is Needed](#exercise-8-whether-a-friend-declaration-is-needed)
+- [Exercise 9: Polymorphism of the Plus Operator](#exercise-9-polymorphism-of-the-plus-operator)
+- [Exercise 10: An Operator Function That Cannot Be a Member Function](#exercise-10-an-operator-function-that-cannot-be-a-member-function)
+- [Exercise 11: Declarations of Friend Operator Functions](#exercise-11-declarations-of-friend-operator-functions)
 
 ---
 
@@ -333,24 +342,28 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 4: When a Friend Function Is Needed
 
-**Textbook:** Even-numbered theory problems of the Chapter 7 exercises
+**Textbook Problem:** Chapter 7 theory problem 2
 
-### Theory Problem 2
-
-In which case is a friend function not needed?
+**Problem:** In which case is a friend function not needed?
 
 - ① When writing a function that is not a member but must access the `private` members of a class
 - ② When writing a function that accesses the `private` members of two or more classes at the same time
 - ③ When overloading operators
 - ④ When overloading functions
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-4-when-a-friend-function-is-needed)**
 
-### Theory Problem 4
+---
 
-The class `SampleManager` has the following member function. Declare it so that this member function is invited as a friend into the class `Sample`.
+<br>
+
+## Exercise 5: Declaring a Member Function of Another Class as a Friend
+
+**Textbook Problem:** Chapter 7 theory problem 4
+
+**Problem:** The class `SampleManager` has the following member function. Declare it so that this member function is invited as a friend into the class `Sample`.
 
 ```cpp
 bool compare(Sample &a, Sample &b);
@@ -362,11 +375,17 @@ class Sample {
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-5-declaring-a-member-function-of-another-class-as-a-friend)**
 
-### Theory Problem 6
+---
 
-The following program causes a compile error. What is the cause of the error? Fix the error appropriately.
+<br>
+
+## Exercise 6: A Function That Accesses the `private` Members of Two Classes
+
+**Textbook Problem:** Chapter 7 theory problem 6
+
+**Problem:** The following program causes a compile error. What is the cause of the error? Fix the error appropriately.
 
 ```cpp
 class Student {
@@ -386,22 +405,34 @@ void show(Student s, Professor p) {
 
 As a hint, the textbook says to insert the two forward declarations `class Student;` and `class Professor;` at the very beginning of the code to solve the forward reference problem that arises while solving it.
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-6-a-function-that-accesses-the-private-members-of-two-classes)**
 
-### Theory Problem 8
+---
 
-Which statement about the position of a friend declaration is correct?
+<br>
+
+## Exercise 7: The Position of a Friend Declaration
+
+**Textbook Problem:** Chapter 7 theory problem 8
+
+**Problem:** Which statement about the position of a friend declaration is correct?
 
 - ① It must be declared in the `private` section of the class.
 - ② It must be declared in the `protected` section of the class.
 - ③ It must be declared in the `public` section of the class.
 - ④ It may be declared in any section of the class.
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-7-the-position-of-a-friend-declaration)**
 
-### Theory Problem 10
+---
 
-Explain whether the friend declaration is needed in the following code.
+<br>
+
+## Exercise 8: Whether a Friend Declaration Is Needed
+
+**Textbook Problem:** Chapter 7 theory problem 10
+
+**Problem:** Explain whether the friend declaration is needed in the following code.
 
 ```cpp
 class Sample {
@@ -416,11 +447,17 @@ bool isZero(Sample& a) {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-8-whether-a-friend-declaration-is-needed)**
 
-### Theory Problem 12
+---
 
-Give just one other example that matches the polymorphism shown below.
+<br>
+
+## Exercise 9: Polymorphism of the Plus Operator
+
+**Textbook Problem:** Chapter 7 theory problem 12
+
+**Problem:** Give just one other example that matches the polymorphism shown below.
 
 ```text
 2 + 3 = 5
@@ -428,11 +465,17 @@ Give just one other example that matches the polymorphism shown below.
 남자 + 여자 = 결혼
 ```
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-9-polymorphism-of-the-plus-operator)**
 
-### Theory Problem 14
+---
 
-For objects `a` and `b` of the `Power` class, in which case can the `+` operator function not be written as a member function?
+<br>
+
+## Exercise 10: An Operator Function That Cannot Be a Member Function
+
+**Textbook Problem:** Chapter 7 theory problem 14
+
+**Problem:** For objects `a` and `b` of the `Power` class, in which case can the `+` operator function not be written as a member function?
 
 ```cpp
 Power a, b;   // Power 클래스에 대해
@@ -443,15 +486,21 @@ Power a, b;   // Power 클래스에 대해
 - ③ `b = a += 3`
 - ④ `b = 3 + a`
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-10-an-operator-function-that-cannot-be-a-member-function)**
 
-### Theory Problem 16
+---
 
-`a` and `b` are objects of the `Power` class. When the operator functions are written as friend functions of the `Power` class, which pair of an operation on the left and an operator function declaration on the right is wrong?
+<br>
+
+## Exercise 11: Declarations of Friend Operator Functions
+
+**Textbook Problem:** Chapter 7 theory problem 16
+
+**Problem:** `a` and `b` are objects of the `Power` class. When the operator functions are written as friend functions of the `Power` class, which pair of an operation on the left and an operator function declaration on the right is wrong?
 
 - ① `a + b`: `Power operator + (Power& a, Power &b);`
 - ② `a == b`: `bool operator == (Power a, Power b);`
 - ③ `a++`: `Power operator ++ (Power a, int b);`
 - ④ `a = b`: `Power& operator = (Power &a, Power b);`
 
-**[Solution](Solutions.md#theory-problem-16)**
+**[Solution](Solutions.md#exercise-11-declarations-of-friend-operator-functions)**

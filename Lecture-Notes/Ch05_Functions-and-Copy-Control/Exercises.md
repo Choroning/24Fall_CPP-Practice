@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1-3 are lab problems, and Exercises 4-12 are the even-numbered theory problems (2-18) of Chapter 5 of the textbook.
+
 ---
 
 <br>
@@ -17,7 +19,15 @@
 - [Exercise 1: Various Ways to Call a Function](#exercise-1-various-ways-to-call-a-function)
 - [Exercise 2: Call by Reference and Reference Return](#exercise-2-call-by-reference-and-reference-return)
 - [Exercise 3: Copy Constructor](#exercise-3-copy-constructor)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 4: The Cost of Function Calls](#exercise-4-the-cost-of-function-calls)
+- [Exercise 5: Whether Two Function Declarations Are the Same](#exercise-5-whether-two-function-declarations-are-the-same)
+- [Exercise 6: Output of a Function That Takes an Array](#exercise-6-output-of-a-function-that-takes-an-array)
+- [Exercise 7: The Statement That Fails to Store a Character](#exercise-7-the-statement-that-fails-to-store-a-character)
+- [Exercise 8: A Function That Returns a Reference to an Array Element](#exercise-8-a-function-that-returns-a-reference-to-an-array-element)
+- [Exercise 9: Comparing Two Functions That Return References](#exercise-9-comparing-two-functions-that-return-references)
+- [Exercise 10: The Case That Does Not Need a Copy Constructor](#exercise-10-the-case-that-does-not-need-a-copy-constructor)
+- [Exercise 11: Statements About Copy Constructors](#exercise-11-statements-about-copy-constructors)
+- [Exercise 12: The Default Copy Constructor Inserted by the Compiler](#exercise-12-the-default-copy-constructor-inserted-by-the-compiler)
 
 ---
 
@@ -200,34 +210,44 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 4: The Cost of Function Calls
 
-**Textbook:** Even-numbered theory problems of the Chapter 5 exercises
+**Textbook Problem:** Chapter 5 theory problem 2
 
-### Theory Problem 2
-
-In general, which kind of function call carries the greatest cost?
+**Problem:** In general, which kind of function call carries the greatest cost?
 
 - ① Call by value
 - ② Call by address
 - ③ Call by reference
 - ④ Call by implication
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-4-the-cost-of-function-calls)**
 
-### Theory Problem 4
+---
 
-Are the following two function declarations the same?
+<br>
+
+## Exercise 5: Whether Two Function Declarations Are the Same
+
+**Textbook Problem:** Chapter 5 theory problem 4
+
+**Problem:** Are the following two function declarations the same?
 
 (1) `void f(int p[]);` and `void f(int *p);`
 
 (2) `void f(int *p);` and `void f(int &p);`
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-5-whether-two-function-declarations-are-the-same)**
 
-### Theory Problem 6
+---
 
-What is the output of the following program?
+<br>
+
+## Exercise 6: Output of a Function That Takes an Array
+
+**Textbook Problem:** Chapter 5 theory problem 6
+
+**Problem:** What is the output of the following program?
 
 ```cpp
 #include <iostream>
@@ -247,11 +267,17 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-6-output-of-a-function-that-takes-an-array)**
 
-### Theory Problem 8
+---
 
-Which statement fails to store the character `'a'` in the variable `c`?
+<br>
+
+## Exercise 7: The Statement That Fails to Store a Character
+
+**Textbook Problem:** Chapter 5 theory problem 8
+
+**Problem:** Which statement fails to store the character `'a'` in the variable `c`?
 
 ```cpp
 char c;
@@ -265,11 +291,17 @@ char &r = c;
 - ③ `r = 'a';`
 - ④ `*p = 'a';`
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-7-the-statement-that-fails-to-store-a-character)**
 
-### Theory Problem 10
+---
 
-What happens to the array `array` when each of the following statements is executed separately?
+<br>
+
+## Exercise 8: A Function That Returns a Reference to an Array Element
+
+**Textbook Problem:** Chapter 5 theory problem 10
+
+**Problem:** What happens to the array `array` when each of the following statements is executed separately?
 
 ```cpp
 int array[] = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
@@ -286,11 +318,17 @@ int& f(int n) {
 
 (4) `f(f(2)) = 0;`
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-8-a-function-that-returns-a-reference-to-an-array-element)**
 
-### Theory Problem 12
+---
 
-There are two similar-looking functions as follows.
+<br>
+
+## Exercise 9: Comparing Two Functions That Return References
+
+**Textbook Problem:** Chapter 5 theory problem 12
+
+**Problem:** There are two similar-looking functions as follows.
 
 ```cpp
 int& big1(int a, int b) {
@@ -313,28 +351,46 @@ int& w = big2(x, y);
 w = 100;
 ```
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-9-comparing-two-functions-that-return-references)**
 
-### Theory Problem 14
+---
 
-Given a class `MyClass`, in which case is a copy constructor not needed?
+<br>
+
+## Exercise 10: The Case That Does Not Need a Copy Constructor
+
+**Textbook Problem:** Chapter 5 theory problem 14
+
+**Problem:** Given a class `MyClass`, in which case is a copy constructor not needed?
 
 - ① `MyClass a = f();` (when `f()` returns a `MyClass` object)
 - ② `void f(MyClass *p);`
 - ③ `MyClass b = a;` (`a` is of type `MyClass`)
 - ④ `MyClass b(a);` (`a` is of type `MyClass`)
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-10-the-case-that-does-not-need-a-copy-constructor)**
 
-### Theory Problem 16
+---
 
-Which statement about copy constructors is wrong? Choice ① states that several copy constructors can be declared in one class by overloading.
+<br>
 
-**[Solution](Solutions.md#theory-problem-16)**
+## Exercise 11: Statements About Copy Constructors
 
-### Theory Problem 18
+**Textbook Problem:** Chapter 5 theory problem 16
 
-What default copy constructor does the compiler insert into the following class?
+**Problem:** Which statement about copy constructors is wrong? Choice ① states that several copy constructors can be declared in one class by overloading.
+
+**[Solution](Solutions.md#exercise-11-statements-about-copy-constructors)**
+
+---
+
+<br>
+
+## Exercise 12: The Default Copy Constructor Inserted by the Compiler
+
+**Textbook Problem:** Chapter 5 theory problem 18
+
+**Problem:** What default copy constructor does the compiler insert into the following class?
 
 ```cpp
 class Student {
@@ -344,4 +400,4 @@ class Student {
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-18)**
+**[Solution](Solutions.md#exercise-12-the-default-copy-constructor-inserted-by-the-compiler)**

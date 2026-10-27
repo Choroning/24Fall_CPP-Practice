@@ -17,7 +17,14 @@
 - [Exercise 1: Operator Overloading for a Fraction Class with Member Functions](#exercise-1-operator-overloading-for-a-fraction-class-with-member-functions)
 - [Exercise 2: Operator Overloading for a Complex Number Class with Friend Functions](#exercise-2-operator-overloading-for-a-complex-number-class-with-friend-functions)
 - [Exercise 3: Operator Overloading for a Time Class](#exercise-3-operator-overloading-for-a-time-class)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 4: When a Friend Function Is Needed](#exercise-4-when-a-friend-function-is-needed)
+- [Exercise 5: Declaring a Member Function of Another Class as a Friend](#exercise-5-declaring-a-member-function-of-another-class-as-a-friend)
+- [Exercise 6: A Function That Accesses the `private` Members of Two Classes](#exercise-6-a-function-that-accesses-the-private-members-of-two-classes)
+- [Exercise 7: The Position of a Friend Declaration](#exercise-7-the-position-of-a-friend-declaration)
+- [Exercise 8: Whether a Friend Declaration Is Needed](#exercise-8-whether-a-friend-declaration-is-needed)
+- [Exercise 9: Polymorphism of the Plus Operator](#exercise-9-polymorphism-of-the-plus-operator)
+- [Exercise 10: An Operator Function That Cannot Be a Member Function](#exercise-10-an-operator-function-that-cannot-be-a-member-function)
+- [Exercise 11: Declarations of Friend Operator Functions](#exercise-11-declarations-of-friend-operator-functions)
 
 ---
 
@@ -541,21 +548,29 @@ The last line of the sample run, `Program ended with exit code: 0`, is a message
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 4: When a Friend Function Is Needed
 
-**Textbook:** Even-numbered theory problems of the Chapter 7 exercises
+**Textbook Problem:** Chapter 7 theory problem 2
 
-### Theory Problem 2
+**Problem:** Choose the case in which a friend function is not needed. The options are in [Exercise 4](Exercises.md#exercise-4-when-a-friend-function-is-needed).
 
-**Problem:** Choose the case in which a friend function is not needed.
+### Solution
 
 **Answer:** ④
 
-A friend function is used to give a function that is not a member of a class access to the `private` members of that class ([Chapter 7, Section 1.1](Concepts_Lecture.md#11-friend-function)). Function overloading defines several functions with the same name and different parameters, which has nothing to do with accessing `private` members, so no friend is needed. In contrast, a friend function is needed when a non-member function must access `private` members (①), when one function handles the `private` members of two classes together (②), and when overloading an operator whose left operand is not an object of the class (③).
+**Explanation:** A friend function is used to give a function that is not a member of a class access to the `private` members of that class ([Chapter 7, Section 1.1](Concepts_Lecture.md#11-friend-function)). Function overloading defines several functions with the same name and different parameters, which has nothing to do with accessing `private` members, so no friend is needed. In contrast, a friend function is needed when a non-member function must access `private` members (①), when one function handles the `private` members of two classes together (②), and when overloading an operator whose left operand is not an object of the class (③).
 
-### Theory Problem 4
+---
 
-**Problem:** Declare the member function `compare()` of `SampleManager` as a friend of `Sample`.
+<br>
+
+## Exercise 5: Declaring a Member Function of Another Class as a Friend
+
+**Textbook Problem:** Chapter 7 theory problem 4
+
+**Problem:** Declare the member function `compare()` of `SampleManager` as a friend of `Sample`. The full problem and code are in [Exercise 5](Exercises.md#exercise-5-declaring-a-member-function-of-another-class-as-a-friend).
+
+### Solution
 
 **Answer:**
 
@@ -566,11 +581,19 @@ class Sample {
 };
 ```
 
-To invite a member function of another class as a friend, the name of the class it belongs to and the scope resolution operator are attached before the function name, as in `SampleManager::compare` ([Chapter 7, Section 1.3](Concepts_Lecture.md#13-three-forms-of-friend-declaration)). Writing `friend bool compare(Sample &a, Sample &b);` without `SampleManager::` declares a global function of the same name as a friend, and the member function of `SampleManager` still cannot access the `private` members of `Sample`. For this declaration to compile, the `SampleManager` class must also be fully declared before `Sample`, and a forward declaration `class Sample;` is needed before it so that `Sample` can be used inside `SampleManager`.
+**Explanation:** To invite a member function of another class as a friend, the name of the class it belongs to and the scope resolution operator are attached before the function name, as in `SampleManager::compare` ([Chapter 7, Section 1.3](Concepts_Lecture.md#13-three-forms-of-friend-declaration)). Writing `friend bool compare(Sample &a, Sample &b);` without `SampleManager::` declares a global function of the same name as a friend, and the member function of `SampleManager` still cannot access the `private` members of `Sample`. For this declaration to compile, the `SampleManager` class must also be fully declared before `Sample`, and a forward declaration `class Sample;` is needed before it so that `Sample` can be used inside `SampleManager`.
 
-### Theory Problem 6
+---
 
-**Problem:** Give the cause of the compile error in which the global function `show()` accesses the `private` members of `Student` and `Professor`, and fix it.
+<br>
+
+## Exercise 6: A Function That Accesses the `private` Members of Two Classes
+
+**Textbook Problem:** Chapter 7 theory problem 6
+
+**Problem:** Give the cause of the compile error in which the global function `show()` accesses the `private` members of `Student` and `Professor`, and fix it. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-a-function-that-accesses-the-private-members-of-two-classes).
+
+### Solution
 
 **Answer:** `id` of `Student` and `name` of `Professor` are `private` members, so `show()`, which is not a member, cannot access them directly. Fix it by declaring `show()` as a friend in both classes.
 
@@ -595,46 +618,86 @@ void show(Student s, Professor p) {
 }
 ```
 
-`show()` must read the `private` members of both classes, so it is declared a friend of both. The friend declaration inside `Student` uses `Professor`, which is not defined yet, as a parameter type, so the forward declarations of both classes go at the very beginning, as the hint says. As an alternative, both classes could provide `public` getters such as `int getId() const` and `string getName() const`, and `show()` could call them. In that case, if `show()` takes its parameters as `const` references, as in `const Student&`, the getters must be declared as `const` member functions, because only `const` member functions can be called on `const` objects.
+**Explanation:** `show()` must read the `private` members of both classes, so it is declared a friend of both. The friend declaration inside `Student` uses `Professor`, which is not defined yet, as a parameter type, so the forward declarations of both classes go at the very beginning, as the hint says. As an alternative, both classes could provide `public` getters such as `int getId() const` and `string getName() const`, and `show()` could call them. In that case, if `show()` takes its parameters as `const` references, as in `const Student&`, the getters must be declared as `const` member functions, because only `const` member functions can be called on `const` objects.
 
-### Theory Problem 8
+---
 
-**Problem:** Choose the correct statement about the position of a friend declaration.
+<br>
+
+## Exercise 7: The Position of a Friend Declaration
+
+**Textbook Problem:** Chapter 7 theory problem 8
+
+**Problem:** Choose the correct statement about the position of a friend declaration. The options are in [Exercise 7](Exercises.md#exercise-7-the-position-of-a-friend-declaration).
+
+### Solution
 
 **Answer:** ④
 
-A friend declaration does not declare a member of the class; it grants access to a function or class outside it, so it is not affected by access specifiers. It therefore has the same effect in any of the `private`, `protected`, and `public` sections ([Chapter 7, Section 1.4](Concepts_Lecture.md#14-guidelines)). By convention, friend declarations are gathered in the `public` section or at the beginning or end of the class so that the interface of the class is easy to read.
+**Explanation:** A friend declaration does not declare a member of the class; it grants access to a function or class outside it, so it is not affected by access specifiers. It therefore has the same effect in any of the `private`, `protected`, and `public` sections ([Chapter 7, Section 1.4](Concepts_Lecture.md#14-guidelines)). By convention, friend declarations are gathered in the `public` section or at the beginning or end of the class so that the interface of the class is easy to read.
 
-### Theory Problem 10
+---
 
-**Problem:** Explain whether the friend declaration of `isZero()` is needed in a `Sample` class whose members are all `public`.
+<br>
+
+## Exercise 8: Whether a Friend Declaration Is Needed
+
+**Textbook Problem:** Chapter 7 theory problem 10
+
+**Problem:** Explain whether the friend declaration of `isZero()` is needed in a `Sample` class whose members are all `public`. The full problem and code are in [Exercise 8](Exercises.md#exercise-8-whether-a-friend-declaration-is-needed).
+
+### Solution
 
 **Answer:** It is not needed.
 
-The member `x` and the constructor of `Sample` are all `public`, so the global function `isZero()` can access `a.x` without being a friend. A friend declaration is meaningful only when `private` or `protected` members must be accessed. Removing the friend declaration, the program compiles and behaves exactly the same.
+**Explanation:** The member `x` and the constructor of `Sample` are all `public`, so the global function `isZero()` can access `a.x` without being a friend. A friend declaration is meaningful only when `private` or `protected` members must be accessed. Removing the friend declaration, the program compiles and behaves exactly the same.
 
-### Theory Problem 12
+---
 
-**Problem:** Give one other example of polymorphism in which the same `+` is used on different kinds of things and the result depends on them (the examples read: red + blue = purple; man + woman = marriage).
+<br>
+
+## Exercise 9: Polymorphism of the Plus Operator
+
+**Textbook Problem:** Chapter 7 theory problem 12
+
+**Problem:** Give one other example of polymorphism in which the same `+` is used on different kinds of things and the result depends on them (the examples read: red + blue = purple; man + woman = marriage). The full problem and code are in [Exercise 9](Exercises.md#exercise-9-polymorphism-of-the-plus-operator).
+
+### Solution
 
 **Answer:** `"I love C" + "++" = "I love C++"`
 
-The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Chapter 7, Section 2.1](Concepts_Lecture.md#21-why-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
+**Explanation:** The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Chapter 7, Section 2.1](Concepts_Lecture.md#21-why-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
 
-### Theory Problem 14
+---
 
-**Problem:** For `Power` objects `a` and `b`, choose the expression for which the `+` operator function cannot be written as a member function.
+<br>
+
+## Exercise 10: An Operator Function That Cannot Be a Member Function
+
+**Textbook Problem:** Chapter 7 theory problem 14
+
+**Problem:** For `Power` objects `a` and `b`, choose the expression for which the `+` operator function cannot be written as a member function. The full problem and code are in [Exercise 10](Exercises.md#exercise-10-an-operator-function-that-cannot-be-a-member-function).
+
+### Solution
 
 **Answer:** ④
 
-A member operator function is called as a member of the left operand, so `a + b` becomes `a.operator+(b)` and `a + 3` becomes `a.operator+(3)`. In `3 + a` the left operand is the integer 3, so it would have to become `3.operator+(a)`, but `int` is not a class and cannot have member functions. `3 + a` is therefore implemented as an external function such as `Power operator+(int op1, Power op2)`, usually a friend of `Power` ([Chapter 7, Section 3.2](Concepts_Lecture.md#32-as-friend-function)). `b = a += 3` in ③ uses the `+=` operator, and `a += 3` can be implemented as a member function, as `a.operator+=(3)`.
+**Explanation:** A member operator function is called as a member of the left operand, so `a + b` becomes `a.operator+(b)` and `a + 3` becomes `a.operator+(3)`. In `3 + a` the left operand is the integer 3, so it would have to become `3.operator+(a)`, but `int` is not a class and cannot have member functions. `3 + a` is therefore implemented as an external function such as `Power operator+(int op1, Power op2)`, usually a friend of `Power` ([Chapter 7, Section 3.2](Concepts_Lecture.md#32-as-friend-function)). `b = a += 3` in ③ uses the `+=` operator, and `a += 3` can be implemented as a member function, as `a.operator+=(3)`.
 
-### Theory Problem 16
+---
 
-**Problem:** Choose the wrong pair of a friend operator function declaration and its operation.
+<br>
+
+## Exercise 11: Declarations of Friend Operator Functions
+
+**Textbook Problem:** Chapter 7 theory problem 16
+
+**Problem:** Choose the wrong pair of a friend operator function declaration and its operation. The options are in [Exercise 11](Exercises.md#exercise-11-declarations-of-friend-operator-functions).
+
+### Solution
 
 **Answer:** ④
 
-The assignment operator `=` can be overloaded only as a member function. Declaring it as an external function that takes two parameters, as in `Power& operator = (Power &a, Power b);`, gives the error `overloaded 'operator=' must be a non-static member function`. As a member function it takes only the right operand, as in `Power& operator=(const Power& b);`. Along with `=`, `()`, `[]`, and `->` can also be overloaded only as member functions ([Chapter 7, Section 2.4](Concepts_Lecture.md#24-member-function-vs-friend-function-decision-guide)).
+**Explanation:** The assignment operator `=` can be overloaded only as a member function. Declaring it as an external function that takes two parameters, as in `Power& operator = (Power &a, Power b);`, gives the error `overloaded 'operator=' must be a non-static member function`. As a member function it takes only the right operand, as in `Power& operator=(const Power& b);`. Along with `=`, `()`, `[]`, and `->` can also be overloaded only as member functions ([Chapter 7, Section 2.4](Concepts_Lecture.md#24-member-function-vs-friend-function-decision-guide)).
 
 The other declarations are syntactically valid. However, `Power operator ++ (Power a, int b);` in ③ takes the operand by value, so what the function increments is a copy of `a`, and the original object does not change. A postfix `++` implemented as a friend must take the operand by reference, as in `Power operator++(Power& a, int b);`, for the original object to be incremented ([Chapter 7, Section 4.2](Concepts_Lecture.md#42-as-friend-function)).

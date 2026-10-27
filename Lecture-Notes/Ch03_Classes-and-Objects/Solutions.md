@@ -16,7 +16,16 @@
 
 - [Exercise 1: Class Practice](#exercise-1-class-practice)
 - [Exercise 2: Coffee Machine](#exercise-2-coffee-machine)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: Statements About Classes and Objects](#exercise-3-statements-about-classes-and-objects)
+- [Exercise 4: Encapsulating a Global Variable and a Global Function](#exercise-4-encapsulating-a-global-variable-and-a-global-function)
+- [Exercise 5: Correcting the `Tower` Class](#exercise-5-correcting-the-tower-class)
+- [Exercise 6: Implementing the `Calendar` Class](#exercise-6-implementing-the-calendar-class)
+- [Exercise 7: Statements About Destructors](#exercise-7-statements-about-destructors)
+- [Exercise 8: The Order of Object Creation and Destruction](#exercise-8-the-order-of-object-creation-and-destruction)
+- [Exercise 9: An Error in Accessing a `private` Member](#exercise-9-an-error-in-accessing-a-private-member)
+- [Exercise 10: Advantages and Disadvantages of Inline Functions](#exercise-10-advantages-and-disadvantages-of-inline-functions)
+- [Exercise 11: The Function Best Suited to Inlining](#exercise-11-the-function-best-suited-to-inlining)
+- [Exercise 12: Rewriting a Structure as a Class](#exercise-12-rewriting-a-structure-as-a-class)
 
 ---
 
@@ -24,9 +33,9 @@
 
 ## Exercise 1: Class Practice
 
-**Textbook:** Chapter 3 Programming Exercise 1
+**Textbook Problem:** Chapter 3 programming exercise 1
 
-**Problem:** In the given `main()`, `Tower myTower;` creates a tower object 1 meter high and `Tower seoulTower(100);` creates one 100 meters high, and `getHeight()` prints each height. Write the `Tower` class with its declaration and definition separated and every member variable `private`.
+**Problem:** In the given `main()`, `Tower myTower;` creates a tower object 1 meter high and `Tower seoulTower(100);` creates one 100 meters high, and `getHeight()` prints each height. Write the `Tower` class with its declaration and definition separated and every member variable `private`. The full problem and sample run are in [Exercise 1](Exercises.md#exercise-1-class-practice).
 
 ### Solution
 
@@ -96,9 +105,9 @@ The output reads "The height is 1 meter" and "The height is 100 meters" in Korea
 
 ## Exercise 2: Coffee Machine
 
-**Textbook:** Chapter 3 Programming Exercise 4
+**Textbook Problem:** Chapter 3 programming exercise 4
 
-**Problem:** Write a `CoffeeMachine` class that holds amounts of coffee, water, and sugar. An espresso consumes 1 coffee and 1 water, an Americano 1 coffee and 2 water, and a sugar coffee 1 coffee, 2 water, and 1 sugar; `fill()` refills the ingredients, and `show()` prints the current state. If the ingredients are insufficient, print an error message and the current state; separate the declaration from the definition and make every member variable `private`.
+**Problem:** Write a `CoffeeMachine` class that holds amounts of coffee, water, and sugar. An espresso consumes 1 coffee and 1 water, an Americano 1 coffee and 2 water, and a sugar coffee 1 coffee, 2 water, and 1 sugar; `fill()` refills the ingredients, and `show()` prints the current state. If the ingredients are insufficient, print an error message and the current state; separate the declaration from the definition and make every member variable `private`. The full problem and sample run are in [Exercise 2](Exercises.md#exercise-2-coffee-machine).
 
 ### Solution
 
@@ -246,21 +255,29 @@ The error messages in the output read "Cannot make a sugar coffee because of ins
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: Statements About Classes and Objects
 
-**Textbook:** Even-numbered theory problems of the Chapter 3 exercises
+**Textbook Problem:** Chapter 3 theory problem 2
 
-### Theory Problem 2
+**Problem:** Choose the wrong statement among four statements about classes and objects. The options are in [Exercise 3](Exercises.md#exercise-3-statements-about-classes-and-objects).
 
-**Problem:** Choose the wrong statement among four statements about classes and objects.
+### Solution
 
 **Answer:** ③
 
-It depends on the use, but in general member variables should be `private`, following the principle of encapsulation, so that outside code cannot change them directly, and only the functionality to be offered to the outside should be made public as `public` member functions ([Chapter 3, Section 2.4](Concepts_Lecture.md#24-access-specifiers)). The other statements are correct. An object made from a class is called an entity or an instance (①), a class is a blueprint for making objects (②), and a class consists of member variables and member functions (④).
+**Explanation:** It depends on the use, but in general member variables should be `private`, following the principle of encapsulation, so that outside code cannot change them directly, and only the functionality to be offered to the outside should be made public as `public` member functions ([Chapter 3, Section 2.4](Concepts_Lecture.md#24-access-specifiers)). The other statements are correct. An object made from a class is called an entity or an instance (①), a class is a blueprint for making objects (②), and a class consists of member variables and member functions (④).
 
-### Theory Problem 4
+---
 
-**Problem:** Encapsulate the global variable `age` and the global function `older()`.
+<br>
+
+## Exercise 4: Encapsulating a Global Variable and a Global Function
+
+**Textbook Problem:** Chapter 3 theory problem 4
+
+**Problem:** Encapsulate the global variable `age` and the global function `older()`. The full problem and code are in [Exercise 4](Exercises.md#exercise-4-encapsulating-a-global-variable-and-a-global-function).
+
+### Solution
 
 **Answer:** Group `age` and `older()` into one class. The `Circle` class is already encapsulated, so it stays as it is.
 
@@ -280,11 +297,19 @@ public:
 };
 ```
 
-Encapsulation means grouping data and the functions that handle the data into one class and protecting the data from outside access. In the original code `age` is a global variable, so any function of the program can change it. Grouped into the class `Age`, `age` has no access specifier and becomes a `private` member, and outside code handles the age only through `older()`, `setAge()`, and `getAge()`. Since `setAge()` is the only way to initialize `age`, adding a constructor that sets the age when an object is created prevents the mistake of reading an uninitialized value.
+**Explanation:** Encapsulation means grouping data and the functions that handle the data into one class and protecting the data from outside access. In the original code `age` is a global variable, so any function of the program can change it. Grouped into the class `Age`, `age` has no access specifier and becomes a `private` member, and outside code handles the age only through `older()`, `setAge()`, and `getAge()`. Since `setAge()` is the only way to initialize `age`, adding a constructor that sets the age when an object is created prevents the mistake of reading an uninitialized value.
 
-### Theory Problem 6
+---
 
-**Problem:** Fix the wrong parts of a `Tower` class with `int height = 20;` and a `return;` inside the constructor.
+<br>
+
+## Exercise 5: Correcting the `Tower` Class
+
+**Textbook Problem:** Chapter 3 theory problem 6
+
+**Problem:** Fix the wrong parts of a `Tower` class with `int height = 20;` and a `return;` inside the constructor. The full problem and code are in [Exercise 5](Exercises.md#exercise-5-correcting-the-tower-class).
+
+### Solution
 
 **Answer:**
 
@@ -296,13 +321,21 @@ public:
 };
 ```
 
-Initializing a member variable in the class declaration, as in `int height = 20;`, is not allowed by the standards before C++11. The initial value is therefore set in the constructor. A constructor has no return type, so it cannot return a value. A `return;` without a value is allowed as a statement that ends the constructor, but at the end of the body it has no meaning, so it is removed.
+**Explanation:** Initializing a member variable in the class declaration, as in `int height = 20;`, is not allowed by the standards before C++11. The initial value is therefore set in the constructor. A constructor has no return type, so it cannot return a value. A `return;` without a value is allowed as a statement that ends the constructor, but at the end of the body it has no meaning, so it is removed.
 
 > **Note:** Since C++11, a **default member initializer** is allowed, so the original code also compiles with `-std=c++11` and later. In that case `height` is first initialized to 20 and then changed to 10 in the constructor body, so the height of the object is 10. Compiling with `-std=c++98` makes Clang warn `default member initializer for non-static data member is a C++11 extension` ([Chapter 3, Section 4.4](Concepts_Lecture.md#44-ways-to-initialize-member-variables)).
 
-### Theory Problem 8
+---
 
-**Problem:** Implement the constructor and `getYear()` of the `Calendar` class outside the class.
+<br>
+
+## Exercise 6: Implementing the `Calendar` Class
+
+**Textbook Problem:** Chapter 3 theory problem 8
+
+**Problem:** Implement the constructor and `getYear()` of the `Calendar` class outside the class. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-implementing-the-calendar-class).
+
+### Solution
 
 **Answer:**
 
@@ -315,23 +348,39 @@ int Calendar::getYear() {
 }
 ```
 
-When a member function is defined outside the class, the class name and the scope resolution operator are attached, as in `Calendar::`. The constructor is defined without a return type as `Calendar::Calendar()`, and `getYear()` with the same return type as its declaration, `int`. The constructor can also be written with a member initializer list, as in `Calendar::Calendar() : year(10) {}`.
+**Explanation:** When a member function is defined outside the class, the class name and the scope resolution operator are attached, as in `Calendar::`. The constructor is defined without a return type as `Calendar::Calendar()`, and `getYear()` with the same return type as its declaration, `int`. The constructor can also be written with a member initializer list, as in `Calendar::Calendar() : year(10) {}`.
 
-### Theory Problem 10
+---
 
-**Problem:** Point out the wrong part of the description of destructors.
+<br>
+
+## Exercise 7: Statements About Destructors
+
+**Textbook Problem:** Chapter 3 theory problem 10
+
+**Problem:** Point out the wrong part of the description of destructors. The options are in [Exercise 7](Exercises.md#exercise-7-statements-about-destructors).
+
+### Solution
 
 **Answer:** ③
 
-A destructor cannot have parameters, has no return type, and can be declared only in the single form `~ClassName()`. Destructors therefore cannot be overloaded. A destructor is called automatically when an object is destroyed, so the caller has no way to pass values, and there is no need to ([Chapter 3, Section 4.6](Concepts_Lecture.md#46-destructor)). The other parts are correct. If no destructor is declared, the compiler generates a default destructor that does nothing (④).
+**Explanation:** A destructor cannot have parameters, has no return type, and can be declared only in the single form `~ClassName()`. Destructors therefore cannot be overloaded. A destructor is called automatically when an object is destroyed, so the caller has no way to pass values, and there is no need to ([Chapter 3, Section 4.6](Concepts_Lecture.md#46-destructor)). The other parts are correct. If no destructor is declared, the compiler generates a default destructor that does nothing (④).
 
-### Theory Problem 12
+---
 
-**Problem:** Give the order in which the global object `c`, the local object `b` of the function `f()`, and the local object `a` of the member function `test()` are created and destroyed.
+<br>
+
+## Exercise 8: The Order of Object Creation and Destruction
+
+**Textbook Problem:** Chapter 3 theory problem 12
+
+**Problem:** Give the order in which the global object `c`, the local object `b` of the function `f()`, and the local object `a` of the member function `test()` are created and destroyed. The full problem and code are in [Exercise 8](Exercises.md#exercise-8-the-order-of-object-creation-and-destruction).
+
+### Solution
 
 **Answer:** `c` created, `b` created, `a` created, `a` destroyed, `b` destroyed, `c` destroyed
 
-A global object is created before `main()` starts and destroyed after `main()` ends. A local object is created when its declaration statement runs and destroyed when the function it belongs to ends ([Chapter 3, Section 4.7](Concepts_Lecture.md#47-execution-order)).
+**Explanation:** A global object is created before `main()` starts and destroyed after `main()` ends. A local object is created when its declaration statement runs and destroyed when the function it belongs to ends ([Chapter 3, Section 4.7](Concepts_Lecture.md#47-execution-order)).
 
 | When | What happens |
 |:-----|:-----|
@@ -342,11 +391,19 @@ A global object is created before `main()` starts and destroyed after `main()` e
 | End of `f()` | `b` destroyed |
 | After `main()` ends | `c` destroyed |
 
-*Table 2. When the objects of theory problem 12 are created and destroyed*
+*Table 2. When the objects of Exercise 8 are created and destroyed*
 
-### Theory Problem 14
+---
 
-**Problem:** Point out and fix the error in a program in which `main()` assigns a value directly to the `private` member `channels`.
+<br>
+
+## Exercise 9: An Error in Accessing a `private` Member
+
+**Textbook Problem:** Chapter 3 theory problem 14
+
+**Problem:** Point out and fix the error in a program in which `main()` assigns a value directly to the `private` member `channels`. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-an-error-in-accessing-a-private-member).
+
+### Solution
 
 **Answer:** `LG.channels = 200;` is the error. `channels` is declared without an access specifier, so it is a `private` member and cannot be accessed from `main()`, which is outside the class. `LG.colors = 60000;` is fine because `colors` is `public`.
 
@@ -367,27 +424,51 @@ int main() {
 }
 ```
 
-To change `channels`, add the `public` member function `setChannels()` and call it from `main()`. Moving `channels` to `public` would also compile, but it would break encapsulation. This is the only place to fix in this program; both constructors are `public`, so `TV LG;` and `TV Samsung(100, 50000);` are fine.
+**Explanation:** To change `channels`, add the `public` member function `setChannels()` and call it from `main()`. Moving `channels` to `public` would also compile, but it would break encapsulation. This is the only place to fix in this program; both constructors are `public`, so `TV LG;` and `TV Samsung(100, 50000);` are fine.
 
-### Theory Problem 16
+---
 
-**Problem:** Choose the correct statement about the advantages and disadvantages of inline functions.
+<br>
+
+## Exercise 10: Advantages and Disadvantages of Inline Functions
+
+**Textbook Problem:** Chapter 3 theory problem 16
+
+**Problem:** Choose the correct statement about the advantages and disadvantages of inline functions. The options are in [Exercise 10](Exercises.md#exercise-10-advantages-and-disadvantages-of-inline-functions).
+
+### Solution
 
 **Answer:** ②
 
-An inline function inserts its code at the place of each call, so the overhead of a function call (passing arguments, saving the return address, jumping) disappears and the program runs faster ([Chapter 3, Section 5](Concepts_Lecture.md#5-inline-functions)). In exchange, the code is copied at every call site, so the program becomes larger (④ is wrong), and the compiler has more expansion work to do, so compilation does not become faster (① is wrong). It has nothing to do with the time needed to write the program (③ is wrong).
+**Explanation:** An inline function inserts its code at the place of each call, so the overhead of a function call (passing arguments, saving the return address, jumping) disappears and the program runs faster ([Chapter 3, Section 5](Concepts_Lecture.md#5-inline-functions)). In exchange, the code is copied at every call site, so the program becomes larger (④ is wrong), and the compiler has more expansion work to do, so compilation does not become faster (① is wrong). It has nothing to do with the time needed to write the program (③ is wrong).
 
-### Theory Problem 18
+---
 
-**Problem:** Choose the function among the four that is most suitable for the compiler to handle inline.
+<br>
+
+## Exercise 11: The Function Best Suited to Inlining
+
+**Textbook Problem:** Chapter 3 theory problem 18
+
+**Problem:** Choose the function among the four that is most suitable for the compiler to handle inline. The full problem and code are in [Exercise 11](Exercises.md#exercise-11-the-function-best-suited-to-inlining).
+
+### Solution
 
 **Answer:** ①
 
-Inline expansion suits functions whose code is short and which are called often. `big()` in ① is a short function made of a single conditional operator, so it is the most suitable. ② is a recursive function that calls itself, so its body cannot be expanded endlessly at the call site, and ③ has a loop, so its body is long and the call overhead is small compared with the execution time. ④ has a `static` local variable; such a function can be declared inline under the standard, but every call must share the same variable, so expansion gains little. `inline` is only a request to the compiler, so the compiler may decline to handle functions such as ②-④ inline.
+**Explanation:** Inline expansion suits functions whose code is short and which are called often. `big()` in ① is a short function made of a single conditional operator, so it is the most suitable. ② is a recursive function that calls itself, so its body cannot be expanded endlessly at the call site, and ③ has a loop, so its body is long and the call overhead is small compared with the execution time. ④ has a `static` local variable; such a function can be declared inline under the standard, but every call must share the same variable, so expansion gains little. `inline` is only a request to the compiler, so the compiler may decline to handle functions such as ②-④ inline.
 
-### Theory Problem 20
+---
 
-**Problem:** Write `struct Family` as a class with the same meaning.
+<br>
+
+## Exercise 12: Rewriting a Structure as a Class
+
+**Textbook Problem:** Chapter 3 theory problem 20
+
+**Problem:** Write `struct Family` as a class with the same meaning. The full problem and code are in [Exercise 12](Exercises.md#exercise-12-rewriting-a-structure-as-a-class).
+
+### Solution
 
 **Answer:**
 
@@ -401,4 +482,4 @@ public:
 };
 ```
 
-The only difference between a C++ structure and a class is the default access. A structure treats members without an access specifier as `public`, and a class treats them as `private` ([Chapter 3, Section 6](Concepts_Lecture.md#6-c-struct)). `count` and `address` in the structure come before any access specifier and are `public`, so in the class they go under `public:`. `tel` was `private` in the structure, so in the class it can simply go first, without an access specifier.
+**Explanation:** The only difference between a C++ structure and a class is the default access. A structure treats members without an access specifier as `public`, and a class treats them as `private` ([Chapter 3, Section 6](Concepts_Lecture.md#6-c-struct)). `count` and `address` in the structure come before any access specifier and are `public`, so in the class they go under `public:`. `tel` was `private` in the structure, so in the class it can simply go first, without an access specifier.

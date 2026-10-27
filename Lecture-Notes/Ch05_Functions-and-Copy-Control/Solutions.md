@@ -17,7 +17,15 @@
 - [Exercise 1: Various Ways to Call a Function](#exercise-1-various-ways-to-call-a-function)
 - [Exercise 2: Call by Reference and Reference Return](#exercise-2-call-by-reference-and-reference-return)
 - [Exercise 3: Copy Constructor](#exercise-3-copy-constructor)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 4: The Cost of Function Calls](#exercise-4-the-cost-of-function-calls)
+- [Exercise 5: Whether Two Function Declarations Are the Same](#exercise-5-whether-two-function-declarations-are-the-same)
+- [Exercise 6: Output of a Function That Takes an Array](#exercise-6-output-of-a-function-that-takes-an-array)
+- [Exercise 7: The Statement That Fails to Store a Character](#exercise-7-the-statement-that-fails-to-store-a-character)
+- [Exercise 8: A Function That Returns a Reference to an Array Element](#exercise-8-a-function-that-returns-a-reference-to-an-array-element)
+- [Exercise 9: Comparing Two Functions That Return References](#exercise-9-comparing-two-functions-that-return-references)
+- [Exercise 10: The Case That Does Not Need a Copy Constructor](#exercise-10-the-case-that-does-not-need-a-copy-constructor)
+- [Exercise 11: Statements About Copy Constructors](#exercise-11-statements-about-copy-constructors)
+- [Exercise 12: The Default Copy Constructor Inserted by the Compiler](#exercise-12-the-default-copy-constructor-inserted-by-the-compiler)
 
 ---
 
@@ -27,7 +35,7 @@
 
 **Textbook Problem:** Chapter 5 programming exercises 1 and 5
 
-**Problem:** Write the `Circle` class and three functions so that the radii of the `Circle` objects `x` and `y` (radius 10 and 5) are swapped by a reference version and then by a pointer version of `mySwap()`, and `increaseBy(x, y)` increases the radius of `x` by the radius of `y`. `main()` may not be changed except for the two blanks.
+**Problem:** Write the `Circle` class and three functions so that the radii of the `Circle` objects `x` and `y` (radius 10 and 5) are swapped by a reference version and then by a pointer version of `mySwap()`, and `increaseBy(x, y)` increases the radius of `x` by the radius of `y`. `main()` may not be changed except for the two blanks. The full problem and sample run are in [Exercise 1](Exercises.md#exercise-1-various-ways-to-call-a-function).
 
 ### Solution
 
@@ -124,7 +132,7 @@ int main() {
 
 **Textbook Problem:** Chapter 5 programming exercise 6
 
-**Problem:** Write `char& find(char a[], char c, bool& success)`, which searches the string `a` for the character `c`, returns a reference to its location, and reports through the reference parameter `success` whether it was found.
+**Problem:** Write `char& find(char a[], char c, bool& success)`, which searches the string `a` for the character `c`, returns a reference to its location, and reports through the reference parameter `success` whether it was found. The full problem and sample run are in [Exercise 2](Exercises.md#exercise-2-call-by-reference-and-reference-return).
 
 ### Solution
 
@@ -196,7 +204,7 @@ int main() {
 
 **Textbook Problem:** Chapter 5 programming exercise 11
 
-**Problem:** Write the constructor, destructor, `set()`, and deep copy constructor of a `Book` class whose title string is dynamically allocated, so that changing the title and price of `java`, copy-constructed from `cpp`, does not affect `cpp`. `set()` must release and reallocate the memory when the new title is longer.
+**Problem:** Write the constructor, destructor, `set()`, and deep copy constructor of a `Book` class whose title string is dynamically allocated, so that changing the title and price of `java`, copy-constructed from `cpp`, does not affect `cpp`. `set()` must release and reallocate the memory when the new title is longer. The full problem and sample run are in [Exercise 3](Exercises.md#exercise-3-copy-constructor).
 
 ### Solution
 
@@ -275,55 +283,87 @@ When the source file is UTF-8, `strlen("C++가이드")` is 12 and `strlen("Java�
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 4: The Cost of Function Calls
 
-**Textbook:** Even-numbered theory problems of the Chapter 5 exercises
+**Textbook Problem:** Chapter 5 theory problem 2
 
-### Theory Problem 2
+**Problem:** Among call by value, by address, by reference, and by implication, choose the kind of call that generally costs the most. The options are in [Exercise 4](Exercises.md#exercise-4-the-cost-of-function-calls).
 
-**Problem:** Among call by value, by address, by reference, and by implication, choose the kind of call that generally costs the most.
+### Solution
 
 **Answer:** ①
 
-Call by value copies the value of the actual argument into the parameter. For a built-in type such as `int` the copying cost is small, but passing an object by value runs the copy constructor to create the parameter object, and the destructor of that object also runs when the function ends. The larger the object, the more time and stack space the copying of its members takes ([Chapter 5, Section 2.1](Concepts_Lecture.md#21-passing-an-object-by-value)).
+**Explanation:** Call by value copies the value of the actual argument into the parameter. For a built-in type such as `int` the copying cost is small, but passing an object by value runs the copy constructor to create the parameter object, and the destructor of that object also runs when the function ends. The larger the object, the more time and stack space the copying of its members takes ([Chapter 5, Section 2.1](Concepts_Lecture.md#21-passing-an-object-by-value)).
 
 - **② Call by address:** It copies only one pointer value (an address), so the cost is constant regardless of the size of the object.
 - **③ Call by reference:** The parameter becomes an alias of the actual argument, so the object is not copied. Compilers usually implement it by passing an address, so the cost is similar to call by address.
 - **④ Call by implication:** This is not an argument-passing method of C++. C++ has three: call by value, by address, and by reference.
 
-### Theory Problem 4
+---
 
-**Problem:** Decide whether `void f(int p[]);` and `void f(int *p);`, and then `void f(int *p);` and `void f(int &p);`, are the same declarations.
+<br>
+
+## Exercise 5: Whether Two Function Declarations Are the Same
+
+**Textbook Problem:** Chapter 5 theory problem 4
+
+**Problem:** Decide whether `void f(int p[]);` and `void f(int *p);`, and then `void f(int *p);` and `void f(int &p);`, are the same declarations. The full problem is in [Exercise 5](Exercises.md#exercise-5-whether-two-function-declarations-are-the-same).
+
+### Solution
 
 **Answer:** (1) The two declarations are the same. (2) The two declarations are different.
 
-(1) When a function parameter is declared with an array type, the compiler adjusts the type to a pointer to the element type. So `int p[]` is exactly the same type as `int *p`, and both declarations declare the same function, `void f(int*)`. Defining the bodies of both is not overloading but defining the same function twice, which gives the error `redefinition of 'f'`. Even with a size, as in `int p[10]`, the size is ignored. The array notation `p[]` only shows the reader the intent that the starting address of an array is passed.
+**Explanation:** (1) When a function parameter is declared with an array type, the compiler adjusts the type to a pointer to the element type. So `int p[]` is exactly the same type as `int *p`, and both declarations declare the same function, `void f(int*)`. Defining the bodies of both is not overloading but defining the same function twice, which gives the error `redefinition of 'f'`. Even with a size, as in `int p[10]`, the size is ignored. The array notation `p[]` only shows the reader the intent that the starting address of an array is passed.
 
 (2) `int *p` is a pointer parameter, so passing an address, as in `f(&n)`, is call by address, while `int &p` is a reference parameter, so passing a variable, as in `f(n)`, makes `p` an alias of `n`, which is call by reference. The former handles the pointed-to value through `*p`, and the latter handles the original directly through the alias `p` ([Chapter 5, Section 1.4](Concepts_Lecture.md#14-from-c-to-c-pointers-vs-references)). The parameter types (`int*` and `int&`) differ, so the two are different functions, and defining both in one program is valid overloading. In that case `f(&n)` calls the pointer version and `f(n)` the reference version.
 
-### Theory Problem 6
+---
 
-**Problem:** Find the output of a program that calls `square()`, which squares each element of an array, and then prints the array.
+<br>
+
+## Exercise 6: Output of a Function That Takes an Array
+
+**Textbook Problem:** Chapter 5 theory problem 6
+
+**Problem:** Find the output of a program that calls `square()`, which squares each element of an array, and then prints the array. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-output-of-a-function-that-takes-an-array).
+
+### Solution
 
 **Answer:** `1 4 9`
 
-In `square(m, 3)`, the array name `m` is converted to the address of its first element and passed, and the parameter `int n[]` is the same as `int *n`, as in (1) of theory problem 4. So `n[i]` refers to the elements of the array `m` of `main()` themselves, and the values squared in `square()` remain in `m`. This is passing an array by address. After the call `m` is `{1, 4, 9}`, and the loop prints a space after each element, so the actual output is `1 4 9 ` (with a trailing space).
+**Explanation:** In `square(m, 3)`, the array name `m` is converted to the address of its first element and passed, and the parameter `int n[]` is the same as `int *n`, as in (1) of Exercise 5. So `n[i]` refers to the elements of the array `m` of `main()` themselves, and the values squared in `square()` remain in `m`. This is passing an array by address. After the call `m` is `{1, 4, 9}`, and the loop prints a space after each element, so the actual output is `1 4 9 ` (with a trailing space).
 
-### Theory Problem 8
+---
 
-**Problem:** Given `char c;`, `char *p = &c;`, `char q = c;`, and `char &r = c;`, choose the statement that fails to store `'a'` in `c`.
+<br>
+
+## Exercise 7: The Statement That Fails to Store a Character
+
+**Textbook Problem:** Chapter 5 theory problem 8
+
+**Problem:** Given `char c;`, `char *p = &c;`, `char q = c;`, and `char &r = c;`, choose the statement that fails to store `'a'` in `c`. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-the-statement-that-fails-to-store-a-character).
+
+### Solution
 
 **Answer:** ②
 
-`char q = c;` creates a separate variable `q` initialized with a copy of the value of `c`. So `q = 'a';` changes only `q` and has no effect on `c`.
+**Explanation:** `char q = c;` creates a separate variable `q` initialized with a copy of the value of `c`. So `q = 'a';` changes only `q` and has no effect on `c`.
 
 - **① `c = 'a';`:** assigns to `c` directly.
 - **③ `r = 'a';`:** `r` is a reference to `c`, that is, an alias of `c`, so assigning to `r` changes `c`.
 - **④ `*p = 'a';`:** `p` holds the address of `c`, so `*p` is `c` itself.
 
-### Theory Problem 10
+---
 
-**Problem:** Given `f()`, which returns a reference to an element of the global array `array`, find the contents of `array` after each of four statements is executed separately.
+<br>
+
+## Exercise 8: A Function That Returns a Reference to an Array Element
+
+**Textbook Problem:** Chapter 5 theory problem 10
+
+**Problem:** Given `f()`, which returns a reference to an element of the global array `array`, find the contents of `array` after each of four statements is executed separately. The full problem and code are in [Exercise 8](Exercises.md#exercise-8-a-function-that-returns-a-reference-to-an-array-element).
+
+### Solution
 
 **Answer:**
 
@@ -341,9 +381,17 @@ In `square(m, 3)`, the array name `m` is converted to the address of its first e
 
 > **Note:** When this code is compiled with `#include <iostream>` and `using namespace std;`, the global name `array` may, depending on the implementation, conflict with `std::array`. With Apple clang 21 (libc++), `<iostream>` brings in the declaration of `std::array` as well, so the error `reference to 'array' is ambiguous` occurs. Renaming the array or naming the global scope explicitly, as in `::array`, solves it.
 
-### Theory Problem 12
+---
 
-**Problem:** Calling in turn `big1()`, which takes value parameters and returns a reference, and `big2()`, which takes reference parameters and returns a reference, and assigning 100 through each returned reference, predict how `x` and `y` change and explain why.
+<br>
+
+## Exercise 9: Comparing Two Functions That Return References
+
+**Textbook Problem:** Chapter 5 theory problem 12
+
+**Problem:** Calling in turn `big1()`, which takes value parameters and returns a reference, and `big2()`, which takes reference parameters and returns a reference, and assigning 100 through each returned reference, predict how `x` and `y` change and explain why. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-comparing-two-functions-that-return-references).
+
+### Solution
 
 **Answer:** `x` stays 1 and `y` becomes 100. `z = 100;` through the reference returned by `big1()` cannot change `x` or `y` and is undefined behavior, and `w = 100;` through the reference returned by `big2()` changes `y` to 100.
 
@@ -352,13 +400,21 @@ In `square(m, 3)`, the array name `m` is converted to the address of its first e
 
 The difference between the two functions is the lifetime of what the returned reference refers to. To return a reference, its target must live longer than the function, so returning a reference parameter bound to the caller's variable, as `big2()` does, is correct, and returning a value parameter by reference, as `big1()` does, is wrong. Running it prints `x=1`, `y=2` after `big1()` and `x=1`, `y=100` after `big2()`, and `&w` equals `&y`.
 
-### Theory Problem 14
+---
 
-**Problem:** For a class `MyClass`, choose among four cases the one in which a copy constructor is not needed.
+<br>
+
+## Exercise 10: The Case That Does Not Need a Copy Constructor
+
+**Textbook Problem:** Chapter 5 theory problem 14
+
+**Problem:** For a class `MyClass`, choose among four cases the one in which a copy constructor is not needed. The options are in [Exercise 10](Exercises.md#exercise-10-the-case-that-does-not-need-a-copy-constructor).
+
+### Solution
 
 **Answer:** ②
 
-`void f(MyClass *p);` is a function that receives the address of an object, so calling it as `f(&a)` copies only a pointer value and creates no new object. The copy constructor therefore does not run ([Chapter 5, Section 2.2](Concepts_Lecture.md#22-passing-an-object-by-address-and-by-reference)).
+**Explanation:** `void f(MyClass *p);` is a function that receives the address of an object, so calling it as `f(&a)` copies only a pointer value and creates no new object. The copy constructor therefore does not run ([Chapter 5, Section 2.2](Concepts_Lecture.md#22-passing-an-object-by-address-and-by-reference)).
 
 - **① `MyClass a = f();`:** If `f()` returns an object by value, a copy of the returned object is made and `a` is initialized with it, so the copy constructor is used.
 - **③ `MyClass b = a;`:** A new object is initialized with an object of the same type, so the copy constructor is called.
@@ -366,19 +422,35 @@ The difference between the two functions is the lifetime of what the returned re
 
 > **Note:** In ①, the compiler may omit the copy in the return process (copy elision). Since C++17, copy elision is guaranteed when a temporary object is returned, as in `return MyClass();`, and an object of the same type is initialized with the result, so even a class whose copy constructor is deleted with `= delete` compiles with `-std=c++17`, while `-std=c++14` gives the error `call to deleted constructor`. When a named local object is returned, as in `MyClass t; return t;`, elision is only allowed, not guaranteed, so a copy (or move) constructor must exist.
 
-### Theory Problem 16
+---
 
-**Problem:** Choose the wrong statement about copy constructors. Choice ① is a statement about declaring copy constructors by overloading.
+<br>
+
+## Exercise 11: Statements About Copy Constructors
+
+**Textbook Problem:** Chapter 5 theory problem 16
+
+**Problem:** Choose the wrong statement about copy constructors. Choice ① is a statement about declaring copy constructors by overloading. The options are in [Exercise 11](Exercises.md#exercise-11-statements-about-copy-constructors).
+
+### Solution
 
 **Answer:** ①
 
-The textbook explains that the parameter of a copy constructor is a single reference to its own class and that only one copy constructor can be declared in a class ([Chapter 5, Section 4.1](Concepts_Lecture.md#41-concept)). By this rule, choice ①, which says that copy constructors can be declared by overloading, is the wrong statement.
+**Explanation:** The textbook explains that the parameter of a copy constructor is a single reference to its own class and that only one copy constructor can be declared in a class ([Chapter 5, Section 4.1](Concepts_Lecture.md#41-concept)). By this rule, choice ①, which says that copy constructors can be declared by overloading, is the wrong statement.
 
 > **Note:** The textbook's rule is a simplification. In standard C++, a copy constructor is a constructor whose first parameter is one of `X&`, `const X&`, `volatile X&`, and `const volatile X&` and whose other parameters are absent or all have default values. The form of the parameter is therefore not fixed to one, and `X(X&)` and `X(const X&)` can be declared together in one class. In that case `X c(a);` calls `X(X&)`, which fits the non-`const` object `a` better, and `X d(b);` calls `X(const X&)`, which can accept the `const` object `b`. Real code usually keeps only the `const X&` version.
 
-### Theory Problem 18
+---
 
-**Problem:** Write the default copy constructor that the compiler inserts into a `Student` class with the pointer members `pName` and `pId` and the `double` member `grade`.
+<br>
+
+## Exercise 12: The Default Copy Constructor Inserted by the Compiler
+
+**Textbook Problem:** Chapter 5 theory problem 18
+
+**Problem:** Write the default copy constructor that the compiler inserts into a `Student` class with the pointer members `pName` and `pId` and the `double` member `grade`. The full problem and code are in [Exercise 12](Exercises.md#exercise-12-the-default-copy-constructor-inserted-by-the-compiler).
+
+### Solution
 
 **Answer:**
 
@@ -390,7 +462,7 @@ Student(const Student& s) {   // 교재의 표기로는 Student(Student& s)
 }
 ```
 
-The default copy constructor performs member-wise copying, copying the members of the source object one by one as they are, that is, a shallow copy ([Chapter 5, Section 4.2](Concepts_Lecture.md#42-default-copy-constructor)). For the pointer members `pName` and `pId`, only the addresses are copied, not the `string` objects they point to, so the source and the copy share the same `string` objects. The textbook writes this constructor without `const`, as `Student(Student& s)`, but all members (the pointers and the `double`) can be copied from a `const` object, so the prototype the compiler actually declares is `Student(const Student& s)`. This can be confirmed by the fact that initializing another `Student` from a `const Student` object compiles.
+**Explanation:** The default copy constructor performs member-wise copying, copying the members of the source object one by one as they are, that is, a shallow copy ([Chapter 5, Section 4.2](Concepts_Lecture.md#42-default-copy-constructor)). For the pointer members `pName` and `pId`, only the addresses are copied, not the `string` objects they point to, so the source and the copy share the same `string` objects. The textbook writes this constructor without `const`, as `Student(Student& s)`, but all members (the pointers and the `double`) can be copied from a `const` object, so the prototype the compiler actually declares is `Student(const Student& s)`. This can be confirmed by the fact that initializing another `Student` from a `const Student` object compiles.
 
 Moreover, the copy constructor generated by the compiler does not assign in the body but initializes each member directly from the member of the source. That is, it is the same as writing `Student(const Student& s) : pName(s.pName), pId(s.pId), grade(s.grade) {}` with a member initializer list. For pointer and `double` members, assignment and initialization give the same result, but if there were reference or `const` members, assignment could not be used, so the initializer-list form is the exact description.
 

@@ -16,7 +16,15 @@
 
 - [Exercise 1: Class with a Dynamic Array](#exercise-1-class-with-a-dynamic-array)
 - [Exercise 2: Dynamic Creation and Destruction of Objects](#exercise-2-dynamic-creation-and-destruction-of-objects)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: Creating and Returning a `Rect` Object Dynamically](#exercise-3-creating-and-returning-a-rect-object-dynamically)
+- [Exercise 4: Creating an Array of `Rect` Objects Dynamically](#exercise-4-creating-an-array-of-rect-objects-dynamically)
+- [Exercise 5: Calling Member Functions Through an Object Pointer](#exercise-5-calling-member-functions-through-an-object-pointer)
+- [Exercise 6: Creating and Returning a `Palette` Object Dynamically](#exercise-6-creating-and-returning-a-palette-object-dynamically)
+- [Exercise 7: Returning an Object Array with `delete`](#exercise-7-returning-an-object-array-with-delete)
+- [Exercise 8: Uses of `this`](#exercise-8-uses-of-this)
+- [Exercise 9: Situations That Cause Memory Leaks](#exercise-9-situations-that-cause-memory-leaks)
+- [Exercise 10: The Header File of the `string` Class](#exercise-10-the-header-file-of-the-string-class)
+- [Exercise 11: C-Strings and the `string` Class](#exercise-11-c-strings-and-the-string-class)
 
 ---
 
@@ -270,13 +278,13 @@ int main(void)
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: Creating and Returning a `Rect` Object Dynamically
 
-**Textbook:** Even-numbered theory problems of the Chapter 4 exercises
+**Textbook Problem:** Chapter 4 theory problem 2
 
-### Theory Problem 2
+**Problem:** Write three lines that dynamically create a `Rect` object with the width and height that were read, print its area, and return the object. The full problem and code are in [Exercise 3](Exercises.md#exercise-3-creating-and-returning-a-rect-object-dynamically).
 
-**Problem:** Write three lines that dynamically create a `Rect` object with the width and height that were read, print its area, and return the object.
+### Solution
 
 **Answer:**
 
@@ -286,11 +294,19 @@ cout << q->getArea() << endl;    // (2)
 delete q;                        // (3)
 ```
 
-`new Rect(w, h)` in (1) creates a `Rect` object on the heap, calling the two-parameter constructor, and returns the address of the object ([Chapter 4, Section 2.2](Concepts_Lecture.md#22-dynamic-objects)). (2) calls a member function through a pointer, so it uses `->`; `(*q).getArea()` is the same call. The problem asks for the area to be printed, so the return value of `q->getArea()` must be printed with `cout`. `delete q;` in (3) calls the destructor of the object and then returns the memory. After the return, `q = nullptr;` can be added so that the pointer does not remain dangling.
+**Explanation:** `new Rect(w, h)` in (1) creates a `Rect` object on the heap, calling the two-parameter constructor, and returns the address of the object ([Chapter 4, Section 2.2](Concepts_Lecture.md#22-dynamic-objects)). (2) calls a member function through a pointer, so it uses `->`; `(*q).getArea()` is the same call. The problem asks for the area to be printed, so the return value of `q->getArea()` must be printed with `cout`. `delete q;` in (3) calls the destructor of the object and then returns the memory. After the return, `q = nullptr;` can be added so that the pointer does not remain dangling.
 
-### Theory Problem 4
+---
 
-**Problem:** Change the `Rect` class so that `new Rect[10]` does not cause a compile error.
+<br>
+
+## Exercise 4: Creating an Array of `Rect` Objects Dynamically
+
+**Textbook Problem:** Chapter 4 theory problem 4
+
+**Problem:** Change the `Rect` class so that `new Rect[10]` does not cause a compile error. The full problem and code are in [Exercise 4](Exercises.md#exercise-4-creating-an-array-of-rect-objects-dynamically).
+
+### Solution
 
 **Answer:** Add a default constructor without parameters to the `public` part of the `Rect` class.
 
@@ -298,19 +314,35 @@ delete q;                        // (3)
 Rect() { width = 1; height = 1; }
 ```
 
-When an array of objects is created, as in `new Rect[10]`, the default constructor is called for each element ([Chapter 4, Section 3.3](Concepts_Lecture.md#33-dynamic-object-arrays)). `Rect` has only the two-parameter constructor, and the compiler does not generate a default constructor for a class that declares any constructor, so there is no way to create the elements and an error occurs. With the default constructor added, all ten elements are created as 1×1 rectangles. Instead of a default constructor, default parameters can also be given to the existing constructor, as in `Rect(int w = 1, int h = 1)`.
+**Explanation:** When an array of objects is created, as in `new Rect[10]`, the default constructor is called for each element ([Chapter 4, Section 3.3](Concepts_Lecture.md#33-dynamic-object-arrays)). `Rect` has only the two-parameter constructor, and the compiler does not generate a default constructor for a class that declares any constructor, so there is no way to create the elements and an error occurs. With the default constructor added, all ten elements are created as 1×1 rectangles. Instead of a default constructor, default parameters can also be given to the existing constructor, as in `Rect(int w = 1, int h = 1)`.
 
-### Theory Problem 6
+---
 
-**Problem:** Choose the statement among the four after `Cube c; Cube *p = &c;` that causes a compile error.
+<br>
+
+## Exercise 5: Calling Member Functions Through an Object Pointer
+
+**Textbook Problem:** Chapter 4 theory problem 6
+
+**Problem:** Choose the statement among the four after `Cube c; Cube *p = &c;` that causes a compile error. The full problem and code are in [Exercise 5](Exercises.md#exercise-5-calling-member-functions-through-an-object-pointer).
+
+### Solution
 
 **Answer:** ④
 
-`c` is an object, not a pointer, so the arrow operator `->` cannot be used on it. An object calls a member with the dot operator, as in `c.getVolume()` (①), and a pointer with `p->getVolume()` (②) or with the dot operator after dereferencing, `(*p).getVolume()` (③) ([Chapter 4, Section 1.1](Concepts_Lecture.md#11-pointer-to-object)).
+**Explanation:** `c` is an object, not a pointer, so the arrow operator `->` cannot be used on it. An object calls a member with the dot operator, as in `c.getVolume()` (①), and a pointer with `p->getVolume()` (②) or with the dot operator after dereferencing, `(*p).getVolume()` (③) ([Chapter 4, Section 1.1](Concepts_Lecture.md#11-pointer-to-object)).
 
-### Theory Problem 8
+---
 
-**Problem:** Give the output when a `Palette` object is created dynamically and returned.
+<br>
+
+## Exercise 6: Creating and Returning a `Palette` Object Dynamically
+
+**Textbook Problem:** Chapter 4 theory problem 8
+
+**Problem:** Give the output when a `Palette` object is created dynamically and returned. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-creating-and-returning-a-palette-object-dynamically).
+
+### Solution
 
 **Answer:**
 
@@ -323,31 +355,55 @@ When an array of objects is created, as in `new Rect[10]`, the default construct
 소멸자
 ```
 
-`new Palette()` calls the constructor of `Palette`, which creates an array of three `Color` objects with `new Color[3]`, calling the default constructor for each element. So "기본생성자" (default constructor) is printed three times. `delete p;` calls the destructor of `Palette`, and `delete [] p;` in that destructor calls the destructor of `Color` for the three elements of the array, so "소멸자" (destructor) is printed three times. The destructors of the array elements are called in the reverse order of construction, that is, `p[2]`, `p[1]`, `p[0]`. The parameterized constructor is never called.
+**Explanation:** `new Palette()` calls the constructor of `Palette`, which creates an array of three `Color` objects with `new Color[3]`, calling the default constructor for each element. So "기본생성자" (default constructor) is printed three times. `delete p;` calls the destructor of `Palette`, and `delete [] p;` in that destructor calls the destructor of `Color` for the three elements of the array, so "소멸자" (destructor) is printed three times. The destructors of the array elements are called in the reverse order of construction, that is, `p[2]`, `p[1]`, `p[0]`. The parameterized constructor is never called.
 
-### Theory Problem 10
+---
 
-**Problem:** Give the problem with code that returns an array allocated with `new Cube [4]` by `delete p;`.
+<br>
+
+## Exercise 7: Returning an Object Array with `delete`
+
+**Textbook Problem:** Chapter 4 theory problem 10
+
+**Problem:** Give the problem with code that returns an array allocated with `new Cube [4]` by `delete p;`. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-returning-an-object-array-with-delete).
+
+### Solution
 
 **Answer:** An array allocated with `new []` must be returned with `delete [] p;`, but it was returned with `delete p;`.
 
-`new` must be paired with `delete` and `new []` with `delete []`; a mismatched pair is undefined behavior ([Chapter 4, Section 2.3](Concepts_Lecture.md#23-dynamic-arrays)). `delete []` calls the destructors of all four elements and then returns the whole array, but `delete` is the operation for returning a single object, so the destructors of the other elements are not called and the memory is not returned correctly. Testing with a `Cube` that has a destructor, Clang warns `'delete' applied to a pointer that was allocated with 'new[]'` (`-Wmismatched-new-delete`), and when run, the destructor is called only once and the program terminates abnormally at the step that returns the memory. If the elements are objects that own dynamic memory, the memory of the elements whose destructors were not called remains as a leak.
+**Explanation:** `new` must be paired with `delete` and `new []` with `delete []`; a mismatched pair is undefined behavior ([Chapter 4, Section 2.3](Concepts_Lecture.md#23-dynamic-arrays)). `delete []` calls the destructors of all four elements and then returns the whole array, but `delete` is the operation for returning a single object, so the destructors of the other elements are not called and the memory is not returned correctly. Testing with a `Cube` that has a destructor, Clang warns `'delete' applied to a pointer that was allocated with 'new[]'` (`-Wmismatched-new-delete`), and when run, the destructor is called only once and the program terminates abnormally at the step that returns the memory. If the elements are objects that own dynamic memory, the memory of the elements whose destructors were not called remains as a leak.
 
-### Theory Problem 12
+---
 
-**Problem:** Choose the wrong statement about the use of `this`.
+<br>
+
+## Exercise 8: Uses of `this`
+
+**Textbook Problem:** Chapter 4 theory problem 12
+
+**Problem:** Choose the wrong statement about the use of `this`. The options are in [Exercise 8](Exercises.md#exercise-8-uses-of-this).
+
+### Solution
 
 **Answer:** ③
 
-`this` is a pointer holding the address of the object on which a member function was called, and it can be used in every non-static member function, constructors included. In constructors it is commonly used to refer to a member when a parameter has the same name as the member variable, as in `this->width = width;` ([Chapter 4, Section 1.2](Concepts_Lecture.md#12-this-pointer)). The others are correct. `this` is meaningful only inside member functions (①), a static member function is called without a particular object and so has no `this` (②), and member functions sometimes return `this` or `*this` to chain calls (④).
+**Explanation:** `this` is a pointer holding the address of the object on which a member function was called, and it can be used in every non-static member function, constructors included. In constructors it is commonly used to refer to a member when a parameter has the same name as the member variable, as in `this->width = width;` ([Chapter 4, Section 1.2](Concepts_Lecture.md#12-this-pointer)). The others are correct. `this` is meaningful only inside member functions (①), a static member function is called without a particular object and so has no `this` (②), and member functions sometimes return `this` or `*this` to chain calls (④).
 
-### Theory Problem 14
+---
 
-**Problem:** Describe the situations in which a memory leak occurs.
+<br>
+
+## Exercise 9: Situations That Cause Memory Leaks
+
+**Textbook Problem:** Chapter 4 theory problem 14
+
+**Problem:** Describe the situations in which a memory leak occurs. The full problem is in [Exercise 9](Exercises.md#exercise-9-situations-that-cause-memory-leaks).
+
+### Solution
 
 **Answer:** It occurs when dynamically allocated memory is not returned after it is no longer needed, or can no longer be returned.
 
-A **memory leak** is memory left over that the program can neither use nor return until it ends, because heap memory allocated with `new` was not returned with `delete` and every pointer to it was lost ([Chapter 4, Section 4.1](Concepts_Lecture.md#41-memory-leak)). Typical cases are the following.
+**Explanation:** A **memory leak** is memory left over that the program can neither use nor return until it ends, because heap memory allocated with `new` was not returned with `delete` and every pointer to it was lost ([Chapter 4, Section 4.1](Concepts_Lecture.md#41-memory-leak)). Typical cases are the following.
 
 - A function ends without `delete` for memory that is no longer needed, and the local pointer that stored the address disappears.
 - Another address is assigned to the pointer that held the address of dynamic memory, and the original address is lost.
@@ -356,18 +412,34 @@ A **memory leak** is memory left over that the program can neither use nor retur
 
 As leaks accumulate, the usable memory shrinks, and a long-running program slows down or fails to allocate. The operating system reclaims the memory when the program ends, but not before.
 
-### Theory Problem 16
+---
 
-**Problem:** Choose the header file needed to use the `string` class.
+<br>
+
+## Exercise 10: The Header File of the `string` Class
+
+**Textbook Problem:** Chapter 4 theory problem 16
+
+**Problem:** Choose the header file needed to use the `string` class. The options are in [Exercise 10](Exercises.md#exercise-10-the-header-file-of-the-string-class).
+
+### Solution
 
 **Answer:** ①
 
-The `string` class is declared in the header `<string>` of the C++ Standard Library ([Chapter 4, Section 7](Concepts_Lecture.md#7-the-string-class)). `<string.h>` and `<cstring>` are headers of the C library that declare C-string functions such as `strcpy()` and `strlen()`. Including `<iostream>` may make `string` usable depending on the implementation, but the standard does not guarantee it, so a file that uses `string` includes `<string>` itself.
+**Explanation:** The `string` class is declared in the header `<string>` of the C++ Standard Library ([Chapter 4, Section 7](Concepts_Lecture.md#7-the-string-class)). `<string.h>` and `<cstring>` are headers of the C library that declare C-string functions such as `strcpy()` and `strlen()`. Including `<iostream>` may make `string` usable depending on the implementation, but the standard does not guarantee it, so a file that uses `string` includes `<string>` itself.
 
-### Theory Problem 18
+---
 
-**Problem:** Choose the wrong statement about C-strings and the `string` class.
+<br>
+
+## Exercise 11: C-Strings and the `string` Class
+
+**Textbook Problem:** Chapter 4 theory problem 18
+
+**Problem:** Choose the wrong statement about C-strings and the `string` class. The options are in [Exercise 11](Exercises.md#exercise-11-c-strings-and-the-string-class).
+
+### Solution
 
 **Answer:** ③
 
-The `string` class is a standard class that belongs to the C++ Standard Library, so there is no reason to avoid it; it is in fact recommended over C-strings. The other statements are correct. A C-string represents a string as a `char` array terminated by the null character (`'\0'`) (①), and the `string` class is easy to use because it provides resizing, assignment, concatenation, and comparison through member functions and operators of an object (②). The `string` class has no member function that converts between uppercase and lowercase (④), so to convert characters, `toupper()` and `tolower()` from `<cctype>` are applied to each character ([Chapter 4, Section 7.2](Concepts_Lecture.md#72-main-member-functions-and-operators)).
+**Explanation:** The `string` class is a standard class that belongs to the C++ Standard Library, so there is no reason to avoid it; it is in fact recommended over C-strings. The other statements are correct. A C-string represents a string as a `char` array terminated by the null character (`'\0'`) (①), and the `string` class is easy to use because it provides resizing, assignment, concatenation, and comparison through member functions and operators of an object (②). The `string` class has no member function that converts between uppercase and lowercase (④), so to convert characters, `toupper()` and `tolower()` from `<cctype>` are applied to each character ([Chapter 4, Section 7.2](Concepts_Lecture.md#72-main-member-functions-and-operators)).

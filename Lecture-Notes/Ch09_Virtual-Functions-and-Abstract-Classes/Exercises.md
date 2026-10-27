@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1 and 2 are lab problems, and Exercises 3-9 are the even-numbered theory problems (2-14) of Chapter 9 of the textbook.
+
 ---
 
 <br>
@@ -16,7 +18,13 @@
 
 - [Exercise 1: Student Grade Management with Virtual Functions](#exercise-1-student-grade-management-with-virtual-functions)
 - [Exercise 2: Unit Conversion with Virtual Functions](#exercise-2-unit-conversion-with-virtual-functions)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: The Name for Redefining a Virtual Function](#exercise-3-the-name-for-redefining-a-virtual-function)
+- [Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading](#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading)
+- [Exercise 5: Identifying Virtual Functions and Their Call Results](#exercise-5-identifying-virtual-functions-and-their-call-results)
+- [Exercise 6: Calling Different `f()` Functions from `g()`](#exercise-6-calling-different-f-functions-from-g)
+- [Exercise 7: A Base Class Without a Virtual Destructor](#exercise-7-a-base-class-without-a-virtual-destructor)
+- [Exercise 8: Statements About Pure Virtual Functions](#exercise-8-statements-about-pure-virtual-functions)
+- [Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function](#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)
 
 ---
 
@@ -196,30 +204,40 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: The Name for Redefining a Virtual Function
 
-**Textbook:** Even-numbered theory problems of the Chapter 9 exercises
+**Textbook Problem:** Chapter 9 theory problem 2
 
-### Theory Problem 2
-
-What is it called when a derived class redefines a function with the same type as a virtual function of the base class?
+**Problem:** What is it called when a derived class redefines a function with the same type as a virtual function of the base class?
 
 - ① overloading
 - ② overriding
 - ③ virtual
 - ④ dynamic binding
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-3-the-name-for-redefining-a-virtual-function)**
 
-### Theory Problem 4
+---
 
-Which object-oriented feature of the C++ language do overloading, overriding, and operator overloading represent?
+<br>
 
-**[Solution](Solutions.md#theory-problem-4)**
+## Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading
 
-### Theory Problem 6
+**Textbook Problem:** Chapter 9 theory problem 4
 
-Answer the questions about the following code.
+**Problem:** Which object-oriented feature of the C++ language do overloading, overriding, and operator overloading represent?
+
+**[Solution](Solutions.md#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading)**
+
+---
+
+<br>
+
+## Exercise 5: Identifying Virtual Functions and Their Call Results
+
+**Textbook Problem:** Chapter 9 theory problem 6
+
+**Problem:** Answer the questions about the following code.
 
 ```cpp
 class A {
@@ -252,11 +270,17 @@ pa->f();      // (4)
 pa->func();   // (5)
 ```
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-5-identifying-virtual-functions-and-their-call-results)**
 
-### Theory Problem 8
+---
 
-For each item, what code fits in the blank of the function `g()`?
+<br>
+
+## Exercise 6: Calling Different `f()` Functions from `g()`
+
+**Textbook Problem:** Chapter 9 theory problem 8
+
+**Problem:** For each item, what code fits in the blank of the function `g()`?
 
 ```cpp
 void f() {
@@ -281,11 +305,17 @@ public:
 
 (3) The function `g()` calls its own member function `f()`.
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-6-calling-different-f-functions-from-g)**
 
-### Theory Problem 10
+---
 
-The following is an example of writing a `Person` class and its derived class `Student`.
+<br>
+
+## Exercise 7: A Base Class Without a Virtual Destructor
+
+**Textbook Problem:** Chapter 9 theory problem 10
+
+**Problem:** The following is an example of writing a `Person` class and its derived class `Student`.
 
 ```cpp
 class Person {
@@ -317,22 +347,34 @@ int main() {
 
 (2) Fix the problem by changing the `Person` class or the `Student` class.
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-7-a-base-class-without-a-virtual-destructor)**
 
-### Theory Problem 12
+---
 
-Which statement about pure virtual functions is wrong?
+<br>
+
+## Exercise 8: Statements About Pure Virtual Functions
+
+**Textbook Problem:** Chapter 9 theory problem 12
+
+**Problem:** Which statement about pure virtual functions is wrong?
 
 - ① A class with a pure virtual function is always an abstract class.
 - ② A pure virtual function is not meant to be executed but to tell derived classes which function they must implement.
 - ③ An external function can also be declared as a pure virtual function.
 - ④ When a pure virtual function is called, dynamic binding occurs.
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-8-statements-about-pure-virtual-functions)**
 
-### Theory Problem 14
+---
 
-Answer the questions about the following code.
+<br>
+
+## Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function
+
+**Textbook Problem:** Chapter 9 theory problem 14
+
+**Problem:** Answer the questions about the following code.
 
 ```cpp
 class Shape {
@@ -357,4 +399,4 @@ Circle *p = new Circle(10);
 p->paint();
 ```
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)**
