@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 ## Table of Contents
 
@@ -119,6 +119,7 @@
 - There were no classes in weeks 2 and 3, and makeup classes were held in week 5 (10/1, 10/2) and week 6 (10/9). The 10/1 makeup class covered inline functions and C++ structures in Chapter 3.
 - The slides for Chapters 4-6 were distributed together in week 5, and those for Chapters 7-10 in week 10. The lab assignments were given in week 4 for Chapter 3, week 6 for Chapter 4, week 7 for Chapter 5, week 9 for Chapter 6, weeks 10-11 for Chapter 7, week 12 for Chapter 8, week 13 for Chapter 9, and week 14 for Chapter 10.
 - The syllabus planned up to Chapter 9, but the course actually covered up to Chapter 10, templates and the STL. The midterm exam was held in week 8 and the final exam in week 16, and the lectures ended in week 15.
+- Assignments 1-8 of the linked lab course Computer Language and Training Ⅱ (`DCCS104-03`) were given in weeks 4, 5, 6, 9, 10, 11, 12, and 13, respectively, and are in `HW01`-`HW08` in `Coursework`.
 - The textbook chapter numbers, Chapters 1-10, correspond to `Ch01`-`Ch10` in this repository, and the lab code numbers in `Coursework` (`Lab03`-`Lab10`) follow the same chapter numbers. The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md).
 
 ---

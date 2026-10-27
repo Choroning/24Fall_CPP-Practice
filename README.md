@@ -23,9 +23,9 @@ This repository archives bilingual lecture notes and coursework for the Computer
 ## 📝 About This Repository
 
 - `Lecture-Notes/` holds a lecture note for each chapter, and Chapters 3-10 also hold exercises transcribed from the lab problems with their solutions.
-- `Coursework/` holds the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
+- `Coursework/` holds the solutions and explanations of the Computer Language and Training Ⅱ assignments (`HW01`-`HW08`) and the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
 - Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
-- All lab code was compiled and checked with C++11 and C++17.
+- All code was compiled and checked with C++11 and C++17.
 
 > **🤖 AI Agent Usage**
 > [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
@@ -66,7 +66,7 @@ A general studies course on the fundamentals of C++ and object-oriented programm
 ```plaintext
 24Fall_CPP-Practice
 ├── Lecture-Notes               Lecture notes, exercises, and solutions by chapter
-├── Coursework                  C++ lab code by chapter
+├── Coursework                  Assignments and C++ lab code by chapter
 ├── images                      Figures in the exercises
 ├── Course-Information.ko.md    Course operations
 ├── Course-Information.md
@@ -76,7 +76,7 @@ A general studies course on the fundamentals of C++ and object-oriented programm
 └── README.md
 ```
 
-The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md), and the lab code in the [`Coursework` index](Coursework/README.md).
+The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md), and the assignments and lab code in the [`Coursework` index](Coursework/README.md).
 
 <br><a name="license"></a>
 ## 🤝 License
