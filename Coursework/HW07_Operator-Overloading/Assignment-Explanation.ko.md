@@ -63,7 +63,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. Q1의 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다. Q2와 Q3의 `main()`은 `return 0;`으로 끝난다.
+Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. Q1의 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 리턴한 것으로 처리하므로 종료 코드는 0이다. Q2와 Q3의 `main()`은 `return 0;`으로 끝난다.
 
 ---
 
@@ -137,7 +137,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 
 `main()`은 제목만 다르고 가격과 쪽수가 같은 `a`와 `b`를 만든다. `a == "명품 C++"`는 참이므로 `명품 C++ 입니다.`를 출력하고, `a == b`는 제목이 달라 거짓이므로 `두 책은 다른 책입니다.`를 출력한다.
 
-`a == "명품 C++"`의 오른쪽 피연산자는 문자열 리터럴, 즉 `const char` 배열이다. 이 값은 `string`의 생성자를 거치는 사용자 정의 변환 한 번으로 `string`이 되므로 `operator==(string)`이 호출된다. `Book`이 되려면 `const char*`에서 `string`으로, `string`에서 `Book`으로 사용자 정의 변환이 두 번 필요한데, 암시적 변환에는 사용자 정의 변환이 한 번만 허용되므로 `operator==(Book)`은 후보가 되지 못한다([6장 1.2절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#12-오버로딩-해석-규칙)). 실제로 `operator==(string)`을 지우면 이 식은 `invalid operands to binary expression ('Book' and 'const char[11]')` 오류로 컴파일되지 않는다.
+`a == "명품 C++"`의 오른쪽 피연산자는 문자열 리터럴, 즉 `const char` 배열이다. 이 값은 `string`의 생성자를 거치는 사용자 정의 변환 한 번으로 `string`이 되므로 `operator==(string)`이 호출된다. `Book`이 되려면 `const char*`에서 `string`으로, `string`에서 `Book`으로 사용자 정의 변환이 두 번 필요한데, 암시적 변환에는 사용자 정의 변환이 한 번만 허용되므로 `operator==(Book)`은 후보가 되지 못한다([6장 1.2절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#12-함수-중복-해석-규칙)). 실제로 `operator==(string)`을 지우면 이 식은 `invalid operands to binary expression ('Book' and 'const char[11]')` 오류로 컴파일되지 않는다.
 
 코드를 더 정확하게 만들려면 다음 세 가지를 고려할 수 있다.
 

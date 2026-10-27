@@ -116,17 +116,17 @@ str = lufrewop si ++C
 
 ### 풀이
 
-**빈칸 채우기:** 클래스 템플릿의 멤버 함수를 클래스 밖에서 정의할 때는 템플릿 선언을 다시 쓰고 `Rectangle<T>::`로 소속을 밝힌다([10장 2.1절](Concepts_Lecture.ko.md#21-문법)). `getArea()`는 `width * height`를 반환한다. 객체는 `Rectangle<double> rect1(10.2, 23.5), rect2(20.4, 13.7), rect3;`으로 선언하며, `rect3`은 생성자의 기본값에 따라 너비와 높이가 모두 1로 초기화된다.
+**빈칸 채우기:** 클래스 템플릿의 멤버 함수를 클래스 밖에서 정의할 때는 템플릿 선언을 다시 쓰고 `Rectangle<T>::`로 소속을 밝힌다([10장 2.1절](Concepts_Lecture.ko.md#21-문법)). `getArea()`는 `width * height`를 리턴한다. 객체는 `Rectangle<double> rect1(10.2, 23.5), rect2(20.4, 13.7), rect3;`으로 선언하며, `rect3`은 생성자의 기본값에 따라 너비와 높이가 모두 1로 초기화된다.
 
-**오류 원인:** `bigger(a, b)`는 `T = int`로 구체화되고 `int`에는 `>` 연산자가 있으므로 문제가 없다. 그러나 `bigger(rect1, rect2)`는 `T = Rectangle<double>`로 구체화되며, 구체화된 본문의 `if (a > b)`는 두 `Rectangle<double>` 객체를 `>`로 비교한다. `Rectangle` 클래스에는 `operator>`가 없으므로 이 구체화가 실패하여 컴파일 오류가 난다. 템플릿 자체의 문법에는 잘못이 없고, 특정 타입으로 구체화할 때 그 타입이 템플릿 본문이 요구하는 연산을 지원하지 않아서 생기는 오류이다([10장 2.3절](Concepts_Lecture.ko.md#23-템플릿에서의-연산자-오버로딩), [10장 10.2절](Concepts_Lecture.ko.md#102-흔한-오류)).
+**오류 원인:** `bigger(a, b)`는 `T = int`로 구체화되고 `int`에는 `>` 연산자가 있으므로 문제가 없다. 그러나 `bigger(rect1, rect2)`는 `T = Rectangle<double>`로 구체화되며, 구체화된 본문의 `if (a > b)`는 두 `Rectangle<double>` 객체를 `>`로 비교한다. `Rectangle` 클래스에는 `operator>`가 없으므로 이 구체화가 실패하여 컴파일 오류가 난다. 템플릿 자체의 문법에는 잘못이 없고, 특정 타입으로 구체화할 때 그 타입이 템플릿 본문이 요구하는 연산을 지원하지 않아서 생기는 오류이다([10장 2.3절](Concepts_Lecture.ko.md#23-템플릿에서의-연산자-중복), [10장 10.2절](Concepts_Lecture.ko.md#102-흔한-오류)).
 
 **방법 1, 연산자 중복:** `Rectangle` 클래스에 두 객체의 면적을 비교하는 멤버 함수 `bool operator>(Rectangle op2)`를 추가한다. 그러면 `bigger<Rectangle<double>>`의 `a > b`가 `a.operator>(b)`로 해석되어 구체화가 성공한다. 이 연산자는 클래스 템플릿의 멤버이므로 `Rectangle<double>`, `Rectangle<int>`처럼 구체화되는 클래스마다 함께 생성된다.
 
-**방법 2, 더 특수화된 `bigger()` 템플릿:** `Rectangle<T>` 객체 두 개를 받아 면적이 큰 쪽을 조건 연산자로 반환하는 함수 템플릿 `Rectangle<T> bigger(Rectangle<T> a, Rectangle<T> b)`를 추가한다. `bigger(rect1, rect2)`에는 원래 템플릿(`T = Rectangle<double>`)과 이 템플릿(`T = double`)이 모두 똑같이 정확히 맞지만, 컴파일러는 더 특수화된 이 템플릿을 고르므로 `>`로 객체를 비교하는 원래 본문은 구체화되지 않는다([10장 1.5절](Concepts_Lecture.ko.md#15-템플릿-함수와-일반-함수의-중복)).
+**방법 2, 더 특수화된 `bigger()` 템플릿:** `Rectangle<T>` 객체 두 개를 받아 면적이 큰 쪽을 조건 연산자로 리턴하는 함수 템플릿 `Rectangle<T> bigger(Rectangle<T> a, Rectangle<T> b)`를 추가한다. `bigger(rect1, rect2)`에는 원래 템플릿(`T = Rectangle<double>`)과 이 템플릿(`T = double`)이 모두 똑같이 정확히 맞지만, 컴파일러는 더 특수화된 이 템플릿을 고르므로 `>`로 객체를 비교하는 원래 본문은 구체화되지 않는다([10장 1.5절](Concepts_Lecture.ko.md#15-템플릿-함수와-일반-함수의-중복)).
 
 풀이 코드에는 두 방법이 모두 들어 있다. 이때 `bigger(rect1, rect2)`는 방법 2의 템플릿을 호출하며, 방법 1의 `operator>`는 이 호출에 쓰이지 않는다. 두 방법 중 하나만 남겨도 각각 컴파일되고 같은 결과를 출력한다.
 
-**결과 계산:** `rect1`의 면적은 10.2 × 23.5 = 239.7이고 `rect2`의 면적은 20.4 × 13.7 = 279.48이므로 `bigger()`는 `rect2`를 반환하여 `rect3`에 대입한다. `double`로 계산한 면적은 279.47999...이지만 `cout`의 기본 정밀도(유효 숫자 6자리)로 출력하면 279.48이 된다.
+**결과 계산:** `rect1`의 면적은 10.2 × 23.5 = 239.7이고 `rect2`의 면적은 20.4 × 13.7 = 279.48이므로 `bigger()`는 `rect2`를 리턴하여 `rect3`에 대입한다. `double`로 계산한 면적은 279.47999...이지만 `cout`의 기본 정밀도(유효 숫자 6자리)로 출력하면 279.48이 된다.
 
 **코드:** [`Lab_Q2.cpp`](../../Coursework/Lab10_Templates-and-STL/Lab_Q2.cpp)
 

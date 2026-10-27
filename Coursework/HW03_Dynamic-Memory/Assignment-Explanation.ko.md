@@ -70,7 +70,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 누수는 macOS에서 `leaks --atExit -- ./q4`처럼 실행하여 검사하며, 이 명령은 프로그램이 끝날 때 반환되지 않은 채 남은 힙 메모리를 찾는다. 잘못된 메모리 접근은 AddressSanitizer(`-fsanitize=address,undefined`)로 빌드하여 찾는다. macOS의 AddressSanitizer는 누수 검사를 지원하지 않으므로 누수는 `leaks`로 검사한다. Q1과 Q3은 할당한 메모리를 모두 반환하고 Q2는 동적 메모리를 쓰지 않지만, Q4는 배열을 반환하지 않아 누수가 생긴다(5.2절).
 
-Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 네 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다.
+Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 네 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 리턴한 것으로 처리하므로 종료 코드는 0이다.
 
 ---
 

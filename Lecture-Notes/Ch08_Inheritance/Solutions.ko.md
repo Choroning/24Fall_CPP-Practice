@@ -124,7 +124,7 @@ BLACK색으로 (0, 0)에 위치한 점입니다.
 
 ### 풀이
 
-`Student`는 이름 `name`을 private으로, 국어 `kor`와 정보 `pro` 점수를 protected로 가진다. 이름을 반환하는 `getName()`과 세 값을 초기화하는 생성자는 protected로 두었다. 생성자가 protected이므로 `Student` 객체를 단독으로 만들 수는 없고 파생 클래스 객체의 일부로만 생성되며, `getName()`은 파생 클래스의 `display()`에서만 호출된다.
+`Student`는 이름 `name`을 private으로, 국어 `kor`와 정보 `pro` 점수를 protected로 가진다. 이름을 리턴하는 `getName()`과 세 값을 초기화하는 생성자는 protected로 두었다. 생성자가 protected이므로 `Student` 객체를 단독으로 만들 수는 없고 파생 클래스 객체의 일부로만 생성되며, `getName()`은 파생 클래스의 `display()`에서만 호출된다.
 
 각 파생 클래스는 자기 학년의 과목 점수를 private 멤버로 더하고, 생성자의 멤버 초기화 리스트에서 `Student(s, kors, pros)`를 호출해 공통 부분을 초기화한다. `Student`에 기본 생성자가 없으므로 이 호출은 반드시 필요하다. `display()`는 private인 `name`을 `getName()`으로 읽고, protected인 `kor`와 `pro`는 직접 읽는다. 과목 구성이 학년마다 다르므로 `getAverage()`와 `display()`는 각 파생 클래스에 따로 정의한다.
 
