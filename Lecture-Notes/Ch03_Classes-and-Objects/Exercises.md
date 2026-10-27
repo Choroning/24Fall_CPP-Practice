@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1 and 2 are lab problems, and Exercises 3-12 are the even-numbered theory problems (2-20) of Chapter 3 of the textbook.
+
 ---
 
 <br>
@@ -16,7 +18,16 @@
 
 - [Exercise 1: Class Practice](#exercise-1-class-practice)
 - [Exercise 2: Coffee Machine](#exercise-2-coffee-machine)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: Statements About Classes and Objects](#exercise-3-statements-about-classes-and-objects)
+- [Exercise 4: Encapsulating a Global Variable and a Global Function](#exercise-4-encapsulating-a-global-variable-and-a-global-function)
+- [Exercise 5: Correcting the `Tower` Class](#exercise-5-correcting-the-tower-class)
+- [Exercise 6: Implementing the `Calendar` Class](#exercise-6-implementing-the-calendar-class)
+- [Exercise 7: Statements About Destructors](#exercise-7-statements-about-destructors)
+- [Exercise 8: The Order of Object Creation and Destruction](#exercise-8-the-order-of-object-creation-and-destruction)
+- [Exercise 9: An Error in Accessing a `private` Member](#exercise-9-an-error-in-accessing-a-private-member)
+- [Exercise 10: Advantages and Disadvantages of Inline Functions](#exercise-10-advantages-and-disadvantages-of-inline-functions)
+- [Exercise 11: The Function Best Suited to Inlining](#exercise-11-the-function-best-suited-to-inlining)
+- [Exercise 12: Rewriting a Structure as a Class](#exercise-12-rewriting-a-structure-as-a-class)
 
 ---
 
@@ -24,9 +35,9 @@
 
 ## Exercise 1: Class Practice
 
-**Textbook:** Chapter 3 Programming Exercise 1
+**Textbook Problem:** Chapter 3 programming exercise 1
 
-Referring to the example code, write the `Tower` class so that the output of the `main()` function matches the sample run.
+**Problem:** Referring to the example code, write the `Tower` class so that the output of the `main()` function matches the sample run.
 
 **Program Requirements**
 
@@ -67,9 +78,9 @@ Program ended with exit code: 0
 
 ## Exercise 2: Coffee Machine
 
-**Textbook:** Chapter 3 Programming Exercise 4
+**Textbook Problem:** Chapter 3 programming exercise 4
 
-Referring to the example code, write the `CoffeeMachine` class so that the output of the `main()` function matches the sample run. One espresso consumes 1 unit each of coffee and water, an Americano consumes 1 unit of coffee and 2 of water, and a sugar coffee consumes 1 unit of coffee, 2 of water, and 1 of sugar.
+**Problem:** Referring to the example code, write the `CoffeeMachine` class so that the output of the `main()` function matches the sample run. One espresso consumes 1 unit each of coffee and water, an Americano consumes 1 unit of coffee and 2 of water, and a sugar coffee consumes 1 unit of coffee, 2 of water, and 1 of sugar.
 
 **Program Requirements**
 
@@ -134,24 +145,28 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: Statements About Classes and Objects
 
-**Textbook:** Even-numbered theory problems of the Chapter 3 exercises
+**Textbook Problem:** Chapter 3 theory problem 2
 
-### Theory Problem 2
-
-Which statement about classes and objects is wrong?
+**Problem:** Which statement about classes and objects is wrong?
 
 - ① An object is also called an instance.
 - ② A class is like a blueprint or a mold for creating objects.
 - ③ For the members of a class, `public` access is preferable to `private`.
 - ④ A class consists of function members and variable members.
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-3-statements-about-classes-and-objects)**
 
-### Theory Problem 4
+---
 
-Fix the parts of the following C++ program that lack encapsulation so that it is encapsulated.
+<br>
+
+## Exercise 4: Encapsulating a Global Variable and a Global Function
+
+**Textbook Problem:** Chapter 3 theory problem 4
+
+**Problem:** Fix the parts of the following C++ program that lack encapsulation so that it is encapsulated.
 
 ```cpp
 int age;
@@ -165,11 +180,17 @@ public:
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-4-encapsulating-a-global-variable-and-a-global-function)**
 
-### Theory Problem 6
+---
 
-The following code is an example of writing a `Tower` class. Fix the wrong parts.
+<br>
+
+## Exercise 5: Correcting the `Tower` Class
+
+**Textbook Problem:** Chapter 3 theory problem 6
+
+**Problem:** The following code is an example of writing a `Tower` class. Fix the wrong parts.
 
 ```cpp
 class Tower {
@@ -179,11 +200,17 @@ public:
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-5-correcting-the-tower-class)**
 
-### Theory Problem 8
+---
 
-The following is the declaration of the `Calendar` class. Implement the constructor that initializes `year` to 10 and `getYear()`, which returns the value of `year`.
+<br>
+
+## Exercise 6: Implementing the `Calendar` Class
+
+**Textbook Problem:** Chapter 3 theory problem 8
+
+**Problem:** The following is the declaration of the `Calendar` class. Implement the constructor that initializes `year` to 10 and `getYear()`, which returns the value of `year`.
 
 ```cpp
 class Calendar {
@@ -195,19 +222,31 @@ public:
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-6-implementing-the-calendar-class)**
 
-### Theory Problem 10
+---
 
-The following is a description of destructors. Point out which of the underlined parts ①-④ is wrong.
+<br>
+
+## Exercise 7: Statements About Destructors
+
+**Textbook Problem:** Chapter 3 theory problem 10
+
+**Problem:** The following is a description of destructors. Point out which of the underlined parts ①-④ is wrong.
 
 A destructor is ① a member function called automatically when an object is destroyed, and ② it must be declared with the name of the class preceded by `~`. ③ A destructor with parameters can be written to pass meaningful values at destruction, and if no destructor is declared, ④ a default destructor is generated automatically.
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-7-statements-about-destructors)**
 
-### Theory Problem 12
+---
 
-In the following program, in what order are the objects `a`, `b`, and `c` created and destroyed?
+<br>
+
+## Exercise 8: The Order of Object Creation and Destruction
+
+**Textbook Problem:** Chapter 3 theory problem 12
+
+**Problem:** In the following program, in what order are the objects `a`, `b`, and `c` created and destroyed?
 
 ```cpp
 class House {
@@ -229,11 +268,17 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-8-the-order-of-object-creation-and-destruction)**
 
-### Theory Problem 14
+---
 
-Point out the error in the following program and fix it.
+<br>
+
+## Exercise 9: An Error in Accessing a `private` Member
+
+**Textbook Problem:** Chapter 3 theory problem 14
+
+**Problem:** Point out the error in the following program and fix it.
 
 ```cpp
 class TV {
@@ -251,22 +296,34 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-9-an-error-in-accessing-a-private-member)**
 
-### Theory Problem 16
+---
 
-Which statement about the advantages and disadvantages of inline functions is correct?
+<br>
+
+## Exercise 10: Advantages and Disadvantages of Inline Functions
+
+**Textbook Problem:** Chapter 3 theory problem 16
+
+**Problem:** Which statement about the advantages and disadvantages of inline functions is correct?
 
 - ① Using inline functions improves the compilation speed.
 - ② Using inline functions improves the execution speed of the program.
 - ③ Using inline functions improves the time needed to write the program.
 - ④ Using inline functions is effective because the program becomes smaller.
 
-**[Solution](Solutions.md#theory-problem-16)**
+**[Solution](Solutions.md#exercise-10-advantages-and-disadvantages-of-inline-functions)**
 
-### Theory Problem 18
+---
 
-An `inline` declaration is not binding. Which of the following functions is most suitable for the compiler to handle inline?
+<br>
+
+## Exercise 11: The Function Best Suited to Inlining
+
+**Textbook Problem:** Chapter 3 theory problem 18
+
+**Problem:** An `inline` declaration is not binding. Which of the following functions is most suitable for the compiler to handle inline?
 
 ```cpp
 // ①
@@ -292,11 +349,17 @@ inline int add(int a) {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-18)**
+**[Solution](Solutions.md#exercise-11-the-function-best-suited-to-inlining)**
 
-### Theory Problem 20
+---
 
-Write the following C++ structure as a class with the same meaning.
+<br>
+
+## Exercise 12: Rewriting a Structure as a Class
+
+**Textbook Problem:** Chapter 3 theory problem 20
+
+**Problem:** Write the following C++ structure as a class with the same meaning.
 
 ```cpp
 struct Family {
@@ -309,4 +372,4 @@ private:
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-20)**
+**[Solution](Solutions.md#exercise-12-rewriting-a-structure-as-a-class)**

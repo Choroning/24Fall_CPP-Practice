@@ -16,7 +16,14 @@
 
 - [Exercise 1: Color and Position of a Point](#exercise-1-color-and-position-of-a-point)
 - [Exercise 2: Student Grade Management](#exercise-2-student-grade-management)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: The Closest Match to Inheritance](#exercise-3-the-closest-match-to-inheritance)
+- [Exercise 4: Compile Errors Under Inheritance Access Specifiers](#exercise-4-compile-errors-under-inheritance-access-specifiers)
+- [Exercise 5: Access Under `protected` Inheritance](#exercise-5-access-under-protected-inheritance)
+- [Exercise 6: Upcasting, Members, Access, and Downcasting](#exercise-6-upcasting-members-access-and-downcasting)
+- [Exercise 7: Inheriting a Base Class Without a Default Constructor](#exercise-7-inheriting-a-base-class-without-a-default-constructor)
+- [Exercise 8: Statements About Multiple Inheritance](#exercise-8-statements-about-multiple-inheritance)
+- [Exercise 9: Declaring Classes with Multiple Inheritance](#exercise-9-declaring-classes-with-multiple-inheritance)
+- [Exercise 10: A Potential Problem in an Inheritance Relationship](#exercise-10-a-potential-problem-in-an-inheritance-relationship)
 
 ---
 
@@ -280,29 +287,45 @@ The last line of the sample run, `Program ended with exit code: 0`, is a message
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: The Closest Match to Inheritance
 
-**Textbook:** Even-numbered theory problems of the Chapter 8 exercises
+**Textbook Problem:** Chapter 8 theory problem 2
 
-### Theory Problem 2
+**Problem:** Choose the pair closest to the concept of inheritance in object orientation. The options are in [Exercise 3](Exercises.md#exercise-3-the-closest-match-to-inheritance).
 
-**Problem:** Choose the pair closest to the concept of inheritance in object orientation.
+### Solution
 
 **Answer:** ①
 
-Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Chapter 8, Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
+**Explanation:** Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Chapter 8, Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
 
-### Theory Problem 4
+---
 
-**Problem:** In classes that mix `public`, `private`, and `protected` inheritance, choose the access that causes a compile error.
+<br>
+
+## Exercise 4: Compile Errors Under Inheritance Access Specifiers
+
+**Textbook Problem:** Chapter 8 theory problem 4
+
+**Problem:** In classes that mix `public`, `private`, and `protected` inheritance, choose the access that causes a compile error. The full problem and code are in [Exercise 4](Exercises.md#exercise-4-compile-errors-under-inheritance-access-specifiers).
+
+### Solution
 
 **Answer:** ④
 
-`D` inherits `B` as `protected`, so `w` (originally a member of `A`) and `x`, which were `public` in `B`, become `protected` in `D`. So `d.w = 10;`, outside the class, cannot access it ([Chapter 8, Section 2.2](Concepts_Lecture.md#22-protected-inheritance)). `a.w` in ① is a `public` member, and `b.w` in ② stays `public` under `public` inheritance. `c.y` in ③ is a `public` member declared by `C` itself, so it can be accessed regardless of `C` inheriting `A` as `private`.
+**Explanation:** `D` inherits `B` as `protected`, so `w` (originally a member of `A`) and `x`, which were `public` in `B`, become `protected` in `D`. So `d.w = 10;`, outside the class, cannot access it ([Chapter 8, Section 2.2](Concepts_Lecture.md#22-protected-inheritance)). `a.w` in ① is a `public` member, and `b.w` in ② stays `public` under `public` inheritance. `c.y` in ③ is a `public` member declared by `C` itself, so it can be accessed regardless of `C` inheriting `A` as `private`.
 
-### Theory Problem 6
+---
 
-**Problem:** When `B` inherits `A` as `protected`, choose all the lines among the four in `main()` that cause a compile error.
+<br>
+
+## Exercise 5: Access Under `protected` Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 6
+
+**Problem:** When `B` inherits `A` as `protected`, choose all the lines among the four in `main()` that cause a compile error. The full problem and code are in [Exercise 5](Exercises.md#exercise-5-access-under-protected-inheritance).
+
+### Solution
 
 **Answer:** ①, ②, ④
 
@@ -311,9 +334,17 @@ Inheritance is an is-a relationship in which a derived class is made by taking o
 - **③ `a.setX(5);`:** `setX()` is a `public` member of `A`, so this is correct.
 - **④ `b.setX(5);`:** `B` inherits `A` as `protected`, so `setX()` became `protected` in `B` and cannot be called outside the class. Inside the member function `setXY()` of `B`, `setX(x)` can be called.
 
-### Theory Problem 8
+---
 
-**Problem:** For `B` and `C`, which inherit `A`, and `D`, which inherits `B`, answer four questions about upcasting, members, access, and downcasting.
+<br>
+
+## Exercise 6: Upcasting, Members, Access, and Downcasting
+
+**Textbook Problem:** Chapter 8 theory problem 8
+
+**Problem:** For `B` and `C`, which inherit `A`, and `D`, which inherits `B`, answer four questions about upcasting, members, access, and downcasting. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-upcasting-members-access-and-downcasting).
+
+### Solution
 
 **Answer:**
 
@@ -324,9 +355,17 @@ Inheritance is an is-a relationship in which a derived class is made by taking o
 
 A downcast, which assigns a base class pointer to a derived class pointer, needs an explicit type conversion ([Chapter 8, Section 1.4](Concepts_Lecture.md#14-inheritance-and-object-pointers)). In (4) the previous line put the address of a `D` object into `ap`, so the converted `dp` actually points to a `D` object and is safe. If `ap` pointed to an object that is not a `D` and was downcast to access a member of `D`, the result would be undefined behavior.
 
-### Theory Problem 10
+---
 
-**Problem:** Find the error in the constructors of `B`, which inherits a base class `A` without a default constructor, and fix both constructors so that they produce the given output.
+<br>
+
+## Exercise 7: Inheriting a Base Class Without a Default Constructor
+
+**Textbook Problem:** Chapter 8 theory problem 10
+
+**Problem:** Find the error in the constructors of `B`, which inherits a base class `A` without a default constructor, and fix both constructors so that they produce the given output. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-inheriting-a-base-class-without-a-default-constructor).
+
+### Solution
 
 **Answer:**
 
@@ -341,17 +380,33 @@ B(int x) : A(x + 20) { cout << "생성자 B " << x << endl; }
 
 When an object of a derived class is created, the constructor of the base class runs first and then the constructor of the derived class ([Chapter 8, Section 3.1](Concepts_Lecture.md#31-constructor-chain)). `B b;` runs `A(20)` and then the body of `B()`, printing `생성자 A 20` and `생성자 B`. `B b(15);` calls the constructor of `A` with 35, the received 15 plus 20, so it prints `생성자 A 35` and `생성자 B 15`. Writing `A(20);` inside the constructor body does not initialize the base class part; it is a statement that creates one more unnamed temporary `A` object, so the error about the missing default constructor does not go away.
 
-### Theory Problem 12
+---
 
-**Problem:** Choose the wrong statement about multiple inheritance.
+<br>
+
+## Exercise 8: Statements About Multiple Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 12
+
+**Problem:** Choose the wrong statement about multiple inheritance. The options are in [Exercise 8](Exercises.md#exercise-8-statements-about-multiple-inheritance).
+
+### Solution
 
 **Answer:** ④
 
-The ambiguity caused by inheriting a member of the same name along two paths through multiple inheritance is found at compile time, not at run time; for the classes of theory problem 16, accessing `smartTV.screenSize` makes Clang report the error `non-static member 'screenSize' found in multiple base-class subobjects of type 'TV'`. Virtual inheritance is a way of inheriting, marked with the `virtual` keyword, that keeps only one copy of the members of a common base class, and it is a different concept from dynamic binding ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The other statements are correct. Java does not allow multiple inheritance of classes and achieves a similar effect with interfaces (①).
+**Explanation:** The ambiguity caused by inheriting a member of the same name along two paths through multiple inheritance is found at compile time, not at run time; for the classes of Exercise 10, accessing `smartTV.screenSize` makes Clang report the error `non-static member 'screenSize' found in multiple base-class subobjects of type 'TV'`. Virtual inheritance is a way of inheriting, marked with the `virtual` keyword, that keeps only one copy of the members of a common base class, and it is a different concept from dynamic binding ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The other statements are correct. Java does not allow multiple inheritance of classes and achieves a similar effect with interfaces (①).
 
-### Theory Problem 14
+---
 
-**Problem:** Declare `HiPen` and `OmniPen`, which inherit from two and three classes at the same time.
+<br>
+
+## Exercise 9: Declaring Classes with Multiple Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 14
+
+**Problem:** Declare `HiPen` and `OmniPen`, which inherit from two and three classes at the same time. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-declaring-classes-with-multiple-inheritance).
+
+### Solution
 
 **Answer:**
 
@@ -360,11 +415,19 @@ class HiPen : public Pen, public Eraser { ... };                // (1)
 class OmniPen : public Pen, public Eraser, public Lock { ... };  // (2)
 ```
 
-Multiple inheritance lists the base classes after the colon, separated by commas, with an inheritance access specifier for each base class. If the access specifier is omitted, inheritance is `private` for a `class`, so `public` must be written for each base class whose `public` members are to be used from outside. The constructors are called in the listed order, that is, `Pen`, `Eraser`, `Lock`.
+**Explanation:** Multiple inheritance lists the base classes after the colon, separated by commas, with an inheritance access specifier for each base class. If the access specifier is omitted, inheritance is `private` for a `class`, so `public` must be written for each base class whose `public` members are to be used from outside. The constructors are called in the listed order, that is, `Pen`, `Eraser`, `Lock`.
 
-### Theory Problem 16
+---
 
-**Problem:** Point out the potential problem of the inheritance relationship of `ColorTV` and `InternetTV`, which inherit `TV`, and fix it.
+<br>
+
+## Exercise 10: A Potential Problem in an Inheritance Relationship
+
+**Textbook Problem:** Chapter 8 theory problem 16
+
+**Problem:** Point out the potential problem of the inheritance relationship of `ColorTV` and `InternetTV`, which inherit `TV`, and fix it. The full problem and code are in [Exercise 10](Exercises.md#exercise-10-a-potential-problem-in-an-inheritance-relationship).
+
+### Solution
 
 **Answer:** If a class that inherits both `ColorTV` and `InternetTV` (for example `SmartTV`) is made later, the member `screenSize` of `TV` is inherited twice along two paths. To prevent this, change both classes to inherit `TV` virtually.
 
@@ -381,4 +444,4 @@ public: string ipAddr;
 class SmartTV : public ColorTV, public InternetTV { };
 ```
 
-Without virtual inheritance, a `SmartTV` object contains a separate `TV` part through `ColorTV` and another through `InternetTV`. Then there are two `screenSize` members, which wastes memory, and `smartTV.screenSize` cannot be resolved to one of them, so it is a compile error. If both intermediate classes inherit with `virtual public TV`, only one `TV` part is created inside `SmartTV`, and there is only one `screenSize` ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The problem arises from an inheritance structure shaped like a diamond, so it is commonly called the diamond problem.
+**Explanation:** Without virtual inheritance, a `SmartTV` object contains a separate `TV` part through `ColorTV` and another through `InternetTV`. Then there are two `screenSize` members, which wastes memory, and `smartTV.screenSize` cannot be resolved to one of them, so it is a compile error. If both intermediate classes inherit with `virtual public TV`, only one `TV` part is created inside `SmartTV`, and there is only one `screenSize` ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The problem arises from an inheritance structure shaped like a diamond, so it is commonly called the diamond problem.

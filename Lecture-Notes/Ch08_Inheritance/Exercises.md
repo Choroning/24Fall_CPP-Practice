@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1 and 2 are lab problems, and Exercises 3-10 are the even-numbered theory problems (2-16) of Chapter 8 of the textbook.
+
 ---
 
 <br>
@@ -16,7 +18,14 @@
 
 - [Exercise 1: Color and Position of a Point](#exercise-1-color-and-position-of-a-point)
 - [Exercise 2: Student Grade Management](#exercise-2-student-grade-management)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: The Closest Match to Inheritance](#exercise-3-the-closest-match-to-inheritance)
+- [Exercise 4: Compile Errors Under Inheritance Access Specifiers](#exercise-4-compile-errors-under-inheritance-access-specifiers)
+- [Exercise 5: Access Under `protected` Inheritance](#exercise-5-access-under-protected-inheritance)
+- [Exercise 6: Upcasting, Members, Access, and Downcasting](#exercise-6-upcasting-members-access-and-downcasting)
+- [Exercise 7: Inheriting a Base Class Without a Default Constructor](#exercise-7-inheriting-a-base-class-without-a-default-constructor)
+- [Exercise 8: Statements About Multiple Inheritance](#exercise-8-statements-about-multiple-inheritance)
+- [Exercise 9: Declaring Classes with Multiple Inheritance](#exercise-9-declaring-classes-with-multiple-inheritance)
+- [Exercise 10: A Potential Problem in an Inheritance Relationship](#exercise-10-a-potential-problem-in-an-inheritance-relationship)
 
 ---
 
@@ -164,24 +173,28 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: The Closest Match to Inheritance
 
-**Textbook:** Even-numbered theory problems of the Chapter 8 exercises
+**Textbook Problem:** Chapter 8 theory problem 2
 
-### Theory Problem 2
-
-Which pair is closest to the concept of inheritance in object orientation?
+**Problem:** Which pair is closest to the concept of inheritance in object orientation?
 
 - ① A TV and a smart TV
 - ② A fabric sofa and a leather sofa
 - ③ A CPU and a PC
 - ④ A car engine and a transmission
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-3-the-closest-match-to-inheritance)**
 
-### Theory Problem 4
+---
 
-For the following code, which statement causes a compile error?
+<br>
+
+## Exercise 4: Compile Errors Under Inheritance Access Specifiers
+
+**Textbook Problem:** Chapter 8 theory problem 4
+
+**Problem:** For the following code, which statement causes a compile error?
 
 ```cpp
 class A {
@@ -203,11 +216,17 @@ public: int z;
 - ③ `C c; c.y = 10;`
 - ④ `D d; d.w = 10;`
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-4-compile-errors-under-inheritance-access-specifiers)**
 
-### Theory Problem 6
+---
 
-Choose all the places in the following code that cause a compile error.
+<br>
+
+## Exercise 5: Access Under `protected` Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 6
+
+**Problem:** Choose all the places in the following code that cause a compile error.
 
 ```cpp
 class A {
@@ -230,11 +249,17 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-5-access-under-protected-inheritance)**
 
-### Theory Problem 8
+---
 
-Given the following classes and variables, answer the questions.
+<br>
+
+## Exercise 6: Upcasting, Members, Access, and Downcasting
+
+**Textbook Problem:** Chapter 8 theory problem 8
+
+**Problem:** Given the following classes and variables, answer the questions.
 
 ```cpp
 class A {
@@ -269,11 +294,17 @@ ap = dp;
 dp = ap;
 ```
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-6-upcasting-members-access-and-downcasting)**
 
-### Theory Problem 10
+---
 
-Answer the questions about the following code.
+<br>
+
+## Exercise 7: Inheriting a Base Class Without a Default Constructor
+
+**Textbook Problem:** Chapter 8 theory problem 10
+
+**Problem:** Answer the questions about the following code.
 
 ```cpp
 class A {
@@ -293,22 +324,34 @@ public:
 
 (3) Change the constructor `B(int x)` so that running `B b(15);` prints the two lines `생성자 A 35` and `생성자 B 15`.
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-7-inheriting-a-base-class-without-a-default-constructor)**
 
-### Theory Problem 12
+---
 
-Which statement about multiple inheritance is wrong?
+<br>
+
+## Exercise 8: Statements About Multiple Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 12
+
+**Problem:** Which statement about multiple inheritance is wrong?
 
 - ① Java has no multiple inheritance of classes.
 - ② It increases programming productivity by reusing existing classes.
 - ③ Multiple inheritance can cause ambiguity.
 - ④ Ambiguity caused by multiple inheritance is found at run time, so it is solved by virtual inheritance through dynamic binding.
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-8-statements-about-multiple-inheritance)**
 
-### Theory Problem 14
+---
 
-Given the following classes, answer the questions.
+<br>
+
+## Exercise 9: Declaring Classes with Multiple Inheritance
+
+**Textbook Problem:** Chapter 8 theory problem 14
+
+**Problem:** Given the following classes, answer the questions.
 
 ```cpp
 class Pen { ... };
@@ -320,11 +363,17 @@ class Lock { ... };
 
 (2) Declare a class `OmniPen` that inherits from `Pen`, `Eraser`, and `Lock` at the same time.
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-9-declaring-classes-with-multiple-inheritance)**
 
-### Theory Problem 16
+---
 
-Point out the potential problem of the inheritance relationship of the following classes and fix it.
+<br>
+
+## Exercise 10: A Potential Problem in an Inheritance Relationship
+
+**Textbook Problem:** Chapter 8 theory problem 16
+
+**Problem:** Point out the potential problem of the inheritance relationship of the following classes and fix it.
 
 ```cpp
 class TV {
@@ -338,4 +387,4 @@ public: string ipAddr;
 };
 ```
 
-**[Solution](Solutions.md#theory-problem-16)**
+**[Solution](Solutions.md#exercise-10-a-potential-problem-in-an-inheritance-relationship)**

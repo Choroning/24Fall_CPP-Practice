@@ -16,7 +16,13 @@
 
 - [Exercise 1: Student Grade Management with Virtual Functions](#exercise-1-student-grade-management-with-virtual-functions)
 - [Exercise 2: Unit Conversion with Virtual Functions](#exercise-2-unit-conversion-with-virtual-functions)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: The Name for Redefining a Virtual Function](#exercise-3-the-name-for-redefining-a-virtual-function)
+- [Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading](#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading)
+- [Exercise 5: Identifying Virtual Functions and Their Call Results](#exercise-5-identifying-virtual-functions-and-their-call-results)
+- [Exercise 6: Calling Different `f()` Functions from `g()`](#exercise-6-calling-different-f-functions-from-g)
+- [Exercise 7: A Base Class Without a Virtual Destructor](#exercise-7-a-base-class-without-a-virtual-destructor)
+- [Exercise 8: Statements About Pure Virtual Functions](#exercise-8-statements-about-pure-virtual-functions)
+- [Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function](#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)
 
 ---
 
@@ -309,29 +315,45 @@ int main() {
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: The Name for Redefining a Virtual Function
 
-**Textbook:** Even-numbered theory problems of the Chapter 9 exercises
+**Textbook Problem:** Chapter 9 theory problem 2
 
-### Theory Problem 2
+**Problem:** Choose the name for redefining, in a derived class, a function with the same type as a virtual function of the base class. The options are in [Exercise 3](Exercises.md#exercise-3-the-name-for-redefining-a-virtual-function).
 
-**Problem:** Choose the name for redefining, in a derived class, a function with the same type as a virtual function of the base class.
+### Solution
 
 **Answer:** ②
 
-Redefining in a derived class a function with the same name, parameter list, and return type as a virtual function of the base class is called **overriding** ([Chapter 9, Section 2](Concepts_Lecture.md#2-virtual-functions)). Overloading is having several functions with the same name and different parameters in the same scope, `virtual` is the keyword that declares a virtual function, and dynamic binding is the process of deciding at run time which of the overridden virtual functions to execute.
+**Explanation:** Redefining in a derived class a function with the same name, parameter list, and return type as a virtual function of the base class is called **overriding** ([Chapter 9, Section 2](Concepts_Lecture.md#2-virtual-functions)). Overloading is having several functions with the same name and different parameters in the same scope, `virtual` is the keyword that declares a virtual function, and dynamic binding is the process of deciding at run time which of the overridden virtual functions to execute.
 
-### Theory Problem 4
+---
 
-**Problem:** Give the object-oriented feature shown by overloading, overriding, and operator overloading.
+<br>
+
+## Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading
+
+**Textbook Problem:** Chapter 9 theory problem 4
+
+**Problem:** Give the object-oriented feature shown by overloading, overriding, and operator overloading. The full problem is in [Exercise 4](Exercises.md#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading).
+
+### Solution
 
 **Answer:** Polymorphism
 
-All three let the same name or symbol behave differently depending on the situation. Function overloading and operator overloading are static polymorphism, in which the function to call is decided at compile time from the types and number of the arguments, and overriding of virtual functions is dynamic polymorphism, in which the function is decided at run time from the actual type of the object.
+**Explanation:** All three let the same name or symbol behave differently depending on the situation. Function overloading and operator overloading are static polymorphism, in which the function to call is decided at compile time from the types and number of the arguments, and overriding of virtual functions is dynamic polymorphism, in which the function is decided at run time from the actual type of the object.
 
-### Theory Problem 6
+---
 
-**Problem:** Choose the virtual functions among `f()` of `A`, `B`, and `C` and `A::func()`, and give the results of calling `f()` and `func()` through an object and through pointers.
+<br>
+
+## Exercise 5: Identifying Virtual Functions and Their Call Results
+
+**Textbook Problem:** Chapter 9 theory problem 6
+
+**Problem:** Choose the virtual functions among `f()` of `A`, `B`, and `C` and `A::func()`, and give the results of calling `f()` and `func()` through an object and through pointers. The full problem and code are in [Exercise 5](Exercises.md#exercise-5-identifying-virtual-functions-and-their-call-results).
+
+### Solution
 
 **Answer:**
 
@@ -344,17 +366,33 @@ All three let the same name or symbol behave differently depending on the situat
 - **(3) `pb->f();`, (4) `pa->f();`:** `pa` and `pb` are an `A*` and a `B*`, but the object they actually point to is a `C` and `f()` is a virtual function, so `C::f()` is called through dynamic binding ([Chapter 9, Section 2.4](Concepts_Lecture.md#24-static-vs-dynamic-binding)).
 - **(5) `pa->func();`:** `func()` is an ordinary function of `A`, so `A::func()` runs, but the call to `f()` inside it is `this->f()`, a virtual function call. The object `this` points to is a `C`, so `C::f()` is called.
 
-### Theory Problem 8
+---
 
-**Problem:** Write the code inside `B::g()` that calls the external function `f()`, `f()` of `A`, and its own `f()`, respectively.
+<br>
+
+## Exercise 6: Calling Different `f()` Functions from `g()`
+
+**Textbook Problem:** Chapter 9 theory problem 8
+
+**Problem:** Write the code inside `B::g()` that calls the external function `f()`, `f()` of `A`, and its own `f()`, respectively. The full problem and code are in [Exercise 6](Exercises.md#exercise-6-calling-different-f-functions-from-g).
+
+### Solution
 
 **Answer:** (1) `::f();` (2) `A::f();` (3) `f();`
 
-Inside a member function of `B`, the name `f` is first looked up among the members of its own class, `B::f()`, so writing only `f()` calls its own member function, as in (3). To call the function in the global scope, `::f()` is written with nothing before the scope resolution operator. To call the base class version, the scope is given by the class name, as in `A::f()`, and such a qualified call directly calls `A::f()` without dynamic binding, even for a virtual function ([Chapter 9, Section 2.10](Concepts_Lecture.md#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)).
+**Explanation:** Inside a member function of `B`, the name `f` is first looked up among the members of its own class, `B::f()`, so writing only `f()` calls its own member function, as in (3). To call the function in the global scope, `::f()` is written with nothing before the scope resolution operator. To call the base class version, the scope is given by the class name, as in `A::f()`, and such a qualified call directly calls `A::f()` without dynamic binding, even for a virtual function ([Chapter 9, Section 2.10](Concepts_Lecture.md#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)).
 
-### Theory Problem 10
+---
 
-**Problem:** Give the output and the problem when a derived class object is deleted through a base class pointer, and solve the problem.
+<br>
+
+## Exercise 7: A Base Class Without a Virtual Destructor
+
+**Textbook Problem:** Chapter 9 theory problem 10
+
+**Problem:** Give the output and the problem when a derived class object is deleted through a base class pointer, and solve the problem. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-a-base-class-without-a-virtual-destructor).
+
+### Solution
 
 **Answer:**
 
@@ -368,17 +406,33 @@ virtual ~Person() { cout << "id=" << id << endl; }
 
 In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and in this environment only `~Person()` ran. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Chapter 9, Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
 
-### Theory Problem 12
+---
 
-**Problem:** Choose the wrong statement about pure virtual functions.
+<br>
+
+## Exercise 8: Statements About Pure Virtual Functions
+
+**Textbook Problem:** Chapter 9 theory problem 12
+
+**Problem:** Choose the wrong statement about pure virtual functions. The options are in [Exercise 8](Exercises.md#exercise-8-statements-about-pure-virtual-functions).
+
+### Solution
 
 **Answer:** ③
 
-A pure virtual function is a member function of a class declared as in `virtual void draw() = 0;`, so an external function that does not belong to a class cannot be a pure virtual function. The others are correct. A class with even one pure virtual function is an abstract class (①), a pure virtual function has no body and fixes the form of a function that derived classes must implement (②), and when it is called through a pointer or reference to the base class, dynamic binding runs the function implemented by the derived class (④) ([Chapter 9, Section 4](Concepts_Lecture.md#4-abstract-classes)).
+**Explanation:** A pure virtual function is a member function of a class declared as in `virtual void draw() = 0;`, so an external function that does not belong to a class cannot be a pure virtual function. The others are correct. A class with even one pure virtual function is an abstract class (①), a pure virtual function has no body and fixes the form of a function that derived classes must implement (②), and when it is called through a pointer or reference to the base class, dynamic binding runs the function implemented by the derived class (④) ([Chapter 9, Section 4](Concepts_Lecture.md#4-abstract-classes)).
 
-### Theory Problem 14
+---
 
-**Problem:** For `Shape`, which has the pure virtual function `draw()`, and `Circle`, which does not implement `draw()`, choose the declarations that cause an error and fix the classes so that `반지름=10인 원` is printed.
+<br>
+
+## Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function
+
+**Textbook Problem:** Chapter 9 theory problem 14
+
+**Problem:** For `Shape`, which has the pure virtual function `draw()`, and `Circle`, which does not implement `draw()`, choose the declarations that cause an error and fix the classes so that `반지름=10인 원` is printed. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function).
+
+### Solution
 
 **Answer:**
 

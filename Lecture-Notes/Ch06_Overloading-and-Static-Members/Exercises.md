@@ -8,6 +8,8 @@
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
+Exercises 1 and 2 are lab problems, and Exercises 3-10 are the even-numbered theory problems (2-16) of Chapter 6 of the textbook.
+
 ---
 
 <br>
@@ -16,7 +18,14 @@
 
 - [Exercise 1: Bulletin Board](#exercise-1-bulletin-board)
 - [Exercise 2: Multiplication Table](#exercise-2-multiplication-table)
-- [Textbook Theory Problems](#textbook-theory-problems)
+- [Exercise 3: Statements About Function Overloading](#exercise-3-statements-about-function-overloading)
+- [Exercise 4: Functions That Cannot Be Declared Together](#exercise-4-functions-that-cannot-be-declared-together)
+- [Exercise 5: When Overloaded Functions Are Bound](#exercise-5-when-overloaded-functions-are-bound)
+- [Exercise 6: Calling a Function with a Default Parameter](#exercise-6-calling-a-function-with-a-default-parameter)
+- [Exercise 7: Overloaded Functions Whose Calls Can Be Ambiguous](#exercise-7-overloaded-functions-whose-calls-can-be-ambiguous)
+- [Exercise 8: Output of a Constructor with a Default Parameter](#exercise-8-output-of-a-constructor-with-a-default-parameter)
+- [Exercise 9: The Problem with Overloading `area()`](#exercise-9-the-problem-with-overloading-area)
+- [Exercise 10: Calling a static Member Function](#exercise-10-calling-a-static-member-function)
 
 ---
 
@@ -201,46 +210,62 @@ Program ended with exit code: 0
 
 <br>
 
-## Textbook Theory Problems
+## Exercise 3: Statements About Function Overloading
 
-**Textbook:** Even-numbered theory problems of the Chapter 6 exercises
+**Textbook Problem:** Chapter 6 theory problem 2
 
-### Theory Problem 2
-
-Which statement about function overloading is wrong?
+**Problem:** Which statement about function overloading is wrong?
 
 - ① The C language has no function overloading.
 - ② Two functions with the same name can be overloaded if their parameter types or numbers of parameters differ.
 - ③ Member functions of a class cannot be overloaded.
 - ④ If only the return types differ in the function prototypes, the functions are not overloaded.
 
-**[Solution](Solutions.md#theory-problem-2)**
+**[Solution](Solutions.md#exercise-3-statements-about-function-overloading)**
 
-### Theory Problem 4
+---
 
-Choose the two functions among the following that cannot be declared together in one program.
+<br>
+
+## Exercise 4: Functions That Cannot Be Declared Together
+
+**Textbook Problem:** Chapter 6 theory problem 4
+
+**Problem:** Choose the two functions among the following that cannot be declared together in one program.
 
 - ① `void g();`
 - ② `int g();`
 - ③ `double g(int x)`
 - ④ `double g(int x, int y);`
 
-**[Solution](Solutions.md#theory-problem-4)**
+**[Solution](Solutions.md#exercise-4-functions-that-cannot-be-declared-together)**
 
-### Theory Problem 6
+---
 
-When is an overloaded function bound to the statement that calls it?
+<br>
+
+## Exercise 5: When Overloaded Functions Are Bound
+
+**Textbook Problem:** Chapter 6 theory problem 6
+
+**Problem:** When is an overloaded function bound to the statement that calls it?
 
 - ① By the preprocessor, just before compilation
 - ② By the compiler, at compile time
 - ③ At run time, just before the function is called
 - ④ At run time, at a particular moment when function overloading is resolved
 
-**[Solution](Solutions.md#theory-problem-6)**
+**[Solution](Solutions.md#exercise-5-when-overloaded-functions-are-bound)**
 
-### Theory Problem 8
+---
 
-Given the following function with a default parameter, which function call is not appropriate?
+<br>
+
+## Exercise 6: Calling a Function with a Default Parameter
+
+**Textbook Problem:** Chapter 6 theory problem 8
+
+**Problem:** Given the following function with a default parameter, which function call is not appropriate?
 
 ```cpp
 int add(int a, double b = 10.0);
@@ -251,22 +276,34 @@ int add(int a, double b = 10.0);
 - ③ `add(10, 3.14);`
 - ④ `int x = add(10, 3.14);`
 
-**[Solution](Solutions.md#theory-problem-8)**
+**[Solution](Solutions.md#exercise-6-calling-a-function-with-a-default-parameter)**
 
-### Theory Problem 10
+---
 
-Which pair of overloaded functions can lead to an ambiguity in which it cannot be decided which function a call refers to?
+<br>
+
+## Exercise 7: Overloaded Functions Whose Calls Can Be Ambiguous
+
+**Textbook Problem:** Chapter 6 theory problem 10
+
+**Problem:** Which pair of overloaded functions can lead to an ambiguity in which it cannot be decided which function a call refers to?
 
 - ① `int add(int a);` and `int add(int a, int &b);`
 - ② `int add(int a, int b);` and `int add(int a, int &b);`
 - ③ `int add(int a, int b);` and `int add(int a, int* b);`
 - ④ `int add(int a, int* b);` and `int add(int a, int &b);`
 
-**[Solution](Solutions.md#theory-problem-10)**
+**[Solution](Solutions.md#exercise-7-overloaded-functions-whose-calls-can-be-ambiguous)**
 
-### Theory Problem 12
+---
 
-What is printed on the screen when objects of the following class are created as in (1)-(3)?
+<br>
+
+## Exercise 8: Output of a Constructor with a Default Parameter
+
+**Textbook Problem:** Chapter 6 theory problem 12
+
+**Problem:** What is printed on the screen when objects of the following class are created as in (1)-(3)?
 
 ```cpp
 class Overloading {
@@ -280,22 +317,34 @@ public:
 - (2) `Overloading b(3);`
 - (3) `Overloading c(5, "hello");`
 
-**[Solution](Solutions.md#theory-problem-12)**
+**[Solution](Solutions.md#exercise-8-output-of-a-constructor-with-a-default-parameter)**
 
-### Theory Problem 14
+---
 
-Show that the overloading of the function `area()` is problematic by giving an example of a call to it.
+<br>
+
+## Exercise 9: The Problem with Overloading `area()`
+
+**Textbook Problem:** Chapter 6 theory problem 14
+
+**Problem:** Show that the overloading of the function `area()` is problematic by giving an example of a call to it.
 
 ```cpp
 float area(float f);
 double area(double d);
 ```
 
-**[Solution](Solutions.md#theory-problem-14)**
+**[Solution](Solutions.md#exercise-9-the-problem-with-overloading-area)**
 
-### Theory Problem 16
+---
 
-Given the following `StaticTest` class, which line of the source that follows is wrong?
+<br>
+
+## Exercise 10: Calling a static Member Function
+
+**Textbook Problem:** Chapter 6 theory problem 16
+
+**Problem:** Given the following `StaticTest` class, which line of the source that follows is wrong?
 
 ```cpp
 class StaticTest {
@@ -315,4 +364,4 @@ s::getA();            // ③
 p->getA();            // ④
 ```
 
-**[Solution](Solutions.md#theory-problem-16)**
+**[Solution](Solutions.md#exercise-10-calling-a-static-member-function)**
