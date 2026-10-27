@@ -228,7 +228,7 @@ int main() {
 | 31 | `personPtr->introduce();` | 화살표 연산자로 `person2`의 멤버 함수를 호출한다 |
 | 33 | `(*personPtr).setAge(31);` | 포인터를 역참조하여 얻은 `person2`에 점 연산자로 `setAge(31)`을 호출한다 |
 | 34 | `personPtr->introduce();` | 바뀐 나이가 반영된 `person2`의 자기소개를 출력한다 |
-| 36 | `return 0;` | 0을 반환하여 프로그램이 정상 종료되었음을 알린다 |
+| 36 | `return 0;` | 0을 리턴하여 프로그램이 정상 종료되었음을 알린다 |
 
 *표 4. Q2.cpp의 줄 단위 설명*
 

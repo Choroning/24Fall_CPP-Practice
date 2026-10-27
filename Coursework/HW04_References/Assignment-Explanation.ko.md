@@ -168,7 +168,7 @@ Value is: 10
 - **`isOlderThan(const Person& other) const`:** 자기 나이가 `other`의 나이보다 많은지 리턴한다. 같은 클래스의 멤버 함수이므로 다른 객체의 `private` 멤버 `other.age`에도 접근할 수 있다.
 - **`printInfo() const`:** 이름과 나이를 출력한다.
 
-클래스 밖의 `celebrateBirthday(Person& person)`은 `person.getAge()++;`로 나이를 1 늘린다. `getAge()`가 `int&`, 즉 객체 안의 `age` 자체를 리턴하므로 `++`가 멤버를 직접 바꾼다. `getAge()`가 `int`를 값으로 리턴했다면 `getAge()++`는 임시 값에 대한 증가가 되어 컴파일 오류가 난다([5장 3.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#33-참조-반환)).
+클래스 밖의 `celebrateBirthday(Person& person)`은 `person.getAge()++;`로 나이를 1 늘린다. `getAge()`가 `int&`, 즉 객체 안의 `age` 자체를 리턴하므로 `++`가 멤버를 직접 바꾼다. `getAge()`가 `int`를 값으로 리턴했다면 `getAge()++`는 임시 값에 대한 증가가 되어 컴파일 오류가 난다([5장 3.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#33-참조-리턴)).
 
 `main()`은 `person1`("Alice", 25)과 `person2`("Bob", 30)를 만들고, `person1.getName() = "Alice Smith";`로 참조를 통해 이름을 바꾼 뒤, `setName("Alice Johnson")`과 `setAge(26)`으로 다시 바꾼다. 두 사람의 정보를 출력하고 `isOlderThan()`으로 나이를 비교하며, `celebrateBirthday(person1)` 뒤에 `person1`을 다시 출력한다.
 

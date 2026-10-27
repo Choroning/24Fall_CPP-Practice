@@ -97,7 +97,7 @@ Program ended with exit code: 0
 
 *그림 1. FirstGrade, SecondGrade, ThirdGrade 클래스의 멤버 변수와 멤버 함수*
 
-세 클래스는 모두 이름(`name`), 국어(`kor`), 정보(`pro`) 점수를 멤버 변수로 가지며, `FirstGrade`는 수학(`mat`), `SecondGrade`는 과학(`sci`)과 도덕(`mor`), `ThirdGrade`는 영어(`eng`)와 한국사(`his`) 점수를 더 가진다. 멤버 함수는 세 클래스 모두 생성자, 이름을 반환하는 `getName()`, 성적 평균을 반환하는 `getAverage()`, 성적을 출력하는 `display()`이다.
+세 클래스는 모두 이름(`name`), 국어(`kor`), 정보(`pro`) 점수를 멤버 변수로 가지며, `FirstGrade`는 수학(`mat`), `SecondGrade`는 과학(`sci`)과 도덕(`mor`), `ThirdGrade`는 영어(`eng`)와 한국사(`his`) 점수를 더 가진다. 멤버 함수는 세 클래스 모두 생성자, 이름을 리턴하는 `getName()`, 성적 평균을 리턴하는 `getAverage()`, 성적을 출력하는 `display()`이다.
 
 그림 1에서 빨간색으로 표시한 요소(이름)는 `private`, 초록색으로 표시한 요소(과목별 점수)는 `protected`로 접근을 제어한다.
 

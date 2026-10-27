@@ -68,7 +68,7 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
 
-Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 네 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다.
+Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 네 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 리턴한 것으로 처리하므로 종료 코드는 0이다.
 
 ---
 
@@ -99,7 +99,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 다음 두 가지는 디폴트 매개변수의 규칙에 따른 이 설계의 성질이다.
 
 - **디폴트 값은 선언에만 쓴다:** 16행의 선언에 디폴트 값을 쓰고, 20행의 클래스 밖 정의에는 쓰지 않았다. 정의에도 `int id = 1`처럼 다시 쓰면 Apple clang은 "redefinition of default argument" 오류를 낸다([6장 2.2절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#22-선언과-정의의-분리)).
-- **원래의 중복 생성자와 함께 둘 수 없다:** 디폴트 매개변수를 갖는 생성자와 [실습 2-1]의 `Person()`을 함께 두면 `Person grace;`가 두 생성자에 모두 일치하여 "call to constructor of 'Person' is ambiguous" 오류가 난다. 그래서 세 생성자를 하나로 합칠 때는 원래의 생성자를 모두 지운다([6장 2.4절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#24-디폴트-매개변수로-오버로딩-간소화)).
+- **원래의 중복 생성자와 함께 둘 수 없다:** 디폴트 매개변수를 갖는 생성자와 [실습 2-1]의 `Person()`을 함께 두면 `Person grace;`가 두 생성자에 모두 일치하여 "call to constructor of 'Person' is ambiguous" 오류가 난다. 그래서 세 생성자를 하나로 합칠 때는 원래의 생성자를 모두 지운다([6장 2.4절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#24-디폴트-매개변수로-함수-중복-간소화)).
 
 > **주의:** `string`을 쓰지만 `<string>`을 포함하지 않았다. macOS의 libc++에서는 `<iostream>`이 내부에서 `<string>`을 포함하므로 컴파일되지만, 표준은 이를 보장하지 않으므로 표준 라이브러리의 구현에 따라 컴파일되지 않을 수 있다. `string`을 쓰는 파일은 `#include <string>`을 직접 쓴다. Q2도 마찬가지이다.
 
