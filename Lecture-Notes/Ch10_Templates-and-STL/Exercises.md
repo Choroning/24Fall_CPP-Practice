@@ -2,9 +2,18 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
+
+---
+
+<br>
+
+## Table of Contents
+
+- [Exercise 1: Generic Functions](#exercise-1-generic-functions)
+- [Exercise 2: Generic Classes and Debugging Instantiation](#exercise-2-generic-classes-and-debugging-instantiation)
 
 ---
 

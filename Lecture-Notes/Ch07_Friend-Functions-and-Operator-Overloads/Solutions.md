@@ -3,6 +3,8 @@
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
 > **Last Updated:** 2026-10-27
+>
+> 명품 C++ Programming, 황기태, Ch 7
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
@@ -42,7 +44,7 @@ Since every operator is a member function, the left operand is `*this`, and the 
 
 *Table 1. Implementation and calculations of the `Fraction` operator functions*
 
-Postfix `++` takes an unused `int` parameter `notUsed` to distinguish it from prefix. `*=` and prefix `--` return `Fraction` by value rather than `Fraction&`, so a copy of the modified object is returned. This `main()` does not chain the results, so the output is the same, but returning a reference, as in Sections 3.3 and 4.3 of the [Chapter 7 notes](Concepts_Lecture.md), is the usual form.
+Postfix `++` takes an unused `int` parameter `notUsed` to distinguish it from prefix. `*=` and prefix `--` return `Fraction` by value rather than `Fraction&`, so a copy of the modified object is returned. This `main()` does not chain the results, so the output is the same, but returning a reference, as in [Chapter 7, Section 3.3](Concepts_Lecture.md#33-compound-assignment) and [Chapter 7, Section 4.3](Concepts_Lecture.md#43-increment--decrement), is the usual form.
 
 The code is as follows ([`Lab_Q1.cpp`](../../Coursework/Lab07_Friend-Functions-and-Operator-Overloads/Lab_Q1.cpp)).
 
@@ -549,7 +551,7 @@ The output matches the sample run. The last line of the sample run, `Program end
 
 **Answer:** ④
 
-A friend function is used to give a function that is not a member of a class access to the `private` members of that class ([Section 1.1](Concepts_Lecture.md#11-friend-function)). Function overloading defines several functions with the same name and different parameters, which has nothing to do with accessing `private` members, so no friend is needed. In contrast, a friend function is needed when a non-member function must access `private` members (①), when one function handles the `private` members of two classes together (②), and when overloading an operator whose left operand is not an object of the class (③).
+A friend function is used to give a function that is not a member of a class access to the `private` members of that class ([Chapter 7, Section 1.1](Concepts_Lecture.md#11-friend-function)). Function overloading defines several functions with the same name and different parameters, which has nothing to do with accessing `private` members, so no friend is needed. In contrast, a friend function is needed when a non-member function must access `private` members (①), when one function handles the `private` members of two classes together (②), and when overloading an operator whose left operand is not an object of the class (③).
 
 ### Theory Problem 4
 
@@ -564,7 +566,7 @@ class Sample {
 };
 ```
 
-To invite a member function of another class as a friend, the name of the class it belongs to and the scope resolution operator are attached before the function name, as in `SampleManager::compare` ([Section 1.3](Concepts_Lecture.md#13-three-forms-of-friend-declaration)). Writing `friend bool compare(Sample &a, Sample &b);` without `SampleManager::` declares a global function of the same name as a friend, and the member function of `SampleManager` still cannot access the `private` members of `Sample`. For this declaration to compile, the `SampleManager` class must also be fully declared before `Sample`, and a forward declaration `class Sample;` is needed before it so that `Sample` can be used inside `SampleManager`.
+To invite a member function of another class as a friend, the name of the class it belongs to and the scope resolution operator are attached before the function name, as in `SampleManager::compare` ([Chapter 7, Section 1.3](Concepts_Lecture.md#13-three-forms-of-friend-declaration)). Writing `friend bool compare(Sample &a, Sample &b);` without `SampleManager::` declares a global function of the same name as a friend, and the member function of `SampleManager` still cannot access the `private` members of `Sample`. For this declaration to compile, the `SampleManager` class must also be fully declared before `Sample`, and a forward declaration `class Sample;` is needed before it so that `Sample` can be used inside `SampleManager`.
 
 ### Theory Problem 6
 
@@ -601,7 +603,7 @@ void show(Student s, Professor p) {
 
 **Answer:** ④
 
-A friend declaration does not declare a member of the class; it grants access to a function or class outside it, so it is not affected by access specifiers. It therefore has the same effect in any of the `private`, `protected`, and `public` sections ([Section 1.4](Concepts_Lecture.md#14-guidelines)). By convention, friend declarations are gathered in the `public` section or at the beginning or end of the class so that the interface of the class is easy to read.
+A friend declaration does not declare a member of the class; it grants access to a function or class outside it, so it is not affected by access specifiers. It therefore has the same effect in any of the `private`, `protected`, and `public` sections ([Chapter 7, Section 1.4](Concepts_Lecture.md#14-guidelines)). By convention, friend declarations are gathered in the `public` section or at the beginning or end of the class so that the interface of the class is easy to read.
 
 ### Theory Problem 10
 
@@ -617,7 +619,7 @@ The member `x` and the constructor of `Sample` are all `public`, so the global f
 
 **Answer:** `"I love C" + "++" = "I love C++"`
 
-The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Section 2.1](Concepts_Lecture.md#21-why-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
+The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Chapter 7, Section 2.1](Concepts_Lecture.md#21-why-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
 
 ### Theory Problem 14
 
@@ -625,7 +627,7 @@ The same `+` symbol means addition for numbers, mixing for colors, and joining f
 
 **Answer:** ④
 
-A member operator function is called as a member of the left operand, so `a + b` becomes `a.operator+(b)` and `a + 3` becomes `a.operator+(3)`. In `3 + a` the left operand is the integer 3, so it would have to become `3.operator+(a)`, but `int` is not a class and cannot have member functions. `3 + a` is therefore implemented as an external function such as `Power operator+(int op1, Power op2)`, usually a friend of `Power` ([Section 3.2](Concepts_Lecture.md#32-as-friend-function)). `b = a += 3` in ③ uses the `+=` operator, and `a += 3` can be implemented as a member function, as `a.operator+=(3)`.
+A member operator function is called as a member of the left operand, so `a + b` becomes `a.operator+(b)` and `a + 3` becomes `a.operator+(3)`. In `3 + a` the left operand is the integer 3, so it would have to become `3.operator+(a)`, but `int` is not a class and cannot have member functions. `3 + a` is therefore implemented as an external function such as `Power operator+(int op1, Power op2)`, usually a friend of `Power` ([Chapter 7, Section 3.2](Concepts_Lecture.md#32-as-friend-function)). `b = a += 3` in ③ uses the `+=` operator, and `a += 3` can be implemented as a member function, as `a.operator+=(3)`.
 
 ### Theory Problem 16
 
@@ -633,6 +635,6 @@ A member operator function is called as a member of the left operand, so `a + b`
 
 **Answer:** ④
 
-The assignment operator `=` can be overloaded only as a member function. Declaring it as an external function that takes two parameters, as in `Power& operator = (Power &a, Power b);`, gives the error `overloaded 'operator=' must be a non-static member function`. As a member function it takes only the right operand, as in `Power& operator=(const Power& b);`. Along with `=`, `()`, `[]`, and `->` can also be overloaded only as member functions ([Section 2.4](Concepts_Lecture.md#24-member-function-vs-friend-function-decision-guide)).
+The assignment operator `=` can be overloaded only as a member function. Declaring it as an external function that takes two parameters, as in `Power& operator = (Power &a, Power b);`, gives the error `overloaded 'operator=' must be a non-static member function`. As a member function it takes only the right operand, as in `Power& operator=(const Power& b);`. Along with `=`, `()`, `[]`, and `->` can also be overloaded only as member functions ([Chapter 7, Section 2.4](Concepts_Lecture.md#24-member-function-vs-friend-function-decision-guide)).
 
-The other declarations are syntactically valid. However, `Power operator ++ (Power a, int b);` in ③ takes the operand by value, so what the function increments is a copy of `a`, and the original object does not change. A postfix `++` implemented as a friend must take the operand by reference, as in `Power operator++(Power& a, int b);`, for the original object to be incremented ([Section 4.2](Concepts_Lecture.md#42-as-friend-function)).
+The other declarations are syntactically valid. However, `Power operator ++ (Power a, int b);` in ③ takes the operand by value, so what the function increments is a copy of `a`, and the original object does not change. A postfix `++` implemented as a friend must take the operand by reference, as in `Power operator++(Power& a, int b);`, for the original object to be incremented ([Chapter 7, Section 4.2](Concepts_Lecture.md#42-as-friend-function)).

@@ -99,7 +99,7 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Person` 클래스는 회원을 표현하며 `private` 멤버로 `id`, `weight`, `name`을 둔다. 생성자는 매개변수 `id`, `name`, `weight`를 이 순서로 받으며, 각각 디폴트 값 1, `"Grace"`, 20.5를 갖는다. 받은 값은 `this` 포인터로 멤버 변수에 대입한다. `show()`는 `id`, `weight`, `name`을 공백으로 구분하여 순서대로 출력한다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Person` 클래스는 회원을 표현하며 `private` 멤버로 `id`, `weight`, `name`을 둔다. 생성자는 매개변수 `id`, `name`, `weight`를 이 순서로 받으며, 각각 디폴트 값 1, `"Grace"`, 20.5를 갖는다. 받은 값은 `this` 포인터로 멤버 변수에 대입한다. `show()`는 `id`, `weight`, `name`을 공백으로 구분하여 순서대로 출력한다.
 
 `main()`은 서로 다른 개수의 인자로 세 `Person` 객체를 만든다. `grace`는 인자 없이 만들어져 세 디폴트 값을 모두 쓰고, `ashley`는 `id`와 `name`만 넘겨 `weight`에 디폴트 값을 쓰며, `helen`은 세 값을 모두 넘긴다. 넘긴 인자는 왼쪽 매개변수부터 채워지고, 남은 매개변수에 디폴트 값이 들어가므로 세 호출은 `Person(1, "Grace", 20.5)`, `Person(2, "Ashley", 20.5)`, `Person(3, "Helen", 32.5)`와 같다([6장 2.1절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#21-문법)). 이어서 각 객체의 `show()`로 정보를 출력한다.
 
@@ -144,7 +144,7 @@ g++ -std=c++17 -Wall -o q2 Q2.cpp
 
 ### 3.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. 생성자는 [실습 2-1]처럼 세 가지로 중복하였다. 매개변수가 없는 생성자는 1, 20.5, `"Grace"`로 초기화하고, 두 번째 생성자는 `id`와 `name`을 받아 `weight`에 20.5를 쓰며, 세 번째 생성자는 세 값을 모두 받아 초기화한다. 세 생성자 모두 객체가 생성될 때마다 `numPerson`을 1 늘리고, 소멸자는 객체가 소멸될 때 1 줄인다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. 생성자는 [실습 2-1]처럼 세 가지로 중복하였다. 매개변수가 없는 생성자는 1, 20.5, `"Grace"`로 초기화하고, 두 번째 생성자는 `id`와 `name`을 받아 `weight`에 20.5를 쓰며, 세 번째 생성자는 세 값을 모두 받아 초기화한다. 세 생성자 모두 객체가 생성될 때마다 `numPerson`을 1 늘리고, 소멸자는 객체가 소멸될 때 1 줄인다.
 
 `show()`는 객체의 세 멤버 변수와 현재 객체 수를 출력하고, static 멤버 함수 `nPerson()`은 현재 객체 수만 출력한다. 클래스 안의 `static int numPerson;`은 선언일 뿐이며, 49행의 `int Person::numPerson = 0;`이 클래스 밖에서 변수를 정의하고 0으로 초기화한다. 이 줄을 지우면 컴파일은 되지만 링크 단계에서 `Person::numPerson`을 찾지 못한다는 오류가 난다([6장 3.1절](../../Lecture-Notes/Ch06_Overloading-and-Static-Members/Concepts_Lecture.ko.md#31-static-멤버-변수)).
 
@@ -238,7 +238,7 @@ C r j F j s Y s T F
 
 ### 5.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, `private` 멤버로 반지름 `radius`와 현재 존재하는 `Circle` 객체의 수를 추적하는 static 변수 `count`를 둔다. `public` 아래에는 두 생성자, 소멸자, `show()`를 둔다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, `private` 멤버로 반지름 `radius`와 현재 존재하는 `Circle` 객체의 수를 추적하는 static 변수 `count`를 둔다. `public` 아래에는 두 생성자, 소멸자, `show()`를 둔다.
 
 - **두 생성자:** 매개변수가 없는 생성자는 `radius`를 0으로, 다른 생성자는 받은 값으로 초기화한다. 두 생성자 모두 객체가 생성될 때마다 `count`를 1 늘린다.
 - **소멸자:** 클래스 안에 선언만 두고 28~30행에서 클래스 밖에 정의하였다. 객체가 소멸될 때 `count`를 1 줄인다.

@@ -95,7 +95,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력과 문자열 처리를 위해 `<iostream>`과 `<string>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Account` 클래스는 은행 계좌를 표현하며, `public` 접근 지정자 아래에 계좌 주인의 이름 `name`, 계좌 번호 `id`, 잔액 `balance`를 둔다. 클래스 선언부에는 기본 생성자, 매개변수 3개 생성자, `getOwner()`, `deposit()`, `withdraw()`, `inquiry()`의 원형만 두고, 몸체는 클래스 밖에서 `Account::`를 붙여 정의하여 선언과 정의를 분리했다([3장 2.3절](../../Lecture-Notes/Ch03_Classes-and-Objects/Concepts_Lecture.ko.md#23-멤버-함수)).
+입출력과 문자열 처리를 위해 `<iostream>`과 `<string>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Account` 클래스는 은행 계좌를 표현하며, `public` 접근 지정자 아래에 계좌 주인의 이름 `name`, 계좌 번호 `id`, 잔액 `balance`를 둔다. 클래스 선언부에는 기본 생성자, 매개변수 3개 생성자, `getOwner()`, `deposit()`, `withdraw()`, `inquiry()`의 원형만 두고, 몸체는 클래스 밖에서 `Account::`를 붙여 정의하여 선언과 정의를 분리했다([3장 2.3절](../../Lecture-Notes/Ch03_Classes-and-Objects/Concepts_Lecture.ko.md#23-멤버-함수)).
 
 - **매개변수 3개 생성자:** 이름, 계좌 번호, 초기 잔액을 받아 각 멤버 변수에 대입한다.
 - **`getOwner()`:** 계좌 주인의 이름을 리턴한다.

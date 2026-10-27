@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -206,6 +206,8 @@ Understanding the difference between static and dynamic binding is essential. Th
 - Slightly slower (vtable lookup), but enables true polymorphism.
 
 The `virtual` keyword is the switch that changes a function from static binding to dynamic binding.
+
+> **[Programming Languages]** In programming languages, binding is the association of a name with the entity it denotes, and bindings are classified by the time at which they are made (binding time) into static bindings, fixed at compile time, and dynamic bindings, made during execution. In a C++ member function call, this distinction applies to the time at which the called name is associated with the function body to run: a non-virtual member function is bound at compile time by the declared type of the pointer, and a virtual function is bound at run time by the actual type of the object.
 
 **Side-by-Side Comparison (Same Code, Different Behavior):**
 

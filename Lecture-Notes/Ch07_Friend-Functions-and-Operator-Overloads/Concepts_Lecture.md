@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
@@ -46,6 +46,11 @@
   - [7.2 Prefix vs Postfix Output Trace](#72-prefix-vs-postfix-output-trace)
   - [7.3 Why operator<< Must Be a Friend](#73-why-operator-must-be-a-friend)
 - [8. Common Mistakes](#8-common-mistakes)
+  - [8.1 Forgetting the `(int)` Dummy Parameter for Postfix](#81-forgetting-the-int-dummy-parameter-for-postfix)
+  - [8.2 Returning by Value When a Reference Should Be Returned](#82-returning-by-value-when-a-reference-should-be-returned)
+  - [8.3 Forgetting to Return `*this` in Compound Assignment Operators](#83-forgetting-to-return-this-in-compound-assignment-operators)
+  - [8.4 Trying to Overload Operators That Cannot Be Overloaded](#84-trying-to-overload-operators-that-cannot-be-overloaded)
+  - [8.5 Making operator<< a Member Function Instead of a Friend](#85-making-operator-a-member-function-instead-of-a-friend)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -888,7 +893,7 @@ Point: (3, 7)
 
 ## 8. Common Mistakes
 
-### Mistake 1: Forgetting `(int)` dummy parameter for postfix
+### 8.1 Forgetting the `(int)` Dummy Parameter for Postfix
 
 ```cpp
 // WRONG: both are prefix!
@@ -902,7 +907,7 @@ Counter operator++(int);     // Postfix obj++   (int is the dummy parameter)
 
 The `int` parameter is never used. Its sole purpose is to let the compiler distinguish prefix from postfix.
 
-### Mistake 2: Returning by value when you should return by reference
+### 8.2 Returning by Value When a Reference Should Be Returned
 
 ```cpp
 // WRONG: returning by value in compound assignment
@@ -924,7 +929,7 @@ Even with return by value, `a += b += c` gives the same result because it is par
 
 Likewise, `operator<<` and `operator>>` must return `ostream&` and `istream&`, not by value. Stream objects cannot be copied, so returning them by value is a compile error.
 
-### Mistake 3: Forgetting to return `*this` in compound assignment operators
+### 8.3 Forgetting to Return `*this` in Compound Assignment Operators
 
 ```cpp
 // WRONG: modifies the object but forgets to return it
@@ -942,7 +947,7 @@ Vector2D& operator+=(const Vector2D &rhs) {
 }
 ```
 
-### Mistake 4: Trying to overload operators that cannot be overloaded
+### 8.4 Trying to Overload Operators That Cannot Be Overloaded
 
 The following operators **cannot** be overloaded.
 
@@ -959,7 +964,7 @@ The following operators **cannot** be overloaded.
 
 Attempting to overload any of these will produce a compiler error.
 
-### Mistake 5: Making operator<< a member function instead of a friend
+### 8.5 Making operator<< a Member Function Instead of a Friend
 
 ```cpp
 // WRONG: operator<< as member function

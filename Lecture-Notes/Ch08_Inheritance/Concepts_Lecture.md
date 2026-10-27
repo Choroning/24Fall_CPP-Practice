@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -569,7 +569,7 @@ public:
 
 class Derived : public Base {
 public:
-    void show() { cout << "Derived::show()" << endl; }   // overrides Base::show()
+    void show() { cout << "Derived::show()" << endl; }   // redefines Base::show()
 };
 
 int main() {

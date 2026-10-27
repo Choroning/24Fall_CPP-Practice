@@ -12,6 +12,16 @@
 
 <br>
 
+## Table of Contents
+
+- [Exercise 1: Class Practice](#exercise-1-class-practice)
+- [Exercise 2: Coffee Machine](#exercise-2-coffee-machine)
+- [Textbook Theory Problems](#textbook-theory-problems)
+
+---
+
+<br>
+
 ## Exercise 1: Class Practice
 
 **Textbook:** Chapter 3 Programming Exercise 1

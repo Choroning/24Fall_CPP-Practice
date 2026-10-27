@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -757,7 +757,7 @@ donut의 면적 = 28.26
 
 ### 3.3 Reference Return
 
-A C function can return only a value of a primitive type or a pointer value. A C++ function can also return a **reference** to a variable, which returns a reference to existing storage rather than the variable's value. The return value is an **lvalue**, so it can appear on the left side of an assignment.
+A C function can return only values, such as a value of a primitive or structure type or a pointer value. A C++ function can also return a **reference** to a variable, which returns a reference to existing storage rather than the variable's value. The return value is an **lvalue**, so it can appear on the left side of an assignment.
 
 ```cpp
 #include <iostream>
@@ -1442,7 +1442,7 @@ int *ptr = &a;     // ptr stores the address of a
 
 *Table 9. Meanings of the `&` and `*` symbols by context*
 
-**Quick rule:** If `&` appears **next to a type name** (in a declaration), it means "reference." If it appears **before a variable name** (in an expression), it means "address-of."
+**Quick rule:** If `&` appears **next to a type name** (in a declaration), it declares a reference. If it appears **before a variable name** (in an expression), it is the address-of operator.
 
 ```cpp
 int a = 10;

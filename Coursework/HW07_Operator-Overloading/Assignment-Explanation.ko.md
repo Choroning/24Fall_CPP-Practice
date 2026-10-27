@@ -93,7 +93,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Book` 클래스는 책 한 권을 표현하며, 책의 제목 `title`, 가격 `price`, 쪽수 `pages`를 `private` 멤버 변수로 둔다. 세 멤버는 접근 지정자 없이 클래스의 맨 앞에 선언되었으므로 `class`의 기본 접근 지정에 따라 `private`이 된다. `public` 아래에는 생성자, `show()`, get/set 함수, 두 연산자 함수를 둔다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Book` 클래스는 책 한 권을 표현하며, 책의 제목 `title`, 가격 `price`, 쪽수 `pages`를 `private` 멤버 변수로 둔다. 세 멤버는 접근 지정자 없이 클래스의 맨 앞에 선언되었으므로 `class`의 기본 접근 지정에 따라 `private`이 된다. `public` 아래에는 생성자, `show()`, get/set 함수, 두 연산자 함수를 둔다.
 
 - **생성자:** 매개변수 `title`, `price`, `pages`의 디폴트 값은 각각 `""`, 0, 0이다. 매개변수와 멤버 변수의 이름이 같으므로 `this->title = title;`처럼 `this` 포인터로 멤버 변수를 가리켜 대입한다.
 - **`show()`:** 책의 제목, 가격, 쪽수를 한 줄에 출력한다.

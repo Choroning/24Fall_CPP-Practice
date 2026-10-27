@@ -28,7 +28,7 @@
 
 ### Solution
 
-`ColorPoint` adds a `string color` to store the color, and a single constructor with default arguments handles all three declarations in `main()`. Since `Point` has no default constructor, the constructor of `ColorPoint` must explicitly call `Point(x, y)` in its initializer list. Otherwise the compiler compiles a call to `Point()`, which is a compile error (Section 3.1 of the [Chapter 8 notes](Concepts_Lecture.md)).
+`ColorPoint` adds a `string color` to store the color, and a single constructor with default arguments handles all three declarations in `main()`. Since `Point` has no default constructor, the constructor of `ColorPoint` must explicitly call `Point(x, y)` in its initializer list. Otherwise the compiler compiles a call to `Point()`, which is a compile error ([Chapter 8, Section 3.1](Concepts_Lecture.md#31-constructor-chain)).
 
 | Declaration | Arguments received by the constructor | Result |
 |:-----|:-----|:-----|
@@ -290,7 +290,7 @@ The output matches the sample run. The last line of the sample run, `Program end
 
 **Answer:** ①
 
-Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
+Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Chapter 8, Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
 
 ### Theory Problem 4
 
@@ -298,7 +298,7 @@ Inheritance is an is-a relationship in which a derived class is made by taking o
 
 **Answer:** ④
 
-`D` inherits `B` as `protected`, so `w` (originally a member of `A`) and `x`, which were `public` in `B`, become `protected` in `D`. So `d.w = 10;`, outside the class, cannot access it ([Section 2.2](Concepts_Lecture.md#22-protected-inheritance)). `a.w` in ① is a `public` member, and `b.w` in ② stays `public` under `public` inheritance. `c.y` in ③ is a `public` member declared by `C` itself, so it can be accessed regardless of `C` inheriting `A` as `private`.
+`D` inherits `B` as `protected`, so `w` (originally a member of `A`) and `x`, which were `public` in `B`, become `protected` in `D`. So `d.w = 10;`, outside the class, cannot access it ([Chapter 8, Section 2.2](Concepts_Lecture.md#22-protected-inheritance)). `a.w` in ① is a `public` member, and `b.w` in ② stays `public` under `public` inheritance. `c.y` in ③ is a `public` member declared by `C` itself, so it can be accessed regardless of `C` inheriting `A` as `private`.
 
 ### Theory Problem 6
 
@@ -322,7 +322,7 @@ Inheritance is an is-a relationship in which a derived class is made by taking o
 - (3) ③. `ap`, upcast with `ap = dp;`, is a pointer of type `A`, so it can access only `w`, the member declared in `A`, and not `x`.
 - (4) Convert explicitly, as in `dp = (D*)ap;`.
 
-A downcast, which assigns a base class pointer to a derived class pointer, needs an explicit type conversion ([Section 1.4](Concepts_Lecture.md#14-inheritance-and-object-pointers)). In (4) the previous line put the address of a `D` object into `ap`, so the converted `dp` really points to a `D` object and is safe. If `ap` pointed to an object that is not a `D` and was downcast to access a member of `D`, the result would be undefined behavior.
+A downcast, which assigns a base class pointer to a derived class pointer, needs an explicit type conversion ([Chapter 8, Section 1.4](Concepts_Lecture.md#14-inheritance-and-object-pointers)). In (4) the previous line put the address of a `D` object into `ap`, so the converted `dp` actually points to a `D` object and is safe. If `ap` pointed to an object that is not a `D` and was downcast to access a member of `D`, the result would be undefined behavior.
 
 ### Theory Problem 10
 
@@ -339,7 +339,7 @@ B() : A(20) { cout << "생성자 B" << endl; }
 B(int x) : A(x + 20) { cout << "생성자 B " << x << endl; }
 ```
 
-When an object of a derived class is created, the constructor of the base class runs first and then the constructor of the derived class ([Section 3.1](Concepts_Lecture.md#31-constructor-chain)). `B b;` runs `A(20)` and then the body of `B()`, printing `생성자 A 20` and `생성자 B`. `B b(15);` calls the constructor of `A` with 35, the received 15 plus 20, so it prints `생성자 A 35` and `생성자 B 15`. Writing `A(20);` inside the constructor body does not initialize the base class part; it is a statement that creates one more unnamed temporary `A` object, so the error about the missing default constructor does not go away.
+When an object of a derived class is created, the constructor of the base class runs first and then the constructor of the derived class ([Chapter 8, Section 3.1](Concepts_Lecture.md#31-constructor-chain)). `B b;` runs `A(20)` and then the body of `B()`, printing `생성자 A 20` and `생성자 B`. `B b(15);` calls the constructor of `A` with 35, the received 15 plus 20, so it prints `생성자 A 35` and `생성자 B 15`. Writing `A(20);` inside the constructor body does not initialize the base class part; it is a statement that creates one more unnamed temporary `A` object, so the error about the missing default constructor does not go away.
 
 ### Theory Problem 12
 
@@ -347,7 +347,7 @@ When an object of a derived class is created, the constructor of the base class 
 
 **Answer:** ④
 
-The ambiguity caused by inheriting a member of the same name along two paths through multiple inheritance is found at compile time, not at run time; for the classes of theory problem 16, accessing `smartTV.screenSize` makes Clang report the error `non-static member 'screenSize' found in multiple base-class subobjects of type 'TV'`. Virtual inheritance is a way of inheriting, marked with the `virtual` keyword, that keeps only one copy of the members of a common base class, and it is a different concept from dynamic binding ([Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The other statements are correct. Java does not allow multiple inheritance of classes and achieves a similar effect with interfaces (①).
+The ambiguity caused by inheriting a member of the same name along two paths through multiple inheritance is found at compile time, not at run time; for the classes of theory problem 16, accessing `smartTV.screenSize` makes Clang report the error `non-static member 'screenSize' found in multiple base-class subobjects of type 'TV'`. Virtual inheritance is a way of inheriting, marked with the `virtual` keyword, that keeps only one copy of the members of a common base class, and it is a different concept from dynamic binding ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The other statements are correct. Java does not allow multiple inheritance of classes and achieves a similar effect with interfaces (①).
 
 ### Theory Problem 14
 
@@ -381,4 +381,4 @@ public: string ipAddr;
 class SmartTV : public ColorTV, public InternetTV { };
 ```
 
-Without virtual inheritance, a `SmartTV` object contains a separate `TV` part through `ColorTV` and another through `InternetTV`. Then there are two `screenSize` members, which wastes memory, and `smartTV.screenSize` cannot be resolved to one of them, so it is a compile error. If both intermediate classes inherit with `virtual public TV`, only one `TV` part is created inside `SmartTV`, and there is only one `screenSize` ([Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The problem arises from an inheritance structure shaped like a diamond, so it is commonly called the diamond problem.
+Without virtual inheritance, a `SmartTV` object contains a separate `TV` part through `ColorTV` and another through `InternetTV`. Then there are two `screenSize` members, which wastes memory, and `smartTV.screenSize` cannot be resolved to one of them, so it is a compile error. If both intermediate classes inherit with `virtual public TV`, only one `TV` part is created inside `SmartTV`, and there is only one `screenSize` ([Chapter 8, Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The problem arises from an inheritance structure shaped like a diamond, so it is commonly called the diamond problem.

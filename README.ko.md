@@ -29,7 +29,6 @@
 
 > **🤖 AI 에이전트 활용**
 > [Claude Code](https://claude.ai/download)를 노트 정리와 번역, 레포지토리 정리에 활용했습니다.
-> 실습 코드는 직접 작성했습니다.
 
 <br><a name="course-information"></a>
 ## 📚 강의 정보

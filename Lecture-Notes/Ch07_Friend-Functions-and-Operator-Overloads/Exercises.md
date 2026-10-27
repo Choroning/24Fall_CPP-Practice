@@ -3,8 +3,21 @@
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
 > **Last Updated:** 2026-10-27
+>
+> 명품 C++ Programming, 황기태, Ch 7
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
+
+---
+
+<br>
+
+## Table of Contents
+
+- [Exercise 1: Operator Overloading for a Fraction Class with Member Functions](#exercise-1-operator-overloading-for-a-fraction-class-with-member-functions)
+- [Exercise 2: Operator Overloading for a Complex Number Class with Friend Functions](#exercise-2-operator-overloading-for-a-complex-number-class-with-friend-functions)
+- [Exercise 3: Operator Overloading for a Time Class](#exercise-3-operator-overloading-for-a-time-class)
+- [Textbook Theory Problems](#textbook-theory-problems)
 
 ---
 

@@ -105,7 +105,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 2.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Complex` 클래스는 복소수를 표현하며, 접근 지정자 없이 선언한 실수부 `real`과 허수부 `image`는 `private` 멤버이므로 클래스 밖에서 직접 접근할 수 없다. `public` 아래에는 두 생성자와 `setReal()`, `setImage()`, `pCom()`을 클래스 안에서 선언과 동시에 정의했다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Complex` 클래스는 복소수를 표현하며, 접근 지정자 없이 선언한 실수부 `real`과 허수부 `image`는 `private` 멤버이므로 클래스 밖에서 직접 접근할 수 없다. `public` 아래에는 두 생성자와 `setReal()`, `setImage()`, `pCom()`을 클래스 안에서 선언과 동시에 정의했다.
 
 - **기본 생성자:** `real = image = 1;`로 두 멤버를 1로 초기화한다.
 - **매개변수 2개 생성자:** `this->real = real;`, `this->image = image;`로 받은 두 값을 멤버에 대입한다.
@@ -155,7 +155,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 
 ### 3.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Member` 클래스는 회원 한 명의 정보를 표현하며, 접근 지정자 앞에 선언한 `name`, `id`, `age`는 `private` 멤버이다. 아이디는 학번처럼 계산에 쓰지 않는 번호이므로 문제의 조건대로 `string`으로 저장한다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Member` 클래스는 회원 한 명의 정보를 표현하며, 접근 지정자 앞에 선언한 `name`, `id`, `age`는 `private` 멤버이다. 아이디는 학번처럼 계산에 쓰지 않는 번호이므로 문제의 조건대로 `string`으로 저장한다.
 
 - **기본 생성자:** 몸체에서 `name`에 `"noname"`, `id`에 `"none"`, `age`에 0을 대입한다.
 - **매개변수 3개 생성자:** 매개변수 이름이 멤버와 같으므로 `this->name = name;`처럼 `this->`로 멤버를 가리켜 대입한다.
@@ -193,7 +193,7 @@ Kim Haha, 2016020, 29
 
 ### 4.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `main()`은 입력값을 누적할 정수 변수 `ave`를 0으로 초기화하고, `int* p = new int[5];`로 `int` 5개의 공간을 힙에 할당한다([4장 2.3절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#23-동적-배열)). 프롬프트를 출력한 뒤 `for` 문으로 다섯 번 반복하며 `cin >> p[i];`로 입력값을 배열에 저장하고, 같은 값을 `ave`에 더한다. `p[i]`는 `*(p + i)`와 같은 뜻으로, 포인터 연산으로 동적 배열의 `i`번째 원소에 접근한다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `main()`은 입력값을 누적할 정수 변수 `ave`를 0으로 초기화하고, `int* p = new int[5];`로 `int` 5개의 공간을 힙에 할당한다([4장 2.3절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#23-동적-배열)). 프롬프트를 출력한 뒤 `for` 문으로 다섯 번 반복하며 `cin >> p[i];`로 입력값을 배열에 저장하고, 같은 값을 `ave`에 더한다. `p[i]`는 `*(p + i)`와 같은 뜻으로, 포인터 연산으로 동적 배열의 `i`번째 원소에 접근한다.
 
 입력이 끝나면 `ave / 5.0`으로 평균을 계산하여 출력한다. 나누는 수 `5.0`이 `double`이므로 `int`인 `ave`가 `double`로 변환된 뒤 실수 나눗셈이 수행된다. `ave / 5`라고 쓰면 두 피연산자가 모두 정수이므로 정수 나눗셈이 되어 몫만 남고, 입력 `1 2 4 5 10`에서 4.4가 아닌 4가 출력된다. 마지막으로 `delete [] p;`로 배열을 반환하고 `p = nullptr;`로 포인터를 널 포인터로 만든다.
 
@@ -226,7 +226,7 @@ Kim Haha, 2016020, 29
 
 ### 5.2 설계와 해결 방법
 
-입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 이름 공간을 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, `private` 멤버 `radius`와 `public` 멤버 함수 `setRadius()`, `getArea()`의 원형만 클래스 안에 두고 몸체는 클래스 밖에서 정의한다. `setRadius()`는 매개변수 이름이 멤버와 같으므로 `this->radius = radius;`로 멤버에 대입하고, `getArea()`는 `3.14 * radius * radius`를 리턴한다.
+입출력을 위해 `<iostream>`을 포함하고, `using namespace std;`로 표준 네임스페이스를 기본으로 쓴다. `Circle` 클래스는 원을 표현하며, `private` 멤버 `radius`와 `public` 멤버 함수 `setRadius()`, `getArea()`의 원형만 클래스 안에 두고 몸체는 클래스 밖에서 정의한다. `setRadius()`는 매개변수 이름이 멤버와 같으므로 `this->radius = radius;`로 멤버에 대입하고, `getArea()`는 `3.14 * radius * radius`를 리턴한다.
 
 `main()`은 `Circle` 포인터 `p`, 원의 개수 `size`, 면적이 100 이상인 원의 개수를 셀 `count`(0으로 초기화)를 선언한다. 원의 개수를 입력받은 뒤 `p = new Circle [size];`로 `size`개의 `Circle` 객체 배열을 힙에 생성한다. `Circle`에는 생성자가 하나도 선언되어 있지 않으므로 컴파일러가 제공하는 기본 생성자가 원소마다 호출되며, 이 생성자는 `radius`를 초기화하지 않는다([4장 3.3절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#33-동적-객체-배열)). `for` 문은 원마다 반지름을 임시 변수 `temp`에 입력받아 `p[i].setRadius(temp)`로 설정하고, 곧바로 `p[i].getArea()`가 100 이상이면 `count`를 1 늘린다. 반복이 끝나면 `count`를 넣은 결과 문장을 출력한다.
 
