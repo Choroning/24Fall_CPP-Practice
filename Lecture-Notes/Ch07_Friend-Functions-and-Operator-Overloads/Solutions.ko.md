@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 
 **문항 출처:** 임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04)
 
@@ -15,6 +15,7 @@
 - [연습 문제 1: 멤버 함수를 이용한 분수 클래스의 연산자 중복](#연습-문제-1-멤버-함수를-이용한-분수-클래스의-연산자-중복)
 - [연습 문제 2: 프렌드 함수를 이용한 복소수 클래스의 연산자 중복](#연습-문제-2-프렌드-함수를-이용한-복소수-클래스의-연산자-중복)
 - [연습 문제 3: 시간 클래스의 연산자 중복](#연습-문제-3-시간-클래스의-연산자-중복)
+- [교재 이론 문제](#교재-이론-문제)
 
 ---
 
@@ -533,3 +534,105 @@ t2 = (2:50:59)
 ```
 
 실행 결과는 실행 예시와 같다. 실행 예시의 마지막 줄 `Program ended with exit code: 0`은 Xcode가 출력하는 메시지이다.
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 7장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+**문제:** 프렌드 함수가 필요한 경우가 아닌 것을 고르라.
+
+**정답:** ④
+
+프렌드 함수는 클래스의 멤버가 아닌 함수에 그 클래스의 `private` 멤버에 대한 접근 권한을 주기 위해 쓴다([1.1절](Concepts_Lecture.ko.md#11-프렌드-함수)). 함수 중복은 같은 이름의 함수를 매개 변수만 달리하여 여러 개 정의하는 것으로, `private` 멤버에 접근하는 일과 관계가 없으므로 프렌드가 필요하지 않다. 반면 멤버가 아닌 함수가 `private` 멤버에 접근해야 할 때(①), 한 함수가 두 클래스의 `private` 멤버를 함께 다룰 때(②), 왼쪽 피연산자가 그 클래스의 객체가 아닌 연산자를 중복할 때(③)에는 프렌드 함수가 필요하다.
+
+### 이론 문제 4
+
+**문제:** `SampleManager`의 멤버 함수 `compare()`를 `Sample`의 프렌드로 선언하라.
+
+**정답:**
+
+```cpp
+class Sample {
+    ...
+    friend bool SampleManager::compare(Sample &a, Sample &b);
+};
+```
+
+다른 클래스의 멤버 함수를 프렌드로 초대할 때는 함수 이름 앞에 그 함수가 속한 클래스 이름과 범위 지정 연산자를 붙여 `SampleManager::compare`로 쓴다([1.3절](Concepts_Lecture.ko.md#13-프렌드-선언의-세-가지-형태)). `SampleManager::`를 빼고 `friend bool compare(Sample &a, Sample &b);`라고 쓰면 같은 이름의 전역 함수를 프렌드로 선언한 것이 되어, `SampleManager`의 멤버 함수는 여전히 `Sample`의 `private` 멤버에 접근할 수 없다. 또 이 선언이 컴파일되려면 `SampleManager` 클래스가 `Sample`보다 앞에 완전히 선언되어 있어야 하고, `SampleManager` 안에서 `Sample`을 쓰기 위해 그 앞에 `class Sample;`이라는 전방 선언이 필요하다.
+
+### 이론 문제 6
+
+**문제:** 전역 함수 `show()`가 `Student`와 `Professor`의 `private` 멤버에 접근하여 생기는 컴파일 오류의 원인을 쓰고 수정하라.
+
+**정답:** `Student`의 `id`와 `Professor`의 `name`은 `private` 멤버이므로 멤버가 아닌 `show()`에서 직접 접근할 수 없다. 두 클래스에서 `show()`를 프렌드로 선언하여 고친다.
+
+```cpp
+class Student;
+class Professor;
+
+class Student {
+    int id;
+public:
+    Student(int id) { this->id = id; }
+    friend void show(Student s, Professor p);
+};
+class Professor {
+    string name;
+public:
+    Professor(string name) { this->name = name; }
+    friend void show(Student s, Professor p);
+};
+void show(Student s, Professor p) {
+    cout << s.id << p.name;
+}
+```
+
+`show()`는 두 클래스의 `private` 멤버를 함께 읽어야 하므로 두 클래스 모두에 프렌드로 선언한다. `Student` 안의 프렌드 선언이 아직 정의되지 않은 `Professor`를 매개 변수 타입으로 쓰므로, 힌트대로 맨 앞에 두 클래스의 전방 선언을 둔다. 다른 방법으로, 두 클래스에 `int getId() const`, `string getName() const` 같은 `public` getter를 두고 `show()`가 getter를 호출하게 해도 된다. 이때 `show()`가 매개 변수를 `const Student&`처럼 `const` 참조로 받는다면 getter를 `const` 멤버 함수로 선언해야 한다. `const` 객체에서는 `const` 멤버 함수만 호출할 수 있기 때문이다.
+
+### 이론 문제 8
+
+**문제:** 프렌드 선언의 위치에 관한 설명 중 옳은 것을 고르라.
+
+**정답:** ④
+
+프렌드 선언은 클래스의 멤버를 선언하는 것이 아니라 클래스 밖의 함수나 클래스에 접근 권한을 주는 선언이므로, 접근 지정자의 영향을 받지 않는다. 따라서 `private`, `protected`, `public` 중 어느 영역에 두어도 효과가 같다([1.4절](Concepts_Lecture.ko.md#14-사용-지침)). 관례적으로는 클래스의 인터페이스를 읽기 쉽도록 `public` 영역이나 클래스의 처음 또는 끝에 모아 둔다.
+
+### 이론 문제 10
+
+**문제:** 모든 멤버가 `public`인 `Sample`에서 `isZero()`의 프렌드 선언이 필요한지 설명하라.
+
+**정답:** 필요하지 않다.
+
+`Sample`의 멤버 `x`와 생성자는 모두 `public`이므로, 전역 함수 `isZero()`는 프렌드가 아니어도 `a.x`에 접근할 수 있다. 프렌드 선언은 `private`이나 `protected` 멤버에 접근해야 할 때만 의미가 있다. 프렌드 선언을 지워도 프로그램은 똑같이 컴파일되고 동작한다.
+
+### 이론 문제 12
+
+**문제:** 서로 다른 대상에 같은 `+`를 쓰면서 대상에 따라 결과가 달라지는 다형성의 다른 사례를 하나 들라.
+
+**정답:** `"I love C" + "++" = "I love C++"`
+
+같은 `+` 기호가 수에서는 덧셈을, 색에서는 섞기를, 문자열에서는 이어 붙이기를 뜻한다. 이처럼 같은 연산자가 피연산자의 종류에 따라 다른 의미로 동작하는 것이 연산자 중복으로 구현하는 다형성이다([2.1절](Concepts_Lecture.ko.md#21-왜-연산자-중복이-필요한가)). C++에서는 `string` 클래스가 `+`를 문자열 연결로 중복하므로 `string("I love C") + "++"`가 `"I love C++"`가 된다. 두 문자열 리터럴을 바로 더하는 `"I love C" + "++"`는 포인터끼리의 덧셈이 되어 컴파일되지 않으므로, 적어도 한쪽은 `string` 객체여야 한다.
+
+### 이론 문제 14
+
+**문제:** `Power` 객체 `a`, `b`에 대해 `+` 연산자 함수를 멤버 함수로 작성할 수 없는 식을 고르라.
+
+**정답:** ④
+
+멤버 연산자 함수는 왼쪽 피연산자의 멤버로 호출되므로 `a + b`는 `a.operator+(b)`, `a + 3`은 `a.operator+(3)`이 된다. `3 + a`는 왼쪽 피연산자가 정수 3이어서 `3.operator+(a)`가 되어야 하지만, `int`는 클래스가 아니므로 멤버 함수를 둘 수 없다. 따라서 `3 + a`는 `Power operator+(int op1, Power op2)` 같은 외부 함수로, 보통 `Power`의 프렌드로 구현한다([3.2절](Concepts_Lecture.ko.md#32-프렌드-함수로-구현)). ③의 `b = a += 3`은 `+=` 연산자를 쓰며, `a += 3`은 `a.operator+=(3)`으로 멤버 함수로 구현할 수 있다.
+
+### 이론 문제 16
+
+**문제:** 프렌드 연산자 함수의 선언과 연산의 짝 중 잘못된 것을 고르라.
+
+**정답:** ④
+
+대입 연산자 `=`는 멤버 함수로만 중복할 수 있다. `Power& operator = (Power &a, Power b);`처럼 매개 변수 두 개를 받는 외부 함수로 선언하면 `overloaded 'operator=' must be a non-static member function` 오류가 난다. 멤버 함수로는 `Power& operator=(const Power& b);`처럼 오른쪽 피연산자 하나만 받는다. `=`와 함께 `()`, `[]`, `->`도 멤버 함수로만 중복할 수 있다([2.4절](Concepts_Lecture.ko.md#24-멤버-함수-vs-프렌드-함수-판단-가이드)).
+
+나머지 선언은 문법에 맞다. 다만 ③의 `Power operator ++ (Power a, int b);`는 피연산자를 값으로 받으므로, 함수 안에서 증가시키는 대상이 `a`의 복사본이 되어 원래 객체가 바뀌지 않는다. 후위 `++`를 프렌드로 구현할 때는 `Power operator++(Power& a, int b);`처럼 참조로 받아야 원래 객체가 증가한다([4.2절](Concepts_Lecture.ko.md#42-프렌드-함수로-구현)).

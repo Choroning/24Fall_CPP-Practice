@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -149,3 +149,183 @@ Program ended with exit code: 0
 ```
 
 **[풀이](Solutions.ko.md#연습-문제-2-학생-성적-관리)**
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 8장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+객체 지향에서의 상속 개념과 가장 가까운 것은?
+
+- ① TV와 스마트 TV
+- ② 천 소파와 가죽 소파
+- ③ CPU와 PC
+- ④ 자동차 엔진과 변속기
+
+**[풀이](Solutions.ko.md#이론-문제-2)**
+
+### 이론 문제 4
+
+다음 코드에 대해 컴파일 오류가 발생하는 것은?
+
+```cpp
+class A {
+public: int w;
+};
+class B : public A {
+public: int x;
+};
+class C : private A {
+public: int y;
+};
+class D : protected B {
+public: int z;
+};
+```
+
+- ① `A a; a.w = 10;`
+- ② `B b; b.w = 10;`
+- ③ `C c; c.y = 10;`
+- ④ `D d; d.w = 10;`
+
+**[풀이](Solutions.ko.md#이론-문제-4)**
+
+### 이론 문제 6
+
+다음 코드에서 컴파일 오류가 발생하는 곳을 있는 대로 골라라.
+
+```cpp
+class A {
+    int x;
+public:
+    void setX(int x) { this->x = x; }
+};
+class B : protected A {
+    int y;
+public:
+    void setXY(int x, int y) { setX(x); this->y = y; }
+};
+int main() {
+    A a;
+    B b;
+    a.x = 3;      // ①
+    b.y = 3;      // ②
+    a.setX(5);    // ③
+    b.setX(5);    // ④
+}
+```
+
+**[풀이](Solutions.ko.md#이론-문제-6)**
+
+### 이론 문제 8
+
+다음 클래스와 변수가 선언되어 있을 때 물음에 답하라.
+
+```cpp
+class A {
+public: int w;
+};
+class B : public A {
+public: int x;
+};
+class C : public A {
+public: int y;
+};
+class D : public B {
+public: int z;
+};
+A a; B b; C c; D d;
+A *ap = &a;
+B *bp = &b;
+C *cp = &c;
+D *dp = &d;
+```
+
+(1) 업 캐스팅에 해당하지 않는 것은? ① `ap = bp;` ② `ap = cp;` ③ `bp = cp;` ④ `bp = dp;`
+
+(2) 객체 `d`의 멤버를 모두 나열하라.
+
+(3) 객체 `d`의 멤버에 대한 접근 중에서 컴파일 오류가 발생하는 것은? ① `d.x = 10;` ② `dp->x = 10;` ③ `ap = dp; ap->x = 10;` ④ `bp = dp; bp->x = 10;`
+
+(4) 다음 두 줄을 작성하면 두 번째 줄에서 컴파일 오류가 발생한다. 수정하라.
+
+```cpp
+ap = dp;
+dp = ap;
+```
+
+**[풀이](Solutions.ko.md#이론-문제-8)**
+
+### 이론 문제 10
+
+다음 코드에 대해 물음에 답하라.
+
+```cpp
+class A {
+public:
+    A(int x) { cout << "생성자 A " << x << endl; }
+};
+class B : public A {
+public:
+    B() { cout << "생성자 B" << endl; }
+    B(int x) { cout << "생성자 B " << x << endl; }
+};
+```
+
+(1) 위 코드에서 컴파일 오류가 발생하는 곳은 어디이며, 그 내용은 무엇인가?
+
+(2) `B b;`를 실행한 결과가 `생성자 A 20`, `생성자 B`의 두 줄이 되도록 생성자 `B()`를 수정하라.
+
+(3) `B b(15);`를 실행한 결과가 `생성자 A 35`, `생성자 B 15`의 두 줄이 되도록 생성자 `B(int x)`를 수정하라.
+
+**[풀이](Solutions.ko.md#이론-문제-10)**
+
+### 이론 문제 12
+
+다중 상속에 관한 설명 중 틀린 것은?
+
+- ① 자바에는 클래스의 다중 상속이 없다.
+- ② 기존 클래스를 재사용하여 프로그래밍의 생산성을 높인다.
+- ③ 다중 상속으로 인한 모호성이 발생할 수 있다.
+- ④ 다중 상속으로 인한 모호성은 실행 시간에 발견되므로 동적 바인딩을 통한 가상 상속으로 해결한다.
+
+**[풀이](Solutions.ko.md#이론-문제-12)**
+
+### 이론 문제 14
+
+다음 클래스가 있을 때 물음에 답하라.
+
+```cpp
+class Pen { ... };
+class Eraser { ... };
+class Lock { ... };
+```
+
+(1) 클래스 `Pen`과 `Eraser`를 동시에 상속받는 클래스 `HiPen`을 선언하라.
+
+(2) 클래스 `Pen`, `Eraser`, `Lock`을 동시에 상속받는 클래스 `OmniPen`을 선언하라.
+
+**[풀이](Solutions.ko.md#이론-문제-14)**
+
+### 이론 문제 16
+
+다음 클래스들의 상속 관계가 가진 잠재적 문제점을 지적하고 수정하라.
+
+```cpp
+class TV {
+public: int screenSize;
+};
+class ColorTV : public TV {
+public: int color;
+};
+class InternetTV : public TV {
+public: string ipAddr;
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-16)**

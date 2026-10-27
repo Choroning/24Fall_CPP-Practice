@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -16,6 +16,7 @@
 
 - [Exercise 1: Color and Position of a Point](#exercise-1-color-and-position-of-a-point)
 - [Exercise 2: Student Grade Management](#exercise-2-student-grade-management)
+- [Textbook Theory Problems](#textbook-theory-problems)
 
 ---
 
@@ -274,3 +275,110 @@ It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as f
 ```
 
 The output matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 8 exercises
+
+### Theory Problem 2
+
+**Problem:** Choose the pair closest to the concept of inheritance in object orientation.
+
+**Answer:** ①
+
+Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
+
+### Theory Problem 4
+
+**Problem:** In classes that mix `public`, `private`, and `protected` inheritance, choose the access that causes a compile error.
+
+**Answer:** ④
+
+`D` inherits `B` as `protected`, so `w` (originally a member of `A`) and `x`, which were `public` in `B`, become `protected` in `D`. So `d.w = 10;`, outside the class, cannot access it ([Section 2.2](Concepts_Lecture.md#22-protected-inheritance)). `a.w` in ① is a `public` member, and `b.w` in ② stays `public` under `public` inheritance. `c.y` in ③ is a `public` member declared by `C` itself, so it can be accessed regardless of `C` inheriting `A` as `private`.
+
+### Theory Problem 6
+
+**Problem:** When `B` inherits `A` as `protected`, choose all the lines among the four in `main()` that cause a compile error.
+
+**Answer:** ①, ②, ④
+
+- **① `a.x = 3;`:** `x` is a `private` member of `A`, so it cannot be accessed outside the class.
+- **② `b.y = 3;`:** `y` is a `private` member of `B`.
+- **③ `a.setX(5);`:** `setX()` is a `public` member of `A`, so this is correct.
+- **④ `b.setX(5);`:** `B` inherits `A` as `protected`, so `setX()` became `protected` in `B` and cannot be called outside the class. Inside the member function `setXY()` of `B`, `setX(x)` can be called.
+
+### Theory Problem 8
+
+**Problem:** For `B` and `C`, which inherit `A`, and `D`, which inherits `B`, answer four questions about upcasting, members, access, and downcasting.
+
+**Answer:**
+
+- (1) ③. An upcast assigns a pointer to a derived class to a pointer to a base class. `B` and `C` both inherit `A` but are not related to each other by inheritance, so `bp = cp;` is neither an upcast nor a downcast and is a compile error.
+- (2) `w`, `x`, `z`. Besides `z`, which it declares itself, `D` has `x` from `B` and `w`, which `B` inherited from `A`.
+- (3) ③. `ap`, upcast with `ap = dp;`, is a pointer of type `A`, so it can access only `w`, the member declared in `A`, and not `x`.
+- (4) Convert explicitly, as in `dp = (D*)ap;`.
+
+A downcast, which assigns a base class pointer to a derived class pointer, needs an explicit type conversion ([Section 1.4](Concepts_Lecture.md#14-inheritance-and-object-pointers)). In (4) the previous line put the address of a `D` object into `ap`, so the converted `dp` really points to a `D` object and is safe. If `ap` pointed to an object that is not a `D` and was downcast to access a member of `D`, the result would be undefined behavior.
+
+### Theory Problem 10
+
+**Problem:** Find the error in the constructors of `B`, which inherits a base class `A` without a default constructor, and fix both constructors so that they produce the given output.
+
+**Answer:**
+
+(1) Compile errors occur in both constructors, `B()` and `B(int x)`. If a constructor of a derived class does not specify a constructor of the base class, the compiler tries to call the default constructor `A()` of the base class, but `A` has only `A(int x)` and no default constructor.
+
+(2) and (3) specify the base class constructor to call and its argument with a member initializer list.
+
+```cpp
+B() : A(20) { cout << "생성자 B" << endl; }
+B(int x) : A(x + 20) { cout << "생성자 B " << x << endl; }
+```
+
+When an object of a derived class is created, the constructor of the base class runs first and then the constructor of the derived class ([Section 3.1](Concepts_Lecture.md#31-constructor-chain)). `B b;` runs `A(20)` and then the body of `B()`, printing `생성자 A 20` and `생성자 B`. `B b(15);` calls the constructor of `A` with 35, the received 15 plus 20, so it prints `생성자 A 35` and `생성자 B 15`. Writing `A(20);` inside the constructor body does not initialize the base class part; it is a statement that creates one more unnamed temporary `A` object, so the error about the missing default constructor does not go away.
+
+### Theory Problem 12
+
+**Problem:** Choose the wrong statement about multiple inheritance.
+
+**Answer:** ④
+
+The ambiguity caused by inheriting a member of the same name along two paths through multiple inheritance is found at compile time, not at run time; for the classes of theory problem 16, accessing `smartTV.screenSize` makes Clang report the error `non-static member 'screenSize' found in multiple base-class subobjects of type 'TV'`. Virtual inheritance is a way of inheriting, marked with the `virtual` keyword, that keeps only one copy of the members of a common base class, and it is a different concept from dynamic binding ([Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The other statements are correct. Java does not allow multiple inheritance of classes and achieves a similar effect with interfaces (①).
+
+### Theory Problem 14
+
+**Problem:** Declare `HiPen` and `OmniPen`, which inherit from two and three classes at the same time.
+
+**Answer:**
+
+```cpp
+class HiPen : public Pen, public Eraser { ... };                // (1)
+class OmniPen : public Pen, public Eraser, public Lock { ... };  // (2)
+```
+
+Multiple inheritance lists the base classes after the colon, separated by commas, with an inheritance access specifier for each base class. If the access specifier is omitted, inheritance is `private` for a `class`, so `public` must be written for each base class whose `public` members are to be used from outside. The constructors are called in the listed order, that is, `Pen`, `Eraser`, `Lock`.
+
+### Theory Problem 16
+
+**Problem:** Point out the potential problem of the inheritance relationship of `ColorTV` and `InternetTV`, which inherit `TV`, and fix it.
+
+**Answer:** If a class that inherits both `ColorTV` and `InternetTV` (for example `SmartTV`) is made later, the member `screenSize` of `TV` is inherited twice along two paths. To prevent this, change both classes to inherit `TV` virtually.
+
+```cpp
+class TV {
+public: int screenSize;
+};
+class ColorTV : virtual public TV {
+public: int color;
+};
+class InternetTV : virtual public TV {
+public: string ipAddr;
+};
+class SmartTV : public ColorTV, public InternetTV { };
+```
+
+Without virtual inheritance, a `SmartTV` object contains a separate `TV` part through `ColorTV` and another through `InternetTV`. Then there are two `screenSize` members, which wastes memory, and `smartTV.screenSize` cannot be resolved to one of them, so it is a compile error. If both intermediate classes inherit with `virtual public TV`, only one `TV` part is created inside `SmartTV`, and there is only one `screenSize` ([Section 5](Concepts_Lecture.md#5-multiple-inheritance)). The problem arises from an inheritance structure shaped like a diamond, so it is commonly called the diamond problem.

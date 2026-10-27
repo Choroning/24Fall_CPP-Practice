@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
@@ -184,3 +184,123 @@ Program ended with exit code: 0
 `(중략)` (omitted) marks a part left out of the sample run for readability and does not appear in the actual output.
 
 **[Solution](Solutions.md#exercise-2-multiplication-table)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 6 exercises
+
+### Theory Problem 2
+
+Which statement about function overloading is wrong?
+
+- ① The C language has no function overloading.
+- ② Two functions with the same name can be overloaded if their parameter types or numbers of parameters differ.
+- ③ Member functions of a class cannot be overloaded.
+- ④ If only the return types differ in the function prototypes, the functions are not overloaded.
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+Choose the two functions among the following that cannot be declared together in one program.
+
+- ① `void g();`
+- ② `int g();`
+- ③ `double g(int x)`
+- ④ `double g(int x, int y);`
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+When is an overloaded function bound to the statement that calls it?
+
+- ① By the preprocessor, just before compilation
+- ② By the compiler, at compile time
+- ③ At run time, just before the function is called
+- ④ At run time, at a particular moment when function overloading is resolved
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+Given the following function with a default parameter, which function call is not appropriate?
+
+```cpp
+int add(int a, double b = 10.0);
+```
+
+- ① `int x = add(10);`
+- ② `int x = add(10, 3.14, 10);`
+- ③ `add(10, 3.14);`
+- ④ `int x = add(10, 3.14);`
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+Which pair of overloaded functions can lead to an ambiguity in which it cannot be decided which function a call refers to?
+
+- ① `int add(int a);` and `int add(int a, int &b);`
+- ② `int add(int a, int b);` and `int add(int a, int &b);`
+- ③ `int add(int a, int b);` and `int add(int a, int* b);`
+- ④ `int add(int a, int* b);` and `int add(int a, int &b);`
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+What is printed on the screen when objects of the following class are created as in (1)-(3)?
+
+```cpp
+class Overloading {
+public:
+    Overloading(int x = 0) { cout << x; }
+    Overloading(int x, string b) { cout << x << b; }
+};
+```
+
+- (1) `Overloading a;`
+- (2) `Overloading b(3);`
+- (3) `Overloading c(5, "hello");`
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+Show that the overloading of the function `area()` is problematic by giving an example of a call to it.
+
+```cpp
+float area(float f);
+double area(double d);
+```
+
+**[Solution](Solutions.md#theory-problem-14)**
+
+### Theory Problem 16
+
+Given the following `StaticTest` class, which line of the source that follows is wrong?
+
+```cpp
+class StaticTest {
+    static int a;
+public:
+    static int getA() { return a; }
+};
+```
+
+```cpp
+StaticTest s;
+StaticTest *p = &s;
+
+StaticTest::getA();   // ①
+s.getA();             // ②
+s::getA();            // ③
+p->getA();            // ④
+```
+
+**[Solution](Solutions.md#theory-problem-16)**

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 
 **문항 출처:** 임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04)
 
@@ -315,3 +315,130 @@ Program ended with exit code: 0
 ```
 
 **[풀이](Solutions.ko.md#연습-문제-3-시간-클래스의-연산자-중복)**
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 7장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+프렌드 함수가 필요한 경우가 아닌 것은?
+
+- ① 멤버는 아니지만 클래스의 `private` 멤버에 접근해야만 하는 함수를 작성하는 경우
+- ② 두 개 이상의 클래스에 대해 `private` 멤버를 동시에 접근하는 함수를 작성하는 경우
+- ③ 연산자 중복 시에
+- ④ 함수 중복 시에
+
+**[풀이](Solutions.ko.md#이론-문제-2)**
+
+### 이론 문제 4
+
+클래스 `SampleManager`에는 다음 멤버 함수가 있다. 이 멤버 함수를 클래스 `Sample`에 프렌드로 초대하도록 선언하라.
+
+```cpp
+bool compare(Sample &a, Sample &b);
+```
+
+```cpp
+class Sample {
+    ...
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-4)**
+
+### 이론 문제 6
+
+다음 프로그램은 컴파일 오류가 발생한다. 오류의 원인은 무엇인가? 오류를 바람직하게 수정하라.
+
+```cpp
+class Student {
+    int id;
+public:
+    Student(int id) { this->id = id; }
+};
+class Professor {
+    string name;
+public:
+    Professor(string name) { this->name = name; }
+};
+void show(Student s, Professor p) {
+    cout << s.id << p.name;
+}
+```
+
+교재는 풀이 중에 생기는 전방 참조 문제를 해결하기 위해 코드의 맨 앞에 `class Student;`와 `class Professor;`의 두 줄을 전방 선언으로 넣으라는 힌트를 준다.
+
+**[풀이](Solutions.ko.md#이론-문제-6)**
+
+### 이론 문제 8
+
+프렌드 선언의 위치에 대한 설명 중 옳은 것은?
+
+- ① 클래스 내의 `private` 영역에 선언되어야 한다.
+- ② 클래스 내의 `protected` 영역에 선언되어야 한다.
+- ③ 클래스 내의 `public` 영역에 선언되어야 한다.
+- ④ 클래스 내의 아무 영역에 선언되어도 상관없다.
+
+**[풀이](Solutions.ko.md#이론-문제-8)**
+
+### 이론 문제 10
+
+다음 코드에서 프렌드 선언이 필요한지 설명하라.
+
+```cpp
+class Sample {
+public:
+    int x;
+    Sample(int x) { this->x = x; }
+    friend bool isZero(Sample &a);   // 이곳에 주목
+};
+bool isZero(Sample& a) {
+    if (a.x == 0) return true;
+    else return false;
+}
+```
+
+**[풀이](Solutions.ko.md#이론-문제-10)**
+
+### 이론 문제 12
+
+다음에 보이는 다형성에 일치하는 다른 사례를 하나만 들어라.
+
+```text
+2 + 3 = 5
+빨강 + 파랑 = 보라
+남자 + 여자 = 결혼
+```
+
+**[풀이](Solutions.ko.md#이론-문제-12)**
+
+### 이론 문제 14
+
+`Power` 클래스의 객체 `a`, `b`에 대해, 다음 중 멤버 함수로 `+` 연산자 함수를 작성할 수 없는 경우는?
+
+```cpp
+Power a, b;   // Power 클래스에 대해
+```
+
+- ① `a = a + b`
+- ② `b = a + 3`
+- ③ `b = a += 3`
+- ④ `b = 3 + a`
+
+**[풀이](Solutions.ko.md#이론-문제-14)**
+
+### 이론 문제 16
+
+`a`, `b`는 `Power` 클래스의 객체이다. 연산자 함수를 `Power` 클래스의 프렌드 함수로 작성한다고 할 때, 왼쪽의 연산과 오른쪽의 연산자 함수 선언이 잘못 짝지어진 것은?
+
+- ① `a + b`: `Power operator + (Power& a, Power &b);`
+- ② `a == b`: `bool operator == (Power a, Power b);`
+- ③ `a++`: `Power operator ++ (Power a, int b);`
+- ④ `a = b`: `Power& operator = (Power &a, Power b);`
+
+**[풀이](Solutions.ko.md#이론-문제-16)**

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
@@ -14,6 +14,7 @@
 
 - [Exercise 1: Bulletin Board](#exercise-1-bulletin-board)
 - [Exercise 2: Multiplication Table](#exercise-2-multiplication-table)
+- [Textbook Theory Problems](#textbook-theory-problems)
 
 ---
 
@@ -237,3 +238,81 @@ int main() {
 **Output:** The output matches the sample run. The table of 3 (1 title line, 9 expression lines, 1 blank line) and the nine tables from 1 to 9 total 110 lines, and the part omitted as `(중략)` in the sample run contains `1 * 4 = 4` through `9 * 6 = 54`.
 
 > **Note:** With a marker value as the default, passing that value directly as in `print99(19)` also prints all tables, and an out-of-range table such as `print99(10)` is printed without any check. Handling the two calls in the problem is enough, but to check the range, add a condition that `i` is between 1 and 9 inclusive.
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 6 exercises
+
+### Theory Problem 2
+
+**Problem:** Choose the wrong statement about function overloading.
+
+**Answer:** ③
+
+Member functions of a class can be overloaded by the same rules as ordinary functions; overloaded constructors are the typical example ([Section 1.4](Concepts_Lecture.md#14-constructor-overloading-and-destructors)). The others are correct. C cannot define two or more functions with the same name (①), in C++ functions with the same name are overloaded if the types or numbers of their parameters differ (②), and two functions that differ only in their return types cannot be told apart by a call statement, so they are a compile error rather than overloading (④) ([Section 1.1](Concepts_Lecture.md#11-concept)).
+
+### Theory Problem 4
+
+**Problem:** Choose the two functions among the four that cannot be declared together in one program.
+
+**Answer:** ①, ②
+
+`void g();` and `int g();` have the same parameter list and differ only in their return types. The call statement `g();` alone cannot decide which of the two is meant, so declaring them together is a compile error. `double g(int x)` in ③ and `double g(int x, int y)` in ④ differ from each other and from ① and ② in the number of parameters, so declaring either of them together with ① or ② is valid overloading.
+
+### Theory Problem 6
+
+**Problem:** Choose when an overloaded function is bound to its call statement.
+
+**Answer:** ②
+
+The compiler compares the number and types of the arguments in the call statement with the parameters of the overloaded functions and decides at compile time which function to call ([Section 1.2](Concepts_Lecture.md#12-resolution-rules)). This is called static binding, and at run time the program only calls the function already decided. Dynamic binding, which decides the function to call at run time, is covered with virtual functions in Chapter 9.
+
+### Theory Problem 8
+
+**Problem:** Choose the inappropriate call for `int add(int a, double b = 10.0);`.
+
+**Answer:** ②
+
+`add()` has two parameters, so it can take at most two arguments. `add(10, 3.14, 10)` in ② has three arguments, so no function matches and a compile error occurs. ① uses the default value 10.0 for `b` and is called as `add(10, 10.0)`, and ③ and ④ pass both arguments. A call that does not use the return value, as in ③, is also syntactically fine ([Section 2.1](Concepts_Lecture.md#21-syntax)).
+
+### Theory Problem 10
+
+**Problem:** Choose the pair among four pairs of overloaded functions whose calls can become ambiguous.
+
+**Answer:** ②
+
+With `int add(int a, int b)` and `int add(int a, int &b)`, calling `add(x, y)` with `int x, y;` makes the second argument fit `int`, taken by value, and `int&`, taken by reference, equally well. The two conversions cannot be ranked, so the compiler reports the error `call to 'add' is ambiguous` ([Section 2.3](Concepts_Lecture.md#23-overloading-ambiguity)). The other pairs are not ambiguous.
+
+- **①:** The numbers of arguments differ, so `add(x)` and `add(x, y)` call different functions.
+- **③:** If the second argument is an integer, the `int b` version is called; if it is an address, the `int* b` version.
+- **④:** If the second argument is an address (`&y`), the `int* b` version is called; if it is a variable (`y`), the `int &b` version.
+
+### Theory Problem 12
+
+**Problem:** Give the output when three objects are created of a class with a constructor that has a default parameter and a two-parameter constructor.
+
+**Answer:** (1) `0`, (2) `3`, (3) `5hello`
+
+`Overloading a;` has no arguments, so `Overloading(int x = 0)` is called with the default value 0 and prints 0. `Overloading b(3);` calls the same constructor with the argument 3, and `Overloading c(5, "hello");` has two arguments, so it calls the second constructor, which prints 5 and `hello` together. If the three objects are created in turn, the output has no line breaks or spaces, so `035hello` appears on the screen in one run.
+
+### Theory Problem 14
+
+**Problem:** Show with a call example that the overloading of `float area(float f);` and `double area(double d);` is problematic.
+
+**Answer:** A call with an integer argument, as in `area(3);`, is an ambiguous call and gives a compile error.
+
+The integer 3 exactly matches neither `float` nor `double`. Converting `int` to `float` and converting it to `double` are both standard conversions of the same rank, so the compiler cannot judge either to be better. If the compiler picked one arbitrarily, the result could differ from the programmer's intent, so it judges such a call ambiguous and reports the error `call to 'area' is ambiguous`. `area(3.0)` exactly matches the `double` version and `area(3.0f)` the `float` version, so they are not ambiguous.
+
+### Theory Problem 16
+
+**Problem:** Choose the wrong line among four lines that call the static member function `getA()`.
+
+**Answer:** ③
+
+The left side of the scope resolution operator `::` must be a class name, so `StaticTest::getA()` (①) is correct, but `s::getA()`, which uses an object name, is a compile error. A static member function can also be called through an object, so `s.getA()` (②) and `p->getA()` (④) are correct as well ([Section 3.2](Concepts_Lecture.md#32-accessing-static-members)). Even when it is called through an object, the single static member of the class is used regardless of that object.
+
+> **Note:** This class only declares `static int a;` and does not define it. To link a program that actually calls `getA()`, a definition such as `int StaticTest::a;` must be placed outside the class; without it the code compiles, but the linker reports that it cannot find `StaticTest::a` ([Section 3.1](Concepts_Lecture.md#31-static-member-variables)).

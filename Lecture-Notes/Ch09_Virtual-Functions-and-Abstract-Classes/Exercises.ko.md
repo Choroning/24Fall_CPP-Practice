@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 
 **문항 출처:** 임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04)
 
@@ -179,3 +179,170 @@ Program ended with exit code: 0
 ```
 
 **[풀이](Solutions.ko.md#연습-문제-2-가상함수를-사용한-단위-변환)**
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 9장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+기본 클래스의 가상 함수와 동일한 타입의 함수를 파생 클래스에서 재정의하는 것을 무엇이라고 하는가?
+
+- ① overloading
+- ② overriding
+- ③ virtual
+- ④ dynamic binding
+
+**[풀이](Solutions.ko.md#이론-문제-2)**
+
+### 이론 문제 4
+
+오버로딩, 오버라이딩, 연산자 중복 등은 C++ 언어의 어떤 객체 지향 특성인가?
+
+**[풀이](Solutions.ko.md#이론-문제-4)**
+
+### 이론 문제 6
+
+다음 코드에 대해 물음에 답하라.
+
+```cpp
+class A {
+public:
+    void func() { f(); }
+    virtual void f() { cout << "A::f() called" << endl; }
+};
+class B : public A {
+public:
+    void f() { cout << "B::f() called" << endl; }
+};
+class C : public B {
+public:
+    void f() { cout << "C::f() called" << endl; }
+};
+```
+
+(1) 다음 함수 중 가상 함수를 모두 골라라. ① `A`의 `f()` ② `B`의 `f()` ③ `C`의 `f()` ④ `A`의 `func()`
+
+(2)~(5) 다음 코드에서 표시한 각 문장이 실행될 때 출력되는 결과는 무엇인가?
+
+```cpp
+C c;
+c.f();        // (2)
+A* pa;
+B* pb;
+pa = pb = &c;
+pb->f();      // (3)
+pa->f();      // (4)
+pa->func();   // (5)
+```
+
+**[풀이](Solutions.ko.md#이론-문제-6)**
+
+### 이론 문제 8
+
+각 문항에 따라 함수 `g()`의 빈칸에 들어갈 적절한 코드는?
+
+```cpp
+void f() {
+    cout << "f() called" << endl;
+}
+class A {
+public:
+    virtual void f() { cout << "A::f() called" << endl; }
+};
+class B : public A {
+public:
+    void g() {
+        // 빈칸
+    }
+    void f() { cout << "B::f() called" << endl; }
+};
+```
+
+(1) 함수 `g()`가 외부 함수 `f()`를 호출한다.
+
+(2) 함수 `g()`가 클래스 `A`의 멤버 함수 `f()`를 호출한다.
+
+(3) 함수 `g()`가 자신의 멤버 함수 `f()`를 호출한다.
+
+**[풀이](Solutions.ko.md#이론-문제-8)**
+
+### 이론 문제 10
+
+다음은 `Person` 클래스와 파생 클래스 `Student`를 작성한 사례이다.
+
+```cpp
+class Person {
+    int id;
+public:
+    Person(int id = 0) { this->id = id; }
+    ~Person() { cout << "id=" << id << endl; }
+};
+class Student : public Person {
+    char* name;
+public:
+    Student(int id, const char* name) : Person(id) {
+        int len = strlen(name);
+        this->name = new char[len + 1];
+        strcpy(this->name, name);
+    }
+    ~Student() {
+        cout << "name=" << name << endl;
+        delete [] name;
+    }
+};
+int main() {
+    Person *p = new Student(10, "손연재");
+    delete p;
+}
+```
+
+(1) 이 코드의 실행 결과는 무엇인가? 실행 결과에 어떤 문제가 있다고 생각되는가?
+
+(2) `Person` 클래스나 `Student` 클래스를 수정하여 문제점을 해결하라.
+
+**[풀이](Solutions.ko.md#이론-문제-10)**
+
+### 이론 문제 12
+
+순수 가상 함수에 대해 잘못 말한 것은?
+
+- ① 순수 가상 함수를 가진 클래스는 무조건 추상 클래스이다.
+- ② 순수 가상 함수는 실행이 목적이 아니라, 파생 클래스가 구현해야 할 함수를 알려주기 위한 것이다.
+- ③ 외부 함수도 순수 가상 함수로 선언 가능하다.
+- ④ 순수 가상 함수가 호출되면 동적 바인딩이 일어난다.
+
+**[풀이](Solutions.ko.md#이론-문제-12)**
+
+### 이론 문제 14
+
+다음 코드에 대해 물음에 답하라.
+
+```cpp
+class Shape {
+public:
+    void paint() { draw(); }
+    virtual void draw() = 0;
+};
+class Circle : public Shape {
+    int radius;
+public:
+    Circle(int radius = 1) { this->radius = radius; }
+    double getArea() { return 3.14 * radius * radius; }
+};
+```
+
+(1) 다음 중 오류가 발생하는 것을 있는 대로 골라라. ① `Shape shape;` ② `Shape *p;` ③ `Circle circle(10);` ④ `Circle *pCircle;`
+
+(2) 다음 코드를 실행한 결과가 `반지름=10인 원`이 되도록 `Shape`이나 `Circle` 클래스를 수정하라.
+
+```cpp
+Circle *p = new Circle(10);
+p->paint();
+```
+
+**[풀이](Solutions.ko.md#이론-문제-14)**

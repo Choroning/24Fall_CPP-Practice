@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
@@ -179,3 +179,170 @@ Program ended with exit code: 0
 ```
 
 **[Solution](Solutions.md#exercise-2-unit-conversion-with-virtual-functions)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 9 exercises
+
+### Theory Problem 2
+
+What is it called when a derived class redefines a function with the same type as a virtual function of the base class?
+
+- ① overloading
+- ② overriding
+- ③ virtual
+- ④ dynamic binding
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+Which object-oriented feature of the C++ language do overloading, overriding, and operator overloading represent?
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+Answer the questions about the following code.
+
+```cpp
+class A {
+public:
+    void func() { f(); }
+    virtual void f() { cout << "A::f() called" << endl; }
+};
+class B : public A {
+public:
+    void f() { cout << "B::f() called" << endl; }
+};
+class C : public B {
+public:
+    void f() { cout << "C::f() called" << endl; }
+};
+```
+
+(1) Choose all the virtual functions among the following. ① `f()` of `A` ② `f()` of `B` ③ `f()` of `C` ④ `func()` of `A`
+
+(2)-(5) What is printed when each marked statement of the following code runs?
+
+```cpp
+C c;
+c.f();        // (2)
+A* pa;
+B* pb;
+pa = pb = &c;
+pb->f();      // (3)
+pa->f();      // (4)
+pa->func();   // (5)
+```
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+For each item, what code fits in the blank of the function `g()`?
+
+```cpp
+void f() {
+    cout << "f() called" << endl;
+}
+class A {
+public:
+    virtual void f() { cout << "A::f() called" << endl; }
+};
+class B : public A {
+public:
+    void g() {
+        // 빈칸
+    }
+    void f() { cout << "B::f() called" << endl; }
+};
+```
+
+(1) The function `g()` calls the external function `f()`.
+
+(2) The function `g()` calls the member function `f()` of the class `A`.
+
+(3) The function `g()` calls its own member function `f()`.
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+The following is an example of writing a `Person` class and its derived class `Student`.
+
+```cpp
+class Person {
+    int id;
+public:
+    Person(int id = 0) { this->id = id; }
+    ~Person() { cout << "id=" << id << endl; }
+};
+class Student : public Person {
+    char* name;
+public:
+    Student(int id, const char* name) : Person(id) {
+        int len = strlen(name);
+        this->name = new char[len + 1];
+        strcpy(this->name, name);
+    }
+    ~Student() {
+        cout << "name=" << name << endl;
+        delete [] name;
+    }
+};
+int main() {
+    Person *p = new Student(10, "손연재");
+    delete p;
+}
+```
+
+(1) What is the output of this code? What problem do you see in the output?
+
+(2) Fix the problem by changing the `Person` class or the `Student` class.
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+Which statement about pure virtual functions is wrong?
+
+- ① A class with a pure virtual function is always an abstract class.
+- ② A pure virtual function is not meant to be executed but to tell derived classes which function they must implement.
+- ③ An external function can also be declared as a pure virtual function.
+- ④ When a pure virtual function is called, dynamic binding occurs.
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+Answer the questions about the following code.
+
+```cpp
+class Shape {
+public:
+    void paint() { draw(); }
+    virtual void draw() = 0;
+};
+class Circle : public Shape {
+    int radius;
+public:
+    Circle(int radius = 1) { this->radius = radius; }
+    double getArea() { return 3.14 * radius * radius; }
+};
+```
+
+(1) Choose all that cause an error. ① `Shape shape;` ② `Shape *p;` ③ `Circle circle(10);` ④ `Circle *pCircle;`
+
+(2) Change the `Shape` or `Circle` class so that running the following code prints `반지름=10인 원` ("a circle with radius=10").
+
+```cpp
+Circle *p = new Circle(10);
+p->paint();
+```
+
+**[Solution](Solutions.md#theory-problem-14)**

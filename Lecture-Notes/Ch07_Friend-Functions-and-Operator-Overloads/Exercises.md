@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
@@ -315,3 +315,130 @@ Program ended with exit code: 0
 ```
 
 **[Solution](Solutions.md#exercise-3-operator-overloading-for-a-time-class)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 7 exercises
+
+### Theory Problem 2
+
+In which case is a friend function not needed?
+
+- ① When writing a function that is not a member but must access the `private` members of a class
+- ② When writing a function that accesses the `private` members of two or more classes at the same time
+- ③ When overloading operators
+- ④ When overloading functions
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+The class `SampleManager` has the following member function. Declare it so that this member function is invited as a friend into the class `Sample`.
+
+```cpp
+bool compare(Sample &a, Sample &b);
+```
+
+```cpp
+class Sample {
+    ...
+};
+```
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+The following program causes a compile error. What is the cause of the error? Fix the error appropriately.
+
+```cpp
+class Student {
+    int id;
+public:
+    Student(int id) { this->id = id; }
+};
+class Professor {
+    string name;
+public:
+    Professor(string name) { this->name = name; }
+};
+void show(Student s, Professor p) {
+    cout << s.id << p.name;
+}
+```
+
+As a hint, the textbook says to insert the two forward declarations `class Student;` and `class Professor;` at the very beginning of the code to solve the forward reference problem that arises while solving it.
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+Which statement about the position of a friend declaration is correct?
+
+- ① It must be declared in the `private` section of the class.
+- ② It must be declared in the `protected` section of the class.
+- ③ It must be declared in the `public` section of the class.
+- ④ It may be declared in any section of the class.
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+Explain whether the friend declaration is needed in the following code.
+
+```cpp
+class Sample {
+public:
+    int x;
+    Sample(int x) { this->x = x; }
+    friend bool isZero(Sample &a);   // 이곳에 주목
+};
+bool isZero(Sample& a) {
+    if (a.x == 0) return true;
+    else return false;
+}
+```
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+Give just one other example that matches the polymorphism shown below.
+
+```text
+2 + 3 = 5
+빨강 + 파랑 = 보라
+남자 + 여자 = 결혼
+```
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+For objects `a` and `b` of the `Power` class, in which case can the `+` operator function not be written as a member function?
+
+```cpp
+Power a, b;   // Power 클래스에 대해
+```
+
+- ① `a = a + b`
+- ② `b = a + 3`
+- ③ `b = a += 3`
+- ④ `b = 3 + a`
+
+**[Solution](Solutions.md#theory-problem-14)**
+
+### Theory Problem 16
+
+`a` and `b` are objects of the `Power` class. When the operator functions are written as friend functions of the `Power` class, which pair of an operation on the left and an operator function declaration on the right is wrong?
+
+- ① `a + b`: `Power operator + (Power& a, Power &b);`
+- ② `a == b`: `bool operator == (Power a, Power b);`
+- ③ `a++`: `Power operator ++ (Power a, int b);`
+- ④ `a = b`: `Power& operator = (Power &a, Power b);`
+
+**[Solution](Solutions.md#theory-problem-16)**
