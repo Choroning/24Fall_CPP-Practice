@@ -55,21 +55,13 @@ Coursework/HW08_Friend-Functions-and-Operator-Overloading/
 
 *Figure 1. Directory layout of HW8*
 
-Each solution is compiled and run as follows. All three files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS.
+Each solution is compiled and run with C++11 or later as follows.
 
 ```bash
 cd Coursework/HW08_Friend-Functions-and-Operator-Overloading/Solution
 g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
-
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | No warnings |
-| `Q3.cpp` | No warnings |
-
-*Table 1. Compilation results of the HW8 solutions*
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the three `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
@@ -88,7 +80,7 @@ Add an operator to the `Circle` class so that `b = 1 + a;` changes the radius of
 | Member function | `1.operator+(a)` | No. `int` is not a class, so no member function can be added to it |
 | External function | `operator+(1, a)` | Yes. `radius` is `private`, so the function is declared a friend of `Circle` |
 
-*Table 2. Comparison of the two ways to implement `1 + a`*
+*Table 1. Comparison of the two ways to implement `1 + a`*
 
 ### 2.2 Design and Solution
 
@@ -115,7 +107,7 @@ radius = 5 인 원
 radius = 6 인 원
 ```
 
-The output is the same as the sample run of the problem. The first line is the unchanged `a`, and the second line is `b`, which received the result of `1 + a`. The radius 4 that `b` had at first is lost by the assignment.
+The first line is the unchanged `a`, and the second line is `b`, which received the result of `1 + a`. The radius 4 that `b` had at first is lost by the assignment.
 
 ---
 
@@ -132,7 +124,7 @@ Write the prefix `++` and the postfix `++` of the `Circle` class as friend funct
 | `++a;` | `operator++(a)` | A copy with radius 6 (not used) | `a` is 6, `b` is 4 |
 | `b = a++;` | `operator++(a, 0)` | A copy with radius 6 (assigned to `b`) | `a` is 7, `b` is 6 |
 
-*Table 3. Calls of the prefix and postfix `++` in Q2*
+*Table 2. Calls of the prefix and postfix `++` in Q2*
 
 ### 3.2 Design and Solution
 
@@ -160,7 +152,7 @@ radius = 7 인 원
 radius = 6 인 원
 ```
 
-The output is the same as the sample run of the problem. Both comments in `main()` say that the radius is increased by 1, and indeed both statements increase the radius of `a` by 1, from 5 to 7. The difference between the two statements lies in the return value: `b` receives 6, the value before the second increment.
+Both comments in `main()` say that the radius is increased by 1, and indeed both statements increase the radius of `a` by 1, from 5 to 7. The difference between the two statements lies in the return value: `b` receives 6, the value before the second increment.
 
 ---
 
@@ -177,7 +169,7 @@ In the `Matrix` class, which stores the four elements of a 2×2 matrix in the ar
 | `a >> x` | `a.operator>>(x)` | `operator>>(a, x)` |
 | `b << y` | `b.operator<<(y)` | `operator<<(b, y)` |
 
-*Table 4. Operator expressions of Q3 and the call forms of the two approaches*
+*Table 3. Operator expressions of Q3 and the call forms of the two approaches*
 
 ### 4.2 Design and Solution
 
@@ -203,7 +195,7 @@ To switch to the friend function version, do the following.
 2. Change `/*` on line 41 to `//`, leaving only the description as a one-line comment. Removing only `/*` would make `(2) <<, >>를 ...` be read as code and cause a compile error.
 3. Delete `*/` at the end of line 52.
 
-The code changed in this way compiles without warnings with `-std=c++11` and `-std=c++17` and prints the same result as the member function version. If only the comment around the friend version is removed while the member function version is kept, `a.operator>>(x)` and `operator>>(a, x)` match `a >> x` equally well, so the error `use of overloaded operator '>>' is ambiguous` occurs, and the same happens for `<<`. That is why only one of the two versions must be active.
+The code changed in this way prints the same result as the member function version. If only the comment around the friend version is removed while the member function version is kept, `a.operator>>(x)` and `operator>>(a, x)` match `a >> x` equally well, so the error `use of overloaded operator '>>' is ambiguous` occurs, and the same happens for `<<`. That is why only one of the two versions must be active.
 
 To make the code more robust, the size of the array can be considered. `int op[]` is a pointer, so the function cannot know the size of the array it receives and always reads or writes four elements. Passing an array with fewer than four elements accesses memory outside the bounds of the array, so taking a reference to an array of fixed size, `int (&op)[4]`, lets the compiler reject code that passes an array of a different size.
 
@@ -214,7 +206,7 @@ To make the code more robust, the size of the array can be considered. `int op[]
 Matrix = { 1 2 3 4 }
 ```
 
-The output is the same as the sample run of the problem. The space at the end of the first line comes from `cout << x[i] << ' ';`, which appends a space after every element. The first line is the result of copying the elements of `a` into `x`, and the second line is `b`, set from the elements of `y`. Switching to the friend function version prints the same two lines.
+The space at the end of the first line comes from `cout << x[i] << ' ';`, which appends a space after every element. The first line is the result of copying the elements of `a` into `x`, and the second line is `b`, set from the elements of `y`. Switching to the friend function version prints the same two lines.
 
 ---
 

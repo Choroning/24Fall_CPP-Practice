@@ -279,6 +279,6 @@ Block B is freed in `set()`, but blocks A and C are not freed by the destructor 
    <details>
    <summary>Answer</summary>
 
-   Objects are destroyed in the reverse order of construction, so the destructor of `java` frees block C first, and then the destructor of `cpp` frees block A. The two objects point to different blocks, so no double free occurs, and `leaks` reports no leaks either.
+   Objects are destroyed in the reverse order of construction, so the destructor of `java` frees block C first, and then the destructor of `cpp` frees block A. The two objects point to different blocks, so no double free occurs, and no memory leaks either.
 
    </details>

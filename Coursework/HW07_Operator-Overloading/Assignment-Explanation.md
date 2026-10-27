@@ -55,21 +55,13 @@ Coursework/HW07_Operator-Overloading/
 
 *Figure 1. Directory layout of HW7*
 
-Each solution is compiled and run as follows. All three files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS.
+Each solution is compiled and run with C++11 or later as follows.
 
 ```bash
 cd Coursework/HW07_Operator-Overloading/Solution
 g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
-
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | No warnings |
-| `Q3.cpp` | No warnings |
-
-*Table 1. Compilation results of the HW7 solutions*
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. The `main()` of Q1 has no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0. The `main()` functions of Q2 and Q3 end with `return 0;`.
 
@@ -89,7 +81,7 @@ Add the `+=` and `-=` operator functions to the `Book` class as member functions
 | `b -= 500` | `b.operator-=(500)` | Subtracts 500 from `price` of `b` |
 | `c = a += 500` | `c.operator=(a.operator+=(500))` | The assignment operators associate from right to left, so the price of `a` is raised first and the result is assigned to `c` |
 
-*Table 2. Operator expressions of Q1 and the calls to the operator functions*
+*Table 1. Operator expressions of Q1 and the calls to the operator functions*
 
 ### 2.2 Design and Solution
 
@@ -134,7 +126,7 @@ Add two `==` operator functions to the `Book` class as member functions. `a == "
 | `a == "명품 C++"` | `a.operator==(string("명품 C++"))` | The title of `a` and the string |
 | `a == b` | `a.operator==(b)` | The two books (according to the comment, title, price, and pages) |
 
-*Table 3. The two `==` expressions of Q2 and the calls to the operator functions*
+*Table 2. The two `==` expressions of Q2 and the calls to the operator functions*
 
 ### 3.2 Design and Solution
 
@@ -170,7 +162,7 @@ bool operator != (Book op) {
 두 책은 다른 책입니다.
 ```
 
-The output, which reads "This is 명품 C++." and "The two books are different books." in Korean, matches the sample run of the problem. The second line results from the different titles of `a` and `b`; if the program runs with two books that have the same title and differ only in price, the current code prints `두 책이 같은 책입니다.` (the two books are the same book).
+The output reads "This is 명품 C++." and "The two books are different books." in Korean. The second line results from the different titles of `a` and `b`; if the program runs with two books that have the same title and differ only in price, the current code prints `두 책이 같은 책입니다.` (the two books are the same book).
 
 ---
 
@@ -191,7 +183,7 @@ Freely write code that uses operator overloading with an example different from 
 | `+=` | `MyString& operator+=(const MyString&)` | Appends a string at the end and returns a reference to `*this` |
 | `[]` | `char& operator[](int)` | Checks the range of the index and returns a reference to the character at that position |
 
-*Table 4. Operators overloaded in Q3*
+*Table 3. Operators overloaded in Q3*
 
 ### 4.2 Design and Solution
 
@@ -236,7 +228,7 @@ s2의 첫 번째 문자: W
 두 문자열이 같습니다.
 ```
 
-In the output, the headings read "[Initial State]" and "[Operations]", and the last three lines read "Apple comes before Banana in lexicographic order.", "The first character of s2: W", and "The two strings are equal." in Korean. The `s1:` line ends with the space of `"Hello "`, and the `s3:` line ends with the space of the output string `"s3: "`. The single quotes on the line `s1 += 'C++' = Hello C++` are characters contained in the output string `"s1 += 'C++' = "`. `s3` becomes `"Hello World!"`, and `s1` becomes `"Hello C++"` with `"C++"` appended to `"Hello "`. Although it does not show in this output, running the program with `leaks --atExit` on macOS reports 0 leaks, and building and running it with AddressSanitizer (`-fsanitize=address`) reports no errors, so every allocated array is freed exactly once.
+In the output, the headings read "[Initial State]" and "[Operations]", and the last three lines read "Apple comes before Banana in lexicographic order.", "The first character of s2: W", and "The two strings are equal." in Korean. The `s1:` line ends with the space of `"Hello "`, and the `s3:` line ends with the space of the output string `"s3: "`. The single quotes on the line `s1 += 'C++' = Hello C++` are characters contained in the output string `"s1 += 'C++' = "`. `s3` becomes `"Hello World!"`, and `s1` becomes `"Hello C++"` with `"C++"` appended to `"Hello "`. Although it does not show in this output, every allocated array is freed exactly once.
 
 ---
 

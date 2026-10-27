@@ -60,22 +60,13 @@ Coursework/HW06_Default-Parameters-and-Static-Members/
 
 *Figure 1. Directory layout of HW6*
 
-Each solution is compiled and run as follows. All four files compile without warnings with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS.
+Each solution is compiled and run with C++11 or later as follows.
 
 ```bash
 cd Coursework/HW06_Default-Parameters-and-Static-Members/Solution
 g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
-
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | No warnings |
-| `Q3.cpp` | No warnings |
-| `Q4.cpp` | No warnings |
-
-*Table 1. Compilation results of the HW6 solutions*
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
@@ -95,7 +86,7 @@ Replace the three constructors of [Lab 2-1], `Person()`, `Person(int id, string 
 | `ashley(2, "Ashley")` | `id`, `name` | 2 | 20.5 | `"Ashley"` |
 | `helen(3, "Helen", 32.5)` | `id`, `name`, `weight` | 3 | 32.5 | `"Helen"` |
 
-*Table 2. The three objects of Q1 and the values of their members*
+*Table 1. The three objects of Q1 and the values of their members*
 
 ### 2.2 Design and Solution
 
@@ -120,7 +111,7 @@ The following two points are properties of this design that follow from the rule
 3 32.5 Helen
 ```
 
-The output is the same as the sample run of the problem. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks. The weight 20.5 of `ashley` is the default value placed in the slot of the third argument, which was not passed.
+The weight 20.5 of `ashley` is the default value placed in the slot of the third argument, which was not passed.
 
 ---
 
@@ -140,7 +131,7 @@ Add to the `Person` class a `private` static member variable `numPerson` that st
 | `show()` | Prints `numPerson` after `id`, `weight`, and `name` |
 | `static void nPerson()` | Prints only `numPerson` |
 
-*Table 3. Members added or changed in Q2*
+*Table 2. Members added or changed in Q2*
 
 ### 3.2 Design and Solution
 
@@ -172,7 +163,7 @@ Two points can be considered to make the code more robust.
 2
 ```
 
-The output is the same as the sample run of the problem. `delete [] p;` calls the destructors of the elements in the reverse order of construction, `p[1]` and then `p[0]`, decreasing `numPerson` from 4 to 2, so the last line is 2. When `main()` then ends, the destructors of `helen` and `grace` are called in turn and `numPerson` becomes 0, but this value is not printed. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+`delete [] p;` calls the destructors of the elements in the reverse order of construction, `p[1]` and then `p[0]`, decreasing `numPerson` from 4 to 2, so the last line is 2. When `main()` then ends, the destructors of `helen` and `grace` are called in turn and `numPerson` becomes 0, but this value is not printed.
 
 ---
 
@@ -191,7 +182,7 @@ Complete a `Random` class that has only static member functions, and complete a 
 | `nextAlphabet()` | Returns one random letter, uppercase or lowercase |
 | `nextDouble()` | Returns a random real number from 0 up to but not including 1 |
 
-*Table 4. Static member functions of the Random class in Q3*
+*Table 3. Static member functions of the Random class in Q3*
 
 ### 4.2 Design and Solution
 
@@ -224,7 +215,7 @@ C r j F j s Y s T F
 0.753511 0.262834 0.444927 0.881017 0.253124 
 ```
 
-The values change with every run. Each line ends with one space because `' '` is appended after every value. By default `cout` prints a `double` with six significant digits and omits trailing zeros, so values with fewer digits, such as `0.73853`, and values with seven digits after the decimal point, such as `0.0723063`, also appear. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+The values change with every run. Each line ends with one space because `' '` is appended after every value. By default `cout` prints a `double` with six significant digits and omits trailing zeros, so values with fewer digits, such as `0.73853`, and values with seven digits after the decimal point, such as `0.0723063`, also appear.
 
 ---
 
@@ -261,7 +252,7 @@ Radius: 5, Count: 3
 Radius: 5, Count: 1
 ```
 
-The output is the same as the sample run of the problem. The count on the second and third lines is 3 because `a` and both elements of the array exist, and the 1 on the last line is the value after `delete[] p;` destroyed the two elements. Running with `leaks --atExit` and `-fsanitize=address,undefined` reports no errors or leaks.
+The count on the second and third lines is 3 because `a` and both elements of the array exist, and the 1 on the last line is the value after `delete[] p;` destroyed the two elements.
 
 ---
 

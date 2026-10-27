@@ -55,7 +55,7 @@ Coursework/HW04_References/
 
 *Figure 1. Directory layout of HW4*
 
-Each solution is compiled and run as follows. All three files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS and read no input.
+Each solution is compiled and run with C++11 or later as follows. The three programs read no input.
 
 ```bash
 cd Coursework/HW04_References/Solution
@@ -63,15 +63,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | One warning: `-Wunused-variable`, because `constRef` is never used |
-| `Q3.cpp` | No warnings |
-
-*Table 1. Compilation results of the HW4 solutions*
-
-The three programs use no dynamic memory, and running them with AddressSanitizer and `leaks --atExit` reports no errors or leaks. When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends.
+The three programs use no dynamic memory. When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends.
 
 ---
 
@@ -132,7 +124,7 @@ The program includes `<iostream>` for input/output and declares three functions 
 | `modifyValue(int& value)` | Reference parameter | Doubles the value of the argument |
 | `printValue(const int& value)` | `const` reference parameter | Prints the value of the argument |
 
-*Table 2. The three functions of Q2*
+*Table 1. The three functions of Q2*
 
 `main()` shows the uses of references in turn. It first makes `ref`, an alias of `number`, with `int& ref = number;`, runs `ref = 100;`, and prints `number` to show that a change through the reference reaches the original. A reference variable must be initialized when it is declared, and the object it refers to cannot be changed to another variable afterwards ([Chapter 5, Section 3.1](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#31-declaration)). It then swaps `num1` and `num2` with `swapNumbers()` and doubles `value` with `modifyValue()`. The parameters of both functions are references, so the changes inside the functions reach the variables of `main()` unchanged. Finally it prints the value with `printValue(value)`.
 

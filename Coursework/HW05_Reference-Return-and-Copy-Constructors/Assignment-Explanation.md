@@ -50,20 +50,13 @@ Coursework/HW05_Reference-Return-and-Copy-Constructors/
 
 *Figure 1. Directory layout of HW5*
 
-Each solution is compiled and run as follows. Both files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS.
+Each solution is compiled and run with C++11 or later as follows.
 
 ```bash
 cd Coursework/HW05_Reference-Return-and-Copy-Constructors/Solution
 g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
-
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | Two warnings: `-Wwritable-strings` at lines 47 and 49, because a string literal is converted to `char*` |
-
-*Table 1. Compilation results of the HW5 solutions*
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. Neither `main()` function has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
@@ -95,7 +88,7 @@ The `&` in the return type decides this behavior. If `add()` is declared as `Acc
 28
 ```
 
-The output matches the sample run of the problem. Running it under `leaks --atExit` and under AddressSanitizer and UndefinedBehaviorSanitizer (`-fsanitize=address,undefined`) reports no errors and no leaks. The program uses no dynamic memory, and `acc` is destroyed automatically when `main()` ends.
+The program uses no dynamic memory, and `acc` is destroyed automatically when `main()` ends.
 
 ---
 
@@ -114,7 +107,7 @@ Answer four questions about a `Book` class that stores the title of a book as a 
 | 3) | The problem that occurs when no copy constructor is defined | The answer in Section 3.2 |
 | 4) | Defining a copy constructor that causes no error | Lines 27-31 of `Q2.cpp` |
 
-*Table 2. The questions of Q2 and where the answers are*
+*Table 1. The questions of Q2 and where the answers are*
 
 ### 3.2 Design and Solution
 
@@ -143,11 +136,11 @@ The two answers can be completed as follows.
 
 - **The prototype of the default copy constructor:** The answer that it is a member-by-member copy is correct ([Chapter 5, Section 4.2](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#42-default-copy-constructor)). In standard C++, however, the copy constructor the compiler declares implicitly has the form `Book(const Book&)` when every member can be copied from a `const` object, and the `char*` and `int` members satisfy this condition. The default copy constructor can therefore copy a `const Book` object as well, while in a class that defines only `Book(Book&)`, copying a `const Book` object is a "no matching constructor" error. What they do between two objects, copying `title` and `price` unchanged, is the same.
 - **The name of the problem:** Freeing the same memory twice is not a memory leak but a **double free**. A memory leak is memory that is left unfreed, while a double free frees memory that has already been freed; its result is undefined behavior, and usually the program terminates abnormally ([Chapter 5, Section 4.3](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#43-shallow-copy-problem)).
-- **The problem that comes first in this `main()`:** In this `main()`, a use of freed memory occurs before the double free. `"명품자바"` is 12 bytes in UTF-8 and `"명품c++"` is 9 bytes, so `java.set()` frees the memory shared with `cpp` and allocates new memory only for `java`. `cpp.title` then becomes a **dangling pointer** that points to freed memory, and `cpp.show()` reads that memory ([Chapter 4, Section 4.2](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#42-dangling-pointer)). Section 3.3 covers the result of actually running this situation.
+- **The problem that comes first in this `main()`:** In this `main()`, a use of freed memory occurs before the double free. `"명품자바"` is 12 bytes in UTF-8 and `"명품c++"` is 9 bytes, so `java.set()` frees the memory shared with `cpp` and allocates new memory only for `java`. `cpp.title` then becomes a **dangling pointer** that points to freed memory, and `cpp.show()` reads that memory ([Chapter 4, Section 4.2](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#42-dangling-pointer)). This situation can be reproduced as described at the end of Section 3.3.
 
 Three points can be considered to make the code more robust.
 
-- **`const char*` parameters:** The type of a string literal is `const char[N]`, and the conversion of it to `char*` was removed from the standard in C++11. Apple clang accepts it as an extension and issues the `-Wwritable-strings` warning, but the standards conformance mode of Visual Studio 2022 (`/permissive-`) treats this conversion as an error. This conversion is why the assignment handout says that `const` may have to be added in Visual Studio 2022. Changing the parameters of the constructor and `set()` to `const char* title` removes both warnings, and the code then compiles without warnings with `-std=c++11` as well.
+- **`const char*` parameters:** The type of a string literal is `const char[N]`, and the conversion of it to `char*` was removed from the standard in C++11. Apple clang accepts it as an extension and issues the `-Wwritable-strings` warning, but the standards conformance mode of Visual Studio 2022 (`/permissive-`) treats this conversion as an error. This conversion is why the assignment handout says that `const` may have to be added in Visual Studio 2022. Changing the parameters of the constructor and `set()` to `const char* title` removes the two warnings at lines 47 and 49.
 - **A copy constructor that takes a `const` reference:** The copy constructor does not change the original, so declaring it as `Book(const Book& b)` also allows copying from `const` objects and temporary objects ([Chapter 5, Section 5.3](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#53-copy-constructor-parameter-must-be-a-reference)).
 - **The assignment operator:** Even with a deep copy constructor, assigning one existing object to another with `java = cpp;` makes the default assignment operator generated by the compiler copy only the pointer value. Testing it with a `Book` whose destructor frees correctly, AddressSanitizer reports a double free, and the memory `java` originally pointed to leaks. A class with a pointer member must define the assignment operator together with the copy constructor and the destructor ([Chapter 5, Section 2.3](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.md#23-object-assignment)).
 
@@ -160,9 +153,9 @@ Three points can be considered to make the code more robust.
 
 The output gives each title followed by its price in won. The title of `cpp` stays the same after the title of `java` is changed because the copy constructor made a deep copy. The two `-Wall` warnings arise because lines 47 and 49 pass string literals to `char*` parameters, and they disappear when the parameters are changed to `const char*` as in Section 3.2.
 
-The results of the memory checks are as follows.
+Running this code under the memory checking tools reports the following.
 
-- **AddressSanitizer and UndefinedBehaviorSanitizer:** report no errors.
+- **AddressSanitizer and UndefinedBehaviorSanitizer:** report no errors. The copy constructor makes a deep copy, so no freed memory is read and no memory is freed twice.
 - **`leaks --atExit`:** reports a leak of 2 blocks, 64 bytes in total. One is the memory the constructor allocated for the title of `cpp`, and the other is the memory `set()` allocated for the new title of `java`. The memory the copy constructor allocated for `java` was freed by `set()`, so it does not remain.
 
 The cause of the leak is the condition `if (!title)` of the destructor at lines 32-35. The condition is true only when `title` is a null pointer, so in the normal case where a title is allocated, `delete []` is not executed. To check for a null pointer, the condition would have to be `if (title)`, but passing a null pointer to `delete []` does nothing, so writing only `delete [] title;` without a condition is enough ([Chapter 4, Section 4.3](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#43-destructor-responsibility)). With this fix the output is the same and `leaks` reports no leaks.

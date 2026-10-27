@@ -88,7 +88,7 @@ int main() {
 높이는 100미터
 ```
 
-The program compiles without warnings with `g++ -std=c++17 -Wall`, and its output, which reads "The height is 1 meter" and "The height is 100 meters" in Korean, matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is not program output but a message Xcode displays after the program ends.
+The output reads "The height is 1 meter" and "The height is 100 meters" in Korean. The last line of the sample run, `Program ended with exit code: 0`, is not program output but a message Xcode displays after the program ends.
 
 ---
 
@@ -240,7 +240,7 @@ int main() {
 커피머신 상태: 커피 = 10   물 = 10   설탕 = 10
 ```
 
-The program compiles without warnings with `g++ -std=c++17 -Wall`, and its output matches the sample run; the error messages read "Cannot make a sugar coffee because of insufficient ingredients" and "Cannot make an Americano because of insufficient ingredients" in Korean. The last line of the sample run, `Program ended with exit code: 0`, is a message displayed by Xcode. This `main()` never runs short of espresso ingredients, so the error message of `drinkEspresso()` is not printed.
+The error messages in the output read "Cannot make a sugar coffee because of insufficient ingredients" and "Cannot make an Americano because of insufficient ingredients" in Korean. The last line of the sample run, `Program ended with exit code: 0`, is a message displayed by Xcode. This `main()` never runs short of espresso ingredients, so the error message of `drinkEspresso()` is not printed.
 
 ---
 

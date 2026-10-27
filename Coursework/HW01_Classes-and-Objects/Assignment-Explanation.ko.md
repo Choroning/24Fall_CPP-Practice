@@ -55,21 +55,13 @@ Coursework/HW01_Classes-and-Objects/
 
 *그림 1. HW1 과제의 디렉토리 구성*
 
-각 풀이는 다음과 같이 컴파일하고 실행한다. 세 파일 모두 macOS의 Apple clang 21에서 `g++ -std=c++11 -Wall`과 `g++ -std=c++17 -Wall`로 컴파일된다.
+각 풀이는 C++11 이상의 표준으로 다음과 같이 컴파일하고 실행한다.
 
 ```bash
 cd Coursework/HW01_Classes-and-Objects/Solution
 g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
-
-| 파일 | 컴파일 결과 |
-|:-----|:-----|
-| `Q1.cpp` | 경고 1개: `main()`의 `money`를 쓰지 않는다는 `-Wunused-variable` |
-| `Q2.cpp` | 경고 없음 |
-| `Q3.cpp` | 경고 없음 |
-
-*표 1. HW1 풀이의 컴파일 결과*
 
 Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 세 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다.
 
@@ -91,7 +83,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 | `a.inquiry()` | `int inquiry()` | 현재 잔액을 리턴한다 |
 | `int money = a.withdraw(20000);` | `int withdraw(int)` | 잔액에서 출금액을 빼고 출금한 금액을 리턴한다 |
 
-*표 2. Q1의 `main()`이 요구하는 멤버*
+*표 1. Q1의 `main()`이 요구하는 멤버*
 
 ### 2.2 설계와 해결 방법
 
@@ -118,7 +110,7 @@ kitae의 잔액은 55000
 kitae의 잔액은 35000
 ```
 
-출력은 문제의 실행 예시와 같다. `-Wall`의 경고는 `main()`이 `withdraw()`의 리턴값을 `money`에 저장하고 쓰지 않기 때문이며, 이 `main()`은 교재가 준 코드이다.
+`-Wall`로 컴파일하면 `main()`이 `withdraw()`의 리턴값을 `money`에 저장하고 쓰지 않으므로 `-Wunused-variable` 경고가 나온다. 이 `main()`은 교재가 준 코드이다.
 
 ---
 
@@ -177,7 +169,7 @@ Windows의 Visual C++에서 실행하면 첫 줄이 `-- 0에서 32767까지의 �
 | `getX()`, `setX()` | 클래스 안에서 선언과 동시에 정의 |
 | `getY()`, `setY()` | 클래스 밖에서 정의 |
 
-*표 3. Q3의 멤버와 정의 위치*
+*표 2. Q3의 멤버와 정의 위치*
 
 ### 4.2 설계와 해결 방법
 
@@ -192,7 +184,7 @@ Windows의 Visual C++에서 실행하면 첫 줄이 `-- 0에서 32767까지의 �
 
 ### 4.3 실행 결과와 검토
 
-`-3`과 `4`를 입력하면 다음과 같이 출력되어 문제의 실행 예시와 같다.
+`-3`과 `4`를 입력하면 다음과 같이 출력된다.
 
 ```text
 Input p2.x: -3

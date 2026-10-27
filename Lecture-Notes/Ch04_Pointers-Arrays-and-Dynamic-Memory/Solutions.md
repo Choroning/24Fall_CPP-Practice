@@ -115,7 +115,7 @@ int main() {
 }
 ```
 
-**Output:** Entering the same values as in the two sample runs gives the same results. When run in a terminal, however, the line of numbers typed by the user is followed by the same numbers printed by `write()`, whereas the sample run shows this line only once. Because `write()` prints a space after each number, the printed line ends with one trailing space. The last line of the sample runs, `Program ended with exit code: 0`, is not program output but the exit message added by the Xcode console.
+**Output:** When run in a terminal, the line of numbers typed by the user is followed by the same numbers printed by `write()`, whereas the sample run shows this line only once. Because `write()` prints a space after each number, the printed line ends with one trailing space. The last line of the sample runs, `Program ended with exit code: 0`, is not program output but the exit message added by the Xcode console.
 
 ```text
 생성할 정수 배열 사이즈를 입력하세요: 10
@@ -262,7 +262,7 @@ int main(void)
 }
 ```
 
-**Output:** Identical to the two sample runs. The areas of the circles with radii 10, 2, 1, and 15 are 314, 12.56, 3.14, and 706.5, so 빈대떡, 도넛, and 피자, whose areas exceed the minimum area 10, are printed. The code also prints `", "` after the last circle, so the line ends with a comma, as in the sample run.
+**Output:** The areas of the circles with radii 10, 2, 1, and 15 are 314, 12.56, 3.14, and 706.5, so 빈대떡, 도넛, and 피자, whose areas exceed the minimum area 10, are printed. The code also prints `", "` after the last circle, so the line ends with a comma.
 
 > **Note:** When the number of circles is 0 or less, the constructor throws before initializing `p`. The destructor of an object whose construction did not finish is not called, so `delete [] p` is never executed on the uninitialized `p`.
 

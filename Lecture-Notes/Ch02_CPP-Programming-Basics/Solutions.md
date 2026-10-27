@@ -89,7 +89,7 @@ The scope of a variable runs from the point of its declaration to the end of its
 - (1) This program writes `cin` as `std::cin` and uses only `cout` without `std::`, so the using declaration `using std::cout;`, which brings in `cout` alone, fits. It also compiles with `using namespace std;`.
 - (2) Both `cout` and `endl` are used without `std::`, so the using directive `using namespace std;`, which makes all the names of `std` usable, is written. Two using declarations on one line, as in `using std::cout; using std::endl;`, also work.
 
-With the blanks filled, the two programs compile without warnings with `g++ -std=c++17 -Wall`, and (1) prints the entered integer plus 1 (entering 4 prints 5).
+With the blanks filled, program (1) prints the entered integer plus 1 (entering 4 prints 5).
 
 ### Theory Problem 8
 

@@ -61,22 +61,13 @@ Coursework/HW02_Object-Pointers-and-This/
 
 *Figure 1. Directory layout of HW2*
 
-Each solution is compiled and run as follows. All four files compile with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS. Q3 reads a size, so one integer is entered after it starts.
+Each solution is compiled and run with C++11 or later as follows. Q3 reads a size, so one integer is entered after it starts.
 
 ```bash
 cd Coursework/HW02_Object-Pointers-and-This/Solution
 g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
-
-| File | Compilation |
-|:-----|:-----|
-| `Q1.cpp` | No warnings |
-| `Q2.cpp` | No warnings |
-| `Q3.cpp` | No warnings |
-| `Q4.cpp` | No warnings |
-
-*Table 1. Compilation results of the HW2 solutions*
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. Except for Q2, the `main()` functions have no `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
@@ -99,7 +90,7 @@ Define a complex number class `Complex` with the `private` integer members `real
 | Update the `image` of the second array object to -8 through the pointer `p` | `(*(p + 1)).setImage(-8);` |
 | Print the information of the object array through the pointer `p` with a `for` loop | `(p + i)->showC();` |
 
-*Table 2. The `main()` skeleton of Q1 and the corresponding code*
+*Table 1. The `main()` skeleton of Q1 and the corresponding code*
 
 ### 2.2 Design and Solution
 
@@ -201,7 +192,7 @@ Input size: 5
 0 3 6 9 12 
 ```
 
-Each line ends with one space because `' '` is printed after every number. Running the program with `leaks --atExit` on macOS reports no leaks, which confirms that the allocated array is fully released. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` in this environment), and since it is not handled, the program terminates abnormally.
+Each line ends with one space because `' '` is printed after every number. The allocated array is fully released by `delete[] pDynamic;` after the output. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` in this environment), and since it is not handled, the program terminates abnormally.
 
 ---
 
@@ -235,8 +226,6 @@ The following three points are properties that depend on the return type.
 Count: 2
 Count: 1
 ```
-
-The output matches the values written in the two comments of the code.
 
 ---
 

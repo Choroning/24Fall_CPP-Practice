@@ -102,7 +102,7 @@ int main() {
 }
 ```
 
-It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as follows.
+The output is as follows.
 
 ```text
 RED색으로 (5, 5)에 위치한 점입니다.
@@ -112,7 +112,7 @@ GREEN색으로 (3, 7)에 위치한 점입니다.
 BLACK색으로 (0, 0)에 위치한 점입니다.
 ```
 
-The output matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, and the blank line before it are printed by Xcode after the program ends and are not output of the program.
+The last line of the sample run, `Program ended with exit code: 0`, and the blank line before it are printed by Xcode after the program ends and are not output of the program.
 
 ---
 
@@ -247,7 +247,7 @@ int main() {
 }
 ```
 
-It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as follows.
+The output is as follows.
 
 ```text
 이름: 홍길동
@@ -274,7 +274,7 @@ It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as f
 평균: 77.5
 ```
 
-The output matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
+The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
 
 ---
 

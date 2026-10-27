@@ -60,7 +60,7 @@ Coursework/HW03_Dynamic-Memory/
 
 *Figure 1. Directory layout of HW3*
 
-Each solution is compiled and run as follows. All four files compile without warnings with `g++ -std=c++11 -Wall` and `g++ -std=c++17 -Wall` under Apple clang 21 on macOS. Q3 and Q4 read integers after they start.
+Each solution is compiled and run with C++11 or later as follows. Q3 and Q4 read integers after they start.
 
 ```bash
 cd Coursework/HW03_Dynamic-Memory/Solution
@@ -68,16 +68,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| File | Compilation | Leak check |
-|:-----|:-----|:-----|
-| `Q1.cpp` | No warnings | No leaks |
-| `Q2.cpp` | No warnings | No leaks |
-| `Q3.cpp` | No warnings | No leaks |
-| `Q4.cpp` | No warnings | 1 leak (32 bytes) |
-
-*Table 1. Compilation and leak check of the HW3 solutions*
-
-The leak check runs each program as in `leaks --atExit -- ./q4` on macOS and finds the heap memory left unreturned when the program ends. When the programs are built with AddressSanitizer (`-fsanitize=address,undefined`) and run, no invalid memory access is reported for any of the four. AddressSanitizer on macOS does not support leak detection, so leaks are checked with `leaks`.
+Leaks are checked on macOS by running a program as in `leaks --atExit -- ./q4`, which finds the heap memory left unreturned when the program ends. Invalid memory accesses are found by building with AddressSanitizer (`-fsanitize=address,undefined`). AddressSanitizer on macOS does not support leak detection, so leaks are checked with `leaks`. Q1 and Q3 return all the memory they allocate and Q2 uses no dynamic memory, but Q4 does not free its array and leaks memory (Section 5.2).
 
 When a program runs in Xcode, the last console line, `Program ended with exit code: 0`, is not program output but a message Xcode shows after the program ends. None of the four `main()` functions has a `return` statement, but in C++ reaching the end of `main()` is treated as returning 0, so the exit code is 0.
 
@@ -101,7 +92,7 @@ Define a complex number class `Complex` with a default constructor, a two-parame
 | Print the two dynamic objects | `(*a).pCom();`, `(*b).pCom();` |
 | Free the dynamic memory | `delete a;`, `delete b;` (each followed by an assignment of `nullptr`) |
 
-*Table 2. The `main()` skeleton of Q1 and the corresponding code*
+*Table 1. The `main()` skeleton of Q1 and the corresponding code*
 
 ### 2.2 Design and Solution
 
@@ -131,7 +122,7 @@ The following two points are properties of this design.
 1 + 9i
 ```
 
-The first two lines are the initial state made by the default constructor, and the last two lines show the changed real part of the first object and the changed imaginary part of the second. Running the program with `leaks --atExit` reports no leaks, which confirms that both objects were returned.
+The first two lines are the initial state made by the default constructor, and the last two lines show the changed real part of the first object and the changed imaginary part of the second. Both objects are returned by `delete a;` and `delete b;`.
 
 ---
 
@@ -151,7 +142,7 @@ Implement a `Member` class whose `private` members are the name `name` (`string`
 | `getName()`, `getId()`, `getAge()` | Return the value of each member |
 | `printM()` | Prints the three members on one line, separated by commas |
 
-*Table 3. Members of the Member class in Q2*
+*Table 2. Members of the Member class in Q2*
 
 ### 3.2 Design and Solution
 

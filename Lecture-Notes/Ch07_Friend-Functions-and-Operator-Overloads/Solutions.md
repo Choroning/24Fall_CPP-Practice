@@ -172,7 +172,7 @@ int main() {
 }
 ```
 
-It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as follows.
+The output is as follows.
 
 ```text
 3/4 + 2/5 = 23/20
@@ -195,7 +195,7 @@ f2는 변하지 않음! f2 = 2/5
 전위연산 수행 후, f4 = -3/5
 ```
 
-The output matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is a message Xcode prints after the program ends and is not output of the program.
+The last line of the sample run, `Program ended with exit code: 0`, is a message Xcode prints after the program ends and is not output of the program.
 
 ---
 
@@ -221,7 +221,7 @@ A friend function is not a member, so it receives every operand as a parameter, 
 
 *Table 2. Implementation and calculations of the `Complex` operator functions*
 
-Increment and decrement are treated as adding or subtracting the real number 1, so only the real part changes. This matches the sample run, where `b--` turns 2-3i into 1-3i. The commented-out line `op.imaginary *= (-1);` in `~` is another way to write the line below it with the same result.
+Increment and decrement are treated as adding or subtracting the real number 1, so only the real part changes. In the sample run, `b--` likewise turns 2-3i into 1-3i. The commented-out line `op.imaginary *= (-1);` in `~` is another way to write the line below it with the same result.
 
 The code is as follows ([`Lab_Q2.cpp`](../../Coursework/Lab07_Friend-Functions-and-Operator-Overloads/Lab_Q2.cpp)).
 
@@ -330,7 +330,7 @@ int main() {
 }
 ```
 
-It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as follows.
+The output is as follows.
 
 ```text
 [c = 10 + b 실행 후]
@@ -354,7 +354,7 @@ c = 2-3i         b = 1-3i
 c = 2-3i         b = 2-3i
 ```
 
-The output matches the sample run. The gap between the two values is printed as a tab character and a space (`"\t "`), so the output above expands tabs to a width of 8, and the gap may look different from the sample run depending on the terminal's tab setting. The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
+The gap between the two values is printed as a tab character and a space (`"\t "`), so the output above expands tabs to a width of 8, and the gap may look different from the sample run depending on the terminal's tab setting. The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
 
 ---
 
@@ -514,7 +514,7 @@ int main() {
 }
 ```
 
-It compiles without warnings with `g++ -std=c++17 -Wall`, and the output is as follows.
+The output is as follows.
 
 ```text
 t1 = (21:16:3)
@@ -535,7 +535,7 @@ t2 = (2:50:59)
 (5:15:10) <= (5:17:20)
 ```
 
-The output matches the sample run. The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
+The last line of the sample run, `Program ended with exit code: 0`, is a message printed by Xcode.
 
 ---
 

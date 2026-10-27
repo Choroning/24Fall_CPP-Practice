@@ -98,7 +98,7 @@ int main() {
 }
 ```
 
-**Output:** Compiled with `g++ -std=c++17 -Wall`, the program compiles without warnings and prints the following, which matches the sample run. Because `display()` also prints two spaces after the last element, the `x` and `y` lines end with spaces that are not visible on the screen. The last line of the sample run, `Program ended with exit code: 0`, is not printed by the program; it is a message that the development environment (Xcode) shows after the program ends.
+**Output:** Running the program prints the following. Because `display()` also prints two spaces after the last element, the `x` and `y` lines end with spaces that are not visible on the screen. The last line of the sample run, `Program ended with exit code: 0`, is not printed by the program; it is a message that the development environment (Xcode) shows after the program ends.
 
 ```text
 x = 1000  100  10  1  
@@ -199,7 +199,7 @@ int main() {
 }
 ```
 
-**Output:** Compiled with `g++ -std=c++17 -Wall`, the program compiles without warnings and prints the following, which matches the target output. As in Exercise 1, the last line `Program ended with exit code: 0` is a message shown by the development environment (Xcode).
+**Output:** Running the program prints the following. As in Exercise 1, the last line `Program ended with exit code: 0` is a message shown by the development environment (Xcode).
 
 ```text
 20과 50 중 더 큰 값은 50

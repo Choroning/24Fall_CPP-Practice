@@ -55,7 +55,7 @@ Coursework/HW04_References/
 
 *그림 1. HW4 과제의 디렉토리 구성*
 
-각 풀이는 다음과 같이 컴파일하고 실행한다. 세 파일 모두 macOS의 Apple clang 21에서 `g++ -std=c++11 -Wall`과 `g++ -std=c++17 -Wall`로 컴파일되며, 입력을 받지 않는다.
+각 풀이는 C++11 이상의 표준으로 다음과 같이 컴파일하고 실행한다. 세 프로그램은 입력을 받지 않는다.
 
 ```bash
 cd Coursework/HW04_References/Solution
@@ -63,15 +63,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 ./q1
 ```
 
-| 파일 | 컴파일 결과 |
-|:-----|:-----|
-| `Q1.cpp` | 경고 없음 |
-| `Q2.cpp` | 경고 1개: `constRef`를 쓰지 않는다는 `-Wunused-variable` |
-| `Q3.cpp` | 경고 없음 |
-
-*표 1. HW4 풀이의 컴파일 결과*
-
-세 프로그램은 동적 메모리를 쓰지 않으며, AddressSanitizer와 `leaks --atExit`로 실행해도 오류나 누수가 보고되지 않는다. Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다.
+세 프로그램은 동적 메모리를 쓰지 않는다. Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다.
 
 ---
 
@@ -132,7 +124,7 @@ g++ -std=c++17 -Wall -o q1 Q1.cpp
 | `modifyValue(int& value)` | 참조 매개변수 | 인자의 값을 2배로 만든다 |
 | `printValue(const int& value)` | `const` 참조 매개변수 | 인자의 값을 출력한다 |
 
-*표 2. Q2의 세 함수*
+*표 1. Q2의 세 함수*
 
 `main()`은 참조의 쓰임을 차례로 보인다. 먼저 `int& ref = number;`로 `number`의 별명 `ref`를 만들고, `ref = 100;`을 실행한 뒤 `number`를 출력하여 참조를 통한 변경이 원본에 반영됨을 보인다. 참조 변수는 선언할 때 반드시 초기화해야 하며, 한 번 정한 대상을 다른 변수로 바꿀 수 없다([5장 3.1절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#31-선언)). 그다음 `num1`과 `num2`를 `swapNumbers()`로 교환하고, `value`를 `modifyValue()`로 두 배로 만든다. 두 함수의 매개변수가 참조이므로 함수 안의 변경이 `main()`의 변수에 그대로 반영된다. 마지막으로 `printValue(value)`로 값을 출력한다.
 

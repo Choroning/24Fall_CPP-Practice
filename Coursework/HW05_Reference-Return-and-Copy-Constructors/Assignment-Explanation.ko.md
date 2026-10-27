@@ -50,20 +50,13 @@ Coursework/HW05_Reference-Return-and-Copy-Constructors/
 
 *그림 1. HW5 과제의 디렉토리 구성*
 
-각 풀이는 다음과 같이 컴파일하고 실행한다. 두 파일 모두 macOS의 Apple clang 21에서 `g++ -std=c++11 -Wall`과 `g++ -std=c++17 -Wall`로 컴파일된다.
+각 풀이는 C++11 이상의 표준으로 다음과 같이 컴파일하고 실행한다.
 
 ```bash
 cd Coursework/HW05_Reference-Return-and-Copy-Constructors/Solution
 g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
-
-| 파일 | 컴파일 결과 |
-|:-----|:-----|
-| `Q1.cpp` | 경고 없음 |
-| `Q2.cpp` | 경고 2개: 47행과 49행에서 문자열 리터럴을 `char*`로 변환한다는 `-Wwritable-strings` |
-
-*표 1. HW5 풀이의 컴파일 결과*
 
 Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 두 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다.
 
@@ -95,7 +88,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 28
 ```
 
-출력은 문제의 실행 예시와 같다. `leaks --atExit`와 AddressSanitizer, UndefinedBehaviorSanitizer(`-fsanitize=address,undefined`)로 실행해도 오류와 누수가 보고되지 않는다. 이 프로그램은 동적 메모리를 쓰지 않으며, `acc`는 `main()`이 끝날 때 자동으로 소멸한다.
+이 프로그램은 동적 메모리를 쓰지 않으며, `acc`는 `main()`이 끝날 때 자동으로 소멸한다.
 
 ---
 
@@ -114,7 +107,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 | 3) | 복사 생성자를 정의하지 않을 때 생기는 문제 | 3.2절의 답 |
 | 4) | 오류가 생기지 않는 복사 생성자의 정의 | `Q2.cpp`의 27~31행 |
 
-*표 2. Q2의 물음과 답의 위치*
+*표 1. Q2의 물음과 답의 위치*
 
 ### 3.2 설계와 해결 방법
 
@@ -143,11 +136,11 @@ Book::Book(Book& b) {
 
 - **디폴트 복사 생성자의 원형:** 멤버 단위 복사라는 답은 맞다([5장 4.2절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#42-디폴트-복사-생성자)). 다만 표준 C++에서 컴파일러가 암시적으로 선언하는 복사 생성자는 모든 멤버를 `const` 객체에서 복사할 수 있으면 `Book(const Book&)` 형태이며, `char*`와 `int` 멤버는 이 조건을 만족한다. 그래서 디폴트 복사 생성자로는 `const Book` 객체도 복사할 수 있지만, `Book(Book&)`만 정의한 클래스에서는 `const Book` 객체를 복사하면 "no matching constructor" 오류가 난다. 두 객체 사이에서 하는 일, 즉 `title`과 `price`를 그대로 복사하는 일은 같다.
 - **문제의 이름:** 같은 메모리를 두 번 해제하는 것은 메모리 누수가 아니라 **이중 해제(double free)** 이다. 메모리 누수는 해제하지 않은 메모리가 남는 것이고, 이중 해제는 이미 해제한 메모리를 다시 해제하는 것으로, 결과가 정의되지 않은 동작이며 대개 프로그램이 비정상 종료된다([5장 4.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#43-얕은-복사의-문제)).
-- **이 `main()`에서 먼저 생기는 문제:** 이 `main()`에서는 이중 해제보다 앞서 해제된 메모리의 사용이 생긴다. `"명품자바"`는 UTF-8로 12바이트이고 `"명품c++"`는 9바이트이므로, `java.set()`은 `cpp`와 공유하던 메모리를 해제하고 `java`에만 새 메모리를 할당한다. 그러면 `cpp.title`은 해제된 메모리를 가리키는 **댕글링 포인터(dangling pointer)** 가 되고, `cpp.show()`가 그 메모리를 읽는다([4장 4.2절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#42-댕글링-포인터)). 3.3절에서 이 상황을 실제로 실행한 결과를 다룬다.
+- **이 `main()`에서 먼저 생기는 문제:** 이 `main()`에서는 이중 해제보다 앞서 해제된 메모리의 사용이 생긴다. `"명품자바"`는 UTF-8로 12바이트이고 `"명품c++"`는 9바이트이므로, `java.set()`은 `cpp`와 공유하던 메모리를 해제하고 `java`에만 새 메모리를 할당한다. 그러면 `cpp.title`은 해제된 메모리를 가리키는 **댕글링 포인터(dangling pointer)** 가 되고, `cpp.show()`가 그 메모리를 읽는다([4장 4.2절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#42-댕글링-포인터)). 이 상황은 3.3절의 끝에 적은 방법으로 재현할 수 있다.
 
 코드를 더 견고하게 만들려면 다음 세 가지를 고려할 수 있다.
 
-- **`const char*` 매개변수:** 문자열 리터럴의 타입은 `const char[N]`이며, 이를 `char*`로 바꾸는 변환은 C++11 표준에서 삭제되었다. Apple clang은 확장으로 받아들이고 `-Wwritable-strings` 경고를 내지만, Visual Studio 2022의 표준 준수 모드(`/permissive-`)는 이 변환을 오류로 처리한다. 과제 안내문이 Visual Studio 2022에서 `const`를 추가해야 할 수 있다고 한 것은 이 변환 때문이다. 생성자와 `set()`의 매개변수를 `const char* title`로 바꾸면 두 경고가 사라지고 `-std=c++11`에서도 경고 없이 컴파일된다.
+- **`const char*` 매개변수:** 문자열 리터럴의 타입은 `const char[N]`이며, 이를 `char*`로 바꾸는 변환은 C++11 표준에서 삭제되었다. Apple clang은 확장으로 받아들이고 `-Wwritable-strings` 경고를 내지만, Visual Studio 2022의 표준 준수 모드(`/permissive-`)는 이 변환을 오류로 처리한다. 과제 안내문이 Visual Studio 2022에서 `const`를 추가해야 할 수 있다고 한 것은 이 변환 때문이다. 생성자와 `set()`의 매개변수를 `const char* title`로 바꾸면 47행과 49행의 두 경고가 사라진다.
 - **`const` 참조를 받는 복사 생성자:** 복사 생성자는 원본을 바꾸지 않으므로 `Book(const Book& b)`로 선언하면 `const` 객체와 임시 객체로부터도 복사할 수 있다([5장 5.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#53-복사-생성자의-매개변수는-참조)).
 - **대입 연산자:** 깊은 복사 생성자가 있어도 이미 만든 객체끼리 `java = cpp;`로 치환하면 컴파일러가 만든 디폴트 대입 연산자가 포인터 값만 복사한다. 소멸자가 올바르게 해제하는 `Book`으로 시험하면 AddressSanitizer가 이중 해제를 보고하고, `java`가 원래 가리키던 메모리는 누수된다. 포인터 멤버를 가진 클래스는 복사 생성자, 소멸자와 함께 대입 연산자도 작성해야 한다([5장 2.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#23-객체-치환)).
 
@@ -160,9 +153,9 @@ Book::Book(Book& b) {
 
 `java`의 제목을 바꾼 뒤에도 `cpp`의 제목이 그대로인 것은 복사 생성자가 깊은 복사를 했기 때문이다. `-Wall`의 경고 두 개는 47행과 49행에서 문자열 리터럴을 `char*` 매개변수에 넘기기 때문이며, 3.2절처럼 `const char*`로 고치면 사라진다.
 
-메모리 검사의 결과는 다음과 같다.
+이 코드를 메모리 검사 도구로 실행하면 다음과 같이 보고된다.
 
-- **AddressSanitizer와 UndefinedBehaviorSanitizer:** 오류가 보고되지 않는다.
+- **AddressSanitizer와 UndefinedBehaviorSanitizer:** 오류가 보고되지 않는다. 복사 생성자가 깊은 복사를 하므로 해제된 메모리를 읽거나 같은 메모리를 두 번 해제하는 일이 없다.
 - **`leaks --atExit`:** 블록 2개, 합계 64바이트의 누수가 보고된다. 하나는 생성자가 `cpp`의 제목에 할당한 메모리이고, 다른 하나는 `set()`이 `java`의 새 제목에 할당한 메모리이다. 복사 생성자가 `java`에 할당한 메모리는 `set()`이 해제했으므로 남지 않는다.
 
 누수의 원인은 32~35행 소멸자의 조건문 `if (!title)`이다. 이 조건은 `title`이 널 포인터일 때만 참이므로, 제목이 할당되어 있는 보통의 경우에는 `delete []`가 실행되지 않는다. 널 포인터를 검사하려면 조건이 `if (title)`이어야 하지만, `delete []`에 널 포인터를 넘기면 아무 일도 하지 않으므로 조건 없이 `delete [] title;`만 쓰면 된다([4장 4.3절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#43-소멸자의-책임)). 이렇게 고치면 출력은 같고 `leaks`는 누수를 보고하지 않는다.

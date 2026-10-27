@@ -60,22 +60,13 @@ Coursework/HW06_Default-Parameters-and-Static-Members/
 
 *그림 1. HW6 과제의 디렉토리 구성*
 
-각 풀이는 다음과 같이 컴파일하고 실행한다. 네 파일 모두 macOS의 Apple clang 21에서 `g++ -std=c++11 -Wall`과 `g++ -std=c++17 -Wall`로 경고 없이 컴파일된다.
+각 풀이는 C++11 이상의 표준으로 다음과 같이 컴파일하고 실행한다.
 
 ```bash
 cd Coursework/HW06_Default-Parameters-and-Static-Members/Solution
 g++ -std=c++17 -Wall -o q2 Q2.cpp
 ./q2
 ```
-
-| 파일 | 컴파일 결과 |
-|:-----|:-----|
-| `Q1.cpp` | 경고 없음 |
-| `Q2.cpp` | 경고 없음 |
-| `Q3.cpp` | 경고 없음 |
-| `Q4.cpp` | 경고 없음 |
-
-*표 1. HW6 풀이의 컴파일 결과*
 
 Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended with exit code: 0`은 프로그램이 출력한 것이 아니라 Xcode가 프로그램이 끝난 뒤 표시하는 문구이다. 네 `main()`에는 `return` 문이 없지만, C++에서는 `main()`의 끝에 도달하면 0을 반환한 것으로 처리하므로 종료 코드는 0이다.
 
@@ -95,7 +86,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 | `ashley(2, "Ashley")` | `id`, `name` | 2 | 20.5 | `"Ashley"` |
 | `helen(3, "Helen", 32.5)` | `id`, `name`, `weight` | 3 | 32.5 | `"Helen"` |
 
-*표 2. Q1의 세 객체와 멤버의 값*
+*표 1. Q1의 세 객체와 멤버의 값*
 
 ### 2.2 설계와 해결 방법
 
@@ -120,7 +111,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 3 32.5 Helen
 ```
 
-출력은 문제의 실행 예시와 같다. `leaks --atExit`와 `-fsanitize=address,undefined`로 실행해도 오류와 누수가 보고되지 않는다. `ashley`의 무게 20.5는 넘기지 않은 세 번째 인자 자리에 디폴트 값이 들어간 결과이다.
+`ashley`의 무게 20.5는 넘기지 않은 세 번째 인자 자리에 디폴트 값이 들어간 결과이다.
 
 ---
 
@@ -140,7 +131,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 | `show()` | `id`, `weight`, `name` 뒤에 `numPerson`을 출력한다 |
 | `static void nPerson()` | `numPerson`만 출력한다 |
 
-*표 3. Q2에서 추가하거나 수정하는 멤버*
+*표 2. Q2에서 추가하거나 수정하는 멤버*
 
 ### 3.2 설계와 해결 방법
 
@@ -172,7 +163,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 2
 ```
 
-출력은 문제의 실행 예시와 같다. `delete [] p;`는 원소의 소멸자를 생성의 역순으로 `p[1]`, `p[0]`의 순서로 호출하여 `numPerson`을 4에서 2로 줄이므로 마지막 줄은 2이다. 이후 `main()`이 끝나면 `helen`과 `grace`의 소멸자가 차례로 호출되어 `numPerson`은 0이 되지만, 이 값은 출력되지 않는다. `leaks --atExit`와 `-fsanitize=address,undefined`로 실행해도 오류와 누수가 보고되지 않는다.
+`delete [] p;`는 원소의 소멸자를 생성의 역순으로 `p[1]`, `p[0]`의 순서로 호출하여 `numPerson`을 4에서 2로 줄이므로 마지막 줄은 2이다. 이후 `main()`이 끝나면 `helen`과 `grace`의 소멸자가 차례로 호출되어 `numPerson`은 0이 되지만, 이 값은 출력되지 않는다.
 
 ---
 
@@ -191,7 +182,7 @@ static 멤버 함수만 가진 `Random` 클래스를 완성하고, 1에서 100 �
 | `nextAlphabet()` | 대문자 또는 소문자인 랜덤 알파벳 한 글자를 리턴한다 |
 | `nextDouble()` | 0 이상 1 미만의 랜덤 실수를 리턴한다 |
 
-*표 4. Q3의 Random 클래스가 가지는 static 멤버 함수*
+*표 3. Q3의 Random 클래스가 가지는 static 멤버 함수*
 
 ### 4.2 설계와 해결 방법
 
@@ -224,7 +215,7 @@ C r j F j s Y s T F
 0.753511 0.262834 0.444927 0.881017 0.253124 
 ```
 
-값은 실행할 때마다 다르다. 각 줄 끝에 공백이 하나 남는 것은 값마다 뒤에 `' '`를 붙이기 때문이다. `cout`은 `double`을 기본적으로 유효 숫자 6자리로 출력하고 끝의 0을 생략하므로, `0.73853`처럼 자릿수가 짧은 값이나 `0.0723063`처럼 소수점 아래가 7자리인 값도 나온다. `leaks --atExit`와 `-fsanitize=address,undefined`로 실행해도 오류와 누수가 보고되지 않는다.
+값은 실행할 때마다 다르다. 각 줄 끝에 공백이 하나 남는 것은 값마다 뒤에 `' '`를 붙이기 때문이다. `cout`은 `double`을 기본적으로 유효 숫자 6자리로 출력하고 끝의 0을 생략하므로, `0.73853`처럼 자릿수가 짧은 값이나 `0.0723063`처럼 소수점 아래가 7자리인 값도 나온다.
 
 ---
 
@@ -261,7 +252,7 @@ Radius: 5, Count: 3
 Radius: 5, Count: 1
 ```
 
-출력은 문제의 실행 예시와 같다. 두 번째와 세 번째 줄의 개수가 3인 것은 `a`와 배열의 두 원소가 모두 존재하기 때문이고, 마지막 줄의 1은 `delete[] p;`가 두 원소를 소멸시킨 뒤의 값이다. `leaks --atExit`와 `-fsanitize=address,undefined`로 실행해도 오류와 누수가 보고되지 않는다.
+두 번째와 세 번째 줄의 개수가 3인 것은 `a`와 배열의 두 원소가 모두 존재하기 때문이고, 마지막 줄의 1은 `delete[] p;`가 두 원소를 소멸시킨 뒤의 값이다.
 
 ---
 
