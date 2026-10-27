@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 
 **문항 출처:** 임영희 교수, 컴퓨터언어Ⅱ (DCCS102-04)
 
@@ -184,3 +184,123 @@ Program ended with exit code: 0
 `(중략)`은 실행 예시의 가독성을 위해 일부 내용을 생략한 것으로, 실제 출력에는 나타나지 않는다.
 
 **[풀이](Solutions.ko.md#연습-문제-2-구구단)**
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 6장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+함수 중복에 대한 설명 중 틀린 것은?
+
+- ① C 언어에는 함수 중복이 없다.
+- ② 함수 이름이 같고 매개 변수 타입이 서로 다르거나 매개 변수의 개수가 다르면 두 함수는 중복 가능하다.
+- ③ 클래스의 멤버 함수는 중복할 수 없다.
+- ④ 함수의 원형에서 리턴 타입만 다른 경우, 함수 중복이 성립되지 않는다.
+
+**[풀이](Solutions.ko.md#이론-문제-2)**
+
+### 이론 문제 4
+
+다음 함수 중 한 프로그램에 같이 선언할 수 없는 함수 2개를 고르라.
+
+- ① `void g();`
+- ② `int g();`
+- ③ `double g(int x)`
+- ④ `double g(int x, int y);`
+
+**[풀이](Solutions.ko.md#이론-문제-4)**
+
+### 이론 문제 6
+
+중복된 함수와 이를 호출하는 호출문의 연결(바인딩)은 언제 이루어지는가?
+
+- ① 전처리기(preprocessor)에 의해 컴파일 직전
+- ② 컴파일러에 의해 컴파일 시
+- ③ 실행 시간 중 함수가 호출되기 직전
+- ④ 실행 시간 중 함수 중복을 판별하는 특정 시간에
+
+**[풀이](Solutions.ko.md#이론-문제-6)**
+
+### 이론 문제 8
+
+다음과 같은 디폴트 매개 변수를 가진 함수가 있을 때, 적절치 못한 함수 호출은?
+
+```cpp
+int add(int a, double b = 10.0);
+```
+
+- ① `int x = add(10);`
+- ② `int x = add(10, 3.14, 10);`
+- ③ `add(10, 3.14);`
+- ④ `int x = add(10, 3.14);`
+
+**[풀이](Solutions.ko.md#이론-문제-8)**
+
+### 이론 문제 10
+
+중복 함수를 호출할 때 어떤 함수를 호출하는지 판단할 수 없는 모호성의 가능성이 있는 것은?
+
+- ① `int add(int a);`와 `int add(int a, int &b);`
+- ② `int add(int a, int b);`와 `int add(int a, int &b);`
+- ③ `int add(int a, int b);`와 `int add(int a, int* b);`
+- ④ `int add(int a, int* b);`와 `int add(int a, int &b);`
+
+**[풀이](Solutions.ko.md#이론-문제-10)**
+
+### 이론 문제 12
+
+다음 클래스의 객체가 (1)~(3)처럼 생성될 때 화면에 출력되는 결과는?
+
+```cpp
+class Overloading {
+public:
+    Overloading(int x = 0) { cout << x; }
+    Overloading(int x, string b) { cout << x << b; }
+};
+```
+
+- (1) `Overloading a;`
+- (2) `Overloading b(3);`
+- (3) `Overloading c(5, "hello");`
+
+**[풀이](Solutions.ko.md#이론-문제-12)**
+
+### 이론 문제 14
+
+다음 함수 `area()`를 호출하는 사례를 들어 함수 `area()`의 중복에 문제가 있음을 보여라.
+
+```cpp
+float area(float f);
+double area(double d);
+```
+
+**[풀이](Solutions.ko.md#이론-문제-14)**
+
+### 이론 문제 16
+
+다음 `StaticTest` 클래스가 있을 때, 이어지는 소스에서 잘못된 코드는?
+
+```cpp
+class StaticTest {
+    static int a;
+public:
+    static int getA() { return a; }
+};
+```
+
+```cpp
+StaticTest s;
+StaticTest *p = &s;
+
+StaticTest::getA();   // ①
+s.getA();             // ②
+s::getA();            // ③
+p->getA();            // ④
+```
+
+**[풀이](Solutions.ko.md#이론-문제-16)**

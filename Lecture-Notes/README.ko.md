@@ -2,12 +2,12 @@
 
 [레포지토리 안내](../README.ko.md) | [English](README.md) | [한국어](README.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 
 | 단원 | 주제 | 문서 |
 |:-----|:-----|:-----|
-| [1장 C++ 개요](Ch01_Introduction-to-CPP/) | 소프트웨어의 중요성, 프로그래밍 언어와 컴파일러, C++의 역사와 특징, 표준 C++의 중요성, C++ 표준 라이브러리, 빌드 파이프라인과 오류의 종류 | [강의 노트](Ch01_Introduction-to-CPP/Concepts_Lecture.ko.md) |
-| [2장 C++ 프로그래밍의 기본](Ch02_CPP-Programming-Basics/) | 프로그램 구조, 주석, `main` 함수, `cout`과 `<<`를 이용한 콘솔 출력, `endl`과 `'\n'`, `cin`, `>>`, `getline`을 이용한 콘솔 입력, `cin`과 `scanf`의 비교, 네임스페이스와 `using namespace std`, C++ 문자열, `auto`를 사용한 변수 선언 | [강의 노트](Ch02_CPP-Programming-Basics/Concepts_Lecture.ko.md) |
+| [1장 C++ 개요](Ch01_Introduction-to-CPP/) | 소프트웨어의 중요성, 프로그래밍 언어와 컴파일러, C++의 역사와 특징, 표준 C++의 중요성, C++ 표준 라이브러리, 빌드 파이프라인과 오류의 종류 | [강의 노트](Ch01_Introduction-to-CPP/Concepts_Lecture.ko.md), [연습 문제](Ch01_Introduction-to-CPP/Exercises.ko.md), [풀이](Ch01_Introduction-to-CPP/Solutions.ko.md) |
+| [2장 C++ 프로그래밍의 기본](Ch02_CPP-Programming-Basics/) | 프로그램 구조, 주석, `main` 함수, `cout`과 `<<`를 이용한 콘솔 출력, `endl`과 `'\n'`, `cin`, `>>`, `getline`을 이용한 콘솔 입력, `cin`과 `scanf`의 비교, 네임스페이스와 `using namespace std`, C++ 문자열, `auto`를 사용한 변수 선언 | [강의 노트](Ch02_CPP-Programming-Basics/Concepts_Lecture.ko.md), [연습 문제](Ch02_CPP-Programming-Basics/Exercises.ko.md), [풀이](Ch02_CPP-Programming-Basics/Solutions.ko.md) |
 | [3장 클래스와 객체](Ch03_Classes-and-Objects/) | 객체와 클래스의 개념, C의 `struct`와 C++의 `class`, 클래스 정의와 접근 지정자, 객체 생성과 객체 배열, 생성자와 생성자 오버로딩, 기본 생성자, 소멸자와 실행 순서, 인라인 함수, C++ 구조체, 헤더 파일과 소스 파일의 분리, 흔한 실수 | [강의 노트](Ch03_Classes-and-Objects/Concepts_Lecture.ko.md), [연습 문제](Ch03_Classes-and-Objects/Exercises.ko.md), [풀이](Ch03_Classes-and-Objects/Solutions.ko.md) |
 | [4장 포인터, 배열, 동적 메모리](Ch04_Pointers-Arrays-and-Dynamic-Memory/) | 객체 포인터와 `this` 포인터, `new`와 `delete`, 동적 객체와 동적 배열, 정적 객체 배열과 동적 객체 배열, 메모리 누수와 댕글링 포인터, 소멸자의 책임, 예외 처리, RAII와 스마트 포인터(`std::unique_ptr`, `std::shared_ptr`, `make_unique`, `make_shared`) | [강의 노트](Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md), [연습 문제](Ch04_Pointers-Arrays-and-Dynamic-Memory/Exercises.ko.md), [풀이](Ch04_Pointers-Arrays-and-Dynamic-Memory/Solutions.ko.md) |
 | [5장 함수와 복사 제어](Ch05_Functions-and-Copy-Control/) | 값, 주소, 참조에 의한 호출, 포인터와 참조의 비교, 참조 변수, 참조 매개변수와 참조 반환, 복사 생성자와 디폴트 복사 생성자, 얕은 복사와 깊은 복사, 흔한 실수 | [강의 노트](Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md), [연습 문제](Ch05_Functions-and-Copy-Control/Exercises.ko.md), [풀이](Ch05_Functions-and-Copy-Control/Solutions.ko.md) |

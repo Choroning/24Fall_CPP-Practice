@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -146,3 +146,156 @@ Program ended with exit code: 0
 ```
 
 **[Solution](Solutions.md#exercise-2-dynamic-creation-and-destruction-of-objects)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 4 exercises
+
+Theory problems 1-5 of the textbook use the following `Rect` class, which abstracts a rectangle by its width and height.
+
+```cpp
+class Rect {
+    int width, height;
+public:
+    Rect(int w, int h) { width = w; height = h; }
+    int getWidth() { return width; }
+    int getHeight() { return height; }
+    int getArea();
+};
+int Rect::getArea() {
+    return width * height;
+}
+```
+
+### Theory Problem 2
+
+We want to write code that reads a width and a height from the user, creates a `Rect` object dynamically, and prints its area. Fill in the blanks (1)-(3) as described below.
+
+```cpp
+int main() {
+    Rect *q;
+    int w, h;
+    cin >> w >> h;   // 사각형의 폭과 높이를 w, h에 입력받는다
+    // (1)
+    // (2)
+    // (3)
+}
+```
+
+- (1) Dynamically create a `Rect` object that represents a rectangle of size `w`×`h` and assign it to the pointer variable `q`.
+- (2) Print the area of the rectangle through the pointer `q`.
+- (3) Return the created object.
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+The following code, which creates an array of `Rect` objects, causes a compile error. How must the `Rect` class be changed so that no compile error occurs?
+
+```cpp
+Rect *p = new Rect[10];
+```
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+For a `Cube` class with the `public` member function `getVolume()`, there is the following code. Which of the statements that follow causes a compile error?
+
+```cpp
+Cube c;
+Cube *p = &c;
+```
+
+- ① `c.getVolume();`
+- ② `p->getVolume();`
+- ③ `(*p).getVolume();`
+- ④ `c->getVolume();`
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+What does the following program print when it runs?
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Color {
+    string c;
+public:
+    Color() { c = "white"; cout << "기본생성자" << endl; }
+    Color(string c) { this->c = c; cout << "매개변수생성자" << endl; }
+    ~Color() { cout << "소멸자" << endl; }
+};
+
+class Palette {
+    Color *p;
+public:
+    Palette() { p = new Color[3]; }
+    ~Palette() { delete [] p; }
+};
+
+int main() {
+    Palette *p = new Palette();
+    delete p;
+}
+```
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+What is wrong with the following code?
+
+```cpp
+Cube *p = new Cube [4];
+delete p;
+```
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+Which statement about the use of `this` is wrong?
+
+- ① `this` cannot be used in functions other than the member functions of a class.
+- ② `this` cannot be used in `static` member functions.
+- ③ `this` cannot be used in constructors.
+- ④ Some member functions return `this`.
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+In what situations does a memory leak occur?
+
+**[Solution](Solutions.md#theory-problem-14)**
+
+### Theory Problem 16
+
+Which header file is needed to use the `string` class?
+
+- ① `<string>`
+- ② `<string.h>`
+- ③ `<cstring>`
+- ④ `<iostream>`
+
+**[Solution](Solutions.md#theory-problem-16)**
+
+### Theory Problem 18
+
+We want to handle strings. Which statement about C-strings and the `string` class is wrong?
+
+- ① A C-string represents a string with an array of characters.
+- ② The `string` class turns a string into an object, so it is easier to use than a C-string.
+- ③ The `string` class is good, but it is not part of standard C++, so it is better avoided where possible.
+- ④ The `string` class handles only strings and has no functionality for manipulating characters, such as converting uppercase to lowercase.
+
+**[Solution](Solutions.md#theory-problem-18)**

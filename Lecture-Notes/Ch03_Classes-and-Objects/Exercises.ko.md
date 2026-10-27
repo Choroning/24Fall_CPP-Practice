@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-19
+> **최종 수정일:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -119,3 +119,184 @@ Program ended with exit code: 0
 ```
 
 **[풀이](Solutions.ko.md#연습-문제-2-커피-머신)**
+
+---
+
+<br>
+
+## 교재 이론 문제
+
+**교재:** 3장 연습문제의 이론 문제 중 짝수 번 문항
+
+### 이론 문제 2
+
+클래스와 객체에 관한 설명 중 틀린 것은?
+
+- ① 객체를 실체 혹은 인스턴스(instance)라고 부른다.
+- ② 클래스는 객체를 생성하기 위한 설계도 혹은 틀과 같다.
+- ③ 클래스의 멤버들은 `private`보다 `public` 접근 지정이 바람직하다.
+- ④ 클래스는 함수 멤버와 변수 멤버로 이루어진다.
+
+**[풀이](Solutions.ko.md#이론-문제-2)**
+
+### 이론 문제 4
+
+다음 C++ 프로그램에서 캡슐화가 부족한 부분을 수정하여 캡슐화하라.
+
+```cpp
+int age;
+void older() {
+    age++;
+}
+class Circle {
+    int radius;
+public:
+    double getArea();
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-4)**
+
+### 이론 문제 6
+
+다음 코드는 `Tower` 클래스를 작성한 사례이다. 틀린 부분을 수정하라.
+
+```cpp
+class Tower {
+    int height = 20;
+public:
+    Tower() { height = 10; return; }
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-6)**
+
+### 이론 문제 8
+
+다음은 `Calendar` 클래스의 선언부이다. `year`를 10으로 초기화하는 생성자와 `year` 값을 리턴하는 `getYear()`를 구현하라.
+
+```cpp
+class Calendar {
+private:
+    int year;
+public:
+    Calendar();
+    int getYear();
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-8)**
+
+### 이론 문제 10
+
+다음은 소멸자에 관한 설명이다. 밑줄 친 ①~④ 중 틀린 부분을 지적하라.
+
+소멸자는 ① 객체가 소멸되는 시점에 자동으로 호출되는 멤버 함수로서, ② 클래스의 이름 앞에 `~`를 붙인 이름으로 선언되어야 한다. ③ 매개 변수 있는 소멸자를 작성하여 소멸 시에 의미 있는 값을 전달할 수 있으며, 소멸자가 선언되어 있지 않으면 ④ 기본 소멸자가 자동으로 생성된다.
+
+**[풀이](Solutions.ko.md#이론-문제-10)**
+
+### 이론 문제 12
+
+다음 프로그램에서 객체 `a`, `b`, `c`가 생성되고 소멸되는 순서는 무엇인가?
+
+```cpp
+class House {
+    int numOfRooms;
+    int size;
+public:
+    House(int n, int s) { numOfRooms = n; size = s; }
+    void test() {
+        House a(1, 10);
+    }
+};
+void f() {
+    House b(2, 20);
+    b.test();
+}
+House c(3, 30);
+int main() {
+    f();
+}
+```
+
+**[풀이](Solutions.ko.md#이론-문제-12)**
+
+### 이론 문제 14
+
+다음 프로그램의 오류를 지적하고 수정하라.
+
+```cpp
+class TV {
+    int channels;
+public:
+    int colors;
+    TV() { channels = 256; }
+    TV(int a, int b) { channels = a; colors = b; }
+};
+int main() {
+    TV LG;
+    LG.channels = 200;
+    LG.colors = 60000;
+    TV Samsung(100, 50000);
+}
+```
+
+**[풀이](Solutions.ko.md#이론-문제-14)**
+
+### 이론 문제 16
+
+인라인 함수의 장단점을 설명한 것 중 옳은 것은?
+
+- ① 인라인 함수를 사용하면 컴파일 속도가 향상된다.
+- ② 인라인 함수를 이용하면 프로그램의 실행 속도가 향상된다.
+- ③ 인라인 함수를 사용하면 프로그램 작성 시간이 향상된다.
+- ④ 인라인 함수를 사용하면 프로그램의 크기가 작아져서 효과적이다.
+
+**[풀이](Solutions.ko.md#이론-문제-16)**
+
+### 이론 문제 18
+
+`inline` 선언은 강제 사항이 아니다. 다음 함수 중에서 컴파일러가 인라인으로 처리하기에 가장 바람직한 것은?
+
+```cpp
+// ①
+inline int big(int a, int b) {
+    return a > b ? a : b;
+}
+// ②
+inline int sum(int a, int b) {
+    if (a >= b) return a;
+    else return a + sum(a + 1, b);
+}
+// ③
+inline void add(int a, int b) {
+    int sum = 0;
+    for (int n = a; n < b; n++)
+        sum += n;
+}
+// ④
+inline int add(int a) {
+    static int x = 0;
+    x += a;
+    return x;
+}
+```
+
+**[풀이](Solutions.ko.md#이론-문제-18)**
+
+### 이론 문제 20
+
+다음 C++ 구조체를 동일한 의미를 가지는 클래스로 작성하라.
+
+```cpp
+struct Family {
+    int count;
+    char address[20];
+public:
+    Family();
+private:
+    char tel[11];
+};
+```
+
+**[풀이](Solutions.ko.md#이론-문제-20)**

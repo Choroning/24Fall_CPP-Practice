@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -149,3 +149,183 @@ Program ended with exit code: 0
 ```
 
 **[Solution](Solutions.md#exercise-2-student-grade-management)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 8 exercises
+
+### Theory Problem 2
+
+Which pair is closest to the concept of inheritance in object orientation?
+
+- ① A TV and a smart TV
+- ② A fabric sofa and a leather sofa
+- ③ A CPU and a PC
+- ④ A car engine and a transmission
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+For the following code, which statement causes a compile error?
+
+```cpp
+class A {
+public: int w;
+};
+class B : public A {
+public: int x;
+};
+class C : private A {
+public: int y;
+};
+class D : protected B {
+public: int z;
+};
+```
+
+- ① `A a; a.w = 10;`
+- ② `B b; b.w = 10;`
+- ③ `C c; c.y = 10;`
+- ④ `D d; d.w = 10;`
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+Choose all the places in the following code that cause a compile error.
+
+```cpp
+class A {
+    int x;
+public:
+    void setX(int x) { this->x = x; }
+};
+class B : protected A {
+    int y;
+public:
+    void setXY(int x, int y) { setX(x); this->y = y; }
+};
+int main() {
+    A a;
+    B b;
+    a.x = 3;      // ①
+    b.y = 3;      // ②
+    a.setX(5);    // ③
+    b.setX(5);    // ④
+}
+```
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+Given the following classes and variables, answer the questions.
+
+```cpp
+class A {
+public: int w;
+};
+class B : public A {
+public: int x;
+};
+class C : public A {
+public: int y;
+};
+class D : public B {
+public: int z;
+};
+A a; B b; C c; D d;
+A *ap = &a;
+B *bp = &b;
+C *cp = &c;
+D *dp = &d;
+```
+
+(1) Which is not an upcast? ① `ap = bp;` ② `ap = cp;` ③ `bp = cp;` ④ `bp = dp;`
+
+(2) List all the members of the object `d`.
+
+(3) Which access to a member of the object `d` causes a compile error? ① `d.x = 10;` ② `dp->x = 10;` ③ `ap = dp; ap->x = 10;` ④ `bp = dp; bp->x = 10;`
+
+(4) Writing the following two lines causes a compile error in the second line. Fix it.
+
+```cpp
+ap = dp;
+dp = ap;
+```
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+Answer the questions about the following code.
+
+```cpp
+class A {
+public:
+    A(int x) { cout << "생성자 A " << x << endl; }
+};
+class B : public A {
+public:
+    B() { cout << "생성자 B" << endl; }
+    B(int x) { cout << "생성자 B " << x << endl; }
+};
+```
+
+(1) Where in the code above does a compile error occur, and what is it?
+
+(2) Change the constructor `B()` so that running `B b;` prints the two lines `생성자 A 20` and `생성자 B` ("constructor A 20", "constructor B").
+
+(3) Change the constructor `B(int x)` so that running `B b(15);` prints the two lines `생성자 A 35` and `생성자 B 15`.
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+Which statement about multiple inheritance is wrong?
+
+- ① Java has no multiple inheritance of classes.
+- ② It increases programming productivity by reusing existing classes.
+- ③ Multiple inheritance can cause ambiguity.
+- ④ Ambiguity caused by multiple inheritance is found at run time, so it is solved by virtual inheritance through dynamic binding.
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+Given the following classes, answer the questions.
+
+```cpp
+class Pen { ... };
+class Eraser { ... };
+class Lock { ... };
+```
+
+(1) Declare a class `HiPen` that inherits from both `Pen` and `Eraser`.
+
+(2) Declare a class `OmniPen` that inherits from `Pen`, `Eraser`, and `Lock` at the same time.
+
+**[Solution](Solutions.md#theory-problem-14)**
+
+### Theory Problem 16
+
+Point out the potential problem of the inheritance relationship of the following classes and fix it.
+
+```cpp
+class TV {
+public: int screenSize;
+};
+class ColorTV : public TV {
+public: int color;
+};
+class InternetTV : public TV {
+public: string ipAddr;
+};
+```
+
+**[Solution](Solutions.md#theory-problem-16)**

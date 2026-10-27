@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -184,3 +184,153 @@ Program ended with exit code: 0
 ```
 
 **[Solution](Solutions.md#exercise-3-copy-constructor)**
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 5 exercises
+
+### Theory Problem 2
+
+In general, which kind of function call carries the greatest cost?
+
+- ① Call by value
+- ② Call by address
+- ③ Call by reference
+- ④ Call by implication
+
+**[Solution](Solutions.md#theory-problem-2)**
+
+### Theory Problem 4
+
+Are the following two function declarations the same?
+
+(1) `void f(int p[]);` and `void f(int *p);`
+
+(2) `void f(int *p);` and `void f(int &p);`
+
+**[Solution](Solutions.md#theory-problem-4)**
+
+### Theory Problem 6
+
+What is the output of the following program?
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void square(int n[], int size) {
+    for(int i = 0; i < size; i++)
+        n[i] = n[i] * n[i];
+}
+
+int main() {
+    int m[3] = {1, 2, 3};
+    square(m, 3);
+    for(int i = 0; i < 3; i++)
+        cout << m[i] << ' ';
+}
+```
+
+**[Solution](Solutions.md#theory-problem-6)**
+
+### Theory Problem 8
+
+Which statement fails to store the character `'a'` in the variable `c`?
+
+```cpp
+char c;
+char *p = &c;
+char q = c;
+char &r = c;
+```
+
+- ① `c = 'a';`
+- ② `q = 'a';`
+- ③ `r = 'a';`
+- ④ `*p = 'a';`
+
+**[Solution](Solutions.md#theory-problem-8)**
+
+### Theory Problem 10
+
+What happens to the array `array` when each of the following statements is executed separately?
+
+```cpp
+int array[] = {0, 2, 4, 6, 8, 10, 12, 14, 16, 18};
+int& f(int n) {
+    return array[n];
+}
+```
+
+(1) `f(9) = 100;`
+
+(2) `for(int i = 1; i < 9; i++) f(i) = f(i) + 2;`
+
+(3) `int v = f(0); v = 100;`
+
+(4) `f(f(2)) = 0;`
+
+**[Solution](Solutions.md#theory-problem-10)**
+
+### Theory Problem 12
+
+There are two similar-looking functions as follows.
+
+```cpp
+int& big1(int a, int b) {
+    if(a > b) return a;
+    else return b;
+}
+int& big2(int& a, int& b) {
+    if(a > b) return a;
+    else return b;
+}
+```
+
+Predict how the values of `x` and `y` change when the following code runs, and explain why.
+
+```cpp
+int x = 1, y = 2;
+int& z = big1(x, y);
+z = 100;
+int& w = big2(x, y);
+w = 100;
+```
+
+**[Solution](Solutions.md#theory-problem-12)**
+
+### Theory Problem 14
+
+Given a class `MyClass`, in which case is a copy constructor not needed?
+
+- ① `MyClass a = f();` (when `f()` returns a `MyClass` object)
+- ② `void f(MyClass *p);`
+- ③ `MyClass b = a;` (`a` is of type `MyClass`)
+- ④ `MyClass b(a);` (`a` is of type `MyClass`)
+
+**[Solution](Solutions.md#theory-problem-14)**
+
+### Theory Problem 16
+
+Which statement about copy constructors is wrong? Choice ① states that several copy constructors can be declared in one class by overloading.
+
+**[Solution](Solutions.md#theory-problem-16)**
+
+### Theory Problem 18
+
+What default copy constructor does the compiler insert into the following class?
+
+```cpp
+class Student {
+    string *pName;
+    string *pId;
+    double grade;
+};
+```
+
+**[Solution](Solutions.md#theory-problem-18)**

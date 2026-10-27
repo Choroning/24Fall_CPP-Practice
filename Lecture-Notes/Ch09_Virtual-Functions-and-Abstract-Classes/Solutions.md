@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-10-27
 
 ---
 
@@ -12,6 +12,7 @@
 
 - [Exercise 1: Student Grade Management with Virtual Functions](#exercise-1-student-grade-management-with-virtual-functions)
 - [Exercise 2: Unit Conversion with Virtual Functions](#exercise-2-unit-conversion-with-virtual-functions)
+- [Textbook Theory Problems](#textbook-theory-problems)
 
 ---
 
@@ -299,3 +300,96 @@ int main() {
 10.3 리터 = 2.72098 갤런
 섭씨 24.5도 = 화씨 76.1도
 ```
+
+---
+
+<br>
+
+## Textbook Theory Problems
+
+**Textbook:** Even-numbered theory problems of the Chapter 9 exercises
+
+### Theory Problem 2
+
+**Problem:** Choose the name for redefining, in a derived class, a function with the same type as a virtual function of the base class.
+
+**Answer:** ②
+
+Redefining in a derived class a function with the same name, parameter list, and return type as a virtual function of the base class is called **overriding** ([Section 2](Concepts_Lecture.md#2-virtual-functions)). Overloading is having several functions with the same name and different parameters in the same scope, `virtual` is the keyword that declares a virtual function, and dynamic binding is the process of deciding at run time which of the overridden virtual functions to execute.
+
+### Theory Problem 4
+
+**Problem:** Give the object-oriented feature shown by overloading, overriding, and operator overloading.
+
+**Answer:** Polymorphism
+
+All three let the same name or symbol behave differently depending on the situation. Function overloading and operator overloading are static polymorphism, in which the function to call is decided at compile time from the types and number of the arguments, and overriding of virtual functions is dynamic polymorphism, in which the function is decided at run time from the actual type of the object.
+
+### Theory Problem 6
+
+**Problem:** Choose the virtual functions among `f()` of `A`, `B`, and `C` and `A::func()`, and give the results of calling `f()` and `func()` through an object and through pointers.
+
+**Answer:**
+
+- (1) ①, ②, ③
+- (2)-(5) All four statements print `C::f() called`.
+
+`f()` of `A` is declared `virtual`, and a function that redefines, with the same type, a function declared virtual in a base class automatically becomes a virtual function even without `virtual`. So `f()` of `B` and of `C` are virtual functions as well. `func()` is an ordinary member function without `virtual`.
+
+- **(2) `c.f();`:** The type of the object `c` is `C`, so `C::f()` is called.
+- **(3) `pb->f();`, (4) `pa->f();`:** `pa` and `pb` are an `A*` and a `B*`, but the object they actually point to is a `C` and `f()` is a virtual function, so `C::f()` is called through dynamic binding ([Section 2.4](Concepts_Lecture.md#24-static-vs-dynamic-binding)).
+- **(5) `pa->func();`:** `func()` is an ordinary function of `A`, so `A::func()` runs, but the call to `f()` inside it is `this->f()`, a virtual function call. The object `this` points to is a `C`, so `C::f()` is called.
+
+### Theory Problem 8
+
+**Problem:** Write the code inside `B::g()` that calls the external function `f()`, `f()` of `A`, and its own `f()`, respectively.
+
+**Answer:** (1) `::f();` (2) `A::f();` (3) `f();`
+
+Inside a member function of `B`, the name `f` is first looked up among the members of its own class, `B::f()`, so writing only `f()` calls its own member function, as in (3). To call the function in the global scope, `::f()` is written with nothing before the scope resolution operator. To call the base class version, the scope is given by the class name, as in `A::f()`, and such a qualified call directly calls `A::f()` without dynamic binding, even for a virtual function ([Section 2.10](Concepts_Lecture.md#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)).
+
+### Theory Problem 10
+
+**Problem:** Give the output and the problem when a derived class object is deleted through a base class pointer, and solve the problem.
+
+**Answer:**
+
+(1) The output is the single line `id=10`. The destructor of `Student` does not run, so `name`, allocated dynamically in the constructor, is not returned and memory leaks.
+
+(2) Declare the destructor of `Person` as a virtual function.
+
+```cpp
+virtual ~Person() { cout << "id=" << id << endl; }
+```
+
+In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and in this environment only `~Person()` ran. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
+
+### Theory Problem 12
+
+**Problem:** Choose the wrong statement about pure virtual functions.
+
+**Answer:** ③
+
+A pure virtual function is a member function of a class declared as in `virtual void draw() = 0;`, so an external function that does not belong to a class cannot be a pure virtual function. The others are correct. A class with even one pure virtual function is an abstract class (①), a pure virtual function has no body and fixes the form of a function that derived classes must implement (②), and when it is called through a pointer or reference to the base class, dynamic binding runs the function implemented by the derived class (④) ([Section 4](Concepts_Lecture.md#4-abstract-classes)).
+
+### Theory Problem 14
+
+**Problem:** For `Shape`, which has the pure virtual function `draw()`, and `Circle`, which does not implement `draw()`, choose the declarations that cause an error and fix the classes so that `반지름=10인 원` is printed.
+
+**Answer:**
+
+(1) ①, ③. An abstract class cannot create objects. `Shape` is an abstract class with a pure virtual function, and `Circle` is also an abstract class because it did not implement the inherited pure virtual function `draw()`. ② and ④ declare pointers, which create no objects, so they are not errors.
+
+(2) Implement `draw()` in `Circle`.
+
+```cpp
+class Circle : public Shape {
+    int radius;
+public:
+    Circle(int radius = 1) { this->radius = radius; }
+    double getArea() { return 3.14 * radius * radius; }
+    void draw() { cout << "반지름=" << radius << "인 원" << endl; }
+};
+```
+
+Once `Circle` implements `draw()`, it is no longer an abstract class, so objects can be created. `p->paint();` runs `paint()` of `Shape`, and the call to `draw()` inside it runs `Circle::draw()` through dynamic binding, printing `반지름=10인 원`.
