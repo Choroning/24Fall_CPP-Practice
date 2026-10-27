@@ -25,7 +25,7 @@ This repository archives bilingual lecture notes and coursework for the Computer
 - `Lecture-Notes/` holds a lecture note for each chapter, and Chapters 1-10 also hold exercises made up of the lab problems and the textbook theory problems, with their solutions.
 - `Coursework/` holds the solutions and explanations of the Computer Language and Training Ⅱ assignments (`HW01`-`HW08`) and the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
 - Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
-- All code compiles with C++11 and C++17.
+- All code was compiled and checked with C++11 and C++17.
 
 > **🤖 AI Agent Usage**
 > [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
