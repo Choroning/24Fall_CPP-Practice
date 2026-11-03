@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
@@ -281,22 +281,15 @@ friend Vector2D operator+(const Vector2D &lhs, const Vector2D &rhs);
 
 **Decision Flowchart:**
 
-```text
-Is the LEFT operand your class type?
- |
- +-- YES --> Does the operator modify the left operand? (e.g., +=, ++, =)
- |            |
- |            +-- YES --> Member function (return *this by reference)
- |            |
- |            +-- NO  --> Member function (return new object by value)
- |
- +-- NO  --> (e.g., cout << obj,  3 + obj,  cin >> obj)
-              |
-              Does it need access to private members?
-              |
-              +-- YES --> Friend function
-              |
-              +-- NO  --> Non-member non-friend function
+```mermaid
+flowchart TD
+    Q1{"Is the LEFT operand your class type?"}
+    Q1 -->|YES| Q2{"Does the operator modify the left operand?<br>(e.g., +=, ++, =)"}
+    Q2 -->|YES| M1["Member function<br>(return *this by reference)"]
+    Q2 -->|NO| M2["Member function<br>(return new object by value)"]
+    Q1 -->|"NO<br>(e.g., cout #lt;#lt; obj, 3 + obj, cin #gt;#gt; obj)"| Q3{"Does it need access to private members?"}
+    Q3 -->|YES| F["Friend function"]
+    Q3 -->|NO| N["Non-member non-friend function"]
 ```
 
 *Figure 1. Flowchart for choosing how to implement an operator function*

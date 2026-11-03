@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -69,14 +69,14 @@ int main()                // 진입점 함수
 }
 ```
 
-```text
-C++ 프로그램 구조
-├── 전처리기 지시문          #include <iostream>
-├── 네임스페이스 선언        using namespace std;
-├── main 함수               int main() { ... }
-│   ├── 실행문              cout << "Hello" << endl;
-│   └── 리턴문              return 0;
-└── 기타 함수               (이후 장에서 학습)
+```mermaid
+graph TD
+    P["C++ 프로그램 구조"] --> D["전처리기 지시문<br>#include #lt;iostream#gt;"]
+    P --> N["네임스페이스 선언<br>using namespace std;"]
+    P --> M["main 함수<br>int main() { ... }"]
+    M --> S["실행문<br>cout #lt;#lt; #quot;Hello#quot; #lt;#lt; endl;"]
+    M --> R["리턴문<br>return 0;"]
+    P --> O["기타 함수<br>(이후 장에서 학습)"]
 ```
 
 *그림 1. C++ 프로그램의 구성 요소*

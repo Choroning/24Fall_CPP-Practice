@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -904,13 +904,11 @@ int main() {
 
 **다형성(Polymorphism)** 은 "하나의 인터페이스, 여러 구현"을 의미한다. 기본 클래스 포인터가 런타임에 실제 객체 타입에 따라 서로 다른 파생 클래스 구현을 호출할 수 있다.
 
-```text
-            Base* p
-               │
-     ┌─────────┼─────────┐
-     ▼         ▼         ▼
-  DerivedA  DerivedB  DerivedC
-   func()    func()    func()
+```mermaid
+graph TD
+    P["Base* p"] --> A["DerivedA<br>func()"]
+    P --> B["DerivedB<br>func()"]
+    P --> C["DerivedC<br>func()"]
 ```
 
 *그림 3. 하나의 기본 클래스 포인터가 여러 파생 클래스의 func()를 호출하는 구조*

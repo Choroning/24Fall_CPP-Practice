@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -78,20 +78,13 @@ In object-oriented programming (OOP), **everything is modeled as an object**. Ev
 
 The color and ingredients of medicine inside a capsule cannot be seen, and the medicine is safe from the outside. Likewise, encapsulation wraps an object in a capsule to protect its internals and hide them from view, with the purpose of securing and protecting the data in the object and restricting outside access. Part of an object, however, is exposed as an interface for exchanging information with the outside. A TV hides its internal circuitry but exposes power, brightness, channel, and volume buttons to communicate with a remote control object.
 
-```text
-┌───────────────────────────┐
-│          Object           │
-│                           │
-│  ┌─────────────────────┐  │
-│  │  State (private)    │  │
-│  │  - member variables │  │
-│  └─────────────────────┘  │
-│                           │
-│  ┌─────────────────────┐  │
-│  │  Behavior (public)  │  │
-│  │  - member functions │  │
-│  └─────────────────────┘  │
-└───────────────────────────┘
+```mermaid
+graph TD
+    subgraph OBJ["Object"]
+        S["State (private)<br>member variables"]
+        B["Behavior (public)<br>member functions"]
+    end
+    S ~~~ B
 ```
 
 *Figure 1. Structure of an object bundling state and behavior*
@@ -687,9 +680,14 @@ void func() {
 }                    // b destroyed first, then a
 ```
 
-```text
-Construction order: a → b
-Destruction order:  b → a
+```mermaid
+graph LR
+    subgraph CON["Construction order"]
+        ca["a"] --> cb["b"]
+    end
+    subgraph DES["Destruction order"]
+        db["b"] --> da["a"]
+    end
 ```
 
 *Figure 2. Construction and destruction order of local objects a and b*

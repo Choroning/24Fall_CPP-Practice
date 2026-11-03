@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -643,12 +643,13 @@ Member functions of the derived class can also call members of both base classes
 
 **Diamond problem:** When two base classes share a common ancestor, the derived class may inherit **two copies** of the ancestor's members.
 
-```text
-      Base
-     /    \
-    A      B
-     \    /
-       C        ← C has TWO copies of Base members
+```mermaid
+classDiagram
+    Base <|-- A
+    Base <|-- B
+    A <|-- C
+    B <|-- C
+    note for C "C has TWO copies of Base members"
 ```
 
 *Figure 3. Diamond-shaped multiple inheritance*

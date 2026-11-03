@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -904,13 +904,11 @@ Calculated value: 2
 
 **Polymorphism** means "one interface, multiple implementations." A base class pointer can call different derived class implementations depending on the actual object type at runtime.
 
-```text
-            Base* p
-               │
-     ┌─────────┼─────────┐
-     ▼         ▼         ▼
-  DerivedA  DerivedB  DerivedC
-   func()    func()    func()
+```mermaid
+graph TD
+    P["Base* p"] --> A["DerivedA<br>func()"]
+    P --> B["DerivedB<br>func()"]
+    P --> C["DerivedC<br>func()"]
 ```
 
 *Figure 3. Structure in which one base class pointer calls func() of several derived classes*

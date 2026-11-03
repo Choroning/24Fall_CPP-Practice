@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -84,18 +84,9 @@ Inside: x = 11
 Outside: a = 10
 ```
 
-```text
-Call by Value
-┌──────────────┐
-│ main         │
-│  a = 10      │  ← original unchanged
-└──────┬───────┘
-       │ copy
-       ▼
-┌──────────────┐
-│ addOne       │
-│  x = 10 → 11 │  ← local copy modified
-└──────────────┘
+```mermaid
+flowchart TD
+    M["main<br>a = 10<br>(original unchanged)"] -->|"copy"| F["addOne<br>x = 10 → 11<br>(local copy modified)"]
 ```
 
 *Figure 1. Call by value modifying only the copy*
@@ -120,19 +111,9 @@ int main() {
 }
 ```
 
-```text
-Call by Address (Pointer)
-┌───────────────┐
-│ main          │
-│  a = 10 → 11  │  ← original modified
-└───────┬───────┘
-        │ &a (address)
-        ▼
-┌───────────────┐
-│ addOne        │
-│  p = &a       │
-│  *p = 10 → 11 │
-└───────────────┘
+```mermaid
+flowchart TD
+    M["main<br>a = 10 → 11<br>(original modified)"] -->|"#amp;a (address)"| F["addOne<br>p = #amp;a<br>*p = 10 → 11"]
 ```
 
 *Figure 2. Call by address modifying the original through a pointer*
@@ -157,19 +138,9 @@ int main() {
 }
 ```
 
-```text
-Call by Reference
-┌───────────────┐
-│ main          │
-│  a = 10 → 11  │  ← original modified
-└───────┬───────┘
-        │ reference (alias)
-        ▼
-┌───────────────┐
-│ addOne        │
-│  x ≡ a        │  ← x IS a (same memory)
-│  x = 10 → 11  │
-└───────────────┘
+```mermaid
+flowchart TD
+    M["main<br>a = 10 → 11<br>(original modified)"] -->|"reference (alias)"| F["addOne<br>x ≡ a (x is a, same memory)<br>x = 10 → 11"]
 ```
 
 *Figure 3. Call by reference modifying the original through an alias*

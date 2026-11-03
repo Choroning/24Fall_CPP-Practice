@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -643,12 +643,13 @@ int main() {
 
 **다이아몬드 문제:** 두 기본 클래스가 공통 조상을 공유하면, 파생 클래스가 조상의 멤버를 **두 벌** 상속받을 수 있다.
 
-```text
-      Base
-     /    \
-    A      B
-     \    /
-       C        ← C가 Base 멤버의 복사본 두 개를 가짐
+```mermaid
+classDiagram
+    Base <|-- A
+    Base <|-- B
+    A <|-- C
+    B <|-- C
+    note for C "C가 Base 멤버의 복사본 두 개를 가짐"
 ```
 
 *그림 3. 다이아몬드 형태의 다중 상속*

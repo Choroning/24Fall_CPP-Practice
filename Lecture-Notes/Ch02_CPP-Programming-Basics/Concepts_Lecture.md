@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-19
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -69,14 +69,14 @@ int main()                // entry point function
 }
 ```
 
-```text
-C++ Program Structure
-├── Preprocessor Directives   #include <iostream>
-├── Namespace Declaration     using namespace std;
-├── main Function             int main() { ... }
-│   ├── Statements            cout << "Hello" << endl;
-│   └── Return Statement      return 0;
-└── Other Functions           (defined later in the course)
+```mermaid
+graph TD
+    P["C++ Program Structure"] --> D["Preprocessor Directives<br>#include #lt;iostream#gt;"]
+    P --> N["Namespace Declaration<br>using namespace std;"]
+    P --> M["main Function<br>int main() { ... }"]
+    M --> S["Statements<br>cout #lt;#lt; #quot;Hello#quot; #lt;#lt; endl;"]
+    M --> R["Return Statement<br>return 0;"]
+    P --> O["Other Functions<br>(defined later in the course)"]
 ```
 
 *Figure 1. Components of a C++ program*

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-04
 >
 > 명품 C++ Programming, 황기태, Ch 1
 
@@ -50,16 +50,16 @@ Modern society runs on **software**. From smartphones and automobiles to banking
 
 As the saying "Software is eating the world" suggests, the competitiveness of companies such as eBay, Facebook, Google, Netflix, Apple, and Samsung comes from software. Software is also at the core of the technologies driving the Fourth Industrial Revolution, such as self-driving cars, artificial intelligence (Google's AlphaGo, IBM Watson), and the Internet of Things (IoT).
 
-```text
-Computer System
-├── Hardware
-│   ├── CPU (Central Processing Unit)
-│   ├── Memory (RAM)
-│   ├── Storage (HDD/SSD)
-│   └── I/O Devices (keyboard, monitor, etc.)
-└── Software
-    ├── System Software (OS, drivers, compilers)
-    └── Application Software (browsers, games, office suites)
+```mermaid
+graph TD
+    CS["Computer System"] --> HW["Hardware"]
+    CS --> SW["Software"]
+    HW --> CPU["CPU (Central Processing Unit)"]
+    HW --> MEM["Memory (RAM)"]
+    HW --> STO["Storage (HDD/SSD)"]
+    HW --> IO["I/O Devices (keyboard, monitor, etc.)"]
+    SW --> SYS["System Software (OS, drivers, compilers)"]
+    SW --> APP["Application Software (browsers, games, office suites)"]
 ```
 
 *Figure 1. Hardware and software that make up a computer system*
@@ -112,21 +112,11 @@ Converting an assembly program into machine code is called **assembling**, and c
 
 A **compiler** translates the entire source code of a high-level language into machine code **before** execution. The resulting binary runs directly on the CPU.
 
-```text
-Source Code (C++)
-        │
-        ▼
-   ┌──────────┐
-   │ Compiler │  ← translates entire program at once
-   └──────────┘
-        │
-        ▼
-Machine Code (Binary)
-        │
-        ▼
-   ┌──────────┐
-   │   CPU    │  ← executes directly
-   └──────────┘
+```mermaid
+flowchart TD
+    S["Source Code (C++)"] --> C["Compiler<br>translates entire program at once"]
+    C --> M["Machine Code (Binary)"]
+    M --> U["CPU<br>executes directly"]
 ```
 
 *Figure 2. A compiler translating source code into machine code that the CPU executes*
@@ -212,11 +202,11 @@ Function overloading, default parameters, references, call by reference, `new` a
 
 **The three pillars of object-oriented programming:**
 
-```text
-OOP
-├── Encapsulation  — bundle data + methods; hide internal details (class, private/public)
-├── Inheritance    — derive new classes from existing ones; code reuse (class Dog : public Animal)
-└── Polymorphism   — same interface, different behavior (virtual functions, overriding)
+```mermaid
+graph TD
+    OOP["OOP"] --> E["Encapsulation<br>bundle data + methods, hide internal details<br>(class, private/public)"]
+    OOP --> I["Inheritance<br>derive new classes from existing ones, code reuse<br>(class Dog : public Animal)"]
+    OOP --> P["Polymorphism<br>same interface, different behavior<br>(virtual functions, overriding)"]
 ```
 
 *Figure 4. The three pillars of object-oriented programming*
@@ -406,38 +396,24 @@ Modules are not yet universally supported across all compilers and build systems
 
 The process of creating a C++ program follows the four phases below.
 
-```text
-┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
-│   1. Edit    │───▶│ 2. Compile   │───▶│  3. Link     │───▶│ 4. Execute   │
-│ (source code)│    │ (.cpp → .obj)│    │ (.obj → .exe)│    │ (run & test) │
-└──────────────┘    └──────────────┘    └──────────────┘    └──────────────┘
+```mermaid
+flowchart LR
+    E["1. Edit<br>(source code)"] --> C["2. Compile<br>(.cpp → .obj)"]
+    C --> L["3. Link<br>(.obj → .exe)"]
+    L --> X["4. Execute<br>(run and test)"]
 ```
 
 *Figure 5. The four phases of C++ program development*
 
-```text
-   main.cpp        iostream (header)
-      │               │
-      ▼               │
-┌────────────┐        │
-│Preprocessor│◀───────┘  (#include expansion)
-└────────────┘
-      │
-      ▼
-┌────────────┐
-│  Compiler  │       (C++ code → object code)
-└────────────┘
-      │
-      ▼
-  main.obj           (object file — machine code, not yet executable)
-      │
-      ▼
-┌────────────┐
-│   Linker   │◀───── library files (standard library, etc.)
-└────────────┘
-      │
-      ▼
-  main.exe           (final executable)
+```mermaid
+flowchart TD
+    M["main.cpp"] --> P["Preprocessor<br>(#include expansion)"]
+    H["iostream (header)"] --> P
+    P --> C["Compiler<br>(C++ code → object code)"]
+    C --> O["main.obj<br>(object file: machine code, not yet executable)"]
+    O --> L["Linker"]
+    LIB["library files<br>(standard library, etc.)"] --> L
+    L --> X["main.exe<br>(final executable)"]
 ```
 
 *Figure 6. Building an executable through preprocessing, compiling, and linking*
