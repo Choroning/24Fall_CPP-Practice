@@ -3,7 +3,7 @@
 ![Last Commit](https://img.shields.io/github/last-commit/Choroning/24Fall_CPP-Practice)
 ![Languages](https://img.shields.io/github/languages/top/Choroning/24Fall_CPP-Practice)
 
-This repository archives bilingual lecture notes and coursework for the Computer Language Ⅱ course.
+This repository archives lecture notes and coursework for the Computer Language Ⅱ course.
 
 *Author: Cheolwon Park (Korea University Sejong, CSE) - Year 1 (Freshman) as of 2024*
 <br><br>
@@ -26,8 +26,8 @@ This repository archives bilingual lecture notes and coursework for the Computer
 - `Coursework/` holds the solutions and explanations of the Computer Language and Training Ⅱ assignments (`HW01`-`HW08`) and the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
 - Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
 
-> **🤖 AI Agent Usage**
-> [Claude Code](https://claude.ai/download) was used to organize and translate the notes and to restructure the repository.
+> **🤖 Use of Generative AI Tools**
+> This course restricts the use of generative AI tools; this repository uses [Claude Code](https://claude.ai/download) for documentation.
 
 <br><a name="course-information"></a>
 ## 📚 Course Information
