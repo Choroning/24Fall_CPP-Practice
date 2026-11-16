@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the fourth assignment of section 3 of Computer Language and Training Ⅱ. It consists of one lab problem from the Week 9 lecture slides and two free problems on references.
 
@@ -85,3 +85,9 @@ Write any code related to references and submit the code with its analysis.
 ## Problem 3. Free Problem 2 Combining References with Classes
 
 Write any code that uses references together with a class and submit the code with its analysis.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

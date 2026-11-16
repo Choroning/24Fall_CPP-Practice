@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the eighth assignment of section 3 of Computer Language and Training Ⅱ. It consists of three lab problems from the Week 13 lecture slides.
 
@@ -129,6 +129,12 @@ int main() {
 **Sample Run**
 
 ```text
-4 3 2 1
+4 3 2 1 
 Matrix = { 1 2 3 4 }
 ```
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

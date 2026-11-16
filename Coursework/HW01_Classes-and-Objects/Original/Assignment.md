@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the first assignment of section 3 of Computer Language and Training Ⅱ. It consists of two programming exercises from Chapter 3 of the lecture textbook and one problem from the Week 4 lecture slides.
 
@@ -108,3 +108,9 @@ p2. x: -3, y: 4
 ```
 
 The slides build the same `Point` class step by step in the preceding [Problem 1-1] and [Problem 1-2]. [Problem 1-1] reads the coordinates of two points and prints the distance between them with `sqrt()` from `<cmath>`, and [Problem 1-2] prints the coordinates of `Point p1;` and `Point p2(3, 4);` with a `Point` class that has a default constructor, a two-argument constructor, and `showP()`. When a problem says nothing about access control, the member variables and member functions are `public`. [Problem 1-3] adds `private` access control and get/set functions to this.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

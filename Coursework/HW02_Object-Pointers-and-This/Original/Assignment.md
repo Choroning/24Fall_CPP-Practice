@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the second assignment of section 3 of Computer Language and Training Ⅱ. It consists of one problem from the Week 5 lecture slides, one free coding problem that handles an object through a pointer, and two items that prepare for the next class (an analysis of code from the slides and free code about the `this` pointer).
 
@@ -120,3 +120,9 @@ For line 10, the slides add that an ordinary array must be created with a fixed 
 ## Problem 4. Preview: Free Code About the this Pointer and Its Analysis
 
 Freely write code that uses the `this` pointer, and analyze it.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

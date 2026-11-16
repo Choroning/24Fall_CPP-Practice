@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -44,6 +44,8 @@
 <br>
 
 ## 1. 과제 구성과 실행 방법
+
+> **풀어 보기:** 이 문서는 정답과 풀이를 담고 있다. 먼저 [과제 안내문](Original/Assignment.ko.md)의 문제를 직접 풀어 본 뒤 읽는다.
 
 이 과제는 4장의 객체 포인터, 동적 배열, `this` 포인터를 연습한다. Q1은 5주차 강의자료의 [문제 5-2]이고, Q2와 Q4는 주제만 정해진 자유 코드이며, Q3은 5주차 강의자료에 실린 동적 메모리 코드를 분석하는 문항이다. 과제 안내문은 [`Original/Assignment.ko.md`](Original/Assignment.ko.md)에 있고, 각 코드를 처음부터 끝까지 따라가는 설명은 [HW2 코드 총정리](Code-Walkthrough.ko.md)에 있다.
 

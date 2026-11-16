@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -39,6 +39,8 @@
 <br>
 
 ## 1. 과제 구성과 실행 방법
+
+> **풀어 보기:** 이 문서는 정답과 풀이를 담고 있다. 먼저 [과제 안내문](Original/Assignment.ko.md)의 문제를 직접 풀어 본 뒤 읽는다.
 
 이 과제는 5장의 참조 변수, 참조 매개변수, 참조 리턴을 연습한다. Q1은 9주차 강의자료의 [실습 문제 2]이고, Q2와 Q3은 참조를 주제로 자유롭게 작성한 코드이다. 과제 안내문은 [`Original/Assignment.ko.md`](Original/Assignment.ko.md)에 있고, 각 코드를 처음부터 끝까지 따라가는 설명은 [HW4 코드 총정리](Code-Walkthrough.ko.md)에 있다.
 

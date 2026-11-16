@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -43,6 +43,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the default parameters and static members of Chapter 6. Q1-Q4 are [Lab 2-2], [Lab 2-3], [Lab 3], and [Lab 4] of the Week 11 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW6 Code Walkthrough](Code-Walkthrough.md).
 

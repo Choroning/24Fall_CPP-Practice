@@ -2,12 +2,12 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
 > **Learning Objectives:**
-> 1. Explain why chained calls all act on the same object when a member function returns `*this` by reference, and compare the result with returning by value
+> 1. Explain which object each call acts on when member functions that return a reference are chained, and compare the result with returning by value
 > 2. Explain the member-by-member copy performed by the default copy constructor of a class with a pointer member and the shallow copy problem it causes
 > 3. Write a deep copy constructor that allocates new memory and copies the contents
 > 4. Distinguish a memory leak, a use of freed memory, and a double free, and find their causes from the reports of `leaks` and AddressSanitizer
@@ -19,7 +19,7 @@
 ## Table of Contents
 
 - [1. Assignment Layout and How to Run](#1-assignment-layout-and-how-to-run)
-- [2. Q1. The Accumulator Class That Returns a Reference to Itself](#2-q1-the-accumulator-class-that-returns-a-reference-to-itself)
+- [2. Q1. The Accumulator Class That Accumulates Values](#2-q1-the-accumulator-class-that-accumulates-values)
   - [2.1 Requirements](#21-requirements)
   - [2.2 Design and Solution](#22-design-and-solution)
   - [2.3 Output and Review](#23-output-and-review)
@@ -35,6 +35,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the reference returns and copy constructors of Chapter 5. Q1 and Q2 are [Lab 2] and [Lab 3] of the Week 10 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW5 Code Walkthrough](Code-Walkthrough.md).
 
@@ -64,7 +66,7 @@ When a program runs in Xcode, the last console line, `Program ended with exit co
 
 <br>
 
-## 2. Q1. The Accumulator Class That Returns a Reference to Itself
+## 2. Q1. The Accumulator Class That Accumulates Values
 
 ### 2.1 Requirements
 

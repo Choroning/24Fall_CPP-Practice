@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../../README.ko.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-16
 
 컴퓨터언어실습Ⅱ 3분반의 5차 과제이다. 10주차 강의자료의 실습 문제 두 개로 이루어진다.
 
@@ -89,3 +89,9 @@ int main() {
 ```
 
 Visual Studio에서는 `strcpy()` 때문에 생기는 컴파일 오류를 막기 위해 파일의 앞부분에 `#define _CRT_SECURE_NO_WARNINGS`를 둔다.
+
+---
+
+<br>
+
+문제를 풀어 본 뒤 [과제 해설](../Assignment-Explanation.ko.md)에서 정답과 풀이를, [코드 총정리](../Code-Walkthrough.ko.md)에서 작성한 코드 전체를 볼 수 있다.

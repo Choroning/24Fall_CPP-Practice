@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the third assignment of section 3 of Computer Language and Training Ⅱ. It consists of four lab problems from the Week 6 lecture slides ([Problem 6-1], [Problem 6-2], [Problem 6-4], and [Problem 6-5]).
 
@@ -127,3 +127,9 @@ int main() {
 원 5의 반지름 >> 1
 면적이 100보다 큰 원은 2개 입니다
 ```
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

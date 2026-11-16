@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -39,6 +39,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the class definitions, constructors, and access specifiers of Chapter 3. Q1 and Q2 are Programming Exercises 3 and 5 of Chapter 3 of the textbook, and Q3 is [Problem 1-3] of the Week 4 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW1 Code Walkthrough](Code-Walkthrough.md).
 

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the fifth assignment of section 3 of Computer Language and Training Ⅱ. It consists of two lab problems from the Week 10 lecture slides.
 
@@ -89,3 +89,9 @@ int main() {
 ```
 
 In Visual Studio, `#define _CRT_SECURE_NO_WARNINGS` is placed at the beginning of the file to prevent the compile error caused by `strcpy()`.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

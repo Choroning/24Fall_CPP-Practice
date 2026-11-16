@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -39,6 +39,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the reference variables, reference parameters, and reference returns of Chapter 5. Q1 is [Lab Problem 2] of the Week 9 lecture slides, and Q2 and Q3 are code written freely on the subject of references. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW4 Code Walkthrough](Code-Walkthrough.md).
 

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -43,6 +43,8 @@
 <br>
 
 ## 1. 과제 구성과 실행 방법
+
+> **풀어 보기:** 이 문서는 정답과 풀이를 담고 있다. 먼저 [과제 안내문](Original/Assignment.ko.md)의 문제를 직접 풀어 본 뒤 읽는다.
 
 이 과제는 4장의 동적 객체, 동적 배열, 동적 객체 배열과 `this` 포인터를 연습한다. 네 문항은 모두 6주차 강의자료의 실습 문제로, Q1은 [문제 6-1], Q2는 [문제 6-2], Q3은 [문제 6-4], Q4는 [문제 6-5]이다. 과제 안내문은 [`Original/Assignment.ko.md`](Original/Assignment.ko.md)에 있고, 각 코드를 처음부터 끝까지 따라가는 설명은 [HW3 코드 총정리](Code-Walkthrough.ko.md)에 있다.
 

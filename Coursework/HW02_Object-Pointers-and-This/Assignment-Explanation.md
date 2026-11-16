@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -44,6 +44,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the object pointers, dynamic arrays, and the `this` pointer of Chapter 4. Q1 is [Problem 5-2] of the Week 5 lecture slides, Q2 and Q4 are free code on a given topic, and Q3 is an analysis of the dynamic memory code in the Week 5 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW2 Code Walkthrough](Code-Walkthrough.md).
 

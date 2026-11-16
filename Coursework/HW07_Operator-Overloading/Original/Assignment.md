@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the seventh assignment of section 3 of Computer Language and Training Ⅱ. It consists of two lab problems from the Week 12 lecture slides and one free-code problem on operator overloading.
 
@@ -129,3 +129,9 @@ As a further question, the problem asks how a `!=` operator function would be im
 ## Problem 3. Free Code on Operator Overloading
 
 Freely write and analyze code that uses operator overloading. Use an example different from the code in the textbook. There is no given class, `main()` function, or sample run.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

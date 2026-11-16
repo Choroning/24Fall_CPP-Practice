@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -43,6 +43,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the dynamic objects, dynamic arrays, dynamic arrays of objects, and the `this` pointer of Chapter 4. All four questions are lab problems from the Week 6 lecture slides: Q1 is [Problem 6-1], Q2 is [Problem 6-2], Q3 is [Problem 6-4], and Q4 is [Problem 6-5]. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW3 Code Walkthrough](Code-Walkthrough.md).
 

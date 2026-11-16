@@ -2,7 +2,7 @@
 
 [Repository Guide](../../../README.md) | [English](Assignment.md) | [한국어](Assignment.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 
 This is the sixth assignment of section 3 of Computer Language and Training Ⅱ. It consists of four lab problems from the Week 11 lecture slides.
 
@@ -203,3 +203,9 @@ Radius: 5, Count: 1
 ```
 
 `show()` is completed so that it prints the current number of objects after the radius, as in the sample run. The comment on `p = NULL;` in `main()` says that adding the line is recommended.
+
+---
+
+<br>
+
+After solving the problems, see the [assignment explanation](../Assignment-Explanation.md) for the answers and solutions and the [code walkthrough](../Code-Walkthrough.md) for the complete code.

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Code-Walkthrough.md) | [한국어](Code-Walkthrough.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -43,6 +43,8 @@
 <br>
 
 ## 1. Overall Layout
+
+> **Try It First:** This document contains the complete code and line-by-line explanations. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 Each of the four solutions puts, in one file, the header includes, the class definition, and `main()`, in that order; only Q3 is the code of the slides, which consists of a single `main()` without a class. The three classes declare and define all their member functions together inside the class. The Doxygen comment at the top of each file (lines 1-6) records the file name, the problem, the author, and the submission date and has no effect on how the program runs. The requirements of the problems and the design decisions are covered in the [HW2 Assignment Explanation](Assignment-Explanation.md).
 

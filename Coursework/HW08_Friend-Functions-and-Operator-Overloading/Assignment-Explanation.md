@@ -2,12 +2,12 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-16
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
 > **Learning Objectives:**
-> 1. Overload an operator whose left operand is not an object of the class as a friend function, and explain why it cannot be implemented as a member function
+> 1. Overload an operator whose left operand is not an object of the class, and explain with reasons which form its operator function must take
 > 2. Write prefix `++` and postfix `++` as separate friend functions and trace the return value of each function and the change in the object's state
 > 3. Implement the same operators as member functions and as friend functions and compare the parameter lists and call forms of the two approaches
 > 4. Explain how the return type of an operator function affects chained expressions and the use of the return value
@@ -19,7 +19,7 @@
 ## Table of Contents
 
 - [1. Assignment Layout and How to Run](#1-assignment-layout-and-how-to-run)
-- [2. Q1. A Friend Operator Function That Adds an Integer and an Object](#2-q1-a-friend-operator-function-that-adds-an-integer-and-an-object)
+- [2. Q1. An Operator Function That Adds an Integer and an Object](#2-q1-an-operator-function-that-adds-an-integer-and-an-object)
   - [2.1 Requirements](#21-requirements)
   - [2.2 Design and Solution](#22-design-and-solution)
   - [2.3 Output and Review](#23-output-and-review)
@@ -39,6 +39,8 @@
 <br>
 
 ## 1. Assignment Layout and How to Run
+
+> **Try It First:** This document contains the answers and solutions. Solve the problems in the [assignment handout](Original/Assignment.md) yourself before reading on.
 
 This assignment practices the friend functions and operator overloading of Chapter 7. The three problems are [Lab 1], [Lab 2], and [Lab 3] of the Week 13 lecture slides. The assignment handout is in [`Original/Assignment.md`](Original/Assignment.md), and a walkthrough of each program from start to finish is in the [HW8 Code Walkthrough](Code-Walkthrough.md).
 
@@ -69,7 +71,7 @@ When a program runs in Xcode, the last console line, `Program ended with exit co
 
 <br>
 
-## 2. Q1. A Friend Operator Function That Adds an Integer and an Object
+## 2. Q1. An Operator Function That Adds an Integer and an Object
 
 ### 2.1 Requirements
 
