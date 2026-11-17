@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -148,14 +148,14 @@ flowchart TD
 **참조와 포인터로 쓴 swap 예제:**
 
 ```cpp
-// 참조 버전 (C++ 스타일) — 깔끔
+// 참조 버전 (C++ 스타일): 깔끔
 void swapRef(int &a, int &b) {
     int temp = a;
     a = b;
     b = temp;
 }
 
-// 포인터 버전 (C 스타일) — 동작하지만 장황함
+// 포인터 버전 (C 스타일): 동작하지만 장황함
 void swapPtr(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -248,7 +248,7 @@ int main() {                                  int main() {
 #include <iostream>
 using namespace std;
 
-// 방법 1: 값에 의한 호출 — 원본을 교환하지 않음
+// 방법 1: 값에 의한 호출, 원본을 교환하지 않음
 void swapByValue(int a, int b) {
     int temp = a;
     a = b;
@@ -256,7 +256,7 @@ void swapByValue(int a, int b) {
     cout << "  swapByValue 내부: a=" << a << ", b=" << b << endl;
 }
 
-// 방법 2: 포인터에 의한 호출 — 역참조를 통해 교환
+// 방법 2: 포인터에 의한 호출, 역참조를 통해 교환
 void swapByPointer(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -264,7 +264,7 @@ void swapByPointer(int *a, int *b) {
     cout << "  swapByPointer 내부: *a=" << *a << ", *b=" << *b << endl;
 }
 
-// 방법 3: 참조에 의한 호출 — 직접 교환
+// 방법 3: 참조에 의한 호출, 직접 교환
 void swapByReference(int &a, int &b) {
     int temp = a;
     a = b;
@@ -789,7 +789,7 @@ int& bad() {
 }
 
 int main() {
-    int &ref = bad();  // ref는 댕글링 참조 — 정의되지 않은 동작
+    int &ref = bad();  // ref는 댕글링 참조: 정의되지 않은 동작
     return 0;
 }
 ```
@@ -821,7 +821,7 @@ void printScores() {
 int main() {
     printScores();                 // 점수: 90, 85, 78, 92, 88
 
-    // 반환값을 lvalue로 사용 — 반환된 참조를 통해 배열 수정
+    // 반환값을 lvalue로 사용: 반환된 참조를 통해 배열 수정
     getScore(1) = 100;            // scores[1]이 85에서 100으로 변경
     printScores();                 // 점수: 90, 100, 78, 92, 88
 
@@ -912,7 +912,7 @@ class Point {
     int x, y;
 public:
     Point(int x, int y) : x(x), y(y) {}
-    // 복사 생성자를 정의하지 않음 — 컴파일러가 제공
+    // 복사 생성자를 정의하지 않음: 컴파일러가 제공
     void show() { cout << "(" << x << ", " << y << ")" << endl; }
 };
 
@@ -1100,7 +1100,7 @@ int main() {
     Book cpp("C++ 가이드", 10000);
     Book java = cpp;   // 깊은 복사 생성자 호출
     cpp.show();        // C++ 가이드 10000원
-    java.show();       // C++ 가이드 10000원 — 독립적인 복사본
+    java.show();       // C++ 가이드 10000원: 독립적인 복사본
     return 0;          // 두 소멸자 모두 안전하게 실행
 }
 ```
@@ -1120,7 +1120,7 @@ Book cpp("C++", 10000);       Book java = cpp;
             │  "C++"   │                  │  "C++"   │ ← 별도의 메모리
             └──────────┘                  └──────────┘
 
-각 소멸자가 자신의 메모리를 해제 — 충돌 없음.
+각 소멸자가 자신의 메모리를 해제: 충돌 없음.
 ```
 
 *그림 9. 깊은 복사로 각자 문자열 메모리를 가진 두 Book 객체*
@@ -1171,7 +1171,7 @@ public:
         delete[] name;
     }
 
-    // 이름 수정 — 독립성 확인용
+    // 이름 수정: 독립성 확인용
     void setName(const char *n) {
         delete[] name;
         name = new char[strlen(n) + 1];
@@ -1196,7 +1196,7 @@ int main() {
 
     cout << endl << "=== bob의 이름을 Bob으로 변경 ===" << endl;
     bob.setName("Bob");
-    alice.show();         // Alice (나이 25) — 변경 없음! (깊은 복사 성공)
+    alice.show();         // Alice (나이 25): 변경 없음! (깊은 복사 성공)
     bob.show();           // Bob (나이 25)
 
     cout << endl << "=== 소멸자 실행 ===" << endl;
@@ -1228,7 +1228,7 @@ int main() {
   [소멸자] 삭제: Alice 주소 0x1000   ← alice 고유의 메모리 (크래시 없음!)
 ```
 
-소멸자는 생성의 역순으로 실행되므로 `bob`이 먼저, `alice`가 나중에 소멸한다. `bob`의 주소가 0x2000에서 0x2080으로 바뀐 것은 `setName()`이 이름을 새로 할당했기 때문이다.
+소멸자는 생성의 역순으로 실행되므로 `bob`이 먼저, `alice`가 나중에 소멸한다. 출력 예에서 `bob`의 이름 주소가 0x2000에서 0x2080으로 바뀐 것은 `setName()`이 기존 이름을 해제하고 새로 할당했기 때문이다. 할당기가 방금 해제한 블록을 다시 내주면 주소가 그대로일 수도 있다.
 
 > **참고:** **얕은 복사 실험.** 깊은 복사 생성자를 제거(주석 처리)하고 다시 실행하면 디폴트 얕은 복사가 쓰인다. 그러면 `bob`의 이름을 변경할 때 공유 메모리가 해제되어 `alice`도 함께 망가지고, 소멸 시 이중 해제로 프로그램이 크래시된다.
 
@@ -1319,14 +1319,14 @@ int main() {
 ```cpp
 // OK: static 변수에 대한 참조 반환
 int& createValue() {
-    static int x = 42;   // static — 프로그램 종료까지 존재
+    static int x = 42;   // static: 프로그램 종료까지 존재
     return x;
 }
 
 // OK: 값으로 반환 (단순 타입에는 이것으로 충분)
 int createValueByVal() {
     int x = 42;
-    return x;   // 복사본을 반환 — 안전
+    return x;   // 복사본을 반환: 안전
 }
 ```
 
@@ -1377,7 +1377,7 @@ public:
 이런 선언을 허용하면 호출할 때마다 복사가 끝없이 이어지므로, 컴파일러는 `Bad(Bad other)`를 오류로 거부한다(Apple clang의 메시지는 "copy constructor must pass its first argument by reference"이다). 매개변수는 다음처럼 참조로 받는다.
 
 ```cpp
-Bad(const Bad &other) {   // const 참조 — 호출 시 복사 불필요
+Bad(const Bad &other) {   // const 참조: 호출 시 복사 불필요
     x = other.x;
 }
 ```
@@ -1395,10 +1395,10 @@ Bad(const Bad &other) {   // const 참조 — 호출 시 복사 불필요
 ```cpp
 int a = 10;
 
-// 문맥 1: 선언 — &는 "~에 대한 참조"
+// 문맥 1: 선언, &는 "~에 대한 참조"
 int &ref = a;      // ref는 a에 대한 참조(별명)
 
-// 문맥 2: 표현식 — &는 "~의 주소"
+// 문맥 2: 표현식, &는 "~의 주소"
 int *ptr = &a;     // ptr은 a의 주소를 저장
 ```
 
@@ -1417,8 +1417,8 @@ int *ptr = &a;     // ptr은 a의 주소를 저장
 
 ```cpp
 int a = 10;
-int &ref = a;       // 참조 선언 — ref는 a 그 자체
-int *ptr = &a;      // 주소 연산 — ptr은 a의 주소를 가짐
+int &ref = a;       // 참조 선언: ref는 a 그 자체
+int *ptr = &a;      // 주소 연산: ptr은 a의 주소를 가짐
 
 // 비슷해 보이지만 근본적으로 다르다:
 ref = 20;           // a를 20으로 변경 (ref는 별명)

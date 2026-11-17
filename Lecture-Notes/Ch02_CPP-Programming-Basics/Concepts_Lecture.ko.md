@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -76,7 +76,7 @@ graph TD
     P --> M["main 함수<br>int main() { ... }"]
     M --> S["실행문<br>cout #lt;#lt; #quot;Hello#quot; #lt;#lt; endl;"]
     M --> R["리턴문<br>return 0;"]
-    P --> O["기타 함수<br>(이후 장에서 학습)"]
+    P --> O["기타 함수<br>(사용자가 정의한 함수)"]
 ```
 
 *그림 1. C++ 프로그램의 구성 요소*
@@ -114,7 +114,7 @@ graph TD
 int x = 10;  // 코드 뒤에 붙이는 인라인 주석
 ```
 
-> **주의:** 블록 주석은 **중첩할 수 없다**. `/* 외부 /* 내부 */ 아직 안쪽? */`는 컴파일 에러를 일으킨다. `*/`가 첫 번째 매칭에서 주석을 닫기 때문이다.
+> **주의:** 블록 주석은 **중첩할 수 없다**. `/* 외부 /* 내부 */ 아직 안쪽? */`는 컴파일 오류를 일으킨다. `*/`가 첫 번째 매칭에서 주석을 닫기 때문이다.
 
 ### 1.3 `main` 함수
 
@@ -186,10 +186,10 @@ cout << "나이: " << age << ", 학점: " << gpa << endl;
 C의 `printf`와 달리, `cout`은 출력할 데이터의 **타입을 자동으로 인식**한다. `%d`나 `%f` 같은 형식 지정자가 필요 없다.
 
 ```cpp
-// C 스타일 — 형식을 지정해야 함
+// C 스타일: 형식을 지정해야 함
 printf("나이: %d, 학점: %.1f\n", age, gpa);
 
-// C++ 스타일 — 타입이 자동 인식됨
+// C++ 스타일: 타입이 자동 인식됨
 cout << "나이: " << age << ", 학점: " << gpa << endl;
 ```
 
@@ -224,7 +224,7 @@ C++23에서는 `cout` 없이 직접 출력하는 `std::print`가 추가되었다
 int age = 20;
 double gpa = 3.8;
 
-// C++23: std::print — 서식 구문으로 직접 출력
+// C++23: std::print, 서식 구문으로 직접 출력
 std::print("나이: {}, 학점: {:.1f}\n", age, gpa);
 // 출력: 나이: 20, 학점: 3.8
 ```
@@ -310,8 +310,8 @@ n + 5 = 8
 **연산자 우선순위 문제:** `<<` 연산자는 비교 연산자(`>`, `<`, `>=`, `<=`)보다 **우선순위가 높다**.
 
 ```cpp
-cout << 5 > 3;            // 오류 — (cout << 5) > 3 으로 해석됨
-cout << (5 > 3) << endl;  // 정상 — 출력: 1
+cout << 5 > 3;            // 오류: (cout << 5) > 3 으로 해석됨
+cout << (5 > 3) << endl;  // 정상, 출력: 1
 ```
 
 `cout << 5 > 3`은 `(cout << 5) > 3`으로 해석되어, `ostream` 객체를 `3`과 비교하려 하므로 타입 오류가 발생한다.
@@ -822,12 +822,12 @@ C++11부터 `auto` 키워드를 사용하면 컴파일러가 초기화 값으로
 ```cpp
 auto x = 42;           // int
 auto pi = 3.14;        // double
-auto name = "Hello"s;  // std::string (s 접미사, "using namespace std::literals" 필요)
+auto name = "Hello"s;  // std::string (s 접미사, std::literals 필요: using namespace std;로도 쓸 수 있음)
 auto greeting = string("Hello");  // std::string
 
 // 복잡한 타입에서 특히 유용
 vector<int> nums = {1, 2, 3};
-auto it = nums.begin();   // vector<int>::iterator — auto로 훨씬 간결
+auto it = nums.begin();   // vector<int>::iterator: auto로 훨씬 간결
 ```
 
 **`auto` 사용 시점:**

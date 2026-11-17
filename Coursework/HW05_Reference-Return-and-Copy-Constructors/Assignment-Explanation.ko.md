@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **최종 수정일:** 2026-11-16
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -144,7 +144,7 @@ Book::Book(Book& b) {
 
 - **`const char*` 매개변수:** 문자열 리터럴의 타입은 `const char[N]`이며, 이를 `char*`로 바꾸는 변환은 C++11 표준에서 삭제되었다. Apple clang은 확장으로 받아들이고 `-Wwritable-strings` 경고를 내지만, Visual Studio 2022의 표준 준수 모드(`/permissive-`)는 이 변환을 오류로 처리한다. 과제 안내문이 Visual Studio 2022에서 `const`를 추가해야 할 수 있다고 한 것은 이 변환 때문이다. 생성자와 `set()`의 매개변수를 `const char* title`로 바꾸면 47행과 49행의 두 경고가 사라진다.
 - **`const` 참조를 받는 복사 생성자:** 복사 생성자는 원본을 바꾸지 않으므로 `Book(const Book& b)`로 선언하면 `const` 객체와 임시 객체로부터도 복사할 수 있다([5장 5.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#53-복사-생성자의-매개변수는-참조)).
-- **대입 연산자:** 깊은 복사 생성자가 있어도 이미 만든 객체끼리 `java = cpp;`로 치환하면 컴파일러가 만든 디폴트 대입 연산자가 포인터 값만 복사한다. 소멸자가 올바르게 해제하는 `Book`으로 시험하면 AddressSanitizer가 이중 해제를 보고하고, `java`가 원래 가리키던 메모리는 누수된다. 포인터 멤버를 가진 클래스는 복사 생성자, 소멸자와 함께 대입 연산자도 작성해야 한다([5장 2.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#23-객체-치환)).
+- **대입 연산자:** 깊은 복사 생성자가 있어도 이미 만든 객체끼리 `java = cpp;`로 치환하면 컴파일러가 만든 디폴트 대입 연산자가 포인터 값만 복사한다. 소멸자가 올바르게 해제하는 `Book`이라면 두 소멸자가 같은 메모리를 해제하므로 AddressSanitizer가 이중 해제를 보고하고, `java`가 원래 가리키던 메모리는 누수된다. 포인터 멤버를 가진 클래스는 복사 생성자, 소멸자와 함께 대입 연산자도 작성해야 한다([5장 2.3절](../../Lecture-Notes/Ch05_Functions-and-Copy-Control/Concepts_Lecture.ko.md#23-객체-치환)).
 
 ### 3.3 실행 결과와 검토
 

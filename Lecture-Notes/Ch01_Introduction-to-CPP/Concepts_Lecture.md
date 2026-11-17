@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 1
 
@@ -147,25 +147,25 @@ The core idea: **C++ = C + Object-Oriented Programming (OOP)**.
 ```text
 Timeline of C++
 ──────────────────────────────────────────────────────────────
-1967    BCPL (Martin Richards) — simplified CPL for compiler writing
-1969    B (Ken Thompson) — stripped-down BCPL for early UNIX
-1972    C (Dennis Ritchie) — B with types; rewrote UNIX
-1979    C with Classes (Bjarne Stroustrup) — C + OOP features
-1983    C++ — renamed; first public release
-1998    C++98 — first ISO standard (ISO/IEC 14882:1998)
-2003    C++03 — bug fixes for C++98
-2011    C++11 — major modernization (auto, lambda, move semantics,
-                smart pointers, range-based for, nullptr)
-2014    C++14 — minor improvements to C++11
-2017    C++17 — structured bindings, std::optional, filesystem
-2020    C++20 — concepts, coroutines, ranges, modules, three-way
-                comparison (<=>)
-2023    C++23 — std::print, deducing this, std::expected,
-                std::flat_map, multidimensional subscript operator
-2026    C++26 — contracts (pre/post/contract_assert), <debugging>,
-                <inplace_vector>, <hive>, <simd>, <linalg>,
-                constexpr containers (map, set, deque, ...),
-                std::execution (async scheduling)
+1967    BCPL (Martin Richards): simplified CPL for compiler writing
+1969    B (Ken Thompson): stripped-down BCPL for early UNIX
+1972    C (Dennis Ritchie): B with types; rewrote UNIX
+1979    C with Classes (Bjarne Stroustrup): C + OOP features
+1983    C++: renamed; first public release
+1998    C++98: first ISO standard (ISO/IEC 14882:1998)
+2003    C++03: bug fixes for C++98
+2011    C++11: major modernization (auto, lambda, move semantics,
+               smart pointers, range-based for, nullptr)
+2014    C++14: minor improvements to C++11
+2017    C++17: structured bindings, std::optional, filesystem
+2020    C++20: concepts, coroutines, ranges, modules, three-way
+               comparison (<=>)
+2023    C++23: std::print, deducing this, std::expected,
+               std::flat_map, multidimensional subscript operator
+2026    C++26: contracts (pre/post/contract_assert), <debugging>,
+               <inplace_vector>, <hive>, <simd>, <linalg>,
+               constexpr containers (map, set, deque, ...),
+               std::execution (async scheduling)
 ──────────────────────────────────────────────────────────────
 ```
 
@@ -302,7 +302,7 @@ A standard C++ program compiles and runs correctly on any compliant compiler (GC
 For example, a program written by the standard rules compiles on every standard compiler, such as Visual C++, GNU C++, and Borland C++, and produces the same result regardless of the operating system or compiler. In contrast, a program that uses a Visual C++-specific keyword, as in `int __cdecl main()`, compiles only with the Visual C++ compiler.
 
 ```cpp
-// Standard C++ — portable
+// Standard C++: portable
 #include <iostream>
 int main() {
     std::cout << "Hello" << std::endl;
@@ -311,7 +311,7 @@ int main() {
 ```
 
 ```cpp
-// Non-standard — compiler-specific extension (MSVC)
+// Non-standard: compiler-specific extension (MSVC)
 void __cdecl myFunc();   // __cdecl is MSVC-specific calling convention
 ```
 
@@ -428,7 +428,7 @@ flowchart TD
 *Table 7. Input, output, and work of each development stage*
 
 - **Edit:** A C++ source program is a text file, so it can be edited with a text editor, and its standard extension is `.cpp`. An **integrated development environment (IDE)** that supports every stage of editing, compiling, linking, running, and debugging is convenient; Visual Studio is a representative example.
-- **Compile:** The C++ source program is converted into an object file containing machine code (`hello.cpp` → `hello.obj`). One source line usually becomes several machine instructions; for example, `std::cout << "Hello";` is translated into instructions that push the address of the string onto the stack and call the `<<` operator function.
+- **Compile:** The C++ source program is converted into an object file containing machine code (`hello.cpp` → `hello.obj`). One source line usually becomes several machine instructions; for example, with Visual C++ for 32-bit x86, `std::cout << "Hello";` is translated into instructions that push the address of the string onto the stack and call the `<<` operator function.
 - **Link:** An object file cannot be executed directly. The linker connects the object file with functions of the C++ standard library to build an executable. For example, it combines `hello.obj` with the `cout` object and the `<<` operator function from the standard library to make `hello.exe`.
 
 The extensions `.obj` and `.exe` are those of Windows (Visual Studio). On Linux and macOS, object files have the extension `.o`, and executables are built without an extension (named `a.out` if no name is given).
@@ -482,7 +482,7 @@ int main() {
 }
 ```
 
-Dividing an integer by zero is undefined behavior in the C++ standard, and on most systems the program terminates abnormally.
+Dividing an integer by zero is undefined behavior in the C++ standard, so the result cannot be predicted. On x86 processors a hardware exception occurs and the program terminates abnormally, but some systems, such as ARM processors, produce some value without an exception and keep running.
 
 > **Caution:** Compile errors are caught by the compiler and are the easiest to fix. Runtime errors are the hardest, because the program compiles and links successfully but produces incorrect results or crashes during execution.
 

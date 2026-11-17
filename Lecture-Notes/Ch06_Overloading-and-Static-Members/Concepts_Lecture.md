@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -124,7 +124,7 @@ void f(float x)  { cout << "float" << endl; }
 void f(double x) { cout << "double" << endl; }
 
 f(10);   // ERROR: int → float and int → double are both standard conversions
-         // ambiguous — compiler cannot choose
+         // ambiguous: compiler cannot choose
 ```
 
 On the other hand, passing a `double` value as in `f(10.0)` is not ambiguous, because `f(double)` is an exact match.
@@ -304,7 +304,7 @@ msg("Hello");             // compilation error: a string cannot be passed to the
 When the function declaration (prototype) and definition are **separate**, the default values go in the **declaration only** and are not written in the definition. This is because the default value of a parameter can be specified only once, and an argument can be omitted only if the prototype visible to the caller has the default. If there is a definition and no prototype, the default is written in the definition, as in `void star(int a = 5) { ... }`.
 
 ```cpp
-// In header or before main — declaration with defaults
+// In header or before main: declaration with defaults
 void display(int x, int y = 0, int z = 0);
 
 int main() {
@@ -314,7 +314,7 @@ int main() {
     return 0;
 }
 
-// Definition — NO defaults here
+// Definition: NO defaults here
 void display(int x, int y, int z) {
     cout << x << " " << y << " " << z << endl;
 }
@@ -540,7 +540,7 @@ public:
 };
 int Circle::count = 0;  // definition in exactly one .cpp file
 
-// C++17 approach: inline static variable — define right in the header
+// C++17 approach: inline static variable, define right in the header
 class Circle {
 public:
     inline static int count = 0;   // declaration + definition in the header
@@ -634,7 +634,7 @@ public:
 };
 
 int main() {
-    // Called via class name — no object needed
+    // Called via class name: no object needed
     cout << Math::abs(-5) << endl;    // 5
     cout << Math::max(3, 7) << endl;  // 7
     return 0;
@@ -737,7 +737,7 @@ using namespace std;
 class Board {
     static int no;                  // current number of posts
     static string board[MAX_NO];   // static array of posts
-    Board() {}                     // private constructor — prevent object creation
+    Board() {}                     // private constructor: prevent object creation
 public:
     static void add(string text) {
         if (no >= MAX_NO) {

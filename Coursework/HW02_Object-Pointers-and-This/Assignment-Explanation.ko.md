@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **최종 수정일:** 2026-11-16
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -103,7 +103,7 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 - **`setReal()`, `setImage()`:** 실수부와 허수부를 각각 받은 값으로 바꾼다.
 - **`showC()`:** `real << " + " << image << "i"`로 복소수를 `a + bi` 형태로 출력한다.
 
-`main()`은 `Complex data[MAX];`로 객체 배열을 만든다. 초기값이 없으므로 두 원소 모두 기본 생성자로 생성되어 (1, 1)에서 시작한다([4장 3.1절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#31-정적-객체-배열)). `Complex *p = data;`에서 배열 이름 `data`는 첫 원소의 주소로 변환되므로 `p`는 `data[0]`을 가리킨다. 첫 번째 `for` 문은 `data[i].showC()`로 두 원소를 출력하고, 구분선을 출력한 뒤 `data[0].setReal(3);`으로 첫 원소의 실수부를 3으로 바꾼다. `(*(p + 1)).setImage(-8);`은 `p + 1`이 가리키는 두 번째 원소를 `*`로 역참조한 뒤 점 연산자로 `setImage()`를 호출하여 허수부를 -8로 바꾼다. 포인터에 1을 더하면 주소는 1바이트가 아니라 원소 하나의 크기인 `sizeof(Complex)`(이 환경에서 8바이트)만큼 늘어나므로 `p + 1`은 `&data[1]`과 같다. 마지막 `for` 문은 `(p + i)->showC()`로 포인터를 통해 두 원소를 다시 출력한다([4장 1.1절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#11-객체에-대한-포인터)).
+`main()`은 `Complex data[MAX];`로 객체 배열을 만든다. 초기값이 없으므로 두 원소 모두 기본 생성자로 생성되어 (1, 1)에서 시작한다([4장 3.1절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#31-정적-객체-배열)). `Complex *p = data;`에서 배열 이름 `data`는 첫 원소의 주소로 변환되므로 `p`는 `data[0]`을 가리킨다. 첫 번째 `for` 문은 `data[i].showC()`로 두 원소를 출력하고, 구분선을 출력한 뒤 `data[0].setReal(3);`으로 첫 원소의 실수부를 3으로 바꾼다. `(*(p + 1)).setImage(-8);`은 `p + 1`이 가리키는 두 번째 원소를 `*`로 역참조한 뒤 점 연산자로 `setImage()`를 호출하여 허수부를 -8로 바꾼다. 포인터에 1을 더하면 주소는 1바이트가 아니라 원소 하나의 크기인 `sizeof(Complex)`(`int`가 4바이트인 환경에서 8바이트)만큼 늘어나므로 `p + 1`은 `&data[1]`과 같다. 마지막 `for` 문은 `(p + i)->showC()`로 포인터를 통해 두 원소를 다시 출력한다([4장 1.1절](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.ko.md#11-객체에-대한-포인터)).
 
 다음 두 가지는 포인터 표기와 출력 형식에 관한 점이다.
 
@@ -180,9 +180,9 @@ Xcode에서 실행할 때 콘솔의 마지막 줄에 나타나는 `Program ended
 
 코드의 세 부분은 다음과 같이 더 정확하게 설명할 수 있다.
 
-- **주석으로 처리한 배열 선언:** 표준 C++에서 배열의 크기는 컴파일 시간에 값이 정해지는 상수식이어야 하므로, 실행 중에 입력받는 `size`로 `int arrStatic[size];`를 선언할 수 없다. 이런 배열을 **가변 길이 배열(variable-length array, VLA)** 이라 하며, C99에서 도입되었지만 C++ 표준에는 없다. GCC와 Clang은 확장 기능으로 받아들이고(Clang은 `-Wvla-cxx-extension` 경고를 낸다), MSVC는 컴파일 오류로 처리한다. 주석 그대로 `int arrStatic[size] = { };`처럼 초기화까지 하면 Clang 21은 `variable-sized object may not be initialized` 오류를 낸다. 강의자료가 덧붙인 대로, 실행 중에 크기를 정하려면 동적 배열이나 `vector`를 쓴다.
+- **주석으로 처리한 배열 선언:** 표준 C++에서 배열의 크기는 컴파일 시간에 값이 정해지는 상수식이어야 하므로, 실행 중에 입력받는 `size`로 `int arrStatic[size];`를 선언할 수 없다. 이런 배열을 **가변 길이 배열(variable-length array, VLA)** 이라 하며, C99에서 도입되었지만 C++ 표준에는 없다. GCC와 Clang은 확장 기능으로 받아들이고(Clang은 `-Wvla-cxx-extension` 경고를 낸다), MSVC는 컴파일 오류로 처리한다. 주석 그대로 `int arrStatic[size] = { };`처럼 초기화까지 하면 Clang은 `variable-sized object may not be initialized` 오류를 낸다. 강의자료가 덧붙인 대로, 실행 중에 크기를 정하려면 동적 배열이나 `vector`를 쓴다.
 - **나머지 원소의 0 초기화:** `int arrStatic[4] = { 1, 3, 5 };`처럼 초기값이 원소 수보다 적으면 나머지 원소는 0으로 초기화되므로 첫 줄은 `1 3 5 0`이다. 반면 `new int[size]`로 할당한 원소는 초기화되지 않으므로 이 코드처럼 값을 저장한 뒤에 읽어야 한다. `new int[size]()`나 C++11의 `new int[size]{}`로 할당하면 모든 원소가 0으로 초기화된다.
-- **`nullptr`와 `NULL`:** 주석으로 남긴 `pDynamic = NULL;`과 실제로 쓴 `pDynamic = nullptr;`은 둘 다 포인터를 널 포인터로 만든다. 그러나 `NULL`은 정수 0으로 정의될 수 있는 매크로이므로, `f(int)`와 `f(char*)`가 함께 중복되어 있으면 `f(NULL)`은 모호한 호출이 되어 Clang 21과 GCC 16 모두에서 컴파일 오류가 난다. C++11의 키워드 `nullptr`는 포인터로만 변환되므로 `f(nullptr)`는 포인터 버전을 호출한다. 또한 `nullptr` 대입은 그 포인터만 보호하며, 같은 메모리를 가리키던 다른 포인터는 여전히 댕글링 포인터로 남는다.
+- **`nullptr`와 `NULL`:** 주석으로 남긴 `pDynamic = NULL;`과 실제로 쓴 `pDynamic = nullptr;`은 둘 다 포인터를 널 포인터로 만든다. 그러나 `NULL`은 정수 0으로 정의될 수 있는 매크로이므로, `f(int)`와 `f(char*)`가 함께 중복되어 있으면 `f(NULL)`은 모호한 호출이 되어 Clang과 GCC 모두에서 컴파일 오류가 난다. C++11의 키워드 `nullptr`는 포인터로만 변환되므로 `f(nullptr)`는 포인터 버전을 호출한다. 또한 `nullptr` 대입은 그 포인터만 보호하며, 같은 메모리를 가리키던 다른 포인터는 여전히 댕글링 포인터로 남는다.
 
 ### 4.3 실행 결과와 검토
 
@@ -194,7 +194,7 @@ Input size: 5
 0 3 6 9 12 
 ```
 
-각 줄 끝에 공백이 하나 남는 것은 수마다 뒤에 `' '`를 출력하기 때문이다. 할당한 배열은 출력이 끝난 뒤 `delete[] pDynamic;`으로 모두 반환된다. 0을 입력하면 원소가 없는 배열이 할당되어 둘째 줄은 빈 줄이 되고, 음수를 입력하면 `new int[size]`가 메모리를 할당하지 못해 예외(이 환경에서는 `std::bad_alloc`)가 발생하며, 이를 처리하지 않았으므로 프로그램이 비정상 종료된다.
+각 줄 끝에 공백이 하나 남는 것은 수마다 뒤에 `' '`를 출력하기 때문이다. 할당한 배열은 출력이 끝난 뒤 `delete[] pDynamic;`으로 모두 반환된다. 0을 입력하면 원소가 없는 배열이 할당되어 둘째 줄은 빈 줄이 되고, 음수를 입력하면 `new int[size]`가 메모리를 할당하지 못해 예외(Apple clang에서는 `std::bad_alloc`)가 발생하며, 이를 처리하지 않았으므로 프로그램이 비정상 종료된다.
 
 ---
 

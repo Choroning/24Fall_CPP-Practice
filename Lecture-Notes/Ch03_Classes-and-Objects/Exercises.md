@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -24,7 +24,7 @@ Exercises 1 and 2 are lab problems, and Exercises 3-12 are the even-numbered the
 - [Exercise 6: Implementing the `Calendar` Class](#exercise-6-implementing-the-calendar-class)
 - [Exercise 7: Statements About Destructors](#exercise-7-statements-about-destructors)
 - [Exercise 8: The Order of Object Creation and Destruction](#exercise-8-the-order-of-object-creation-and-destruction)
-- [Exercise 9: An Error in Accessing a `private` Member](#exercise-9-an-error-in-accessing-a-private-member)
+- [Exercise 9: Correcting the `TV` Class](#exercise-9-correcting-the-tv-class)
 - [Exercise 10: Advantages and Disadvantages of Inline Functions](#exercise-10-advantages-and-disadvantages-of-inline-functions)
 - [Exercise 11: The Function Best Suited to Inlining](#exercise-11-the-function-best-suited-to-inlining)
 - [Exercise 12: Rewriting a Structure as a Class](#exercise-12-rewriting-a-structure-as-a-class)
@@ -274,7 +274,7 @@ int main() {
 
 <br>
 
-## Exercise 9: An Error in Accessing a `private` Member
+## Exercise 9: Correcting the `TV` Class
 
 **Textbook Problem:** Chapter 3 theory problem 14
 
@@ -296,7 +296,7 @@ int main() {
 }
 ```
 
-**[Solution](Solutions.md#exercise-9-an-error-in-accessing-a-private-member)**
+**[Solution](Solutions.md#exercise-9-correcting-the-tv-class)**
 
 ---
 

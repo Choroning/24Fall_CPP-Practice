@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -94,7 +94,7 @@ graph TD
 캡슐화가 없으면 누구나 데이터에 **잘못된 값**을 넣을 수 있고, 버그를 막을 방법이 없다.
 
 ```cpp
-// 나쁜 예: radius가 public — 보호 장치 없음
+// 나쁜 예: radius가 public, 보호 장치 없음
 class Circle {
 public:
     int radius;
@@ -103,14 +103,14 @@ public:
 
 Circle c;
 c.radius = -5;             // 아무도 막지 않는다!
-cout << c.getArea();        // 78.5 출력 — "음수" 반지름이 양수 넓이를 만들지만
+cout << c.getArea();        // 78.5 출력: "음수" 반지름이 양수 넓이를 만들지만
                             // 의미 없는 결과. 객체가 잘못된 상태에 놓임.
 ```
 
 캡슐화를 적용하면 클래스가 setter를 통해 **데이터를 검증**하여 잘못된 상태를 방지한다.
 
 ```cpp
-// 좋은 예: radius는 private — setter가 규칙을 강제
+// 좋은 예: radius는 private, setter가 규칙을 강제
 class Circle {
     int radius;
 public:
@@ -125,7 +125,7 @@ public:
 
 Circle c;
 c.setRadius(-5);            // setter가 -5를 거부, radius를 1로 설정
-cout << c.getArea();         // 3.14 출력 — 항상 유효한 결과
+cout << c.getArea();         // 3.14 출력: 항상 유효한 결과
 ```
 
 #### 실생활 비유: 은행 계좌
@@ -134,7 +134,7 @@ cout << c.getArea();         // 3.14 출력 — 항상 유효한 결과
 
 ```cpp
 class BankAccount {
-    int balance;               // private — 직접 접근 불가
+    int balance;               // private: 직접 접근 불가
 public:
     BankAccount() { balance = 0; }
     void deposit(int amount) {
@@ -199,7 +199,7 @@ C를 먼저 배웠다면 `struct`를 멤버 함수나 접근 제어 없이 순�
 #include <stdio.h>
 
 struct Circle {
-    int radius;          /* 모든 데이터가 공개 — 제한 방법 없음 */
+    int radius;          /* 모든 데이터가 공개: 제한 방법 없음 */
 };
 
 double getArea(struct Circle c) {    /* 함수가 struct와 분리됨 */
@@ -208,7 +208,7 @@ double getArea(struct Circle c) {    /* 함수가 struct와 분리됨 */
 
 int main() {
     struct Circle c;
-    c.radius = 5;        /* 직접 접근 — 검증 불가 */
+    c.radius = 5;        /* 직접 접근: 검증 불가 */
     printf("Area: %.2f\n", getArea(c));
 
     c.radius = -3;       /* 아무것도 막지 않는다! */
@@ -229,7 +229,7 @@ public:
     Circle(int r) {                  // 생성자가 객체를 초기화
         radius = (r > 0) ? r : 1;
     }
-    double getArea() {               // 멤버 함수 — 데이터와 함께 묶임
+    double getArea() {               // 멤버 함수: 데이터와 함께 묶임
         return 3.14 * radius * radius;
     }
 };
@@ -238,7 +238,7 @@ int main() {
     Circle c(5);                     // 생성자로 초기화
     cout << "Area: " << c.getArea() << endl;
 
-    // c.radius = -3;               // 컴파일 에러! radius는 private
+    // c.radius = -3;               // 컴파일 오류! radius는 private
     return 0;
 }
 ```
@@ -384,14 +384,14 @@ int main() {
 객체를 선언하면 모든 멤버 변수에 대한 메모리가 할당된다. **점 연산자** (`.`)로 public 멤버에 접근한다.
 
 ```cpp
-Circle c;               // 객체 생성 — 메모리 할당
+Circle c;               // 객체 생성: 메모리 할당
 c.setRadius(5);         // 점 연산자로 멤버 함수 호출
 double area = c.getArea();
 ```
 
 > **주의:** 클래스 외부에서 `private` 멤버에 직접 접근할 수 없다:
 > ```cpp
-> c.radius = 5;  // ❌ 컴파일 에러 — radius는 private
+> c.radius = 5;  // ❌ 컴파일 오류: radius는 private
 > ```
 > public setter를 사용하거나 생성자를 통해 값을 전달해야 한다.
 
@@ -543,11 +543,11 @@ double Circle::getArea() {
 }
 
 int main() {
-    Circle donut;                    // 매개 변수 없는 생성자 호출
+    Circle donut;                    // 매개변수 없는 생성자 호출
     double area = donut.getArea();
     cout << "donut 면적은 " << area << endl;
 
-    Circle pizza(30);                // 매개 변수 있는 생성자 호출
+    Circle pizza(30);                // 매개변수 있는 생성자 호출
     area = pizza.getArea();
     cout << "pizza 면적은 " << area << endl;
 }
@@ -638,7 +638,7 @@ public:
     Box(int s) { size = s; }   // 매개변수가 있는 생성자만 정의
 };
 
-Box a;       // ❌ 컴파일 에러 — 기본 생성자 없음!
+Box a;       // ❌ 컴파일 오류: 기본 생성자 없음!
 Box b(10);   // ✅ 정상
 ```
 
@@ -806,7 +806,7 @@ inline int square(int n) {
 class Circle {
     int radius;
 public:
-    // 암시적 인라인 — 클래스 내부에서 정의
+    // 암시적 인라인: 클래스 내부에서 정의
     double getArea() { return 3.14 * radius * radius; }
 };
 ```
@@ -839,7 +839,7 @@ struct Point {
 };
 
 Point p;
-p.x = 3;            // ✅ 정상 — 기본이 public
+p.x = 3;            // ✅ 정상: 기본이 public
 ```
 
 > **참고:** **관례.** 대부분 public 멤버를 가진 단순 데이터 구조에는 `struct`를, 캡슐화와 접근 제어가 중요한 경우에는 `class`를 사용한다.
@@ -1144,7 +1144,7 @@ public:
     int getWidth() { return width; }
     int getHeight() { return height; }
 
-    // 여기서는 선언만 — 정의는 아래에서
+    // 여기서는 선언만: 정의는 아래에서
     int getArea();
     void print();
 };
@@ -1198,7 +1198,7 @@ public:
 int main() { ... }
 ```
 
-컴파일러가 클래스 정의 **뒤쪽 줄**을 가리키는 혼란스러운 에러를 출력한다. 반드시 `};`으로 끝내야 한다.
+컴파일러는 닫는 중괄호 뒤에 `;`가 없다는 오류(Clang의 "expected ';' after class" 등)를 내며, 클래스 정의 **뒤쪽 줄**을 가리키는 오류가 함께 이어지기도 한다. 반드시 `};`으로 끝내야 한다.
 
 ```cpp
 class Circle {
@@ -1212,7 +1212,7 @@ public:
 
 ```cpp
 Circle c;
-c.radius = 5;   // 잘못됨: 컴파일 에러 — radius는 private
+c.radius = 5;   // 잘못됨: 컴파일 오류, radius는 private
 ```
 
 **해결:** public setter를 사용하거나 생성자를 통해 값을 전달한다.
@@ -1234,7 +1234,7 @@ public:
     Box(int s) { size = s; }
 };
 
-Box b;       // 잘못됨: 컴파일 에러 — 기본 생성자 없음
+Box b;       // 잘못됨: 컴파일 오류, 기본 생성자 없음
 ```
 
 **해결:** 기본 생성자가 필요하면 직접 정의한다.
@@ -1247,7 +1247,7 @@ public:
     Box(int s) { size = s; }
 };
 
-Box b;       // OK — Box() 호출
+Box b;       // OK: Box() 호출
 ```
 
 ### 9.4 생성자를 일반 함수처럼 호출

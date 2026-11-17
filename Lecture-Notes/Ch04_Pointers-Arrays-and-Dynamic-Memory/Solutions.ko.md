@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -371,7 +371,7 @@ Rect() { width = 1; height = 1; }
 
 **정답:** `new []`로 할당한 배열은 `delete [] p;`로 반환해야 하는데 `delete p;`로 반환하였다.
 
-**해설:** `new`와 `delete`, `new []`와 `delete []`는 짝을 맞추어 써야 하며, 짝이 맞지 않으면 결과는 정의되지 않은 동작이다([4장 2.3절](Concepts_Lecture.ko.md#23-동적-배열)). `delete []`는 원소 네 개의 소멸자를 모두 호출한 뒤 배열 전체를 반환하지만, `delete`는 객체 하나를 반환하는 연산이므로 나머지 원소의 소멸자가 호출되지 않고 메모리 반환도 올바르게 이루어지지 않는다. 소멸자를 가진 `Cube`로 시험하면 Clang은 `'delete' applied to a pointer that was allocated with 'new[]'` 경고(`-Wmismatched-new-delete`)를 내고, 실행하면 소멸자가 한 번만 호출된 뒤 메모리를 반환하는 단계에서 프로그램이 비정상 종료된다. 원소가 동적 메모리를 가진 객체라면 소멸자가 호출되지 않은 원소의 메모리는 누수로 남는다.
+**해설:** `new`와 `delete`, `new []`와 `delete []`는 짝을 맞추어 써야 하며, 짝이 맞지 않으면 결과는 정의되지 않은 동작이다([4장 2.3절](Concepts_Lecture.ko.md#23-동적-배열)). `delete []`는 원소 네 개의 소멸자를 모두 호출한 뒤 배열 전체를 반환하지만, `delete`는 객체 하나를 반환하는 연산이므로 나머지 원소의 소멸자가 호출되지 않고 메모리 반환도 올바르게 이루어지지 않는다. `Cube`에 소멸자가 있으면 Clang은 `'delete' applied to a pointer that was allocated with 'new[]'` 경고(`-Wmismatched-new-delete`)를 내며, Apple clang으로 컴파일한 프로그램은 소멸자를 한 번만 호출한 뒤 메모리를 반환하는 단계에서 비정상 종료된다. 원소가 동적 메모리를 가진 객체라면 소멸자가 호출되지 않은 원소의 메모리는 누수로 남는다.
 
 ---
 

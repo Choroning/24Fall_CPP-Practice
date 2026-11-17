@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-11-16
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -228,7 +228,7 @@ The program includes `<iostream>` for input/output and uses the standard namespa
 Two more points can be noted.
 
 - **Condition and output wording:** The condition `p[i].getArea() >= 100` follows the problem's "100 or more", but the output sentence says "greater than 100", as in the sample run of the problem. With integer radii the area is 78.5 for radius 5 and 113.04 for radius 6, so it is never exactly 100 and the two conditions give the same result. Still, wording the sentence as "100 or more" to match the condition is more accurate.
-- **Invalid count input:** Entering 0 runs the loop zero times and prints a count of 0. Entering a negative number makes `new Circle [size]` fail to allocate memory and throw an exception (`std::bad_alloc` in this environment), and because it is not handled, the program terminates abnormally.
+- **Invalid count input:** Entering 0 runs the loop zero times and prints a count of 0. Entering a negative number makes `new Circle [size]` fail to allocate memory and throw an exception (`std::bad_alloc` with Apple clang), and because it is not handled, the program terminates abnormally.
 
 ### 5.3 Output and Review
 

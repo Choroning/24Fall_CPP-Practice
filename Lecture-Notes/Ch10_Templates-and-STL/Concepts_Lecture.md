@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -105,7 +105,7 @@
 **Generic programming** is a technique that lets you write a function or class once and have it work for **any type**. Without templates, you would need to duplicate the same logic for each type (`int`, `double`, `char`, etc.). Function overloading does not solve this either: you still write a separate function for each type, and the functions differ only in their parameter types while their bodies are the same.
 
 ```cpp
-// Without templates — duplicated code
+// Without templates: duplicated code
 int maxInt(int a, int b) { return (a > b) ? a : b; }
 double maxDouble(double a, double b) { return (a > b) ? a : b; }
 char maxChar(char a, char b) { return (a > b) ? a : b; }
@@ -113,7 +113,11 @@ char maxChar(char a, char b) { return (a > b) ? a : b; }
 
 Templates eliminate this redundancy by letting the compiler generate type-specific versions automatically.
 
-> **Definition:** **Generic** programming, or generalization, is a technique that generalizes a function or class and, given the parameter types, produces function or class code from it like stamping copies from a mold. A **template** is the C++ tool that generalizes functions and classes and is declared with the `template` keyword; the data type used for the generalization is called a **generic type**.
+> **Definition:** **Generic** programming, or generalization, is a technique that generalizes a function or class and, given the parameter types, produces function or class code from it like stamping copies from a mold.
+
+> **Definition:** A **template** is the C++ tool that generalizes functions and classes, and it is declared with the `template` keyword.
+
+> **Definition:** A **generic type** is the data type that a template uses for the generalization.
 
 ### 1.2 Syntax
 
@@ -492,7 +496,7 @@ vector<int> v3(5, 42);            // 5 elements, all initialized to 42
 vector<int> v4 = {1, 2, 3, 4, 5}; // initializer list (C++11)
 vector<int> v5{10, 20, 30};       // brace initialization (C++11)
 vector<int> v6(v4);               // copy of v4
-vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3} — from iterator range
+vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3}: from iterator range
 ```
 
 ### 4.2 Element Access
@@ -500,10 +504,10 @@ vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3} — from iterator range
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-v[0];           // 10 — no bounds checking (undefined behavior if out of range)
-v.at(1);        // 20 — bounds-checked (throws std::out_of_range if invalid)
-v.front();      // 10 — first element
-v.back();       // 50 — last element
+v[0];           // 10: no bounds checking (undefined behavior if out of range)
+v.at(1);        // 20: bounds-checked (throws std::out_of_range if invalid)
+v.front();      // 10: first element
+v.back();       // 50: last element
 ```
 
 | Method | Returns | Bounds Check |
@@ -522,18 +526,18 @@ v.back();       // 50 — last element
 ```cpp
 vector<int> v = {10, 20, 30};
 
-v.push_back(40);                 // {10, 20, 30, 40} — add to end
-v.pop_back();                    // {10, 20, 30} — remove from end
+v.push_back(40);                 // {10, 20, 30, 40}: add to end
+v.pop_back();                    // {10, 20, 30}: remove from end
 
-v.insert(v.begin() + 1, 15);    // {10, 15, 20, 30} — insert before position
-v.erase(v.begin() + 2);         // {10, 15, 30} — erase single element
-v.erase(v.begin(), v.begin()+2);// {30} — erase range [first, last)
+v.insert(v.begin() + 1, 15);    // {10, 15, 20, 30}: insert before position
+v.erase(v.begin() + 2);         // {10, 15, 30}: erase single element
+v.erase(v.begin(), v.begin()+2);// {30}: erase range [first, last)
 
-v.clear();                       // {} — remove all elements
+v.clear();                       // {}: remove all elements
 
-v.resize(5);                     // {0, 0, 0, 0, 0} — resize to 5 (fill with 0)
-v.resize(3, 99);                 // {0, 0, 0} — shrink to 3 (99 unused here)
-v.resize(5, 99);                 // {0, 0, 0, 99, 99} — grow to 5, new elements = 99
+v.resize(5);                     // {0, 0, 0, 0, 0}: resize to 5 (fill with 0)
+v.resize(3, 99);                 // {0, 0, 0}: shrink to 3 (99 unused here)
+v.resize(5, 99);                 // {0, 0, 0, 99, 99}: grow to 5, new elements = 99
 ```
 
 | Method | Effect | Time Complexity |
@@ -556,8 +560,8 @@ v.resize(5, 99);                 // {0, 0, 0, 99, 99} — grow to 5, new element
 vector<int> v;
 v.reserve(100);     // pre-allocate space for 100 elements (no elements created)
 
-cout << v.size();       // 0 — no elements yet
-cout << v.capacity();   // >= 100 — allocated space
+cout << v.size();       // 0: no elements yet
+cout << v.capacity();   // >= 100: allocated space
 cout << v.empty();      // true (1)
 
 v.push_back(1);
@@ -636,18 +640,18 @@ for (vector<int>::iterator it = v.begin(); it != v.end(); it++) {
     cout << *it << " ";
 }
 
-// 3. Range-based for (C++11) — copies each element
+// 3. Range-based for (C++11): copies each element
 for (int x : v) {
     cout << x << " ";
 }
 
-// 4. Range-based for with reference (C++11) — no copy, can modify
+// 4. Range-based for with reference (C++11): no copy, can modify
 for (int& x : v) {
     x *= 2;   // modifies the original vector
 }
 // v is now {20, 40, 60, 80}
 
-// 5. Range-based for with const reference — no copy, read-only
+// 5. Range-based for with const reference: no copy, read-only
 for (const int& x : v) {
     cout << x << " ";
 }
@@ -660,7 +664,7 @@ for (const int& x : v) {
 Always pass vectors by **reference** to avoid expensive copies. Use `const` if the function only reads the vector.
 
 ```cpp
-// Read-only — pass by const reference
+// Read-only: pass by const reference
 void printVector(const vector<int>& v) {
     for (const auto& x : v) {
         cout << x << " ";
@@ -668,14 +672,14 @@ void printVector(const vector<int>& v) {
     cout << endl;
 }
 
-// Modify in place — pass by reference
+// Modify in place: pass by reference
 void doubleAll(vector<int>& v) {
     for (auto& x : v) {
         x *= 2;
     }
 }
 
-// Return a new vector — return by value (move semantics make this efficient)
+// Return a new vector: return by value (move semantics make this efficient)
 vector<int> createVector(int n) {
     vector<int> result(n);
     for (int i = 0; i < n; i++) result[i] = i + 1;
@@ -762,13 +766,13 @@ using namespace std;
 string s1;                     // empty string ""
 string s2 = "Hello";          // from C-string literal
 string s3("World");           // constructor form
-string s4(5, 'x');            // "xxxxx" — 5 copies of 'x'
+string s4(5, 'x');            // "xxxxx": 5 copies of 'x'
 string s5 = s2;               // copy of s2
 
 // Concatenation
 string greeting = s2 + " " + s3;   // "Hello World"
-s2 += "!";                         // "Hello!" — append in place
-s2.append(" C++");                 // "Hello! C++" — another way to append
+s2 += "!";                         // "Hello!": append in place
+s2.append(" C++");                 // "Hello! C++": another way to append
 ```
 
 ### 5.3 Access and Search
@@ -778,18 +782,18 @@ string s = "Hello World";
 
 // Access individual characters
 s[0];              // 'H'
-s.at(4);           // 'o' — bounds-checked
+s.at(4);           // 'o': bounds-checked
 
 // Substring
-s.substr(0, 5);    // "Hello" — substr(start_pos, length)
-s.substr(6);       // "World" — from position 6 to end
+s.substr(0, 5);    // "Hello": substr(start_pos, length)
+s.substr(6);       // "World": from position 6 to end
 
 // Search
-s.find("World");       // 6 — position of first occurrence
-s.find("xyz");         // string::npos — not found
-s.find('o');           // 4 — first 'o'
-s.find('o', 5);        // 7 — first 'o' starting from position 5
-s.rfind('o');          // 7 — last occurrence (reverse find)
+s.find("World");       // 6: position of first occurrence
+s.find("xyz");         // string::npos: not found
+s.find('o');           // 4: first 'o'
+s.find('o', 5);        // 7: first 'o' starting from position 5
+s.rfind('o');          // 7: last occurrence (reverse find)
 ```
 
 | Method | Returns |
@@ -810,7 +814,7 @@ string b = "banana";
 
 a == b;     // false
 a != b;     // true
-a < b;      // true — lexicographic comparison ('a' < 'b')
+a < b;      // true: lexicographic comparison ('a' < 'b')
 a > b;      // false
 
 // compare() returns 0 if equal, negative if a < b, positive if a > b
@@ -911,15 +915,15 @@ int main() {
     map<string, int> ages;
 
     // Insert
-    ages["Alice"] = 20;               // [] operator — inserts or updates
+    ages["Alice"] = 20;               // [] operator: inserts or updates
     ages["Bob"] = 22;
-    ages.insert({"Charlie", 25});      // insert() — does NOT overwrite if key exists
+    ages.insert({"Charlie", 25});      // insert(): does NOT overwrite if key exists
     ages.insert(make_pair("Dave", 30));
 
     // Access
     cout << ages["Alice"] << endl;     // 20
 
-    // Check existence (IMPORTANT: do NOT use [] to check — it creates a default entry!)
+    // Check existence (IMPORTANT: do NOT use [] to check, it creates a default entry!)
     if (ages.find("Eve") != ages.end()) {
         cout << "Found Eve" << endl;
     } else {
@@ -933,7 +937,7 @@ int main() {
     // Erase
     ages.erase("Charlie");             // remove by key
 
-    // Iterate — elements are ordered by key
+    // Iterate: elements are ordered by key
     for (auto it = ages.begin(); it != ages.end(); it++) {
         cout << it->first << ": " << it->second << endl;
     }
@@ -1009,7 +1013,7 @@ int main() {
     s.insert(30);
     s.insert(10);
     s.insert(20);
-    s.insert(10);     // duplicate — ignored
+    s.insert(10);     // duplicate: ignored
 
     cout << s.size() << endl;   // 3
 
@@ -1024,7 +1028,7 @@ int main() {
     // Erase
     s.erase(10);       // remove element 10
 
-    // Iterate — elements are sorted
+    // Iterate: elements are sorted
     for (const auto& x : s) {
         cout << x << " ";    // 20 30
     }
@@ -1055,7 +1059,7 @@ int main() {
 using namespace std;
 
 unordered_set<int> us = {1, 2, 3, 4, 5};
-us.insert(3);              // duplicate — ignored
+us.insert(3);              // duplicate: ignored
 us.count(3);               // 1
 us.erase(2);               // remove element 2
 ```
@@ -1142,13 +1146,13 @@ sort(v.begin(), v.begin() + 3);   // sort only first 3 elements
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-// find — returns iterator to first match, or end() if not found
+// find: returns iterator to first match, or end() if not found
 auto it = find(v.begin(), v.end(), 30);
 if (it != v.end()) {
     cout << "Found at index " << (it - v.begin()) << endl;  // index 2
 }
 
-// min_element / max_element — returns iterator to min/max
+// min_element / max_element: returns iterator to min/max
 auto minIt = min_element(v.begin(), v.end());
 auto maxIt = max_element(v.begin(), v.end());
 cout << "Min: " << *minIt << endl;   // 10
@@ -1165,10 +1169,10 @@ using namespace std;
 
 vector<int> v = {1, 2, 3, 2, 4, 2, 5};
 
-// count — count occurrences of a value
+// count: count occurrences of a value
 int c = count(v.begin(), v.end(), 2);   // 3
 
-// accumulate — sum all elements (from <numeric>)
+// accumulate: sum all elements (from <numeric>)
 int sum = accumulate(v.begin(), v.end(), 0);   // 19
 // The third argument (0) is the initial value
 
@@ -1187,7 +1191,7 @@ vector<int> v = {1, 2, 3, 4, 5};
 // reverse
 reverse(v.begin(), v.end());       // {5, 4, 3, 2, 1}
 
-// unique + erase idiom — remove consecutive duplicates
+// unique + erase idiom: remove consecutive duplicates
 vector<int> w = {1, 1, 2, 3, 3, 3, 4, 4, 5};
 // IMPORTANT: vector must be sorted first for unique to remove ALL duplicates
 auto last = unique(w.begin(), w.end());   // moves duplicates to end
@@ -1206,14 +1210,14 @@ These functions require the range to be **sorted**.
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-// binary_search — returns true/false
+// binary_search: returns true/false
 bool found = binary_search(v.begin(), v.end(), 30);   // true
 
-// lower_bound — iterator to first element >= value
+// lower_bound: iterator to first element >= value
 auto lb = lower_bound(v.begin(), v.end(), 25);
 cout << *lb << endl;    // 30 (first element >= 25)
 
-// upper_bound — iterator to first element > value
+// upper_bound: iterator to first element > value
 auto ub = upper_bound(v.begin(), v.end(), 30);
 cout << *ub << endl;    // 40 (first element > 30)
 
@@ -1286,13 +1290,13 @@ auto x = 42;               // int
 auto y = 3.14;             // double
 auto s = string("hello");  // std::string
 
-// Without auto — verbose
+// Without auto: verbose
 vector<int>::iterator it1 = v.begin();
 
-// With auto — concise
+// With auto: concise
 auto it2 = v.begin();      // same type, deduced automatically
 
-// With map — much cleaner
+// With map: much cleaner
 map<string, vector<int>> data;
 // Without auto:
 for (map<string, vector<int>>::iterator it = data.begin(); it != data.end(); it++) { }
@@ -1334,7 +1338,7 @@ for (auto& x : v) {
     x *= 2;
 }
 
-// By const reference (no copy, read-only — RECOMMENDED for read access)
+// By const reference (no copy, read-only: RECOMMENDED for read access)
 for (const auto& x : v) {
     cout << x << " ";
 }
@@ -1424,7 +1428,7 @@ The third argument of `for_each()` can also be an ordinary function instead of a
 Structured bindings allow you to decompose a pair, tuple, or struct into named variables.
 
 ```cpp
-// With map — clean iteration
+// With map: clean iteration
 map<string, int> ages = {{"Alice", 20}, {"Bob", 22}};
 
 for (const auto& [name, age] : ages) {
@@ -1506,8 +1510,8 @@ T gcd2(T a, T b) { /* ... */ }
 // Even shorter with auto:
 auto gcd3(std::integral auto a, std::integral auto b) { /* ... */ }
 
-gcd(12, 8);     // OK — int is integral
-// gcd(3.14, 2.0); // compile error — double is not integral (clear message!)
+gcd(12, 8);     // OK: int is integral
+// gcd(3.14, 2.0); // compile error: double is not integral (clear message!)
 ```
 
 ### 8.7 std::ranges (C++20)
@@ -1527,7 +1531,7 @@ vector<int> v = {5, 3, 1, 4, 2};
 // Instead of: sort(v.begin(), v.end());
 ranges::sort(v);                    // {1, 2, 3, 4, 5}
 
-// Views — lazy, composable transformations
+// Views: lazy, composable transformations
 auto even = v | views::filter([](int x) { return x % 2 == 0; });
 // even lazily produces: 2, 4
 
@@ -1558,9 +1562,9 @@ std::println("No need for \\n with println");  // adds newline automatically
 
 ### 8.9 C++26 Preview
 
-> **Note:** **C++26.** C++26 is expected to be ratified in 2026, and compilers do not yet support most of its features. The information below is for awareness only.
+> **Note:** **C++26.** C++26 is the standard targeted for publication in 2026, and compiler support varies by feature. The information below is for awareness only.
 
-C++26 brings significant additions focused on **safety**, **performance**, and **parallel computing** [1].
+C++26 adds features such as contracts, new containers and libraries, wider `constexpr` support, and the asynchronous execution framework `std::execution` [1].
 
 #### Contracts (`pre`, `post`, `contract_assert`)
 
@@ -1632,7 +1636,7 @@ constexpr std::deque<int> dq = {1, 2, 3};
 It is a comprehensive asynchronous programming framework with senders, receivers, and schedulers.
 
 ```cpp
-// C++26: std::execution (conceptual — syntax may evolve)
+// C++26: std::execution (conceptual, syntax may evolve)
 #include <execution>
 
 auto work = std::execution::just(42)
@@ -1770,7 +1774,7 @@ nums.erase(unique(nums.begin(), nums.end()), nums.end());
 #include <queue>
 using namespace std;
 
-// Stack — LIFO (Last In, First Out)
+// Stack: LIFO (Last In, First Out)
 stack<int> st;
 st.push(10);
 st.push(20);
@@ -1781,7 +1785,7 @@ cout << st.top() << endl;    // 20
 cout << st.size() << endl;   // 2
 cout << st.empty() << endl;  // false
 
-// Queue — FIFO (First In, First Out)
+// Queue: FIFO (First In, First Out)
 queue<int> q;
 q.push(10);
 q.push(20);
@@ -1838,10 +1842,10 @@ priority_queue<int> topK;
 for (int x : data) {
     topK.push(x);
     if (topK.size() > k) {
-        topK.pop();             // remove the largest — keep only K smallest
+        topK.pop();             // remove the largest: keep only K smallest
     }
 }
-// topK contains: {3, 2, 1} — the 3 smallest elements
+// topK contains: {3, 2, 1}, the 3 smallest elements
 ```
 
 ### 9.7 pair and make_pair
@@ -1887,7 +1891,7 @@ sort(indexed.begin(), indexed.end());
 Unlike regular classes, **template definitions cannot be separated** into `.h` and `.cpp` files in the usual way. The compiler needs to see the full template definition at the point of instantiation to generate the concrete code.
 
 ```cpp
-// MyTemplate.h — CORRECT: put everything in the header
+// MyTemplate.h, CORRECT: put everything in the header
 template <typename T>
 class MyTemplate {
     T data;
@@ -1905,7 +1909,7 @@ T MyTemplate<T>::getData() {
 If you put the template member function definitions in a `.cpp` file, the linker will produce an **"undefined reference"** error because the compiler cannot instantiate the template when it compiles other translation units.
 
 ```cpp
-// BAD: MyTemplate.cpp — will cause linker error
+// BAD: MyTemplate.cpp, will cause linker error
 template <typename T>
 T MyTemplate<T>::getData() {
     return data;
@@ -1950,7 +1954,7 @@ public:
 };
 
 Point p1(1, 2), p2(3, 4);
-// bigger(p1, p2);   // compile error — Point has no operator>
+// bigger(p1, p2);   // compile error: Point has no operator>
 ```
 
 To fix this, overload `operator>` in the `Point` class:
@@ -1966,7 +1970,7 @@ public:
 };
 
 Point p1(1, 2), p2(3, 4);
-Point p3 = bigger(p1, p2);  // now works — uses operator>
+Point p3 = bigger(p1, p2);  // now works: uses operator>
 ```
 
 **Type mismatch:**
@@ -1977,8 +1981,8 @@ T myMax(T a, T b) {
     return (a > b) ? a : b;
 }
 
-// myMax(3, 7.5);    // compile error — T cannot be both int and double
-myMax<double>(3, 7.5);  // OK — explicitly set T to double
+// myMax(3, 7.5);    // compile error: T cannot be both int and double
+myMax<double>(3, 7.5);  // OK: explicitly set T to double
 ```
 
 > **Note:** **Tip.** When a template function is called with arguments of different types and the template has a single type parameter, the compiler cannot deduce `T`. Either specify the template argument explicitly, as in `myMax<double>`, or add a second template parameter.
@@ -1996,14 +2000,14 @@ Inserting or erasing elements in a `vector` can **invalidate** existing iterator
 ```cpp
 vector<int> v = {1, 2, 3, 4, 5};
 
-// WRONG — iterator invalidated after erase
+// WRONG: iterator invalidated after erase
 for (auto it = v.begin(); it != v.end(); it++) {
     if (*it % 2 == 0) {
         v.erase(it);   // BAD: 'it' is now invalid, and the next it++ is undefined
     }
 }
 
-// CORRECT — erase returns the next valid iterator
+// CORRECT: erase returns the next valid iterator
 for (auto it = v.begin(); it != v.end(); ) {
     if (*it % 2 == 0) {
         it = v.erase(it);   // erase returns iterator to next element
@@ -2021,13 +2025,13 @@ The `[]` operator on a map **inserts a default-constructed value** if the key do
 ```cpp
 map<string, int> m;
 
-// WRONG — this creates an entry {"Alice", 0} even though we just wanted to check!
+// WRONG: this creates an entry {"Alice", 0} even though we just wanted to check!
 if (m["Alice"] == 0) {
     cout << "Alice not found" << endl;
 }
-// m now contains {"Alice": 0} — unintended side effect!
+// m now contains {"Alice": 0}, unintended side effect!
 
-// CORRECT — use find() or count() to check existence
+// CORRECT: use find() or count() to check existence
 if (m.find("Alice") == m.end()) {
     cout << "Alice not found" << endl;
 }
@@ -2064,22 +2068,22 @@ Each STL component requires its own header. Up to C++20, C++ has no single state
 ```cpp
 vector<string> names = {"Alice", "Bob", "Charlie"};
 
-// COPY — each iteration copies the string (expensive for large objects!)
+// COPY: each iteration copies the string (expensive for large objects!)
 for (auto x : names) {
     x = "Modified";       // modifies the copy, not the original
 }
 // names is unchanged: {"Alice", "Bob", "Charlie"}
 
-// REFERENCE — no copy, modifies the original
+// REFERENCE: no copy, modifies the original
 for (auto& x : names) {
     x = "Modified";       // modifies the original vector
 }
 // names is now: {"Modified", "Modified", "Modified"}
 
-// CONST REFERENCE — no copy, read-only (BEST for read access)
+// CONST REFERENCE: no copy, read-only (BEST for read access)
 for (const auto& x : names) {
     cout << x << endl;    // efficient, safe
-    // x = "change";      // compile error — const
+    // x = "change";      // compile error: const
 }
 ```
 
@@ -2205,6 +2209,5 @@ for (const auto& x : names) {
 
 ## References
 
-[1] cppreference.com, "C++26," https://en.cppreference.com/w/cpp/26.
-
-[2] NVIDIA, "stdexec," GitHub, https://github.com/NVIDIA/stdexec.
+1. cppreference.com, "C++26," *cppreference.com*. https://en.cppreference.com/w/cpp/26
+2. NVIDIA, "stdexec," *GitHub*. https://github.com/NVIDIA/stdexec

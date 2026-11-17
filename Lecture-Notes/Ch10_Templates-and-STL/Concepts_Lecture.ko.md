@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -105,7 +105,7 @@
 **제네릭 프로그래밍(generic programming)** 은 함수나 클래스를 한 번만 작성하면 **어떤 타입에든** 동작하게 하는 기법이다. 템플릿 없이는 동일한 로직을 각 타입(`int`, `double`, `char` 등)마다 중복 작성해야 한다. 함수 중복(overloading)으로 처리해도 매개변수 타입만 다르고 본문은 같은 함수를 타입마다 따로 써야 한다.
 
 ```cpp
-// 템플릿 없이 — 코드 중복
+// 템플릿 없이: 코드 중복
 int maxInt(int a, int b) { return (a > b) ? a : b; }
 double maxDouble(double a, double b) { return (a > b) ? a : b; }
 char maxChar(char a, char b) { return (a > b) ? a : b; }
@@ -113,7 +113,11 @@ char maxChar(char a, char b) { return (a > b) ? a : b; }
 
 템플릿은 컴파일러가 타입별 함수를 자동으로 생성하게 하여 이러한 중복을 제거한다.
 
-> **용어 정의:** **제네릭(generic)** 또는 일반화는 함수나 클래스를 일반화하고 매개변수 타입을 지정하여 틀에서 찍어 내듯 함수나 클래스 코드를 생산하는 기법이다. **템플릿(template)** 은 함수나 클래스를 일반화하는 C++ 도구로 `template` 키워드로 선언하며, 일반화를 위한 데이터 타입을 **제네릭 타입(generic type)** 이라 한다.
+> **용어 정의:** **제네릭(generic)** 또는 일반화는 함수나 클래스를 일반화하고 매개변수 타입을 지정하여 틀에서 찍어 내듯 함수나 클래스 코드를 생산하는 기법이다.
+
+> **용어 정의:** **템플릿(template)** 은 함수나 클래스를 일반화하는 C++ 도구이며, `template` 키워드로 선언한다.
+
+> **용어 정의:** **제네릭 타입(generic type)** 은 템플릿에서 일반화를 위해 쓰는 데이터 타입이다.
 
 ### 1.2 문법
 
@@ -492,7 +496,7 @@ vector<int> v3(5, 42);            // 원소 5개, 모두 42로 초기화
 vector<int> v4 = {1, 2, 3, 4, 5}; // 초기화 리스트 (C++11)
 vector<int> v5{10, 20, 30};       // 중괄호 초기화 (C++11)
 vector<int> v6(v4);               // v4의 복사본
-vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3} — 반복자 범위로 생성
+vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3}: 반복자 범위로 생성
 ```
 
 ### 4.2 원소 접근
@@ -500,10 +504,10 @@ vector<int> v7(v4.begin(), v4.begin() + 3); // {1, 2, 3} — 반복자 범위로
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-v[0];           // 10 — 범위 검사 없음 (범위 밖이면 정의되지 않은 동작)
-v.at(1);        // 20 — 범위 검사 있음 (잘못된 인덱스면 std::out_of_range 예외)
-v.front();      // 10 — 첫 번째 원소
-v.back();       // 50 — 마지막 원소
+v[0];           // 10: 범위 검사 없음 (범위 밖이면 정의되지 않은 동작)
+v.at(1);        // 20: 범위 검사 있음 (잘못된 인덱스면 std::out_of_range 예외)
+v.front();      // 10: 첫 번째 원소
+v.back();       // 50: 마지막 원소
 ```
 
 | 메서드 | 리턴값 | 범위 검사 |
@@ -522,18 +526,18 @@ v.back();       // 50 — 마지막 원소
 ```cpp
 vector<int> v = {10, 20, 30};
 
-v.push_back(40);                 // {10, 20, 30, 40} — 끝에 추가
-v.pop_back();                    // {10, 20, 30} — 끝에서 제거
+v.push_back(40);                 // {10, 20, 30, 40}: 끝에 추가
+v.pop_back();                    // {10, 20, 30}: 끝에서 제거
 
-v.insert(v.begin() + 1, 15);    // {10, 15, 20, 30} — 위치 앞에 삽입
-v.erase(v.begin() + 2);         // {10, 15, 30} — 단일 원소 삭제
-v.erase(v.begin(), v.begin()+2);// {30} — 범위 [first, last) 삭제
+v.insert(v.begin() + 1, 15);    // {10, 15, 20, 30}: 위치 앞에 삽입
+v.erase(v.begin() + 2);         // {10, 15, 30}: 단일 원소 삭제
+v.erase(v.begin(), v.begin()+2);// {30}: 범위 [first, last) 삭제
 
-v.clear();                       // {} — 모든 원소 제거
+v.clear();                       // {}: 모든 원소 제거
 
-v.resize(5);                     // {0, 0, 0, 0, 0} — 크기를 5로 변경 (0으로 채움)
-v.resize(3, 99);                 // {0, 0, 0} — 크기를 3으로 축소 (99는 미사용)
-v.resize(5, 99);                 // {0, 0, 0, 99, 99} — 크기를 5로 확장, 새 원소 = 99
+v.resize(5);                     // {0, 0, 0, 0, 0}: 크기를 5로 변경 (0으로 채움)
+v.resize(3, 99);                 // {0, 0, 0}: 크기를 3으로 축소 (99는 미사용)
+v.resize(5, 99);                 // {0, 0, 0, 99, 99}: 크기를 5로 확장, 새 원소 = 99
 ```
 
 | 메서드 | 효과 | 시간 복잡도 |
@@ -556,8 +560,8 @@ v.resize(5, 99);                 // {0, 0, 0, 99, 99} — 크기를 5로 확장,
 vector<int> v;
 v.reserve(100);     // 100개 원소 공간을 미리 할당 (원소는 생성되지 않음)
 
-cout << v.size();       // 0 — 아직 원소 없음
-cout << v.capacity();   // >= 100 — 할당된 공간
+cout << v.size();       // 0: 아직 원소 없음
+cout << v.capacity();   // >= 100: 할당된 공간
 cout << v.empty();      // true (1)
 
 v.push_back(1);
@@ -636,18 +640,18 @@ for (vector<int>::iterator it = v.begin(); it != v.end(); it++) {
     cout << *it << " ";
 }
 
-// 3. 범위 기반 for (C++11) — 각 원소를 복사
+// 3. 범위 기반 for (C++11): 각 원소를 복사
 for (int x : v) {
     cout << x << " ";
 }
 
-// 4. 참조를 사용한 범위 기반 for (C++11) — 복사 없음, 수정 가능
+// 4. 참조를 사용한 범위 기반 for (C++11): 복사 없음, 수정 가능
 for (int& x : v) {
     x *= 2;   // 원본 벡터가 수정됨
 }
 // v는 이제 {20, 40, 60, 80}
 
-// 5. const 참조를 사용한 범위 기반 for — 복사 없음, 읽기 전용
+// 5. const 참조를 사용한 범위 기반 for: 복사 없음, 읽기 전용
 for (const int& x : v) {
     cout << x << " ";
 }
@@ -660,7 +664,7 @@ for (const int& x : v) {
 비용이 큰 복사를 피하려면 항상 벡터를 **참조**로 전달해야 한다. 함수가 벡터를 읽기만 한다면 `const`를 사용한다.
 
 ```cpp
-// 읽기 전용 — const 참조로 전달
+// 읽기 전용: const 참조로 전달
 void printVector(const vector<int>& v) {
     for (const auto& x : v) {
         cout << x << " ";
@@ -668,14 +672,14 @@ void printVector(const vector<int>& v) {
     cout << endl;
 }
 
-// 제자리 수정 — 참조로 전달
+// 제자리 수정: 참조로 전달
 void doubleAll(vector<int>& v) {
     for (auto& x : v) {
         x *= 2;
     }
 }
 
-// 새 벡터 반환 — 값으로 반환 (이동 시맨틱스로 효율적)
+// 새 벡터 반환: 값으로 반환 (이동 시맨틱스로 효율적)
 vector<int> createVector(int n) {
     vector<int> result(n);
     for (int i = 0; i < n; i++) result[i] = i + 1;
@@ -762,13 +766,13 @@ using namespace std;
 string s1;                     // 빈 문자열 ""
 string s2 = "Hello";          // C 문자열 리터럴에서 생성
 string s3("World");           // 생성자 형태
-string s4(5, 'x');            // "xxxxx" — 'x'를 5번 반복
+string s4(5, 'x');            // "xxxxx": 'x'를 5번 반복
 string s5 = s2;               // s2의 복사본
 
 // 연결
 string greeting = s2 + " " + s3;   // "Hello World"
-s2 += "!";                         // "Hello!" — 제자리에서 추가
-s2.append(" C++");                 // "Hello! C++" — 추가하는 다른 방법
+s2 += "!";                         // "Hello!": 제자리에서 추가
+s2.append(" C++");                 // "Hello! C++": 추가하는 다른 방법
 ```
 
 ### 5.3 접근과 검색
@@ -778,18 +782,18 @@ string s = "Hello World";
 
 // 개별 문자 접근
 s[0];              // 'H'
-s.at(4);           // 'o' — 범위 검사 있음
+s.at(4);           // 'o': 범위 검사 있음
 
 // 부분 문자열
-s.substr(0, 5);    // "Hello" — substr(시작_위치, 길이)
-s.substr(6);       // "World" — 6번 위치부터 끝까지
+s.substr(0, 5);    // "Hello": substr(시작_위치, 길이)
+s.substr(6);       // "World": 6번 위치부터 끝까지
 
 // 검색
-s.find("World");       // 6 — 첫 번째 발견 위치
-s.find("xyz");         // string::npos — 찾지 못함
-s.find('o');           // 4 — 첫 번째 'o'
-s.find('o', 5);        // 7 — 5번 위치부터 첫 번째 'o'
-s.rfind('o');          // 7 — 마지막 발견 위치 (역방향 검색)
+s.find("World");       // 6: 첫 번째 발견 위치
+s.find("xyz");         // string::npos: 찾지 못함
+s.find('o');           // 4: 첫 번째 'o'
+s.find('o', 5);        // 7: 5번 위치부터 첫 번째 'o'
+s.rfind('o');          // 7: 마지막 발견 위치 (역방향 검색)
 ```
 
 | 메서드 | 리턴값 |
@@ -810,7 +814,7 @@ string b = "banana";
 
 a == b;     // false
 a != b;     // true
-a < b;      // true — 사전순 비교 ('a' < 'b')
+a < b;      // true: 사전순 비교 ('a' < 'b')
 a > b;      // false
 
 // compare()는 같으면 0, a < b이면 음수, a > b이면 양수 반환
@@ -911,15 +915,15 @@ int main() {
     map<string, int> ages;
 
     // 삽입
-    ages["Alice"] = 20;               // [] 연산자 — 삽입 또는 갱신
+    ages["Alice"] = 20;               // [] 연산자: 삽입 또는 갱신
     ages["Bob"] = 22;
-    ages.insert({"Charlie", 25});      // insert() — 키가 이미 있으면 덮어쓰지 않음
+    ages.insert({"Charlie", 25});      // insert(): 키가 이미 있으면 덮어쓰지 않음
     ages.insert(make_pair("Dave", 30));
 
     // 접근
     cout << ages["Alice"] << endl;     // 20
 
-    // 존재 확인 (중요: []로 확인하면 안 됨 — 기본값 항목이 생성됨!)
+    // 존재 확인 (중요: []로 확인하면 안 됨, 기본값 항목이 생성됨!)
     if (ages.find("Eve") != ages.end()) {
         cout << "Found Eve" << endl;
     } else {
@@ -933,7 +937,7 @@ int main() {
     // 삭제
     ages.erase("Charlie");             // 키로 삭제
 
-    // 순회 — 원소가 키 기준으로 정렬됨
+    // 순회: 원소가 키 기준으로 정렬됨
     for (auto it = ages.begin(); it != ages.end(); it++) {
         cout << it->first << ": " << it->second << endl;
     }
@@ -1009,7 +1013,7 @@ int main() {
     s.insert(30);
     s.insert(10);
     s.insert(20);
-    s.insert(10);     // 중복 — 무시됨
+    s.insert(10);     // 중복: 무시됨
 
     cout << s.size() << endl;   // 3
 
@@ -1024,7 +1028,7 @@ int main() {
     // 삭제
     s.erase(10);       // 원소 10 제거
 
-    // 순회 — 원소가 정렬됨
+    // 순회: 원소가 정렬됨
     for (const auto& x : s) {
         cout << x << " ";    // 20 30
     }
@@ -1055,7 +1059,7 @@ int main() {
 using namespace std;
 
 unordered_set<int> us = {1, 2, 3, 4, 5};
-us.insert(3);              // 중복 — 무시됨
+us.insert(3);              // 중복: 무시됨
 us.count(3);               // 1
 us.erase(2);               // 원소 2 제거
 ```
@@ -1123,7 +1127,7 @@ vector<int> v = {30, 10, 50, 20, 40};
 // 기본: 오름차순
 sort(v.begin(), v.end());          // {10, 20, 30, 40, 50}
 
-// 내림차순 — 비교자 사용
+// 내림차순: 비교자 사용
 sort(v.begin(), v.end(), greater<int>());  // {50, 40, 30, 20, 10}
 
 // 람다로 커스텀 비교자
@@ -1142,13 +1146,13 @@ sort(v.begin(), v.begin() + 3);   // 처음 3개 원소만 정렬
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-// find — 첫 번째 일치하는 원소의 반복자 반환, 없으면 end()
+// find: 첫 번째 일치하는 원소의 반복자 반환, 없으면 end()
 auto it = find(v.begin(), v.end(), 30);
 if (it != v.end()) {
     cout << "Found at index " << (it - v.begin()) << endl;  // 인덱스 2
 }
 
-// min_element / max_element — 최솟값/최댓값의 반복자 반환
+// min_element / max_element: 최솟값/최댓값의 반복자 반환
 auto minIt = min_element(v.begin(), v.end());
 auto maxIt = max_element(v.begin(), v.end());
 cout << "Min: " << *minIt << endl;   // 10
@@ -1165,14 +1169,14 @@ using namespace std;
 
 vector<int> v = {1, 2, 3, 2, 4, 2, 5};
 
-// count — 값의 출현 횟수
+// count: 값의 출현 횟수
 int c = count(v.begin(), v.end(), 2);   // 3
 
-// accumulate — 모든 원소의 합 (<numeric>에서)
+// accumulate: 모든 원소의 합 (<numeric>에서)
 int sum = accumulate(v.begin(), v.end(), 0);   // 19
 // 세 번째 인자(0)가 초기값
 
-// accumulate — 커스텀 연산으로
+// accumulate: 커스텀 연산으로
 int product = accumulate(v.begin(), v.end(), 1, [](int a, int b) {
     return a * b;
 });
@@ -1187,7 +1191,7 @@ vector<int> v = {1, 2, 3, 4, 5};
 // reverse
 reverse(v.begin(), v.end());       // {5, 4, 3, 2, 1}
 
-// unique + erase 관용구 — 연속 중복 제거
+// unique + erase 관용구: 연속 중복 제거
 vector<int> w = {1, 1, 2, 3, 3, 3, 4, 4, 5};
 // 중요: 모든 중복을 제거하려면 먼저 정렬되어 있어야 함
 auto last = unique(w.begin(), w.end());   // 중복을 끝으로 이동
@@ -1206,14 +1210,14 @@ fill(u.begin(), u.end(), 42);     // {42, 42, 42, 42, 42}
 ```cpp
 vector<int> v = {10, 20, 30, 40, 50};
 
-// binary_search — true/false 반환
+// binary_search: true/false 반환
 bool found = binary_search(v.begin(), v.end(), 30);   // true
 
-// lower_bound — 값 이상인 첫 번째 원소의 반복자
+// lower_bound: 값 이상인 첫 번째 원소의 반복자
 auto lb = lower_bound(v.begin(), v.end(), 25);
 cout << *lb << endl;    // 30 (25 이상인 첫 번째 원소)
 
-// upper_bound — 값 초과인 첫 번째 원소의 반복자
+// upper_bound: 값 초과인 첫 번째 원소의 반복자
 auto ub = upper_bound(v.begin(), v.end(), 30);
 cout << *ub << endl;    // 40 (30 초과인 첫 번째 원소)
 
@@ -1286,13 +1290,13 @@ auto x = 42;               // int
 auto y = 3.14;             // double
 auto s = string("hello");  // std::string
 
-// auto 없이 — 장황함
+// auto 없이: 장황함
 vector<int>::iterator it1 = v.begin();
 
-// auto 사용 — 간결함
+// auto 사용: 간결함
 auto it2 = v.begin();      // 같은 타입, 자동으로 추론됨
 
-// map과 함께 — 훨씬 깔끔함
+// map과 함께: 훨씬 깔끔함
 map<string, vector<int>> data;
 // auto 없이:
 for (map<string, vector<int>>::iterator it = data.begin(); it != data.end(); it++) { }
@@ -1334,7 +1338,7 @@ for (auto& x : v) {
     x *= 2;
 }
 
-// const 참조로 (복사 없음, 읽기 전용 — 읽기 접근에 권장)
+// const 참조로 (복사 없음, 읽기 전용: 읽기 접근에 권장)
 for (const auto& x : v) {
     cout << x << " ";
 }
@@ -1424,7 +1428,7 @@ cout << sum << endl;                           // 5
 구조적 바인딩을 사용하면 pair, tuple, 구조체를 이름이 있는 변수로 분해할 수 있다.
 
 ```cpp
-// map에서 — 깔끔한 순회
+// map에서: 깔끔한 순회
 map<string, int> ages = {{"Alice", 20}, {"Bob", 22}};
 
 for (const auto& [name, age] : ages) {
@@ -1506,8 +1510,8 @@ T gcd2(T a, T b) { /* ... */ }
 // auto를 사용한 더 짧은 형태:
 auto gcd3(std::integral auto a, std::integral auto b) { /* ... */ }
 
-gcd(12, 8);     // OK — int는 integral
-// gcd(3.14, 2.0); // 컴파일 오류 — double은 integral이 아님 (명확한 메시지!)
+gcd(12, 8);     // OK: int는 integral
+// gcd(3.14, 2.0); // 컴파일 오류: double은 integral이 아님 (명확한 메시지!)
 ```
 
 ### 8.7 std::ranges (C++20)
@@ -1527,7 +1531,7 @@ vector<int> v = {5, 3, 1, 4, 2};
 // 기존 방식: sort(v.begin(), v.end());
 ranges::sort(v);                    // {1, 2, 3, 4, 5}
 
-// Views — 지연 평가, 조합 가능한 변환
+// Views: 지연 평가, 조합 가능한 변환
 auto even = v | views::filter([](int x) { return x % 2 == 0; });
 // even은 지연 평가로 생성: 2, 4
 
@@ -1558,9 +1562,9 @@ std::println("No need for \\n with println");  // 자동으로 개행 추가
 
 ### 8.9 C++26 미리보기
 
-> **참고:** **C++26.** C++26은 2026년에 비준될 예정이며, 대부분의 기능은 아직 컴파일러가 지원하지 않는다. 아래 내용은 참고용이다.
+> **참고:** **C++26.** C++26은 2026년 발행을 목표로 하는 표준이며, 기능마다 컴파일러의 지원 상황이 다르다. 아래 내용은 참고용이다.
 
-C++26은 **안전성**, **성능**, **병렬 컴퓨팅**에 초점을 맞춘 대규모 추가 기능을 포함한다 [1].
+C++26은 계약, 새 컨테이너와 라이브러리, 넓어진 `constexpr` 지원, 비동기 실행 프레임워크 `std::execution` 같은 기능을 추가한다 [1].
 
 #### 계약 (Contracts: `pre`, `post`, `contract_assert`)
 
@@ -1632,7 +1636,7 @@ constexpr std::deque<int> dq = {1, 2, 3};
 센더(sender), 리시버(receiver), 스케줄러를 포함하는 포괄적인 비동기 프로그래밍 프레임워크이다.
 
 ```cpp
-// C++26: std::execution (개념적 — 문법은 변경될 수 있음)
+// C++26: std::execution (개념적, 문법은 변경될 수 있음)
 #include <execution>
 
 auto work = std::execution::just(42)
@@ -1702,7 +1706,7 @@ int main() {
         return a.name < b.name;
     });
 
-    // 방법 2: 구조체에 operator< 오버로딩
+    // 방법 2: 구조체에 operator< 중복
     // struct Person {
     //     ...
     //     bool operator<(const Person& other) const {
@@ -1770,7 +1774,7 @@ nums.erase(unique(nums.begin(), nums.end()), nums.end());
 #include <queue>
 using namespace std;
 
-// Stack — LIFO (Last In, First Out, 후입선출)
+// Stack: LIFO (Last In, First Out, 후입선출)
 stack<int> st;
 st.push(10);
 st.push(20);
@@ -1781,7 +1785,7 @@ cout << st.top() << endl;    // 20
 cout << st.size() << endl;   // 2
 cout << st.empty() << endl;  // false
 
-// Queue — FIFO (First In, First Out, 선입선출)
+// Queue: FIFO (First In, First Out, 선입선출)
 queue<int> q;
 q.push(10);
 q.push(20);
@@ -1838,10 +1842,10 @@ priority_queue<int> topK;
 for (int x : data) {
     topK.push(x);
     if (topK.size() > k) {
-        topK.pop();             // 최댓값 제거 — K개의 최솟값만 유지
+        topK.pop();             // 최댓값 제거: K개의 최솟값만 유지
     }
 }
-// topK에는 {3, 2, 1} — 가장 작은 3개 원소
+// topK에는 {3, 2, 1}: 가장 작은 3개 원소
 ```
 
 ### 9.7 pair와 make_pair
@@ -1887,7 +1891,7 @@ sort(indexed.begin(), indexed.end());
 일반 클래스와 달리, **템플릿 정의는 보통의 방식으로 `.h`와 `.cpp` 파일에 나눌 수 없다**. 컴파일러가 구체 코드를 생성하려면 구체화 시점에 완전한 템플릿 정의를 볼 수 있어야 한다.
 
 ```cpp
-// MyTemplate.h — 올바른 방법: 모든 것을 헤더에 작성
+// MyTemplate.h: 올바른 방법: 모든 것을 헤더에 작성
 template <typename T>
 class MyTemplate {
     T data;
@@ -1905,7 +1909,7 @@ T MyTemplate<T>::getData() {
 템플릿 멤버함수 정의를 `.cpp` 파일에 넣으면, 다른 번역 단위에서 템플릿을 구체화할 수 없어 링커가 **"undefined reference"** 오류를 발생시킨다.
 
 ```cpp
-// 잘못된 방법: MyTemplate.cpp — 링커 오류 발생
+// 잘못된 방법: MyTemplate.cpp, 링커 오류 발생
 template <typename T>
 T MyTemplate<T>::getData() {
     return data;
@@ -1950,7 +1954,7 @@ public:
 };
 
 Point p1(1, 2), p2(3, 4);
-// bigger(p1, p2);   // 컴파일 오류 — Point에 operator>가 없음
+// bigger(p1, p2);   // 컴파일 오류: Point에 operator>가 없음
 ```
 
 해결하려면 `Point` 클래스에 `operator>`를 중복한다:
@@ -1966,7 +1970,7 @@ public:
 };
 
 Point p1(1, 2), p2(3, 4);
-Point p3 = bigger(p1, p2);  // 이제 동작 — operator> 사용
+Point p3 = bigger(p1, p2);  // 이제 동작: operator> 사용
 ```
 
 **타입 불일치:**
@@ -1977,8 +1981,8 @@ T myMax(T a, T b) {
     return (a > b) ? a : b;
 }
 
-// myMax(3, 7.5);    // 컴파일 오류 — T가 int와 double 동시에 될 수 없음
-myMax<double>(3, 7.5);  // OK — T를 명시적으로 double로 지정
+// myMax(3, 7.5);    // 컴파일 오류: T가 int와 double 동시에 될 수 없음
+myMax<double>(3, 7.5);  // OK: T를 명시적으로 double로 지정
 ```
 
 > **참고:** **팁.** 단일 타입 매개변수 템플릿 함수에 서로 다른 타입의 인자를 전달하면 컴파일러가 `T`를 추론할 수 없다. `myMax<double>`처럼 템플릿 인자를 명시하거나 두 번째 템플릿 매개변수를 추가해야 한다.
@@ -1996,14 +2000,14 @@ myMax<double>(3, 7.5);  // OK — T를 명시적으로 double로 지정
 ```cpp
 vector<int> v = {1, 2, 3, 4, 5};
 
-// 잘못된 방법 — erase 후 반복자가 무효화됨
+// 잘못된 방법: erase 후 반복자가 무효화됨
 for (auto it = v.begin(); it != v.end(); it++) {
     if (*it % 2 == 0) {
         v.erase(it);   // 나쁨: 'it'이 무효화되고, 다음 it++은 정의되지 않은 동작
     }
 }
 
-// 올바른 방법 — erase가 다음 유효한 반복자를 반환
+// 올바른 방법: erase가 다음 유효한 반복자를 반환
 for (auto it = v.begin(); it != v.end(); ) {
     if (*it % 2 == 0) {
         it = v.erase(it);   // erase가 다음 원소의 반복자를 반환
@@ -2021,13 +2025,13 @@ map의 `[]` 연산자는 키가 존재하지 않으면 **기본 생성된 값으
 ```cpp
 map<string, int> m;
 
-// 잘못된 방법 — 확인만 하려 했는데 {"Alice", 0} 항목이 생성됨!
+// 잘못된 방법: 확인만 하려 했는데 {"Alice", 0} 항목이 생성됨!
 if (m["Alice"] == 0) {
     cout << "Alice not found" << endl;
 }
-// m에 이제 {"Alice": 0}이 존재 — 의도하지 않은 부작용!
+// m에 이제 {"Alice": 0}이 존재, 의도하지 않은 부작용!
 
-// 올바른 방법 — find()나 count()로 존재 여부 확인
+// 올바른 방법: find()나 count()로 존재 여부 확인
 if (m.find("Alice") == m.end()) {
     cout << "Alice not found" << endl;
 }
@@ -2064,22 +2068,22 @@ if (m.count("Alice") == 0) {
 ```cpp
 vector<string> names = {"Alice", "Bob", "Charlie"};
 
-// 복사 — 반복마다 문자열을 복사 (큰 객체에 비용이 큼!)
+// 복사: 반복마다 문자열을 복사 (큰 객체에 비용이 큼!)
 for (auto x : names) {
     x = "Modified";       // 복사본만 수정, 원본은 변경 안 됨
 }
 // names는 변경 없음: {"Alice", "Bob", "Charlie"}
 
-// 참조 — 복사 없음, 원본 수정
+// 참조: 복사 없음, 원본 수정
 for (auto& x : names) {
     x = "Modified";       // 원본 벡터가 수정됨
 }
 // names는 이제: {"Modified", "Modified", "Modified"}
 
-// const 참조 — 복사 없음, 읽기 전용 (읽기 접근에 최적)
+// const 참조: 복사 없음, 읽기 전용 (읽기 접근에 최적)
 for (const auto& x : names) {
     cout << x << endl;    // 효율적이고 안전
-    // x = "change";      // 컴파일 오류 — const
+    // x = "change";      // 컴파일 오류: const
 }
 ```
 
@@ -2205,6 +2209,5 @@ for (const auto& x : names) {
 
 ## 참고 문헌
 
-[1] cppreference.com, "C++26," https://en.cppreference.com/w/cpp/26.
-
-[2] NVIDIA, "stdexec," GitHub, https://github.com/NVIDIA/stdexec.
+1. cppreference.com, "C++26," *cppreference.com*. https://en.cppreference.com/w/cpp/26
+2. NVIDIA, "stdexec," *GitHub*. https://github.com/NVIDIA/stdexec

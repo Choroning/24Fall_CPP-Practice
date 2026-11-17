@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -22,9 +22,9 @@ Exercises 1 and 2 are lab problems, and Exercises 3-9 are the even-numbered theo
 - [Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading](#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading)
 - [Exercise 5: Identifying Virtual Functions and Their Call Results](#exercise-5-identifying-virtual-functions-and-their-call-results)
 - [Exercise 6: Calling Different `f()` Functions from `g()`](#exercise-6-calling-different-f-functions-from-g)
-- [Exercise 7: A Base Class Without a Virtual Destructor](#exercise-7-a-base-class-without-a-virtual-destructor)
+- [Exercise 7: Output and Problem of the `Person` and `Student` Classes](#exercise-7-output-and-problem-of-the-person-and-student-classes)
 - [Exercise 8: Statements About Pure Virtual Functions](#exercise-8-statements-about-pure-virtual-functions)
-- [Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function](#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)
+- [Exercise 9: Declaring `Shape` and `Circle` Objects](#exercise-9-declaring-shape-and-circle-objects)
 
 ---
 
@@ -311,7 +311,7 @@ public:
 
 <br>
 
-## Exercise 7: A Base Class Without a Virtual Destructor
+## Exercise 7: Output and Problem of the `Person` and `Student` Classes
 
 **Textbook Problem:** Chapter 9 theory problem 10
 
@@ -347,7 +347,7 @@ int main() {
 
 (2) Fix the problem by changing the `Person` class or the `Student` class.
 
-**[Solution](Solutions.md#exercise-7-a-base-class-without-a-virtual-destructor)**
+**[Solution](Solutions.md#exercise-7-output-and-problem-of-the-person-and-student-classes)**
 
 ---
 
@@ -370,7 +370,7 @@ int main() {
 
 <br>
 
-## Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function
+## Exercise 9: Declaring `Shape` and `Circle` Objects
 
 **Textbook Problem:** Chapter 9 theory problem 14
 
@@ -399,4 +399,4 @@ Circle *p = new Circle(10);
 p->paint();
 ```
 
-**[Solution](Solutions.md#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)**
+**[Solution](Solutions.md#exercise-9-declaring-shape-and-circle-objects)**

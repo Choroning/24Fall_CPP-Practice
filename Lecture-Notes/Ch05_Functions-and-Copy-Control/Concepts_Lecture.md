@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -148,14 +148,14 @@ flowchart TD
 **Swap written with a reference and with a pointer:**
 
 ```cpp
-// Reference version (C++ style) — cleaner
+// Reference version (C++ style): cleaner
 void swapRef(int &a, int &b) {
     int temp = a;
     a = b;
     b = temp;
 }
 
-// Pointer version (C style) — works but verbose
+// Pointer version (C style): works but verbose
 void swapPtr(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -248,7 +248,7 @@ The following is a complete, runnable program comparing all three parameter-pass
 #include <iostream>
 using namespace std;
 
-// Method 1: Call by Value — does NOT swap the originals
+// Method 1: Call by Value, does NOT swap the originals
 void swapByValue(int a, int b) {
     int temp = a;
     a = b;
@@ -256,7 +256,7 @@ void swapByValue(int a, int b) {
     cout << "  Inside swapByValue: a=" << a << ", b=" << b << endl;
 }
 
-// Method 2: Call by Pointer — swaps via dereferencing
+// Method 2: Call by Pointer, swaps via dereferencing
 void swapByPointer(int *a, int *b) {
     int temp = *a;
     *a = *b;
@@ -264,7 +264,7 @@ void swapByPointer(int *a, int *b) {
     cout << "  Inside swapByPointer: *a=" << *a << ", *b=" << *b << endl;
 }
 
-// Method 3: Call by Reference — swaps directly
+// Method 3: Call by Reference, swaps directly
 void swapByReference(int &a, int &b) {
     int temp = a;
     a = b;
@@ -789,7 +789,7 @@ int& bad() {
 }
 
 int main() {
-    int &ref = bad();  // ref is a dangling reference — undefined behavior
+    int &ref = bad();  // ref is a dangling reference: undefined behavior
     return 0;
 }
 ```
@@ -821,7 +821,7 @@ void printScores() {
 int main() {
     printScores();                 // Scores: 90, 85, 78, 92, 88
 
-    // Use return value as lvalue — modify array through returned reference
+    // Use return value as lvalue: modify array through returned reference
     getScore(1) = 100;            // scores[1] changes from 85 to 100
     printScores();                 // Scores: 90, 100, 78, 92, 88
 
@@ -912,7 +912,7 @@ class Point {
     int x, y;
 public:
     Point(int x, int y) : x(x), y(y) {}
-    // No copy constructor defined — compiler provides one
+    // No copy constructor defined: compiler provides one
     void show() { cout << "(" << x << ", " << y << ")" << endl; }
 };
 
@@ -1100,7 +1100,7 @@ int main() {
     Book cpp("C++ Guide", 10000);
     Book java = cpp;   // deep copy constructor called
     cpp.show();        // C++ Guide 10000won
-    java.show();       // C++ Guide 10000won — independent copy
+    java.show();       // C++ Guide 10000won: independent copy
     return 0;          // both destructors run safely
 }
 ```
@@ -1120,7 +1120,7 @@ Book cpp("C++", 10000);     Book java = cpp;
             │  "C++"   │                  │  "C++"   │  ← SEPARATE memory
             └──────────┘                  └──────────┘
 
-Each destructor frees its own memory — no conflict.
+Each destructor frees its own memory: no conflict.
 ```
 
 *Figure 9. Two Book objects with their own string memory after a deep copy*
@@ -1196,7 +1196,7 @@ int main() {
 
     cout << endl << "=== Modifying bob's name to Bob ===" << endl;
     bob.setName("Bob");
-    alice.show();         // Alice (age 25) — unchanged! (deep copy worked)
+    alice.show();         // Alice (age 25): unchanged! (deep copy worked)
     bob.show();           // Bob (age 25)
 
     cout << endl << "=== Destructors will run ===" << endl;
@@ -1228,7 +1228,7 @@ Output:
   [Destructor] Deleting: Alice at 0x1000   ← alice's own memory (no crash!)
 ```
 
-Destructors run in reverse order of construction, so `bob` is destroyed first and `alice` last. The address of `bob`'s name changed from 0x2000 to 0x2080 because `setName()` allocated the name anew.
+Destructors run in reverse order of construction, so `bob` is destroyed first and `alice` last. In the sample output, the address of `bob`'s name changes from 0x2000 to 0x2080 because `setName()` frees the old name and allocates a new one. If the allocator hands back the block it has just freed, the address may stay the same.
 
 > **Note:** **Shallow copy experiment.** If you remove (comment out) the deep copy constructor and run again, the default shallow copy is used. Modifying `bob`'s name then frees the shared memory and corrupts `alice` too, and the program crashes on destruction due to double free.
 
@@ -1319,14 +1319,14 @@ int main() {
 ```cpp
 // OK: return reference to static variable
 int& createValue() {
-    static int x = 42;   // static — lives for the entire program
+    static int x = 42;   // static: lives for the entire program
     return x;
 }
 
 // OK: return by value (for simple types, this is fine)
 int createValueByVal() {
     int x = 42;
-    return x;   // returns a COPY — safe
+    return x;   // returns a COPY: safe
 }
 ```
 
@@ -1377,7 +1377,7 @@ public:
 Allowing such a declaration would make every call copy endlessly, so the compiler rejects `Bad(Bad other)` with an error (Apple clang reports "copy constructor must pass its first argument by reference"). Take the parameter by reference instead:
 
 ```cpp
-Bad(const Bad &other) {   // const reference — no copy needed to call this
+Bad(const Bad &other) {   // const reference: no copy needed to call this
     x = other.x;
 }
 ```
@@ -1395,10 +1395,10 @@ The `&` symbol has **two different meanings** depending on context. This confuse
 ```cpp
 int a = 10;
 
-// Context 1: DECLARATION — & means "reference to"
+// Context 1: DECLARATION, & means "reference to"
 int &ref = a;      // ref is a reference (alias) for a
 
-// Context 2: EXPRESSION — & means "address of"
+// Context 2: EXPRESSION, & means "address of"
 int *ptr = &a;     // ptr stores the address of a
 ```
 
@@ -1417,8 +1417,8 @@ int *ptr = &a;     // ptr stores the address of a
 
 ```cpp
 int a = 10;
-int &ref = a;       // reference declaration — ref IS a
-int *ptr = &a;      // address-of — ptr HOLDS a's address
+int &ref = a;       // reference declaration: ref IS a
+int *ptr = &a;      // address-of: ptr HOLDS a's address
 
 // They look similar but are fundamentally different:
 ref = 20;           // changes a to 20 (ref is an alias)

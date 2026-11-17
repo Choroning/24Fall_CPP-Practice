@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -94,7 +94,7 @@ graph TD
 Without encapsulation, anyone can set data to **invalid values**, and there is nothing to prevent bugs.
 
 ```cpp
-// BAD: radius is public — no protection
+// BAD: radius is public, no protection
 class Circle {
 public:
     int radius;
@@ -103,14 +103,14 @@ public:
 
 Circle c;
 c.radius = -5;             // no one stops this!
-cout << c.getArea();        // prints 78.5 — a "negative" radius gives a positive
+cout << c.getArea();        // prints 78.5: a "negative" radius gives a positive
                             // but meaningless area. The object is in an invalid state.
 ```
 
 With encapsulation, the class **validates data** through a setter, preventing invalid states.
 
 ```cpp
-// GOOD: radius is private — setter enforces rules
+// GOOD: radius is private, setter enforces rules
 class Circle {
     int radius;
 public:
@@ -125,7 +125,7 @@ public:
 
 Circle c;
 c.setRadius(-5);            // setter rejects -5, sets radius to 1
-cout << c.getArea();         // prints 3.14 — always a valid result
+cout << c.getArea();         // prints 3.14: always a valid result
 ```
 
 #### Practical Analogy: Bank Account
@@ -134,7 +134,7 @@ Take a **bank account** as an example: the balance is private data. You cannot w
 
 ```cpp
 class BankAccount {
-    int balance;               // private — cannot be touched directly
+    int balance;               // private: cannot be touched directly
 public:
     BankAccount() { balance = 0; }
     void deposit(int amount) {
@@ -199,7 +199,7 @@ If you learned C first, you are used to `struct` as a plain data container with 
 #include <stdio.h>
 
 struct Circle {
-    int radius;          /* all data is public — no way to restrict */
+    int radius;          /* all data is public: no way to restrict */
 };
 
 double getArea(struct Circle c) {    /* function is separate from struct */
@@ -208,7 +208,7 @@ double getArea(struct Circle c) {    /* function is separate from struct */
 
 int main() {
     struct Circle c;
-    c.radius = 5;        /* direct access — no validation possible */
+    c.radius = 5;        /* direct access: no validation possible */
     printf("Area: %.2f\n", getArea(c));
 
     c.radius = -3;       /* nothing prevents this! */
@@ -229,7 +229,7 @@ public:
     Circle(int r) {                  // constructor initializes the object
         radius = (r > 0) ? r : 1;
     }
-    double getArea() {               // member function — bundled with data
+    double getArea() {               // member function: bundled with data
         return 3.14 * radius * radius;
     }
 };
@@ -384,14 +384,14 @@ int main() {
 Declaring an object allocates memory for all its member variables. Use the **dot operator** (`.`) to access public members.
 
 ```cpp
-Circle c;               // object created — memory allocated
+Circle c;               // object created: memory allocated
 c.setRadius(5);         // call member function via dot operator
 double area = c.getArea();
 ```
 
 > **Caution:** You cannot access `private` members directly from outside the class:
 > ```cpp
-> c.radius = 5;  // ❌ compile error — radius is private
+> c.radius = 5;  // ❌ compile error: radius is private
 > ```
 > Use a public setter or pass the value through a constructor.
 
@@ -638,7 +638,7 @@ public:
     Box(int s) { size = s; }   // only parameterized constructor
 };
 
-Box a;       // ❌ compile error — no default constructor!
+Box a;       // ❌ compile error: no default constructor!
 Box b(10);   // ✅ OK
 ```
 
@@ -806,7 +806,7 @@ The advantage of inline functions is faster program execution, and the disadvant
 class Circle {
     int radius;
 public:
-    // implicitly inline — defined inside the class
+    // implicitly inline: defined inside the class
     double getArea() { return 3.14 * radius * radius; }
 };
 ```
@@ -839,7 +839,7 @@ struct Point {
 };
 
 Point p;
-p.x = 3;            // ✅ OK — public by default
+p.x = 3;            // ✅ OK: public by default
 ```
 
 > **Note:** **Convention.** Use `struct` for simple data holders with mostly public members. Use `class` when encapsulation and access control are important.
@@ -1144,7 +1144,7 @@ public:
     int getWidth() { return width; }
     int getHeight() { return height; }
 
-    // Only DECLARED here — defined outside below
+    // Only DECLARED here: defined outside below
     int getArea();
     void print();
 };
@@ -1198,7 +1198,7 @@ public:
 int main() { ... }
 ```
 
-The compiler will produce confusing errors that point to lines **after** the class definition. Always end with `};`.
+The compiler reports that `;` is missing after the closing brace (for example, Clang's "expected ';' after class"), and further errors pointing to lines **after** the class definition may follow. Always end with `};`.
 
 ```cpp
 class Circle {
@@ -1212,7 +1212,7 @@ public:
 
 ```cpp
 Circle c;
-c.radius = 5;   // WRONG: compile error — radius is private
+c.radius = 5;   // WRONG: compile error, radius is private
 ```
 
 **Fix:** Use a public setter or pass the value through a constructor.
@@ -1234,7 +1234,7 @@ public:
     Box(int s) { size = s; }
 };
 
-Box b;       // WRONG: compile error — no default constructor
+Box b;       // WRONG: compile error, no default constructor
 ```
 
 **Fix:** Explicitly define the default constructor if you need it.
@@ -1247,7 +1247,7 @@ public:
     Box(int s) { size = s; }
 };
 
-Box b;       // OK — calls Box()
+Box b;       // OK: calls Box()
 ```
 
 ### 9.4 Calling the Constructor Like a Regular Function

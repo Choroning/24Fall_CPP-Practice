@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -371,7 +371,7 @@ Rect() { width = 1; height = 1; }
 
 **Answer:** An array allocated with `new []` must be returned with `delete [] p;`, but it was returned with `delete p;`.
 
-**Explanation:** `new` must be paired with `delete` and `new []` with `delete []`; a mismatched pair is undefined behavior ([Chapter 4, Section 2.3](Concepts_Lecture.md#23-dynamic-arrays)). `delete []` calls the destructors of all four elements and then returns the whole array, but `delete` is the operation for returning a single object, so the destructors of the other elements are not called and the memory is not returned correctly. Testing with a `Cube` that has a destructor, Clang warns `'delete' applied to a pointer that was allocated with 'new[]'` (`-Wmismatched-new-delete`), and when run, the destructor is called only once and the program terminates abnormally at the step that returns the memory. If the elements are objects that own dynamic memory, the memory of the elements whose destructors were not called remains as a leak.
+**Explanation:** `new` must be paired with `delete` and `new []` with `delete []`; a mismatched pair is undefined behavior ([Chapter 4, Section 2.3](Concepts_Lecture.md#23-dynamic-arrays)). `delete []` calls the destructors of all four elements and then returns the whole array, but `delete` is the operation for returning a single object, so the destructors of the other elements are not called and the memory is not returned correctly. If `Cube` has a destructor, Clang warns `'delete' applied to a pointer that was allocated with 'new[]'` (`-Wmismatched-new-delete`), and a program compiled with Apple clang calls the destructor only once and terminates abnormally at the step that returns the memory. If the elements are objects that own dynamic memory, the memory of the elements whose destructors were not called remains as a leak.
 
 ---
 

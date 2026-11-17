@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 1
 
@@ -147,25 +147,25 @@ C++은 Bell 연구소의 **Bjarne Stroustrup**이 만들었다. 그는 **1979년
 ```text
 C++ 언어의 역사
 ──────────────────────────────────────────────────────────────
-1967    BCPL (Martin Richards) — 컴파일러 작성을 위한 간략화된 CPL
-1969    B (Ken Thompson) — 초기 UNIX용으로 간략화된 BCPL
-1972    C (Dennis Ritchie) — 타입이 추가된 B; UNIX 재작성
-1979    C with Classes (Bjarne Stroustrup) — C + OOP 기능
-1983    C++ — 이름 변경; 최초 공개 배포
-1998    C++98 — 최초의 ISO 표준 (ISO/IEC 14882:1998)
-2003    C++03 — C++98 버그 수정
-2011    C++11 — 대규모 현대화 (auto, 람다, 이동 의미론,
-                스마트 포인터, 범위 기반 for, nullptr)
-2014    C++14 — C++11의 소규모 개선
-2017    C++17 — 구조화된 바인딩, std::optional, 파일시스템
-2020    C++20 — 개념(concepts), 코루틴, 범위(ranges), 모듈,
-                3방향 비교 (<=>)
-2023    C++23 — std::print, deducing this, std::expected,
-                std::flat_map, 다차원 첨자 연산자
-2026    C++26 — 계약(contracts: pre/post/contract_assert),
-                <debugging>, <inplace_vector>, <hive>, <simd>,
-                <linalg>, constexpr 컨테이너 (map, set, deque, ...),
-                std::execution (비동기 스케줄링)
+1967    BCPL (Martin Richards): 컴파일러 작성을 위한 간략화된 CPL
+1969    B (Ken Thompson): 초기 UNIX용으로 간략화된 BCPL
+1972    C (Dennis Ritchie): 타입이 추가된 B; UNIX 재작성
+1979    C with Classes (Bjarne Stroustrup): C + OOP 기능
+1983    C++: 이름 변경; 최초 공개 배포
+1998    C++98: 최초의 ISO 표준 (ISO/IEC 14882:1998)
+2003    C++03: C++98 버그 수정
+2011    C++11: 대규모 현대화 (auto, 람다, 이동 의미론,
+               스마트 포인터, 범위 기반 for, nullptr)
+2014    C++14: C++11의 소규모 개선
+2017    C++17: 구조화된 바인딩, std::optional, 파일시스템
+2020    C++20: 개념(concepts), 코루틴, 범위(ranges), 모듈,
+               3방향 비교 (<=>)
+2023    C++23: std::print, deducing this, std::expected,
+               std::flat_map, 다차원 첨자 연산자
+2026    C++26: 계약(contracts: pre/post/contract_assert),
+               <debugging>, <inplace_vector>, <hive>, <simd>,
+               <linalg>, constexpr 컨테이너 (map, set, deque, ...),
+               std::execution (비동기 스케줄링)
 ──────────────────────────────────────────────────────────────
 ```
 
@@ -302,7 +302,7 @@ C++ 표준은 1998년에 ISO와 미국 표준 협회(ANSI, American National Sta
 예를 들어 표준 규칙대로 작성한 프로그램은 Visual C++, GNU C++, 볼랜드 C++ 같은 모든 표준 컴파일러에서 컴파일되어 운영체제와 컴파일러에 관계없이 같은 실행 결과를 낸다. 반면 `int __cdecl main()`처럼 Visual C++ 전용 키워드를 쓴 프로그램은 Visual C++ 컴파일러에서만 컴파일된다.
 
 ```cpp
-// 표준 C++ — 이식 가능
+// 표준 C++: 이식 가능
 #include <iostream>
 int main() {
     std::cout << "Hello" << std::endl;
@@ -311,7 +311,7 @@ int main() {
 ```
 
 ```cpp
-// 비표준 — 컴파일러별 확장 기능 (MSVC)
+// 비표준: 컴파일러별 확장 기능 (MSVC)
 void __cdecl myFunc();   // __cdecl은 MSVC 전용 호출 규약
 ```
 
@@ -428,7 +428,7 @@ flowchart TD
 *표 7. 개발 단계별 입력, 출력, 하는 일*
 
 - **편집:** C++ 소스 프로그램은 텍스트 파일이므로 텍스트 편집기로 편집할 수 있으며, 표준 확장자는 `.cpp`이다. 편집, 컴파일, 링킹, 실행, 디버깅의 모든 단계를 통합 지원하는 **통합 개발 환경(IDE)** 을 쓰면 편리하며, 대표적인 예가 Visual Studio이다.
-- **컴파일:** C++ 소스 프로그램을 기계어를 가진 목적 파일로 변환한다(`hello.cpp` → `hello.obj`). 소스의 한 줄은 보통 여러 개의 기계어 명령이 되며, 예를 들어 `std::cout << "Hello";`는 문자열의 주소를 스택에 넣고 `<<` 연산자 함수를 호출하는 명령들로 번역된다.
+- **컴파일:** C++ 소스 프로그램을 기계어를 가진 목적 파일로 변환한다(`hello.cpp` → `hello.obj`). 소스의 한 줄은 보통 여러 개의 기계어 명령이 되며, 예를 들어 32비트 x86용 Visual C++에서 `std::cout << "Hello";`는 문자열의 주소를 스택에 넣고 `<<` 연산자 함수를 호출하는 명령들로 번역된다.
 - **링킹:** 목적 파일은 바로 실행할 수 없다. 링커는 목적 파일과 C++ 표준 라이브러리의 함수를 연결하여 실행 파일을 만든다. 예를 들어 `hello.obj`에 표준 라이브러리의 `cout` 객체와 `<<` 연산자 함수를 합쳐 `hello.exe`를 만든다.
 
 확장자 `.obj`와 `.exe`는 Windows(Visual Studio) 기준이다. Linux와 macOS에서는 목적 파일의 확장자가 `.o`이고, 실행 파일은 확장자 없이 만들어진다(이름을 지정하지 않으면 `a.out`).
@@ -482,7 +482,7 @@ int main() {
 }
 ```
 
-정수를 0으로 나누는 것은 C++ 표준에서 정의되지 않은 동작(undefined behavior)이며, 대부분의 시스템에서는 프로그램이 비정상 종료한다.
+정수를 0으로 나누는 것은 C++ 표준에서 정의되지 않은 동작(undefined behavior)이므로 결과를 예측할 수 없다. x86 계열 프로세서에서는 하드웨어 예외가 발생하여 프로그램이 비정상 종료하지만, ARM 계열 프로세서처럼 예외 없이 어떤 값을 내고 실행을 계속하는 시스템도 있다.
 
 > **주의:** 컴파일 오류는 컴파일러가 잡아주므로 가장 고치기 쉽다. 런타임 오류가 가장 어렵다. 프로그램이 성공적으로 컴파일되고 링크되지만, 실행 중에 잘못된 결과를 출력하거나 비정상 종료하기 때문이다.
 

@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -361,12 +361,12 @@ delete[] p;                   // 소멸자 4번 호출
 void leak() {
     int *p = new int[1000];
     // ... delete[] p를 잊음
-}   // p가 스코프를 벗어남 — 메모리 누수!
+}   // p가 스코프를 벗어남: 메모리 누수!
 ```
 
 ```cpp
 int *p = new int(10);
-p = new int(20);        // ❌ 원래 메모리(10)가 누수됨 — 가리키는 포인터 없음
+p = new int(20);        // ❌ 원래 메모리(10)가 누수됨: 가리키는 포인터 없음
 delete p;               // 두 번째 할당만 해제
 ```
 
@@ -381,7 +381,7 @@ delete p;               // 두 번째 할당만 해제
 ```cpp
 int *p = new int(42);
 delete p;             // 메모리 해제
-cout << *p;           // ❌ 정의되지 않은 동작 — 댕글링 포인터!
+cout << *p;           // ❌ 정의되지 않은 동작: 댕글링 포인터!
 ```
 
 **예방법:** `delete` 후 포인터를 `nullptr`로 설정한다. 다만 같은 메모리를 가리키던 다른 포인터는 여전히 댕글링 포인터로 남으므로, 이 방법은 `nullptr`를 대입한 그 포인터만 보호한다.
@@ -389,7 +389,7 @@ cout << *p;           // ❌ 정의되지 않은 동작 — 댕글링 포인터!
 ```cpp
 int *p = new int(42);
 delete p;
-p = nullptr;          // 안전 — "유효한 대상 없음"을 명확히 표시
+p = nullptr;          // 안전: "유효한 대상 없음"을 명확히 표시
 
 if (p != nullptr) {
     cout << *p;       // 이 블록은 건너뜀

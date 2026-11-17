@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-04
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -68,7 +68,7 @@ class Base { };
 class Derived : public Base { };
 
 Derived d;
-Base* p = &d;       // 업캐스팅 — 암시적, 항상 안전
+Base* p = &d;       // 업캐스팅: 암시적, 항상 안전
 Base& r = d;        // 참조를 이용한 업캐스팅
 ```
 
@@ -88,8 +88,8 @@ public:
 
 Circle c;
 Shape* p = &c;      // 업캐스팅
-p->draw();           // "Shape" — Shape::draw() 호출 (정적 바인딩)
-// p->getRadius();   // 컴파일 오류 — Shape에 getRadius()가 없음
+p->draw();           // "Shape": Shape::draw() 호출 (정적 바인딩)
+// p->getRadius();   // 컴파일 오류: Shape에 getRadius()가 없음
 ```
 
 > **핵심:** 업캐스팅 후에는 포인터 타입에 따라 접근 가능한 멤버가 결정된다. 파생 클래스에만 있는 멤버는 기본 클래스 포인터로 접근할 수 없다.
@@ -100,7 +100,7 @@ p->draw();           // "Shape" — Shape::draw() 호출 (정적 바인딩)
 
 ```cpp
 Base* p = new Derived;
-Derived* dp = (Derived*)p;   // C 스타일 다운캐스트 — 컴파일되지만 위험
+Derived* dp = (Derived*)p;   // C 스타일 다운캐스트: 컴파일되지만 위험
 ```
 
 **안전한 다운캐스팅**을 위해 `dynamic_cast`를 사용한다. 런타임에 타입을 검사하고, 포인터 변환이 불가능하면 `nullptr`을 리턴한다(기본 클래스에 가상함수가 하나 이상 있어야 함). 참조로 변환할 때 실패하면 `std::bad_cast` 예외가 발생한다.
@@ -109,7 +109,7 @@ Derived* dp = (Derived*)p;   // C 스타일 다운캐스트 — 컴파일되지�
 Base* p = new Base;
 Derived* dp = dynamic_cast<Derived*>(p);  // 런타임 검사
 if (dp == nullptr) {
-    cout << "캐스트 실패 — p가 Derived를 가리키지 않음" << endl;
+    cout << "캐스트 실패: p가 Derived를 가리키지 않음" << endl;
 }
 ```
 
@@ -159,7 +159,7 @@ public:
 };
 
 Base* p = new Derived;
-p->func();    // 출력: "Base::func()" — 정적 바인딩!
+p->func();    // 출력: "Base::func()", 정적 바인딩!
 delete p;
 ```
 
@@ -183,7 +183,7 @@ public:
 };
 
 Base* p = new Derived;
-p->func();    // 출력: "Derived::func()" — 동적 바인딩!
+p->func();    // 출력: "Derived::func()", 동적 바인딩!
 delete p;
 ```
 
@@ -356,9 +356,9 @@ public:
 
 class Derived : public Base {
 public:
-    void func(int x) override { }    // OK — Base::func(int)와 일치
-    // void func(double x) override; // 컴파일 오류 — 일치하는 기본 함수 없음
-    // void Fun(int x) override;     // 컴파일 오류 — 이름 오타
+    void func(int x) override { }    // OK: Base::func(int)와 일치
+    // void func(double x) override; // 컴파일 오류: 일치하는 기본 함수 없음
+    // void Fun(int x) override;     // 컴파일 오류: 이름 오타
 };
 ```
 
@@ -730,7 +730,7 @@ public:
 };
 
 Base* p = new Derived;
-delete p;    // 출력: "~Derived" 후 "~Base" — 정상!
+delete p;    // 출력: "~Derived" 후 "~Base", 정상!
 ```
 
 > **참고:** **경험 법칙.** 가상함수를 가진 기본 클래스로 사용되는 클래스는 반드시 `virtual` 소멸자를 가져야 한다. 이것은 C++에서 가장 중요한 모범 사례 중 하나이다.
@@ -748,7 +748,7 @@ delete p;    // 출력: "~Derived" 후 "~Base" — 정상!
 ```cpp
 class Shape {
 public:
-    virtual double getArea() = 0;   // 순수 가상함수 — 본체 없음
+    virtual double getArea() = 0;   // 순수 가상함수: 본체 없음
     virtual void draw() = 0;        // 순수 가상함수
 };
 ```
@@ -763,9 +763,9 @@ public:
 - **인터페이스/계약 역할:** 파생 클래스가 구현해야 할 함수의 원형을 보여 준다. 추상 클래스는 객체를 만들기 위한 것이 아니라 상속에서 기본 클래스 역할을 하기 위한 것이다.
 
 ```cpp
-// Shape s;           // 컴파일 오류 — Shape은 추상 클래스
-Shape* p;             // OK — 추상 클래스에 대한 포인터
-Shape& r = *p;        // OK — 추상 클래스에 대한 참조
+// Shape s;           // 컴파일 오류: Shape은 추상 클래스
+Shape* p;             // OK: 추상 클래스에 대한 포인터
+Shape& r = *p;        // OK: 추상 클래스에 대한 참조
 ```
 
 ### 4.3 구체 클래스
@@ -789,8 +789,8 @@ public:
     void draw() override { cout << "Drawing Rectangle" << endl; }
 };
 
-Circle c(5.0);        // OK — Circle은 구체 클래스
-Rectangle r(3.0, 4.0); // OK — Rectangle은 구체 클래스
+Circle c(5.0);        // OK: Circle은 구체 클래스
+Rectangle r(3.0, 4.0); // OK: Rectangle은 구체 클래스
 ```
 
 > **핵심:** 파생 클래스가 모든 순수 가상함수를 오버라이딩하지 않으면 여전히 추상 클래스이며, 인스턴스화할 수 없다.
@@ -966,7 +966,7 @@ public:
     }
 };
 
-// 이 함수는 어떤 Shape에도 동작한다 — 과거, 현재, 미래의 Shape 모두.
+// 이 함수는 어떤 Shape에도 동작한다: 과거, 현재, 미래의 Shape 모두.
 // Circle, Rectangle, Triangle에 대해 알 필요가 없다.
 void printShapeInfo(Shape* s) {
     s->draw();
@@ -986,7 +986,7 @@ int main() {
         printShapeInfo(canvas[i]);
     }
 
-    // 정리 — 가상 소멸자가 올바른 삭제를 보장
+    // 정리: 가상 소멸자가 올바른 삭제를 보장
     for (int i = 0; i < N; i++) {
         delete canvas[i];
     }
@@ -1144,7 +1144,7 @@ public:
 // Shape s;          // 컴파일 오류: 추상 타입 'Shape'의 변수를 선언할 수 없음
 // new Shape();      // 컴파일 오류: 같은 이유
 
-Shape* p;            // OK — 추상 클래스에 대한 포인터는 가능
+Shape* p;            // OK: 추상 클래스에 대한 포인터는 가능
 ```
 
 ### 6.3 순수 가상함수 오버라이딩 누락
@@ -1192,12 +1192,12 @@ public:
     void speak() override { cout << "멍멍!" << endl; }
 };
 
-// 잘못됨: Animal을 값으로 받음 — 슬라이싱 발생!
+// 잘못됨: Animal을 값으로 받음, 슬라이싱 발생!
 void makeItSpeak_bad(Animal a) {
     a.speak();      // 항상 Animal::speak() 호출, Dog::speak()는 절대 호출 안 됨
 }
 
-// 올바름: Animal을 참조로 받음 — 슬라이싱 없음
+// 올바름: Animal을 참조로 받음, 슬라이싱 없음
 void makeItSpeak_good(Animal& a) {
     a.speak();      // 올바른 오버라이딩 호출
 }
@@ -1209,9 +1209,9 @@ void makeItSpeak_ptr(Animal* a) {
 
 int main() {
     Dog d;
-    makeItSpeak_bad(d);    // "..."    — 슬라이싱됨! Dog 부분 손실
-    makeItSpeak_good(d);   // "멍멍!" — 정확
-    makeItSpeak_ptr(&d);   // "멍멍!" — 정확
+    makeItSpeak_bad(d);    // "...": 슬라이싱됨! Dog 부분 손실
+    makeItSpeak_good(d);   // "멍멍!": 정확
+    makeItSpeak_ptr(&d);   // "멍멍!": 정확
     return 0;
 }
 ```
@@ -1246,7 +1246,7 @@ public:
     // 하이딩: 같은 이름, 같은 매개변수, 하지만 기본이 virtual이 아님
     void nonVirtual(int x) { cout << "Derived::nonVirtual(int)" << endl; }
 
-    // 오버로딩: 같은 이름, 다른 매개변수 (Derived 스코프 내)
+    // 중복: 같은 이름, 다른 매개변수 (Derived 스코프 내)
     void func(double x) { cout << "Derived::func(double)" << endl; }
 };
 
@@ -1254,12 +1254,12 @@ int main() {
     Derived d;
     Base* bp = &d;
 
-    bp->func(1);          // "Derived::func(int)"   — 오버라이딩 (동적 바인딩)
-    bp->nonVirtual(1);    // "Base::nonVirtual(int)" — 하이딩 (정적 바인딩; 기본 버전 호출)
+    bp->func(1);          // "Derived::func(int)": 오버라이딩 (동적 바인딩)
+    bp->nonVirtual(1);    // "Base::nonVirtual(int)": 하이딩 (정적 바인딩; 기본 버전 호출)
 
-    d.func(3.14);         // "Derived::func(double)" — 오버로딩 (컴파일 시 결정)
-    d.func(1);            // "Derived::func(int)"    — 오버라이딩
-    d.nonVirtual(1);      // "Derived::nonVirtual(int)" — 하이딩 (Derived 객체에서 파생 버전 호출)
+    d.func(3.14);         // "Derived::func(double)": 중복 (컴파일 시 결정)
+    d.func(1);            // "Derived::func(int)": 오버라이딩
+    d.nonVirtual(1);      // "Derived::nonVirtual(int)": 하이딩 (Derived 객체에서 파생 버전 호출)
 }
 ```
 

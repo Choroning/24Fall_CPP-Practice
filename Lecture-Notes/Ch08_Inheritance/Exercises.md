@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -22,7 +22,7 @@ Exercises 1 and 2 are lab problems, and Exercises 3-10 are the even-numbered the
 - [Exercise 4: Compile Errors Under Inheritance Access Specifiers](#exercise-4-compile-errors-under-inheritance-access-specifiers)
 - [Exercise 5: Access Under `protected` Inheritance](#exercise-5-access-under-protected-inheritance)
 - [Exercise 6: Upcasting, Members, Access, and Downcasting](#exercise-6-upcasting-members-access-and-downcasting)
-- [Exercise 7: Inheriting a Base Class Without a Default Constructor](#exercise-7-inheriting-a-base-class-without-a-default-constructor)
+- [Exercise 7: Constructors of `B` Derived from `A`](#exercise-7-constructors-of-b-derived-from-a)
 - [Exercise 8: Statements About Multiple Inheritance](#exercise-8-statements-about-multiple-inheritance)
 - [Exercise 9: Declaring Classes with Multiple Inheritance](#exercise-9-declaring-classes-with-multiple-inheritance)
 - [Exercise 10: A Potential Problem in an Inheritance Relationship](#exercise-10-a-potential-problem-in-an-inheritance-relationship)
@@ -300,7 +300,7 @@ dp = ap;
 
 <br>
 
-## Exercise 7: Inheriting a Base Class Without a Default Constructor
+## Exercise 7: Constructors of `B` Derived from `A`
 
 **Textbook Problem:** Chapter 8 theory problem 10
 
@@ -324,7 +324,7 @@ public:
 
 (3) Change the constructor `B(int x)` so that running `B b(15);` prints the two lines `생성자 A 35` and `생성자 B 15`.
 
-**[Solution](Solutions.md#exercise-7-inheriting-a-base-class-without-a-default-constructor)**
+**[Solution](Solutions.md#exercise-7-constructors-of-b-derived-from-a)**
 
 ---
 

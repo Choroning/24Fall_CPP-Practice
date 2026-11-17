@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-11-16
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -103,7 +103,7 @@ The program includes `<iostream>` for input/output, defines the macro constant `
 - **`setReal()`, `setImage()`:** change the real part and the imaginary part, respectively, to the received value.
 - **`showC()`:** prints the complex number in the form `a + bi` with `real << " + " << image << "i"`.
 
-`main()` creates the object array with `Complex data[MAX];`. Because there are no initial values, both elements are created by the default constructor and start at (1, 1) ([Chapter 4, Section 3.1](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#31-static-object-arrays)). In `Complex *p = data;` the array name `data` is converted to the address of its first element, so `p` points to `data[0]`. The first `for` loop prints the two elements with `data[i].showC()`, and after the separator line `data[0].setReal(3);` changes the real part of the first element to 3. `(*(p + 1)).setImage(-8);` dereferences with `*` the second element that `p + 1` points to and calls `setImage()` with the dot operator, changing the imaginary part to -8. Adding 1 to a pointer increases the address not by 1 byte but by the size of one element, `sizeof(Complex)` (8 bytes in this environment), so `p + 1` equals `&data[1]`. The last `for` loop prints the two elements again through the pointer with `(p + i)->showC()` ([Chapter 4, Section 1.1](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#11-pointer-to-object)).
+`main()` creates the object array with `Complex data[MAX];`. Because there are no initial values, both elements are created by the default constructor and start at (1, 1) ([Chapter 4, Section 3.1](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#31-static-object-arrays)). In `Complex *p = data;` the array name `data` is converted to the address of its first element, so `p` points to `data[0]`. The first `for` loop prints the two elements with `data[i].showC()`, and after the separator line `data[0].setReal(3);` changes the real part of the first element to 3. `(*(p + 1)).setImage(-8);` dereferences with `*` the second element that `p + 1` points to and calls `setImage()` with the dot operator, changing the imaginary part to -8. Adding 1 to a pointer increases the address not by 1 byte but by the size of one element, `sizeof(Complex)` (8 bytes where `int` is 4 bytes), so `p + 1` equals `&data[1]`. The last `for` loop prints the two elements again through the pointer with `(p + i)->showC()` ([Chapter 4, Section 1.1](../../Lecture-Notes/Ch04_Pointers-Arrays-and-Dynamic-Memory/Concepts_Lecture.md#11-pointer-to-object)).
 
 The following two points concern the pointer notation and the output format.
 
@@ -180,9 +180,9 @@ The answer analyzes this code as a program that shows the difference between sta
 
 Three parts of the code can be explained more precisely as follows.
 
-- **The array declaration in the comment:** In standard C++ the size of an array must be a constant expression whose value is known at compile time, so `int arrStatic[size];` cannot be declared with the `size` read at run time. Such an array is called a **variable-length array (VLA)**; it was introduced in C99 but is not in the C++ standard. GCC and Clang accept it as an extension (Clang issues the `-Wvla-cxx-extension` warning), while MSVC treats it as a compile error. If it is also initialized, exactly as in the comment `int arrStatic[size] = { };`, Clang 21 reports the error `variable-sized object may not be initialized`. As the slides add, a dynamic array or a `vector` is used to set the size at run time.
+- **The array declaration in the comment:** In standard C++ the size of an array must be a constant expression whose value is known at compile time, so `int arrStatic[size];` cannot be declared with the `size` read at run time. Such an array is called a **variable-length array (VLA)**; it was introduced in C99 but is not in the C++ standard. GCC and Clang accept it as an extension (Clang issues the `-Wvla-cxx-extension` warning), while MSVC treats it as a compile error. If it is also initialized, exactly as in the comment `int arrStatic[size] = { };`, Clang reports the error `variable-sized object may not be initialized`. As the slides add, a dynamic array or a `vector` is used to set the size at run time.
 - **Zero initialization of the remaining elements:** When there are fewer initial values than elements, as in `int arrStatic[4] = { 1, 3, 5 };`, the remaining element is initialized to 0, so the first line is `1 3 5 0`. In contrast, the elements allocated with `new int[size]` are not initialized, so they must be read only after values are stored, as this code does. Allocating with `new int[size]()` or the C++11 form `new int[size]{}` initializes all elements to 0.
-- **`nullptr` and `NULL`:** The commented-out `pDynamic = NULL;` and the actual `pDynamic = nullptr;` both make the pointer a null pointer. However, `NULL` is a macro that may be defined as the integer 0, so when `f(int)` and `f(char*)` are both overloaded, `f(NULL)` is an ambiguous call and a compile error in both Clang 21 and GCC 16. The C++11 keyword `nullptr` converts only to pointers, so `f(nullptr)` calls the pointer version. Assigning `nullptr` also protects only that pointer; any other pointer to the same memory remains a dangling pointer.
+- **`nullptr` and `NULL`:** The commented-out `pDynamic = NULL;` and the actual `pDynamic = nullptr;` both make the pointer a null pointer. However, `NULL` is a macro that may be defined as the integer 0, so when `f(int)` and `f(char*)` are both overloaded, `f(NULL)` is an ambiguous call and a compile error in both Clang and GCC. The C++11 keyword `nullptr` converts only to pointers, so `f(nullptr)` calls the pointer version. Assigning `nullptr` also protects only that pointer; any other pointer to the same memory remains a dangling pointer.
 
 ### 4.3 Output and Review
 
@@ -194,7 +194,7 @@ Input size: 5
 0 3 6 9 12 
 ```
 
-Each line ends with one space because `' '` is printed after every number. The allocated array is fully released by `delete[] pDynamic;` after the output. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` in this environment), and since it is not handled, the program terminates abnormally.
+Each line ends with one space because `' '` is printed after every number. The allocated array is fully released by `delete[] pDynamic;` after the output. If 0 is entered, an array with no elements is allocated and the second line is empty; if a negative number is entered, `new int[size]` cannot allocate the memory and throws an exception (`std::bad_alloc` with Apple clang), and since it is not handled, the program terminates abnormally.
 
 ---
 

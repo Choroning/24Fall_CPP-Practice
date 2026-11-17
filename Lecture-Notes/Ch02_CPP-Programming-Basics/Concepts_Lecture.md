@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -76,7 +76,7 @@ graph TD
     P --> M["main Function<br>int main() { ... }"]
     M --> S["Statements<br>cout #lt;#lt; #quot;Hello#quot; #lt;#lt; endl;"]
     M --> R["Return Statement<br>return 0;"]
-    P --> O["Other Functions<br>(defined later in the course)"]
+    P --> O["Other Functions<br>(user-defined functions)"]
 ```
 
 *Figure 1. Components of a C++ program*
@@ -186,10 +186,10 @@ cout << "Age: " << age << ", GPA: " << gpa << endl;
 Unlike C's `printf`, `cout` **automatically detects the type** of the data being output. There is no need for format specifiers like `%d` or `%f`.
 
 ```cpp
-// C style — must specify format
+// C style: must specify format
 printf("Age: %d, GPA: %.1f\n", age, gpa);
 
-// C++ style — type detected automatically
+// C++ style: type detected automatically
 cout << "Age: " << age << ", GPA: " << gpa << endl;
 ```
 
@@ -224,7 +224,7 @@ C++23 goes further with `std::print`, which writes directly to the output withou
 int age = 20;
 double gpa = 3.8;
 
-// C++23: std::print — direct output with format syntax
+// C++23: std::print, direct output with format syntax
 std::print("Age: {}, GPA: {:.1f}\n", age, gpa);
 // Output: Age: 20, GPA: 3.8
 ```
@@ -310,8 +310,8 @@ Note that `true` is printed as `1` and that no spaces are inserted between value
 **Operator precedence issue:** The `<<` operator has **higher precedence** than comparison operators (`>`, `<`, `>=`, `<=`).
 
 ```cpp
-cout << 5 > 3;            // ERROR — parsed as (cout << 5) > 3
-cout << (5 > 3) << endl;  // OK — Output: 1
+cout << 5 > 3;            // ERROR: parsed as (cout << 5) > 3
+cout << (5 > 3) << endl;  // OK, Output: 1
 ```
 
 The expression `cout << 5 > 3` is interpreted as `(cout << 5) > 3`, which tries to compare the `ostream` object with `3`, a type error.
@@ -822,12 +822,12 @@ Since C++11, the `auto` keyword lets the compiler **deduce the type** of a varia
 ```cpp
 auto x = 42;           // int
 auto pi = 3.14;        // double
-auto name = "Hello"s;  // std::string (with s suffix, requires "using namespace std::literals")
+auto name = "Hello"s;  // std::string (s suffix, needs std::literals: using namespace std; also works)
 auto greeting = string("Hello");  // std::string
 
 // Especially useful with complex types
 vector<int> nums = {1, 2, 3};
-auto it = nums.begin();   // vector<int>::iterator — much shorter with auto
+auto it = nums.begin();   // vector<int>::iterator: much shorter with auto
 ```
 
 **When to use `auto`:**

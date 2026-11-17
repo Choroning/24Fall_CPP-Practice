@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -68,7 +68,7 @@ class Base { };
 class Derived : public Base { };
 
 Derived d;
-Base* p = &d;       // upcasting — implicit, always safe
+Base* p = &d;       // upcasting: implicit, always safe
 Base& r = d;        // upcasting with reference
 ```
 
@@ -88,8 +88,8 @@ public:
 
 Circle c;
 Shape* p = &c;      // upcasting
-p->draw();           // "Shape" — calls Shape::draw() (static binding)
-// p->getRadius();   // compile error — Shape has no getRadius()
+p->draw();           // "Shape": calls Shape::draw() (static binding)
+// p->getRadius();   // compile error: Shape has no getRadius()
 ```
 
 > **Key Point:** After upcasting, the pointer type determines which members are visible. The derived-only members are hidden from the base pointer.
@@ -100,7 +100,7 @@ p->draw();           // "Shape" — calls Shape::draw() (static binding)
 
 ```cpp
 Base* p = new Derived;
-Derived* dp = (Derived*)p;   // C-style downcast — compiles, but risky
+Derived* dp = (Derived*)p;   // C-style downcast: compiles, but risky
 ```
 
 Use `dynamic_cast` for **safe downcasting**. It performs a runtime check and returns `nullptr` if a pointer cast is invalid (requires at least one virtual function in the base class). A failed cast to a reference throws a `std::bad_cast` exception.
@@ -109,7 +109,7 @@ Use `dynamic_cast` for **safe downcasting**. It performs a runtime check and ret
 Base* p = new Base;
 Derived* dp = dynamic_cast<Derived*>(p);  // runtime check
 if (dp == nullptr) {
-    cout << "Cast failed — p does not point to Derived" << endl;
+    cout << "Cast failed: p does not point to Derived" << endl;
 }
 ```
 
@@ -159,7 +159,7 @@ public:
 };
 
 Base* p = new Derived;
-p->func();    // Output: "Base::func()" — static binding!
+p->func();    // Output: "Base::func()", static binding!
 delete p;
 ```
 
@@ -183,7 +183,7 @@ public:
 };
 
 Base* p = new Derived;
-p->func();    // Output: "Derived::func()" — dynamic binding!
+p->func();    // Output: "Derived::func()", dynamic binding!
 delete p;
 ```
 
@@ -356,9 +356,9 @@ public:
 
 class Derived : public Base {
 public:
-    void func(int x) override { }    // OK — matches Base::func(int)
-    // void func(double x) override; // compile error — no matching base function
-    // void Fun(int x) override;     // compile error — typo in name
+    void func(int x) override { }    // OK: matches Base::func(int)
+    // void func(double x) override; // compile error: no matching base function
+    // void Fun(int x) override;     // compile error: typo in name
 };
 ```
 
@@ -730,7 +730,7 @@ public:
 };
 
 Base* p = new Derived;
-delete p;    // Output: "~Derived" then "~Base" — correct!
+delete p;    // Output: "~Derived" then "~Base", correct!
 ```
 
 > **Note:** **Rule of Thumb.** Any class intended to be used as a base class with virtual functions should have a `virtual` destructor. This is one of the most important C++ best practices.
@@ -748,7 +748,7 @@ A **pure virtual function** is a virtual function that has only a declaration an
 ```cpp
 class Shape {
 public:
-    virtual double getArea() = 0;   // pure virtual — no body
+    virtual double getArea() = 0;   // pure virtual: no body
     virtual void draw() = 0;        // pure virtual
 };
 ```
@@ -763,9 +763,9 @@ A class that contains **at least one pure virtual function** is an **abstract cl
 - **Serves as an interface/contract:** it shows the prototypes of the functions that derived classes must implement. An abstract class exists not to create objects but to serve as a base class in inheritance.
 
 ```cpp
-// Shape s;           // compile error — Shape is abstract
-Shape* p;             // OK — pointer to abstract class
-Shape& r = *p;        // OK — reference to abstract class
+// Shape s;           // compile error: Shape is abstract
+Shape* p;             // OK: pointer to abstract class
+Shape& r = *p;        // OK: reference to abstract class
 ```
 
 ### 4.3 Concrete Class
@@ -789,8 +789,8 @@ public:
     void draw() override { cout << "Drawing Rectangle" << endl; }
 };
 
-Circle c(5.0);        // OK — Circle is concrete
-Rectangle r(3.0, 4.0); // OK — Rectangle is concrete
+Circle c(5.0);        // OK: Circle is concrete
+Rectangle r(3.0, 4.0); // OK: Rectangle is concrete
 ```
 
 > **Key Point:** If a derived class does not override all pure virtual functions, it is still abstract and cannot be instantiated.
@@ -966,7 +966,7 @@ public:
     }
 };
 
-// This function works with ANY Shape — past, present, or future.
+// This function works with ANY Shape: past, present, or future.
 // It does not need to know about Circle, Rectangle, or Triangle.
 void printShapeInfo(Shape* s) {
     s->draw();
@@ -986,7 +986,7 @@ int main() {
         printShapeInfo(canvas[i]);
     }
 
-    // Clean up — virtual destructor ensures proper deletion
+    // Clean up: virtual destructor ensures proper deletion
     for (int i = 0; i < N; i++) {
         delete canvas[i];
     }
@@ -1144,7 +1144,7 @@ public:
 // Shape s;          // compile error: cannot declare variable 's' to be of abstract type 'Shape'
 // new Shape();      // compile error: same reason
 
-Shape* p;            // OK — pointer to abstract class is fine
+Shape* p;            // OK: pointer to abstract class is fine
 ```
 
 ### 6.3 Forgetting to Override All Pure Virtual Functions
@@ -1192,12 +1192,12 @@ public:
     void speak() override { cout << "Woof!" << endl; }
 };
 
-// WRONG: takes Animal by VALUE — slicing occurs!
+// WRONG: takes Animal by VALUE, slicing occurs!
 void makeItSpeak_bad(Animal a) {
     a.speak();      // always calls Animal::speak(), never Dog::speak()
 }
 
-// CORRECT: takes Animal by REFERENCE — no slicing
+// CORRECT: takes Animal by REFERENCE, no slicing
 void makeItSpeak_good(Animal& a) {
     a.speak();      // calls the correct override
 }
@@ -1209,9 +1209,9 @@ void makeItSpeak_ptr(Animal* a) {
 
 int main() {
     Dog d;
-    makeItSpeak_bad(d);    // "..."   — SLICED! Dog part is lost
-    makeItSpeak_good(d);   // "Woof!" — correct
-    makeItSpeak_ptr(&d);   // "Woof!" — correct
+    makeItSpeak_bad(d);    // "...": SLICED! Dog part is lost
+    makeItSpeak_good(d);   // "Woof!": correct
+    makeItSpeak_ptr(&d);   // "Woof!": correct
     return 0;
 }
 ```
@@ -1254,12 +1254,12 @@ int main() {
     Derived d;
     Base* bp = &d;
 
-    bp->func(1);          // "Derived::func(int)"   — OVERRIDING (dynamic binding)
-    bp->nonVirtual(1);    // "Base::nonVirtual(int)" — HIDING (static binding; base version called)
+    bp->func(1);          // "Derived::func(int)": OVERRIDING (dynamic binding)
+    bp->nonVirtual(1);    // "Base::nonVirtual(int)": HIDING (static binding; base version called)
 
-    d.func(3.14);         // "Derived::func(double)" — OVERLOADING (resolved at compile time)
-    d.func(1);            // "Derived::func(int)"    — OVERRIDING
-    d.nonVirtual(1);      // "Derived::nonVirtual(int)" — HIDING (derived version called on Derived object)
+    d.func(3.14);         // "Derived::func(double)": OVERLOADING (resolved at compile time)
+    d.func(1);            // "Derived::func(int)": OVERRIDING
+    d.nonVirtual(1);      // "Derived::nonVirtual(int)": HIDING (derived version called on Derived object)
 }
 ```
 

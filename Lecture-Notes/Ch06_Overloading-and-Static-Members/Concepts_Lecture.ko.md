@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -124,7 +124,7 @@ void f(float x)  { cout << "float" << endl; }
 void f(double x) { cout << "double" << endl; }
 
 f(10);   // 오류: int → float과 int → double 모두 표준 형 변환
-         // 모호함 — 컴파일러가 선택 불가
+         // 모호함: 컴파일러가 선택 불가
 ```
 
 반면 `f(10.0)`처럼 `double` 값을 넘기면 `f(double)`이 정확한 일치이므로 모호하지 않다.
@@ -304,7 +304,7 @@ msg("Hello");             // 컴파일 오류: 문자열을 int 매개변수 id�
 함수 선언(원형)과 정의가 **별도**일 때, 디폴트 값은 **선언에만** 지정하고 정의에는 쓰지 않는다. 같은 매개변수의 디폴트 값은 한 번만 지정할 수 있고, 호출하는 쪽이 보는 원형에 디폴트가 있어야 인자를 생략할 수 있기 때문이다. 원형 없이 정의만 있으면 `void star(int a = 5) { ... }`처럼 정의에 디폴트를 쓴다.
 
 ```cpp
-// 헤더 또는 main 이전 — 디폴트가 포함된 선언
+// 헤더 또는 main 이전: 디폴트가 포함된 선언
 void display(int x, int y = 0, int z = 0);
 
 int main() {
@@ -314,7 +314,7 @@ int main() {
     return 0;
 }
 
-// 정의 — 여기에는 디폴트를 쓰지 않음
+// 정의: 여기에는 디폴트를 쓰지 않음
 void display(int x, int y, int z) {
     cout << x << " " << y << " " << z << endl;
 }
@@ -352,7 +352,7 @@ int main() {
 디폴트 매개변수를 쓰면 여러 중복 함수를 하나로 합칠 수 있다. 다음 두 생성자는 디폴트 매개변수를 가진 생성자 하나로 바꿀 수 있다.
 
 ```cpp
-// 오버로딩한 두 생성자
+// 중복한 두 생성자
 class Circle {
     int radius;
 public:
@@ -540,7 +540,7 @@ public:
 };
 int Circle::count = 0;  // 정확히 하나의 .cpp 파일에서 정의
 
-// C++17 방식: inline static 변수 — 헤더에서 바로 정의
+// C++17 방식: inline static 변수, 헤더에서 바로 정의
 class Circle {
 public:
     inline static int count = 0;   // 헤더에서 선언 + 정의
@@ -634,7 +634,7 @@ public:
 };
 
 int main() {
-    // 클래스 이름으로 호출 — 객체 불필요
+    // 클래스 이름으로 호출: 객체 불필요
     cout << Math::abs(-5) << endl;    // 5
     cout << Math::max(3, 7) << endl;  // 7
     return 0;
@@ -737,7 +737,7 @@ using namespace std;
 class Board {
     static int no;                  // 현재 게시물 수
     static string board[MAX_NO];   // 게시물의 static 배열
-    Board() {}                     // private 생성자 — 객체 생성 방지
+    Board() {}                     // private 생성자: 객체 생성 방지
 public:
     static void add(string text) {
         if (no >= MAX_NO) {

@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -20,9 +20,9 @@
 - [Exercise 4: The Object-Oriented Feature of Overloading, Overriding, and Operator Overloading](#exercise-4-the-object-oriented-feature-of-overloading-overriding-and-operator-overloading)
 - [Exercise 5: Identifying Virtual Functions and Their Call Results](#exercise-5-identifying-virtual-functions-and-their-call-results)
 - [Exercise 6: Calling Different `f()` Functions from `g()`](#exercise-6-calling-different-f-functions-from-g)
-- [Exercise 7: A Base Class Without a Virtual Destructor](#exercise-7-a-base-class-without-a-virtual-destructor)
+- [Exercise 7: Output and Problem of the `Person` and `Student` Classes](#exercise-7-output-and-problem-of-the-person-and-student-classes)
 - [Exercise 8: Statements About Pure Virtual Functions](#exercise-8-statements-about-pure-virtual-functions)
-- [Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function](#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function)
+- [Exercise 9: Declaring `Shape` and `Circle` Objects](#exercise-9-declaring-shape-and-circle-objects)
 
 ---
 
@@ -386,11 +386,11 @@ int main() {
 
 <br>
 
-## Exercise 7: A Base Class Without a Virtual Destructor
+## Exercise 7: Output and Problem of the `Person` and `Student` Classes
 
 **Textbook Problem:** Chapter 9 theory problem 10
 
-**Problem:** Give the output and the problem when a derived class object is deleted through a base class pointer, and solve the problem. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-a-base-class-without-a-virtual-destructor).
+**Problem:** Give the output and the problem when a derived class object is deleted through a base class pointer, and solve the problem. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-output-and-problem-of-the-person-and-student-classes).
 
 ### Solution
 
@@ -404,7 +404,7 @@ int main() {
 virtual ~Person() { cout << "id=" << id << endl; }
 ```
 
-In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and in this environment only `~Person()` ran. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Chapter 9, Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
+In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtual, the compiler looks only at the type of the pointer and calls only `~Person()` (static binding). Strictly speaking, deleting a derived class object through a pointer to a base class without a virtual destructor is undefined behavior, and typical compilers run only `~Person()`. Declaring the destructor `virtual` makes dynamic binding run the destructor of the actual object, `~Student()`, first, followed by the destructor of the base class, `~Person()`. So the output becomes the two lines `name=손연재` and `id=10`, and the memory of `name` is returned as well ([Chapter 9, Section 3](Concepts_Lecture.md#3-virtual-destructors)). As a rule, a class that will serve as a base class of other classes declares its destructor virtual.
 
 ---
 
@@ -426,11 +426,11 @@ In `delete p;`, the type of `p` is `Person*`, and if the destructor is not virtu
 
 <br>
 
-## Exercise 9: A Derived Class That Does Not Implement a Pure Virtual Function
+## Exercise 9: Declaring `Shape` and `Circle` Objects
 
 **Textbook Problem:** Chapter 9 theory problem 14
 
-**Problem:** For `Shape`, which has the pure virtual function `draw()`, and `Circle`, which does not implement `draw()`, choose the declarations that cause an error and fix the classes so that `반지름=10인 원` is printed. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-a-derived-class-that-does-not-implement-a-pure-virtual-function).
+**Problem:** For `Shape`, which has the pure virtual function `draw()`, and `Circle`, which does not implement `draw()`, choose the declarations that cause an error and fix the classes so that `반지름=10인 원` is printed. The full problem and code are in [Exercise 9](Exercises.md#exercise-9-declaring-shape-and-circle-objects).
 
 ### Solution
 

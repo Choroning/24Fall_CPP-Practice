@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -20,7 +20,7 @@
 - [Exercise 4: Compile Errors Under Inheritance Access Specifiers](#exercise-4-compile-errors-under-inheritance-access-specifiers)
 - [Exercise 5: Access Under `protected` Inheritance](#exercise-5-access-under-protected-inheritance)
 - [Exercise 6: Upcasting, Members, Access, and Downcasting](#exercise-6-upcasting-members-access-and-downcasting)
-- [Exercise 7: Inheriting a Base Class Without a Default Constructor](#exercise-7-inheriting-a-base-class-without-a-default-constructor)
+- [Exercise 7: Constructors of `B` Derived from `A`](#exercise-7-constructors-of-b-derived-from-a)
 - [Exercise 8: Statements About Multiple Inheritance](#exercise-8-statements-about-multiple-inheritance)
 - [Exercise 9: Declaring Classes with Multiple Inheritance](#exercise-9-declaring-classes-with-multiple-inheritance)
 - [Exercise 10: A Potential Problem in an Inheritance Relationship](#exercise-10-a-potential-problem-in-an-inheritance-relationship)
@@ -47,7 +47,7 @@
 
 `x` and `y` are private members of `Point`, so `ColorPoint` cannot change them directly. `setPoint()` changes the position through `move()`, a protected member function of `Point` that derived classes can call, and `show()` reads the coordinates through the public member functions `getX()` and `getY()`.
 
-> **Note:** **The `<string>` header.** This code uses `string` without `#include <string>`. It compiles with the compiler used because `<iostream>` happens to include `<string>`, but the standard does not guarantee this, so adding `#include <string>` is safer for portability.
+> **Note:** **The `<string>` header.** This code uses `string` without `#include <string>`. It compiles on implementations whose `<iostream>` happens to include `<string>`, such as Apple clang (libc++), but the standard does not guarantee this, so adding `#include <string>` is safer for portability.
 
 The code is as follows ([`Lab_Q1.cpp`](../../Coursework/Lab08_Inheritance/Lab_Q1.cpp)).
 
@@ -359,11 +359,11 @@ A downcast, which assigns a base class pointer to a derived class pointer, needs
 
 <br>
 
-## Exercise 7: Inheriting a Base Class Without a Default Constructor
+## Exercise 7: Constructors of `B` Derived from `A`
 
 **Textbook Problem:** Chapter 8 theory problem 10
 
-**Problem:** Find the error in the constructors of `B`, which inherits a base class `A` without a default constructor, and fix both constructors so that they produce the given output. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-inheriting-a-base-class-without-a-default-constructor).
+**Problem:** Find the error in the constructors of `B`, which inherits a base class `A` without a default constructor, and fix both constructors so that they produce the given output. The full problem and code are in [Exercise 7](Exercises.md#exercise-7-constructors-of-b-derived-from-a).
 
 ### Solution
 

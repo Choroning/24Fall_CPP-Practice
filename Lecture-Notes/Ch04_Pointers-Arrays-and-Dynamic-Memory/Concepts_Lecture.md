@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-17
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -361,12 +361,12 @@ A **memory leak** occurs when dynamically allocated memory is never freed. This 
 void leak() {
     int *p = new int[1000];
     // ... forgot to delete[] p
-}   // p goes out of scope — memory is leaked!
+}   // p goes out of scope: memory is leaked!
 ```
 
 ```cpp
 int *p = new int(10);
-p = new int(20);        // ❌ original memory (10) is leaked — no pointer to it
+p = new int(20);        // ❌ original memory (10) is leaked: no pointer to it
 delete p;               // only frees the second allocation
 ```
 
@@ -381,7 +381,7 @@ A **dangling pointer** points to memory that has already been freed. Using it ca
 ```cpp
 int *p = new int(42);
 delete p;             // memory freed
-cout << *p;           // ❌ undefined behavior — dangling pointer!
+cout << *p;           // ❌ undefined behavior: dangling pointer!
 ```
 
 **Prevention:** Set the pointer to `nullptr` after `delete`. Other pointers that pointed to the same memory still dangle, however, so this protects only the pointer that was set to `nullptr`.
@@ -389,7 +389,7 @@ cout << *p;           // ❌ undefined behavior — dangling pointer!
 ```cpp
 int *p = new int(42);
 delete p;
-p = nullptr;          // safe — clearly indicates "no valid target"
+p = nullptr;          // safe: clearly indicates "no valid target"
 
 if (p != nullptr) {
     cout << *p;       // this block is skipped
