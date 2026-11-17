@@ -1,8 +1,8 @@
-# Chapter 4 Solutions — Using Objects
+# Chapter 4 Solutions — Pointers, Arrays, and Dynamic Memory
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 4
 

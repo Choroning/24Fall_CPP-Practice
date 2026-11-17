@@ -1,8 +1,8 @@
-# Chapter 6 Exercises — Static Members and Default Parameters
+# Chapter 6 Exercises — Overloading and Static Members
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 6
 

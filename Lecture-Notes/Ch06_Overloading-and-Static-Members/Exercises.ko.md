@@ -1,8 +1,8 @@
-# 6장 연습 문제 — static 멤버와 디폴트 매개변수
+# 6장 연습 문제 — 함수 중복과 static 멤버
 
 [레포지토리 안내](../../README.ko.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **최종 수정일:** 2026-10-27
+> **최종 수정일:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 6
 

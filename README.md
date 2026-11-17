@@ -22,7 +22,7 @@ This repository archives lecture notes and coursework for the Computer Language 
 <br><a name="about-this-repository"></a>
 ## 📝 About This Repository
 
-- `Lecture-Notes/` holds a lecture note for each chapter, and Chapters 1-10 also hold exercises made up of the lab problems and the textbook theory problems, with their solutions.
+- `Lecture-Notes/` holds a lecture note for each chapter; Chapters 1-10 also hold exercises made up of the lab problems and the textbook theory problems, with their solutions, and Chapters 2-9 hold lab notes for Computer Language and Training Ⅱ.
 - `Coursework/` holds the solutions and explanations of the Computer Language and Training Ⅱ assignments (`HW01`-`HW08`) and the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
 - Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
 
@@ -63,7 +63,7 @@ A general studies course on the fundamentals of C++ and object-oriented programm
 
 ```plaintext
 24Fall_CPP-Practice
-├── Lecture-Notes               Lecture notes, exercises, and solutions by chapter
+├── Lecture-Notes               Lecture notes, lab notes, exercises, and solutions by chapter
 ├── Coursework                  Assignments and C++ lab code by chapter
 ├── images                      Figures in the exercises
 ├── Course-Information.ko.md    Course operations

@@ -1,8 +1,8 @@
-# Chapter 10 Exercises — Templates
+# Chapter 10 Exercises — Templates and the Standard Library (STL)
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 

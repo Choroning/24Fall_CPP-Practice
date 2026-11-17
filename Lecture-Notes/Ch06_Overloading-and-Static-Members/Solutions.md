@@ -1,8 +1,8 @@
-# Chapter 6 Solutions — Static Members and Default Parameters
+# Chapter 6 Solutions — Overloading and Static Members
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 6
 

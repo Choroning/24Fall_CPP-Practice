@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 
 ## Table of Contents
 
@@ -120,6 +120,7 @@
 - The slides for Chapters 4-6 were distributed together in week 5, and those for Chapters 7-10 in week 10. The lab assignments were given in week 4 for Chapter 3, week 6 for Chapter 4, week 7 for Chapter 5, week 9 for Chapter 6, weeks 10-11 for Chapter 7, week 12 for Chapter 8, week 13 for Chapter 9, and week 14 for Chapter 10.
 - The syllabus planned up to Chapter 9, but the course actually covered up to Chapter 10, templates and the STL. The midterm exam was held in week 8 and the final exam in week 16, and the lectures ended in week 15.
 - Assignments 1-8 of the linked lab course Computer Language and Training Ⅱ (`DCCS104-03`) were given in weeks 4, 5, 6, 9, 10, 11, 12, and 13, respectively, and are in `HW01`-`HW08` in `Coursework`.
+- The weekly lab decks of Computer Language and Training Ⅱ are covered in the lab notes (`Concepts_Lab`) of units `Ch02`-`Ch09` according to the textbook chapter each deck is linked to. Week 1 (the first part of textbook Chapter 2) and weeks 2-3 (C++ basics review) are in the Chapter 2 lab note, week 4 and the access control and destructors of week 5 in Chapter 3, the object pointers and object arrays of week 5 and weeks 6-7 in Chapter 4, weeks 9-10 in Chapter 5, week 11 in Chapter 6, weeks 12-13 in Chapter 7, week 14 in Chapter 8, and week 15 in Chapter 9. Theory in the decks that duplicates the textbook is linked to each chapter's lecture notes, problems submitted as assignments to `HW01`-`HW08`, and problems identical to the textbook lab problems to each chapter's exercises.
 - The textbook chapter numbers, Chapters 1-10, correspond to `Ch01`-`Ch10` in this repository, and the lab code numbers in `Coursework` (`Lab03`-`Lab10`) follow the same chapter numbers. The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md).
 
 ---
@@ -133,6 +134,7 @@
 | Textbook | K. Hwang, *명품 C++ Programming*, rev. ed. Paju, South Korea: Life & Power Press, 2018. |
 | Lecture Slides | PPT slides for each chapter and their PDF versions (Chapters 1-10) provided by the instructor |
 | Lab Materials | Lab assignment problems for each chapter (Chapters 3-10) set by the instructor |
+| Lab Decks | Weekly lab decks of Computer Language and Training Ⅱ (weeks 1-7 and 9-15) |
 | Lecture Videos | Videos of the week 5 makeup class on 10/1 (inline functions and C++ structures in Chapter 3), the first period of the week 5 makeup class on 10/2, the week 6 makeup class on 10/9, and the week 7 worked examples of copy constructors in Chapter 5 |
 | Other | Answers to the odd-numbered theory exercises of the textbook, the theory homework submission template, and the old version of the Fall 2024 Computer Language 2 Time Table |
 

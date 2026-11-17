@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -1617,19 +1617,49 @@ void process(int* ptr)
 
 #### `constexpr` Everywhere
 
-In C++26, most standard containers and utilities, such as `deque`, `list`, `map`, and `set`, become usable in `constexpr` contexts.
+Since C++20, `std::vector` and `std::string` can be used inside `constexpr` functions, and in C++26 most standard containers, such as `deque`, `list`, `map`, and `set`, also become usable in `constexpr` contexts in the same way. In every standard, memory allocated during constant evaluation must be freed before that evaluation ends, so containers are built and used inside `constexpr` functions, which return only the computed result.
+
+The following code compiles with `-std=c++20` or later. In C++17 a `vector` variable cannot appear inside a `constexpr` function, so it fails to compile.
 
 ```cpp
-// C++26: constexpr containers (not just vector and array)
-constexpr std::map<std::string, int> scores = {{"Alice", 95}, {"Bob", 87}};
-constexpr std::set<int> primes = {2, 3, 5, 7, 11};
-constexpr std::deque<int> dq = {1, 2, 3};
+#include <array>
+#include <vector>
+
+// C++20: build and use a vector inside a constexpr function, return only the result
+constexpr int sum_of_squares(int n) {
+    std::vector<int> v;
+    for (int i = 1; i <= n; ++i)
+        v.push_back(i * i);              // Allocation during constant evaluation
+    int sum = 0;
+    for (int x : v) sum += x;
+    return sum;                          // v's memory is freed before returning
+}
+static_assert(sum_of_squares(3) == 14);  // Checked at compile time
+
+// constexpr std::vector<int> bad = {1, 4, 9};       // Error: allocated memory would remain
+constexpr std::array<int, 3> squares = {1, 4, 9};    // Fine for a type that does not allocate
+```
+
+In C++26, `map`, `set`, `deque`, and others are used in the same way.
+
+```cpp
+// C++26: map used inside a constexpr function
+#include <map>
+#include <string_view>
+
+constexpr int total_score() {
+    std::map<std::string_view, int> scores = {{"Alice", 95}, {"Bob", 87}};
+    int sum = 0;
+    for (const auto& [name, score] : scores) sum += score;
+    return sum;                          // 182
+}
+static_assert(total_score() == 182);
 
 // Even exceptions become constexpr
 // constexpr functions can now throw and catch at compile time
 ```
 
-> **Caution:** Memory allocated during constant evaluation must be freed before that evaluation ends. A declaration like the code above, which leaves a container holding allocated memory in a `constexpr` variable, therefore does not compile even in C++26. Build and use containers inside `constexpr` functions, and return only the computed result or store it in a type that does not allocate, such as `std::array`.
+> **Caution:** A declaration like `bad` above, which leaves a container holding allocated memory in a `constexpr` variable, does not compile even in C++26. `constexpr std::map<std::string, int> scores = {...};` is an error for the same reason, so to keep a result as a constant, store it in a type that does not allocate, such as `std::array`. Support for C++26 `constexpr` containers arrives at different times in different compilers and standard libraries.
 
 #### `std::execution` (Async Scheduling)
 

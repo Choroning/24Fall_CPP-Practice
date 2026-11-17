@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-17
+> **최종 수정일:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -1617,19 +1617,49 @@ void process(int* ptr)
 
 #### `constexpr` 전면 확대
 
-C++26에서는 `deque`, `list`, `map`, `set` 같은 대부분의 표준 컨테이너와 유틸리티를 `constexpr` 문맥에서 쓸 수 있게 된다.
+C++20부터 `std::vector`와 `std::string`은 `constexpr` 함수 안에서 쓸 수 있고, C++26에서는 `deque`, `list`, `map`, `set` 같은 대부분의 표준 컨테이너도 같은 방식으로 `constexpr` 문맥에서 쓸 수 있게 된다. 어느 표준에서나 상수 평가 중에 할당한 메모리는 그 평가가 끝나기 전에 해제되어야 하므로, 컨테이너는 `constexpr` 함수 안에서 만들어 쓰고 계산 결과만 리턴한다.
+
+다음 코드는 `-std=c++20` 이상에서 컴파일된다. C++17에서는 `constexpr` 함수 안에 `vector` 변수를 둘 수 없어 오류가 난다.
 
 ```cpp
-// C++26: constexpr 컨테이너 (vector, array뿐만 아니라 전부)
-constexpr std::map<std::string, int> scores = {{"Alice", 95}, {"Bob", 87}};
-constexpr std::set<int> primes = {2, 3, 5, 7, 11};
-constexpr std::deque<int> dq = {1, 2, 3};
+#include <array>
+#include <vector>
+
+// C++20: vector를 constexpr 함수 안에서 만들어 쓰고 결과만 리턴
+constexpr int sum_of_squares(int n) {
+    std::vector<int> v;
+    for (int i = 1; i <= n; ++i)
+        v.push_back(i * i);              // 상수 평가 중의 할당
+    int sum = 0;
+    for (int x : v) sum += x;
+    return sum;                          // 리턴하기 전에 v의 메모리 해제
+}
+static_assert(sum_of_squares(3) == 14);  // 컴파일 타임에 검사
+
+// constexpr std::vector<int> bad = {1, 4, 9};       // 오류: 할당한 메모리가 남음
+constexpr std::array<int, 3> squares = {1, 4, 9};    // 할당하지 않는 타입은 가능
+```
+
+C++26에서는 `map`, `set`, `deque` 등도 같은 방식으로 쓴다.
+
+```cpp
+// C++26: map도 constexpr 함수 안에서 사용
+#include <map>
+#include <string_view>
+
+constexpr int total_score() {
+    std::map<std::string_view, int> scores = {{"Alice", 95}, {"Bob", 87}};
+    int sum = 0;
+    for (const auto& [name, score] : scores) sum += score;
+    return sum;                          // 182
+}
+static_assert(total_score() == 182);
 
 // 예외까지 constexpr화
 // constexpr 함수에서 컴파일 타임에 throw/catch 가능
 ```
 
-> **주의:** 상수 평가 중에 할당한 메모리는 그 평가가 끝나기 전에 해제되어야 한다. 그래서 위 코드처럼 메모리를 할당한 컨테이너를 `constexpr` 변수로 남기는 선언은 C++26에서도 컴파일되지 않는다. 컨테이너는 `constexpr` 함수 안에서 만들어 쓰고, 계산 결과만 리턴하거나 `std::array`처럼 할당하지 않는 타입에 담는다.
+> **주의:** 위의 `bad`처럼 할당한 메모리를 가진 컨테이너를 `constexpr` 변수로 남기는 선언은 C++26에서도 컴파일되지 않는다. `constexpr std::map<std::string, int> scores = {...};`도 같은 이유로 오류이므로, 결과를 상수로 남기려면 `std::array`처럼 할당하지 않는 타입에 담는다. C++26의 `constexpr` 컨테이너는 컴파일러와 표준 라이브러리마다 지원 시점이 다르다.
 
 #### `std::execution` (비동기 스케줄링)
 

@@ -1,8 +1,8 @@
-# Chapter 5 Exercises — References and Copy Constructors
+# Chapter 5 Exercises — Functions and Copy Control
 
 [Repository Guide](../../README.md) | [English](Exercises.md) | [한국어](Exercises.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 5
 

@@ -1,8 +1,8 @@
-# Chapter 10 Solutions — Templates
+# Chapter 10 Solutions — Templates and the Standard Library (STL)
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 
 **Problem Source:** Prof. Younghee Im, Computer Language Ⅱ (DCCS102-04)
 
