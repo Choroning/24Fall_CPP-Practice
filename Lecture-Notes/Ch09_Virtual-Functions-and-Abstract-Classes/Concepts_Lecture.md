@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -21,7 +21,7 @@
   - [1.1 Upcasting](#11-upcasting)
   - [1.2 Downcasting](#12-downcasting)
 - [2. Virtual Functions](#2-virtual-functions)
-  - [2.1 Why Virtual Functions?](#21-why-virtual-functions)
+  - [2.1 The Need for Virtual Functions](#21-the-need-for-virtual-functions)
   - [2.2 Problem Without virtual](#22-problem-without-virtual)
   - [2.3 virtual Keyword](#23-virtual-keyword)
   - [2.4 Static vs Dynamic Binding](#24-static-vs-dynamic-binding)
@@ -121,7 +121,7 @@ if (dp == nullptr) {
 
 ## 2. Virtual Functions
 
-### 2.1 Why Virtual Functions?
+### 2.1 The Need for Virtual Functions
 
 Consider a drawing program as an example. There is a `Shape` base class and derived classes like `Circle`, `Rectangle`, and `Triangle`. All shapes are stored in a single array of `Shape*` pointers, and the goal is to draw them all in one loop:
 
@@ -1227,7 +1227,7 @@ These three concepts are frequently confused. They have very different meanings:
 | **What** | Same name, same parameters, base function is `virtual` | Same name, **different** parameters, same scope | Same name but not overriding (base function is **not** `virtual`, **or** the parameters differ) |
 | **Where** | Derived class re-implements base virtual function | Same class (or same scope) | Derived class has same-name function as base |
 | **Effect** | Dynamic binding calls the correct version at runtime | Compiler picks based on argument types at compile time | Base version is hidden; only derived version is visible |
-| **virtual required?** | Yes | No | No (redefining a non-virtual function with the same prototype is hiding, not overriding) |
+| **virtual required** | Yes | No | No (redefining a non-virtual function with the same prototype is hiding, not overriding) |
 
 *Table 1. Comparison of overriding, overloading, and hiding*
 

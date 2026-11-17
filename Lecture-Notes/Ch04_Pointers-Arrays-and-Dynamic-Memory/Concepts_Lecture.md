@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -39,7 +39,7 @@
   - [6.2 `std::unique_ptr`: Exclusive Ownership](#62-stdunique_ptr-exclusive-ownership)
   - [6.3 `std::shared_ptr`: Shared Ownership](#63-stdshared_ptr-shared-ownership)
   - [6.4 `make_unique` and `make_shared`](#64-make_unique-and-make_shared)
-  - [6.5 When to Use Which](#65-when-to-use-which)
+  - [6.5 Choosing a Pointer Type](#65-choosing-a-pointer-type)
 - [7. The string Class](#7-the-string-class)
   - [7.1 Creating string Objects and Input/Output](#71-creating-string-objects-and-inputoutput)
   - [7.2 Main Member Functions and Operators](#72-main-member-functions-and-operators)
@@ -601,7 +601,7 @@ auto p = make_unique<Circle>(10);     // C++14
 auto q = make_shared<Circle>(20);     // C++11
 ```
 
-### 6.5 When to Use Which
+### 6.5 Choosing a Pointer Type
 
 | Pointer Type | Use When |
 |:------------|:---------|

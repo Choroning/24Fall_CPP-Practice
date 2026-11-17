@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
@@ -23,7 +23,7 @@
   - [1.3 Three Forms of Friend Declaration](#13-three-forms-of-friend-declaration)
   - [1.4 Guidelines](#14-guidelines)
 - [2. Operator Overloading Basics](#2-operator-overloading-basics)
-  - [2.1 Why Operator Overloading?](#21-why-operator-overloading)
+  - [2.1 The Need for Operator Overloading](#21-the-need-for-operator-overloading)
   - [2.2 Concept](#22-concept)
   - [2.3 Operators That Can / Cannot Be Overloaded](#23-operators-that-can--cannot-be-overloaded)
   - [2.4 Member Function vs Friend Function: Decision Guide](#24-member-function-vs-friend-function-decision-guide)
@@ -181,7 +181,7 @@ equal
 
 ## 2. Operator Overloading Basics
 
-### 2.1 Why Operator Overloading?
+### 2.1 The Need for Operator Overloading
 
 Without operator overloading, operations on user-defined types require explicit method calls. The two approaches compare as follows.
 
@@ -869,7 +869,7 @@ Point: (3, 7)
 (1, 2) and (3, 4)
 ```
 
-**Why it must be a friend (not a member):**
+**Reasons it must be a friend rather than a member:**
 
 | If member function... | If friend function... |
 |:----------------------|:----------------------|
@@ -995,7 +995,7 @@ public:
 
 | Concept | Key Summary |
 |:--------|:-------------|
-| Why operator overloading | It lets `a.add(b)` be written as `a + b`, so user-defined types are as natural to use as built-in types. |
+| The need for operator overloading | It lets `a.add(b)` be written as `a + b`, so user-defined types are as natural to use as built-in types. |
 | Friend function | It is a non-member function declared with `friend` inside the class that can access private/protected members. |
 | Friend class | `friend class B;` grants access to all of B's member functions, and friendship is neither symmetric nor transitive. |
 | Three forms of friend declaration | A global function, a specific member function of another class, or an entire other class can be declared a friend, and a forward declaration is needed to refer to a class not yet declared. |

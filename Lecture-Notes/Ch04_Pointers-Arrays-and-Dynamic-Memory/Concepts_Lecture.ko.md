@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-17
+> **최종 수정일:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -39,7 +39,7 @@
   - [6.2 `std::unique_ptr`: 단독 소유](#62-stdunique_ptr-단독-소유)
   - [6.3 `std::shared_ptr`: 공유 소유](#63-stdshared_ptr-공유-소유)
   - [6.4 `make_unique`와 `make_shared`](#64-make_unique와-make_shared)
-  - [6.5 어떤 것을 사용할까](#65-어떤-것을-사용할까)
+  - [6.5 포인터 종류의 선택](#65-포인터-종류의-선택)
 - [7. string 클래스](#7-string-클래스)
   - [7.1 string 객체의 생성과 입출력](#71-string-객체의-생성과-입출력)
   - [7.2 주요 멤버 함수와 연산자](#72-주요-멤버-함수와-연산자)
@@ -601,7 +601,7 @@ auto p = make_unique<Circle>(10);     // C++14
 auto q = make_shared<Circle>(20);     // C++11
 ```
 
-### 6.5 어떤 것을 사용할까
+### 6.5 포인터 종류의 선택
 
 | 포인터 타입 | 사용 시점 |
 |:----------|:---------|

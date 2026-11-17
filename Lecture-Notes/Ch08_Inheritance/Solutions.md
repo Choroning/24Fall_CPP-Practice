@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -297,7 +297,7 @@ The last line of the sample run, `Program ended with exit code: 0`, is a message
 
 **Answer:** ①
 
-**Explanation:** Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Chapter 8, Section 1.1](Concepts_Lecture.md#11-why-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
+**Explanation:** Inheritance is an is-a relationship in which a derived class is made by taking over the characteristics of a base class and adding new ones ([Chapter 8, Section 1.1](Concepts_Lecture.md#11-the-need-for-inheritance)). A smart TV has all the functions of a TV and adds functions such as internet access, so it is a kind of TV and closest to an inheritance relationship. A fabric sofa and a leather sofa are only different kinds of the same sofa, and neither inherits from the other; a CPU and a PC, and an engine and a transmission, are in a part-whole or part-part relationship (has-a).
 
 ---
 

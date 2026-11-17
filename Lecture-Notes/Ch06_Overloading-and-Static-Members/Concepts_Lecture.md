@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -511,7 +511,7 @@ const int x = someFunction();       // OK: const allows runtime initialization
 constexpr double pi = 3.14159265;   // OK: literal value known at compile time
 ```
 
-| Keyword | Compile-time guarantee | Can initialize from runtime value? | Available since |
+| Keyword | Compile-time guarantee | Initialization from runtime value | Available since |
 |:--------|:----------------------|:----------------------------------|:---------------|
 | `const` | No (may be runtime) | Yes | C++98 |
 | `constexpr` | **Yes** (must be compile-time) | No (only from constexpr expressions) | C++11 |

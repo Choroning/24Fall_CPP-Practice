@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -120,7 +120,7 @@ int x = 10;  // inline comment after code
 
 The `main` function is the **entry point** of every C++ program. When the OS runs a compiled program, execution begins at `main`, and the program ends when `main` finishes.
 
-| Form | Standard? | Notes |
+| Form | Standard | Notes |
 |:-----|:---------:|:------|
 | `int main()` | Yes | Standard form; returns `int` |
 | `int main(void)` | Yes | Explicit empty parameter list |
@@ -242,7 +242,7 @@ std::print("Age: {}, GPA: {:.1f}\n", age, gpa);
 
 Both `endl` and `'\n'` produce a newline, but they differ in one important way.
 
-| Method | Newline? | Flushes Buffer? |
+| Method | Newline | Buffer Flush |
 |:-------|:--------:|:---------------:|
 | `endl` | Yes | Yes |
 | `'\n'` | Yes | No |
@@ -755,7 +755,7 @@ int main() {
 | Comparison | `s1 == s2` | `strcmp(s1, s2) == 0` |
 | Length | `s.length()` or `s.size()` | `strlen(s)` |
 | Dynamic size | Yes (grows automatically) | No (fixed at declaration) |
-| Safe? | Yes (bounds-managed) | No (manual buffer management) |
+| Safety | Yes (bounds-managed) | No (manual buffer management) |
 
 *Table 12. Comparison of `std::string` and `char[]`*
 

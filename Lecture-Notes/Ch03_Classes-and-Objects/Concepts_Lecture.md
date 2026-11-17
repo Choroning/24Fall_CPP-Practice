@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -89,7 +89,7 @@ graph TD
 
 *Figure 1. Structure of an object bundling state and behavior*
 
-#### Why Does Encapsulation Matter?
+#### The Importance of Encapsulation
 
 Without encapsulation, anyone can set data to **invalid values**, and there is nothing to prevent bugs.
 
@@ -460,7 +460,7 @@ A **constructor** is a special member function that initializes an object at cre
 
 The purpose of a constructor is to perform the initialization an object needs when it is created. Besides initializing member variables, constructors perform tasks such as allocating memory, opening files, and connecting to networks. Just as balls from the same ping-pong ball machine come out painted in different colors, objects made from the same class are initialized differently according to the values their constructors receive.
 
-#### Why Are Constructors Needed?
+#### The Need for Constructors
 
 Without a constructor, the member variables of a local object contain **garbage values** (whatever was previously in that memory). Using an uninitialized object leads to unpredictable behavior.
 

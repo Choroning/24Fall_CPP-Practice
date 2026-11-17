@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-04
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -19,9 +19,9 @@
 ## Table of Contents
 
 - [1. Inheritance Concepts](#1-inheritance-concepts)
-  - [1.1 Why Inheritance](#11-why-inheritance)
+  - [1.1 The Need for Inheritance](#11-the-need-for-inheritance)
   - [1.2 Syntax](#12-syntax)
-  - [1.3 What Is Inherited](#13-what-is-inherited)
+  - [1.3 Inherited Members](#13-inherited-members)
   - [1.4 Inheritance and Object Pointers](#14-inheritance-and-object-pointers)
 - [2. Access Control with Inheritance](#2-access-control-with-inheritance)
   - [2.1 `public` Inheritance](#21-public-inheritance)
@@ -50,7 +50,7 @@
 
 ## 1. Inheritance Concepts
 
-### 1.1 Why Inheritance
+### 1.1 The Need for Inheritance
 
 **Inheritance** lets a new class (derived class) reuse and extend an existing class (base class).
 
@@ -119,11 +119,11 @@ public:
 };
 ```
 
-### 1.3 What Is Inherited
+### 1.3 Inherited Members
 
 All members of the base class are inherited by the derived class. However, **accessibility** depends on the access specifier.
 
-| Base member access | Accessible from derived? |
+| Base member access | Access from derived class |
 |:-------------------|:------------------------|
 | `public` | Yes (directly accessible) |
 | `protected` | Yes (directly accessible) |
@@ -796,9 +796,9 @@ public:
 
 | Concept | Key Summary |
 |:--------|:-------------|
-| Why inheritance | A derived (child) class inherits the members of a base (parent) class, gaining code reuse, an IS-A relationship, and extensibility. |
+| The need for inheritance | A derived (child) class inherits the members of a base (parent) class, gaining code reuse, an IS-A relationship, and extensibility. |
 | Syntax | It is declared as `class Derived : public Base { };`, and `public` is the most common inheritance type. |
-| What is inherited | All members are inherited, but `private` members are not directly accessible, and `protected` members are accessible only from member functions of derived classes. |
+| Inherited members | All members are inherited, but `private` members are not directly accessible, and `protected` members are accessible only from member functions of derived classes. |
 | Inheritance and object pointers | Upcasting needs no cast but gives access only to base class members, while downcasting requires an explicit cast. |
 | `public` inheritance | Public stays public, protected stays protected, and private is inaccessible. |
 | `protected` inheritance | Both public and protected become protected, and it is rarely used. |

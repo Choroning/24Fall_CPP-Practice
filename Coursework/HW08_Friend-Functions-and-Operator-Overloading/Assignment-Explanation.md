@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Assignment-Explanation.md) | [한국어](Assignment-Explanation.ko.md)
 
-> **Last Updated:** 2026-11-16
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
@@ -77,7 +77,7 @@ When a program runs in Xcode, the last console line, `Program ended with exit co
 
 Add an operator to the `Circle` class so that `b = 1 + a;` changes the radius of `b` to the radius of `a` plus 1. This is a binary operation whose left operand is an `int` and whose right operand is a `Circle`, so only one of the two ways of implementing an operator function can be used.
 
-| Approach | Translation of `1 + a` | Possible? |
+| Approach | Translation of `1 + a` | Feasibility |
 |:-----|:-----|:-----|
 | Member function | `1.operator+(a)` | No. `int` is not a class, so no member function can be added to it |
 | External function | `operator+(1, a)` | Yes. `radius` is `private`, so the function is declared a friend of `Circle` |

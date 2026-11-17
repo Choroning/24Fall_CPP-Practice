@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Solutions.md) | [한국어](Solutions.ko.md)
 
-> **Last Updated:** 2026-10-27
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 7
 
@@ -666,7 +666,7 @@ void show(Student s, Professor p) {
 
 **Answer:** `"I love C" + "++" = "I love C++"`
 
-**Explanation:** The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Chapter 7, Section 2.1](Concepts_Lecture.md#21-why-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
+**Explanation:** The same `+` symbol means addition for numbers, mixing for colors, and joining for strings. That the same operator behaves with different meanings depending on the kind of operands is the polymorphism that operator overloading implements ([Chapter 7, Section 2.1](Concepts_Lecture.md#21-the-need-for-operator-overloading)). In C++ the `string` class overloads `+` as string concatenation, so `string("I love C") + "++"` becomes `"I love C++"`. Adding two string literals directly, as in `"I love C" + "++"`, is an addition of pointers and does not compile, so at least one side must be a `string` object.
 
 ---
 

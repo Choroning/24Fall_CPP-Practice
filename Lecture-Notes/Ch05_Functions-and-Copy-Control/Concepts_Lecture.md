@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-17
+> **Last Updated:** 2026-11-18
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -22,7 +22,7 @@
   - [1.2 Call by Address (Pointer)](#12-call-by-address-pointer)
   - [1.3 Call by Reference](#13-call-by-reference)
   - [1.4 From C to C++: Pointers vs References](#14-from-c-to-c-pointers-vs-references)
-  - [1.5 Why References? Motivation and Guidelines](#15-why-references-motivation-and-guidelines)
+  - [1.5 Motivation and Guidelines for References](#15-motivation-and-guidelines-for-references)
   - [1.6 Full Swap Example: All Three Methods](#16-full-swap-example-all-three-methods)
   - [1.7 Comparison Table](#17-comparison-table)
 - [2. Passing, Assigning, and Returning Objects](#2-passing-assigning-and-returning-objects)
@@ -210,23 +210,23 @@ int main() {                                  int main() {
 
 > **Key Point:** If you are coming from C, think of references as automatically dereferenced pointers that can never be NULL. They are the C++ way of expressing the intent to modify the original.
 
-### 1.5 Why References? Motivation and Guidelines
+### 1.5 Motivation and Guidelines for References
 
-**Why did C++ add references when pointers already work?**
+**Reasons C++ added references alongside pointers**
 
 References are **safer** and **simpler** than pointers.
 
 | Property | Pointer | Reference |
 |:---------|:--------|:----------|
-| Can be NULL/nullptr? | Yes, must check before use | **No**, must be initialized with a valid object (it can still dangle if the object is destroyed) |
-| Can be reassigned to point elsewhere? | Yes, accidental rebinding possible | **No**, binding is permanent |
-| Requires `*` to access value? | Yes, easy to forget, causing bugs | **No**, used like a normal variable |
-| Can do arithmetic? | Yes (`p++`, `p+3`), powerful but error-prone | **No**, prevents accidental memory wandering |
-| Uninitialized state? | Yes (`int *p;` is a wild pointer) | **No**, must be initialized at declaration |
+| NULL/nullptr allowed | Yes, must check before use | **No**, must be initialized with a valid object (it can still dangle if the object is destroyed) |
+| Reassignment to point elsewhere | Yes, accidental rebinding possible | **No**, binding is permanent |
+| `*` required to access value | Yes, easy to forget, causing bugs | **No**, used like a normal variable |
+| Arithmetic allowed | Yes (`p++`, `p+3`), powerful but error-prone | **No**, prevents accidental memory wandering |
+| Uninitialized state allowed | Yes (`int *p;` is a wild pointer) | **No**, must be initialized at declaration |
 
 *Table 2. Properties of pointers and references*
 
-**When to use which:**
+**Recommended choice by situation:**
 
 | Use case | Recommendation |
 |:---------|:---------------|
@@ -320,8 +320,8 @@ After swapByReference:  x=20, y=10        ← Swapped via reference (cleanest)
 |:--------|:-------------|:--------------------------|:------------------|
 | **Parameter declaration** | `void f(int x)` | `void f(int *p)` | `void f(int &x)` |
 | **Call syntax** | `f(a)` | `f(&a)` | `f(a)` |
-| **Can modify original?** | No | Yes (via `*p`) | Yes (directly) |
-| **Can be NULL?** | N/A | Yes (`nullptr`) | No (must refer to valid object) |
+| **Original modifiable** | No | Yes (via `*p`) | Yes (directly) |
+| **NULL allowed** | N/A | Yes (`nullptr`) | No (must refer to valid object) |
 | **Access syntax** | `x` | `*p` | `x` |
 | **Language** | C and C++ | C and C++ | **C++ only** |
 | **Best use case** | Read-only, small types | Optional parameter (nullable), arrays | Modify original, large objects |
@@ -849,7 +849,7 @@ Scores: 90, 100, 78, 50, 88
 Scores: 95, 100, 78, 50, 88
 ```
 
-> **Note:** **Why is this useful?** Reference return lets you build clean APIs like `array[i] = value;`. The `operator[]` of `std::vector` and `std::string` works the same way, returning a reference to the element.
+> **Note:** **Usefulness.** Reference return lets you build clean APIs like `array[i] = value;`. The `operator[]` of `std::vector` and `std::string` works the same way, returning a reference to the element.
 
 ---
 
@@ -1382,7 +1382,7 @@ Bad(const Bad &other) {   // const reference: no copy needed to call this
 }
 ```
 
-**Why add `const`?** There are two reasons.
+**The reasons for adding `const`** are twofold.
 1. It promises not to modify the source object (which makes sense, since you are copying *from* it).
 2. It allows copying from `const` objects and temporaries.
 
@@ -1439,7 +1439,7 @@ cout << ptr;        // prints a's address (ptr holds the address)
 | Call by address (pointer) | The caller passes an address with `&`, and the function receives a pointer and modifies the original via `*`; this is the same as in C. |
 | Call by reference | Available only in C++, the function receives a reference `&` and the parameter becomes an alias for the original, giving cleaner syntax than pointers. |
 | C to C++ transition | In C, pointers were the only way to modify the caller's variable, and C++ references are the cleaner alternative. |
-| Why references? | References cannot be NULL, cannot rebind, and need no `*` syntax, so use references by default and pointers only when a nullptr or reassignment is needed. |
+| Motivation for references | References cannot be NULL, cannot rebind, and need no `*` syntax, so use references by default and pointers only when a nullptr or reassignment is needed. |
 | Passing an object by value | The parameter object is created by copying the argument, so no ordinary constructor runs, but the destructor runs when the function ends. |
 | Passing an object by address or reference | No new object is created, so neither the constructor nor the destructor runs, and changes inside the function are reflected in the original object. |
 | Object assignment | `c1 = c2;` copies the members between objects of the same class, and the two objects keep independent storage after the assignment. |
