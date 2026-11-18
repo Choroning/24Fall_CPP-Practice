@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-18
+> **최종 수정일:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 4
 
@@ -21,18 +21,24 @@
 - [1. 객체 포인터](#1-객체-포인터)
   - [1.1 객체에 대한 포인터](#11-객체에-대한-포인터)
   - [1.2 this 포인터](#12-this-포인터)
+  - [1.3 객체 자신을 리턴하는 멤버 함수와 연쇄 호출](#13-객체-자신을-리턴하는-멤버-함수와-연쇄-호출)
+  - [1.4 객체 포인터와 const](#14-객체-포인터와-const)
 - [2. 동적 메모리](#2-동적-메모리)
   - [2.1 new와 delete](#21-new와-delete)
   - [2.2 동적 객체](#22-동적-객체)
   - [2.3 동적 배열](#23-동적-배열)
+  - [2.4 new와 malloc()의 차이 확인](#24-new와-malloc의-차이-확인)
 - [3. 객체 배열](#3-객체-배열)
   - [3.1 정적 객체 배열](#31-정적-객체-배열)
   - [3.2 2차원 객체 배열](#32-2차원-객체-배열)
   - [3.3 동적 객체 배열](#33-동적-객체-배열)
+  - [3.4 객체 배열의 생성과 소멸 추적](#34-객체-배열의-생성과-소멸-추적)
+  - [3.5 객체 배열의 메모리 배치와 포인터 연산](#35-객체-배열의-메모리-배치와-포인터-연산)
 - [4. 메모리 관리](#4-메모리-관리)
   - [4.1 메모리 누수](#41-메모리-누수)
   - [4.2 댕글링 포인터](#42-댕글링-포인터)
   - [4.3 소멸자의 책임](#43-소멸자의-책임)
+  - [4.4 delete를 잘못 사용했을 때의 결과](#44-delete를-잘못-사용했을-때의-결과)
 - [5. 예외 처리](#5-예외-처리)
 - [6. 스마트 포인터 (현대 C++)](#6-스마트-포인터-현대-c)
   - [6.1 RAII 개념](#61-raii-개념)
@@ -44,6 +50,9 @@
   - [7.1 string 객체의 생성과 입출력](#71-string-객체의-생성과-입출력)
   - [7.2 주요 멤버 함수와 연산자](#72-주요-멤버-함수와-연산자)
   - [7.3 string 객체의 동적 생성과 문자열 처리](#73-string-객체의-동적-생성과-문자열-처리)
+  - [7.4 덧셈 문자열의 계산](#74-덧셈-문자열의-계산)
+  - [7.5 문자열의 검색과 대치](#75-문자열의-검색과-대치)
+  - [7.6 string 연산이 하는 일과 비용](#76-string-연산이-하는-일과-비용)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
 
@@ -136,6 +145,97 @@ setA(&ob, 5);    // ob의 주소가 this 매개변수로 전달된다
 - 멤버 함수가 아닌 함수(전역 함수 등)에서는 사용할 수 없다. 그 함수는 특정 객체와 관련이 없기 때문이다.
 - static 멤버 함수에서는 사용할 수 없다. static 멤버 함수는 객체 없이도 호출될 수 있어 가리킬 객체가 없을 수 있기 때문이다(static 멤버는 6장에서 다룬다).
 
+### 1.3 객체 자신을 리턴하는 멤버 함수와 연쇄 호출
+
+1.2절에서 `return *this;`로 객체 자신을 리턴할 수 있다고 했다. 리턴 타입을 참조(`Point&`)로 하면 호출한 객체 자체가 결과가 되므로, 그 결과에 다시 멤버 함수를 호출하는 **연쇄 호출**이 가능하다. 리턴 타입을 값(`Point`)으로 하면 결과는 객체의 복사본이 되어 연쇄 호출의 의미가 달라진다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Point {
+    int x = 0, y = 0;
+public:
+    Point &setX(int x) { this->x = x; return *this; }   // 자기 자신의 참조를 리턴
+    Point &setY(int y) { this->y = y; return *this; }
+    Point moveBy(int d) { x += d; y += d; return *this; } // 자기 자신의 복사본을 리턴
+    void show() const { cout << "(" << x << ", " << y << ")" << endl; }
+};
+
+int main() {
+    Point p;
+    p.setX(3).setY(4);          // p.setX(3)의 결과가 p 자신이므로 이어서 p.setY(4)
+    p.show();
+    p.moveBy(1).moveBy(1);      // 두 번째 moveBy()는 첫 번째가 리턴한 복사본에 적용
+    p.show();
+    return 0;
+}
+```
+
+```text
+(3, 4)
+(4, 5)
+```
+
+| 문장 | 첫 호출이 바꾸는 객체 | 둘째 호출이 바꾸는 객체 | 실행 뒤 `p` |
+|:----|:----|:----|:----|
+| `p.setX(3).setY(4);` | `p` (x = 3) | `p` (첫 호출이 리턴한 `p`의 참조) | (3, 4) |
+| `p.moveBy(1).moveBy(1);` | `p` (3, 4)에서 (4, 5) | 첫 호출이 리턴한 임시 복사본 (5, 6) | (4, 5) |
+
+*표 1. 참조 리턴과 값 리턴에 따른 연쇄 호출의 결과*
+
+- `setX()`의 `*this`는 `this`가 가리키는 객체, 곧 `p` 자신이고, 리턴 타입이 `Point&`이므로 복사 없이 `p`를 그대로 돌려준다. 따라서 `p.setX(3).setY(4)`는 `p.setX(3); p.setY(4);`와 같다.
+- `moveBy()`는 리턴 타입이 `Point`이므로 `*this`의 복사본을 리턴한다. 첫 `moveBy(1)`은 `p`를 (4, 5)로 바꾸지만, 둘째 `moveBy(1)`은 그 복사본에 적용되어 복사본만 (5, 6)이 되고 문장이 끝나면 사라진다. 그래서 `p`는 (4, 5)에 머문다.
+
+객체를 바꾸는 멤버 함수를 이어 부르게 하려면 참조를 리턴해야 한다. 7장의 `+=`, `=`, 전위 `++` 연산자가 참조를 리턴하는 것도 같은 이유이다.
+
+### 1.4 객체 포인터와 const
+
+포인터 선언에 `const`를 붙이는 위치에 따라, 포인터가 가리키는 객체를 바꿀 수 없게 하거나 포인터 자체를 바꿀 수 없게 한다. 규칙은 C와 같으며, 객체 포인터에서는 호출할 수 있는 멤버 함수가 함께 제한된다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r) : radius(r) { }
+    int getRadius() const { return radius; }     // const 멤버 함수
+    void setRadius(int r) { radius = r; }
+};
+
+int main() {
+    Circle a(1), b(2);
+    const Circle *p = &a;      // 가리키는 객체를 바꿀 수 없는 포인터
+    Circle *const q = &a;      // 포인터 자체를 바꿀 수 없는 포인터
+    cout << p->getRadius() << endl;
+    p = &b;                    // 가능: p가 다른 객체를 가리키게 한다
+    q->setRadius(10);          // 가능: q가 가리키는 a를 바꾼다
+    // p->setRadius(5);        // 오류: const Circle에 비const 멤버 함수
+    // q = &b;                 // 오류: q는 다른 객체를 가리킬 수 없다
+    cout << p->getRadius() << ' ' << a.getRadius() << endl;
+    return 0;
+}
+```
+
+```text
+1
+2 10
+```
+
+| 선언 | 읽는 방법 | 포인터를 다른 객체로 바꾸기 | 가리키는 객체를 바꾸기 |
+|:----|:----|:----|:----|
+| `const Circle *p` | `p`는 `const Circle`을 가리킨다 | 가능 (`p = &b;`) | 불가 (`const` 멤버 함수만 호출) |
+| `Circle *const q` | `q`는 상수 포인터이다 | 불가 | 가능 (`q->setRadius(10);`) |
+| `const Circle *const r` | 상수 포인터가 `const Circle`을 가리킨다 | 불가 | 불가 |
+
+*표 2. const의 위치에 따른 객체 포인터의 제한*
+
+`const`가 `*`의 왼쪽에 있으면 가리키는 대상이, 오른쪽에 있으면 포인터 변수 자체가 상수이다. 주석을 풀어 `p->setRadius(5);`를 쓰면 Apple clang은 "'this' argument to member function 'setRadius' has type 'const Circle', but function is not marked const"라는 오류를 내고, `q = &b;`를 쓰면 "cannot assign to variable 'q' with const-qualified type 'Circle *const'"라는 오류를 낸다. 앞의 오류는 3장 2.5절의 const 멤버 함수와 같은 이유이다. `p`를 통해 호출할 수 있는 것은 `getRadius()`처럼 `const`로 선언한 멤버 함수뿐이다.
+
+`const Circle *p = &a;`라고 해서 `a` 자체가 상수가 되는 것은 아니다. `a`는 여전히 `a.setRadius(10)`이나 다른 포인터 `q`로 바꿀 수 있으며, 실제로 출력에서 `q->setRadius(10)` 뒤에 `a`의 반지름이 10이 되었다. `const` 포인터는 "이 포인터를 통해서는 바꾸지 않겠다"는 약속이며, 함수의 매개변수를 `const Circle *`로 선언하면 함수가 인자로 받은 객체를 바꾸지 않는다는 것을 컴파일러가 보장한다. 5장의 const 참조도 같은 역할을 한다.
+
 ---
 
 <br>
@@ -166,7 +266,7 @@ delete[] arr;            // 배열 해제 (delete가 아닌 delete[] 사용!)
 | 생성자 호출 안 함 | 생성자 호출 |
 | 소멸자 호출 안 함 | 소멸자 호출 |
 
-*표 1. C의 malloc/free와 C++의 new/delete 비교*
+*표 3. C의 malloc/free와 C++의 new/delete 비교*
 
 > **핵심:** C++에서는 `malloc`/`free` 대신 `new`/`delete`를 사용한다. `new`는 생성자를, `delete`는 소멸자를 호출하지만, `malloc`과 `free`는 둘 다 호출하지 않는다.
 
@@ -264,6 +364,57 @@ delete[] a;
 delete[] b;
 ```
 
+### 2.4 new와 malloc()의 차이 확인
+
+표 3에서 `new`는 생성자를 호출하고 `malloc()`은 호출하지 않는다고 했다. 생성자와 소멸자가 메시지를 출력하는 클래스로 두 방법을 비교하면 다음과 같다.
+
+```cpp
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+class Counter {
+    int value;
+public:
+    Counter() : value(100) { cout << "생성자 실행, value=" << value << endl; }
+    ~Counter() { cout << "소멸자 실행" << endl; }
+};
+
+int main() {
+    cout << "[new / delete]" << endl;
+    Counter *p = new Counter;                          // 메모리 할당 + 생성자
+    delete p;                                          // 소멸자 + 메모리 반환
+
+    cout << "[malloc / free]" << endl;
+    Counter *q = (Counter *)malloc(sizeof(Counter));   // 메모리 할당만
+    free(q);                                           // 메모리 반환만
+    cout << "끝" << endl;
+    return 0;
+}
+```
+
+```text
+[new / delete]
+생성자 실행, value=100
+소멸자 실행
+[malloc / free]
+끝
+```
+
+`new Counter`는 `Counter` 크기의 메모리를 할당한 뒤 생성자를 호출하여 `value`를 100으로 초기화하고, `delete p`는 소멸자를 호출한 뒤 메모리를 반환한다. `malloc(sizeof(Counter))`는 같은 크기의 메모리를 줄 뿐 생성자를 호출하지 않으므로 메시지가 없고, `q`가 가리키는 메모리의 `value`에는 정해지지 않은 값이 들어 있다. 생성자가 실행되지 않았으므로 이 메모리는 아직 `Counter` 객체라고 할 수 없다. `free(q)`도 소멸자를 호출하지 않는다.
+
+| 구분 | `new` / `delete` | `malloc()` / `free()` |
+|:----|:----|:----|
+| 크기 지정 | 타입으로 정해짐 (`new Counter`) | 바이트 수를 직접 계산 (`sizeof(Counter)`) |
+| 리턴 타입 | `Counter*` | `void*`이므로 형 변환이 필요 |
+| 생성자와 소멸자 | 호출함 | 호출하지 않음 |
+| 할당 실패 | 예외를 던짐(5절) | `NULL`을 리턴 |
+| 짝 | `new`는 `delete`, `new[]`는 `delete[]` | `malloc()`은 `free()` |
+
+*표 4. new와 malloc()의 비교*
+
+`string`처럼 생성자에서 내부 메모리를 준비하는 멤버를 가진 클래스는 `malloc()`으로 할당하면 그 준비가 일어나지 않아, 멤버를 사용하는 순간 정의되지 않은 동작이 된다. 또 두 방식의 짝을 섞으면 안 된다. `new`로 할당한 메모리를 `free()`로 반환한 프로그램을 AddressSanitizer로 실행하면(macOS에서는 `ASAN_OPTIONS=alloc_dealloc_mismatch=1`이 필요하다) `alloc-dealloc-mismatch (operator new vs free)`가 보고된다. C++에서 객체를 동적으로 만들 때는 언제나 `new`와 `delete`를 쓴다.
+
 ---
 
 <br>
@@ -347,6 +498,104 @@ delete[] p;                   // 소멸자 4번 호출
 
 동적 배열의 원소는 첨자(`p[i]`) 대신 포인터 연산으로도 접근할 수 있다. `p->setRadius(10)`은 `p[0]`, `(p+1)->setRadius(20)`은 `p[1]`에 대한 호출이다. `delete[] p;`를 실행하면 정적 배열과 마찬가지로 생성의 반대 순서(`p[3]`, `p[2]`, `p[1]`, `p[0]`)로 각 원소의 소멸자가 실행된 뒤 메모리가 반환된다.
 
+### 3.4 객체 배열의 생성과 소멸 추적
+
+3.1절과 3.3절의 규칙, 곧 원소는 첨자 순서대로 생성되고 그 역순으로 소멸한다는 규칙을 생성자와 소멸자가 메시지를 출력하는 `Circle`로 확인하면 다음과 같다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle() { radius = 1; cout << "생성 " << radius << endl; }
+    Circle(int r) { radius = r; cout << "생성 " << radius << endl; }
+    ~Circle() { cout << "소멸 " << radius << endl; }
+};
+
+int main() {
+    cout << "[정적 배열]" << endl;
+    {
+        Circle arr[3] = { Circle(10), Circle(20) };   // arr[2]는 기본 생성자
+    }                                                 // 블록이 끝나면 arr가 소멸한다
+    cout << "[동적 배열]" << endl;
+    Circle *p = new Circle[2];                        // 두 원소 모두 기본 생성자
+    delete[] p;
+    return 0;
+}
+```
+
+```text
+[정적 배열]
+생성 10
+생성 20
+생성 1
+소멸 1
+소멸 20
+소멸 10
+[동적 배열]
+생성 1
+생성 1
+소멸 1
+소멸 1
+```
+
+- 초기화 목록에 원소가 2개만 있으므로 `arr[0]`과 `arr[1]`은 `Circle(int)`로, 목록에 없는 `arr[2]`는 기본 생성자로 생성된다. 원소 수보다 적은 초기화 목록을 쓸 때에도 나머지 원소를 위해 기본 생성자가 있어야 한다.
+- 중괄호 블록 `{ }` 안에 선언한 `arr`는 블록이 끝나는 곳에서 소멸한다. 소멸 순서는 `arr[2]`, `arr[1]`, `arr[0]`으로 생성의 역순이다.
+- `new Circle[2]`는 기본 생성자를 두 번 호출하고, `delete[] p`는 소멸자를 두 번 호출한다. `delete[]`가 몇 번 소멸자를 불러야 하는지 알 수 있는 것은, 일반적인 구현에서 `new[]`가 할당할 때 원소 수를 함께 기록해 두기 때문이다. 그래서 `new[]`로 받은 메모리는 반드시 `delete[]`로 반환한다(4.4절).
+
+### 3.5 객체 배열의 메모리 배치와 포인터 연산
+
+객체 배열의 원소는 메모리에 빈틈없이 연속으로 놓이며, 각 원소는 `sizeof(Circle)` 바이트를 차지한다. 3장 2.6절에서 본 것처럼 객체에는 멤버 변수만 들어가므로, `int` 하나를 가진 `Circle`의 원소는 4바이트씩 떨어져 있다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r = 1) : radius(r) { }
+    int getRadius() const { return radius; }
+};
+
+int main() {
+    Circle arr[3] = { Circle(10), Circle(20), Circle(30) };
+    Circle *p = arr;                                     // 배열 이름은 첫 원소의 주소
+    for (int i = 0; i < 3; i++) {
+        cout << "arr[" << i << "]: 시작 위치 +" << (char *)&arr[i] - (char *)arr
+             << "바이트, radius=" << (p + i)->getRadius() << endl;
+    }
+    cout << "sizeof(arr)=" << sizeof(arr) << ", 원소 수=" << sizeof(arr) / sizeof(arr[0]) << endl;
+    return 0;
+}
+```
+
+```text
+arr[0]: 시작 위치 +0바이트, radius=10
+arr[1]: 시작 위치 +4바이트, radius=20
+arr[2]: 시작 위치 +8바이트, radius=30
+sizeof(arr)=12, 원소 수=3
+```
+
+```text
+ arr (Circle 3개, 12바이트)
+   +0        +4        +8        +12
+   ┌─────────┬─────────┬─────────┐
+   │ arr[0]  │ arr[1]  │ arr[2]  │
+   │ r = 10  │ r = 20  │ r = 30  │
+   └─────────┴─────────┴─────────┘
+   ▲         ▲         ▲
+   p         p + 1     p + 2
+```
+
+*그림 4. Circle 배열의 원소 배치와 포인터 연산*
+
+- 포인터에 정수를 더하는 `p + i`는 주소에 `i`를 더하는 것이 아니라 `i * sizeof(Circle)` 바이트를 더한다. 그래서 `p + 1`은 4바이트 뒤인 `arr[1]`을 가리키며, `(p + i)->getRadius()`와 `arr[i].getRadius()`는 같은 원소를 다룬다. 이 규칙은 C의 포인터 연산과 같다.
+- 주소의 차이를 바이트 단위로 보려고 `(char *)`로 바꾸어 뺐다. `char`의 크기는 1바이트이므로 `char*`끼리의 차이는 바이트 수이다. `&arr[1] - &arr[0]`처럼 `Circle*`끼리 빼면 원소 수인 1이 나온다.
+- `sizeof(arr)`는 배열 전체의 크기 12바이트이고, `sizeof(arr) / sizeof(arr[0])`로 원소 수 3을 구할 수 있다. 이 계산은 배열 이름에 대해서만 맞으며, `sizeof(p)`는 포인터 자체의 크기(64비트 환경에서 8바이트)이므로 원소 수를 구하는 데 쓸 수 없다.
+
 ---
 
 <br>
@@ -426,9 +675,27 @@ public:
 └──────────────┘           └──────────────┘
 ```
 
-*그림 4. 생성자에서 할당하고 소멸자에서 해제하는 String 객체의 버퍼*
+*그림 5. 생성자에서 할당하고 소멸자에서 해제하는 String 객체의 버퍼*
 
 > **참고:** **원칙.** 클래스의 생성자에서 `new`를 사용했다면, 소멸자에서 `delete`를 사용해야 한다.
+
+### 4.4 delete를 잘못 사용했을 때의 결과
+
+2.1절과 2.3절에서 정의되지 않은 동작이라고 한 세 가지 실수는 컴파일러가 대부분 잡지 못하고, 실행해도 바로 드러나지 않을 수 있다. 메모리 오류 검사 도구인 AddressSanitizer(`-fsanitize=address` 옵션으로 켠다)로 컴파일하여 실행하면 각 실수가 일어난 지점에서 프로그램이 멈추고 오류의 종류가 출력된다. 다음은 macOS의 Apple clang에서 각 프로그램의 첫 오류 줄이다.
+
+| 실수 | 코드 | AddressSanitizer의 보고 |
+|:----|:----|:----|
+| `new`로 할당하지 않은 메모리를 `delete` | `int n = 10; int *p = &n; delete p;` | `attempting free on address which was not malloc()-ed` |
+| 같은 메모리를 두 번 `delete` | `int *p = new int(10); delete p; delete p;` | `attempting double-free` |
+| `new[]`로 받은 메모리를 `delete`로 반환 | `int *p = new int[10]; delete p;` | `alloc-dealloc-mismatch (operator new [] vs operator delete)` |
+
+*표 5. delete를 잘못 사용한 코드와 AddressSanitizer의 보고*
+
+- 첫 번째 실수의 `p`는 스택에 있는 지역 변수 `n`의 주소를 가진다. 스택의 메모리는 함수가 끝날 때 자동으로 사라지므로 `delete`로 반환할 대상이 아니다.
+- 두 번째 실수는 첫 `delete p;` 뒤에도 `p`가 같은 주소를 가지고 있어서 생긴다(4.2절의 댕글링 포인터). 첫 `delete` 뒤에 `p = nullptr;`을 두면 두 번째 `delete p;`는 널 포인터를 반환하는 것이 되어 아무 일도 하지 않는다.
+- 세 번째 실수는 macOS에서 기본 설정으로는 보고되지 않고, 환경 변수 `ASAN_OPTIONS=alloc_dealloc_mismatch=1`을 주어야 보고된다. 대신 이 경우는 Apple clang이 경고 옵션 없이도 "'delete' applied to a pointer that was allocated with 'new[]'; did you mean 'delete[]'?"라는 경고를 내므로, 컴파일러의 경고를 읽는 것만으로도 찾을 수 있다.
+
+이런 도구는 프로그램이 실제로 실행한 경로에서 일어난 오류만 찾는다. 오류가 보고되지 않았다고 해서 프로그램에 메모리 오류가 없다는 뜻은 아니므로, `new`와 `delete`의 짝을 코드에서 직접 확인하는 습관이 먼저이다.
 
 ---
 
@@ -491,9 +758,9 @@ int main() {
 | `throw` | 예외를 발생시킴 (catch 블록에 값을 전달) |
 | `catch` | 특정 타입의 예외를 처리하는 블록 |
 
-*표 2. 예외 처리 키워드와 역할*
+*표 6. 예외 처리 키워드와 역할*
 
-> **참고:** 예외 처리는 여기서 간략히 소개한다. 사용자 정의 예외 클래스, 예외 안전성 보장 등 고급 패턴은 이 장의 범위를 벗어나며, 교재는 13장에서 예외 처리를 자세히 다룬다.
+> **참고:** 예외 처리는 여기서 간략히 소개한다. 사용자 정의 예외 클래스, 예외 안전성 보장 등 고급 패턴은 이 장의 범위를 벗어나며, 예외 처리는 13장에서 자세히 다룬다.
 
 ---
 
@@ -517,11 +784,11 @@ C++11부터 표준 라이브러리의 `<memory>` 헤더에서 **스마트 포인
         delete 후 사용 → UB              소유권이 명확
 ```
 
-*그림 5. 직접 포인터와 스마트 포인터의 자원 관리 비교*
+*그림 6. 직접 포인터와 스마트 포인터의 자원 관리 비교*
 
 ### 6.2 `std::unique_ptr`: 단독 소유
 
-`unique_ptr`은 객체를 **단독으로 소유**한다. 복사할 수 없고, 이동(move)만 가능하다. 스코프를 벗어나면 관리하는 객체를 삭제한다.
+`unique_ptr`은 객체를 **단독으로 소유**한다. 복사할 수 없고, 이동(move)만 가능하다. 스코프를 벗어나면 관리하는 객체를 삭제한다. 소유권의 이전과 사용자 지정 삭제자는 14장 7절에서 다룬다.
 
 ```cpp
 #include <memory>
@@ -554,7 +821,7 @@ cout << c->getArea() << endl;    // 직접 포인터처럼 -> 사용
 
 ### 6.3 `std::shared_ptr`: 공유 소유
 
-`shared_ptr`은 **여러 포인터**가 같은 객체의 소유권을 공유할 수 있게 한다. 내부 **참조 카운트**가 해당 객체를 가리키는 `shared_ptr` 인스턴스의 수를 추적한다. 마지막 `shared_ptr`이 소멸되면 객체가 삭제된다.
+`shared_ptr`은 **여러 포인터**가 같은 객체의 소유권을 공유할 수 있게 한다. 내부 **참조 카운트**가 해당 객체를 가리키는 `shared_ptr` 인스턴스의 수를 추적한다. 마지막 `shared_ptr`이 소멸되면 객체가 삭제된다. 두 객체가 서로를 `shared_ptr`로 가리킬 때 생기는 순환 참조와 이를 끊는 `weak_ptr`는 14장 7절에서 다룬다.
 
 ```cpp
 #include <memory>
@@ -585,7 +852,7 @@ int main() {
 | `std::make_shared<T>(args...)` | C++11 | `shared_ptr<T>` 생성; 객체 + 제어 블록을 단일 할당으로 처리 |
 | `std::make_unique<T>(args...)` | C++14 | `unique_ptr<T>` 생성; `new`보다 예외 안전한 대안 |
 
-*표 3. 스마트 포인터를 만드는 팩토리 함수*
+*표 7. 스마트 포인터를 만드는 팩토리 함수*
 
 이 팩토리 함수들이 `new`를 직접 사용하는 것보다 권장되는 이유:
 1. 여러 할당이 포함된 식에서 메모리 누수를 방지한다(함수 인자의 평가 순서 규칙이 바뀐 C++17 이전에 특히 중요했다).
@@ -610,7 +877,7 @@ auto q = make_shared<Circle>(20);     // C++11
 | 직접 포인터 (비소유) | 소유 없이 관찰할 때 (예: 포인터를 저장하지 않는 함수 매개변수) |
 | 직접 `new`/`delete` | 레거시 코드, 또는 드문 저수준 시나리오 (커스텀 할당자, placement new) |
 
-*표 4. 포인터 종류별 사용 시점*
+*표 8. 포인터 종류별 사용 시점*
 
 > **참고:** **현대 C++의 원칙.** `new`나 `delete`를 쓰기 전에 스마트 포인터로 대체할 수 있는지 먼저 검토한다. 대부분의 경우 대체할 수 있다.
 
@@ -639,7 +906,7 @@ str.append("C++.");       // str은 "I love C++."이 된다. 11개 문자
 | `string(const char* s)` | C-스트링 `s`를 복사하여 객체 생성 |
 | `string(const char* s, int n)` | 문자 배열 `s`에서 앞의 `n`개 문자를 복사하여 객체 생성 |
 
-*표 5. string 클래스의 주요 생성자*
+*표 9. string 클래스의 주요 생성자*
 
 ```cpp
 string str;                            // 빈 문자열
@@ -682,7 +949,7 @@ cout << "사전에서 가장 뒤에 나오는 문자열은 " << latter << endl;
 | `rfind(str)` | `string s = "I love love C++"; s.rfind("love");` | 7 |
 | `at(pos)` | `string s("I love C++"); s.at(7);` | `'C'` |
 
-*표 6. string 클래스의 주요 멤버 함수*
+*표 10. string 클래스의 주요 멤버 함수*
 
 `find()`는 찾는 문자열이 처음 나타나는 인덱스를 리턴하고, 찾지 못하면 `string::npos`를 리턴한다. `find()`의 리턴 타입은 부호 없는 정수(`size_t`)이므로 실패 검사는 `s.find(x) == string::npos`로 쓰는 것이 정확하다. 결과를 `int`에 저장하면 `npos`가 -1로 변환되므로 `index == -1`로 검사하는 코드도 흔히 동작한다.
 
@@ -695,7 +962,7 @@ cout << "사전에서 가장 뒤에 나오는 문자열은 " << latter << endl;
 | `<<` | `cout << s1;` | `<=` | `s1 <= s2` |
 | `>>` | `cin >> s1;` | `>=` | `s1 >= s2` |
 
-*표 7. string 클래스의 연산자*
+*표 11. string 클래스의 연산자*
 
 비교 연산자는 문자열을 사전 순으로 비교한다. `[]`는 범위를 검사하지 않지만 `at()`은 범위를 벗어난 인덱스에 대해 `out_of_range` 예외를 던진다.
 
@@ -727,6 +994,163 @@ for (int i = 0; i < len; i++) {
 
 `len`번 회전하면 문자열은 원래대로 돌아오므로 마지막 줄은 입력과 같은 `I love you`이다. 같은 방식으로 `find()`와 `substr()`을 조합하면 `66+2+8+55+100` 같은 덧셈식을 `+`마다 잘라 `stoi()`로 정수로 바꾸어 합(231)을 구할 수 있고, `find()`와 `replace()`를 반복하면 문자열 속의 단어를 모두 다른 단어로 바꿀 수 있다.
 
+### 7.4 덧셈 문자열의 계산
+
+`find()`와 `substr()`, 문자열을 정수로 바꾸는 `stoi()`를 함께 쓰면 `66+2+8+55+100`처럼 입력된 덧셈식을 계산할 수 있다. 프로그램은 `+`를 찾을 때마다 바로 앞까지를 잘라 정수로 바꾸어 더한다.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    cout << "7+23+5+100+25와 같이 덧셈 문자열을 입력하세요." << endl;
+    getline(cin, s, '\n');                     // 문자열 입력
+    int sum = 0;
+    int startIndex = 0;                        // 문자열 내에 검색할 시작 인덱스
+    while (true) {
+        int fIndex = s.find('+', startIndex);
+        if (fIndex == -1) {                    // '+' 문자를 발견할 수 없음
+            string part = s.substr(startIndex);
+            if (part == "") break;             // "2+3+", 즉 +로 끝나는 경우
+            cout << part << endl;
+            sum += stoi(part);                 // 문자열을 수로 변환하여 더하기
+            break;
+        }
+        int count = fIndex - startIndex;       // 서브스트링으로 자를 문자 개수
+        string part = s.substr(startIndex, count);   // startIndex부터 count개의 문자로 서브스트링 만들기
+        cout << part << endl;
+        sum += stoi(part);                     // 문자열을 수로 변환하여 더하기
+        startIndex = fIndex + 1;               // 검색을 시작할 인덱스 전진
+    }
+    cout << "숫자들의 합은 " << sum << endl;
+    return 0;
+}
+```
+
+```text
+7+23+5+100+25와 같이 덧셈 문자열을 입력하세요.
+66+2+8+55+100
+66
+2
+8
+55
+100
+숫자들의 합은 231
+```
+
+둘째 줄은 키보드로 입력한 내용이다. `s = "66+2+8+55+100"`에 대해 반복문이 진행되는 과정은 다음과 같다.
+
+| 반복 | `startIndex` | `fIndex` | 잘라 낸 `part` | `sum` |
+|:----|:----|:----|:----|:----|
+| 1 | 0 | 2 | `substr(0, 2)` = "66" | 66 |
+| 2 | 3 | 4 | `substr(3, 1)` = "2" | 68 |
+| 3 | 5 | 6 | `substr(5, 1)` = "8" | 76 |
+| 4 | 7 | 9 | `substr(7, 2)` = "55" | 131 |
+| 5 | 10 | -1 | `substr(10)` = "100" | 231 |
+
+*표 12. 덧셈 문자열 66+2+8+55+100을 계산하는 반복의 추적*
+
+다섯 번째 반복에서는 더 이상 `+`가 없으므로 `find()`가 실패하고, `substr(10)`이 남은 문자열 전체 "100"을 돌려준다. 입력이 `2+3+`처럼 `+`로 끝나면 마지막 `part`가 빈 문자열이 되므로, 빈 문자열을 `stoi()`에 넘기지 않도록 그 전에 반복을 끝낸다.
+
+`find()`의 리턴 타입은 부호 없는 정수이고 실패하면 `string::npos`를 리턴한다(7.2절). 이 코드는 리턴값을 `int` 변수에 저장한 뒤 -1과 비교하는데, 흔히 쓰는 플랫폼에서는 `npos`를 `int`로 바꾼 값이 -1이 되어 의도대로 동작한다. 타입을 정확히 맞추려면 `size_t fIndex = s.find('+', startIndex);`로 받고 `fIndex == string::npos`로 검사한다.
+
+### 7.5 문자열의 검색과 대치
+
+`find()`와 `replace()`를 반복하면 문자열 안에 나타나는 모든 단어를 다른 단어로 바꿀 수 있다. 다음 프로그램은 `&`가 입력될 때까지 여러 줄을 입력받은 뒤, 찾을 문자열과 바꿀 문자열을 입력받아 모두 바꾼다.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    cout << "여러 줄의 문자열을 입력하세요. 입력의 끝은 &문자입니다." << endl;
+    getline(cin, s, '&');                      // &가 나올 때까지 여러 줄을 입력
+    cin.ignore();                              // & 뒤에 따라오는 <Enter> 키를 제거
+    string f, r;
+    cout << endl << "find: ";
+    getline(cin, f, '\n');                     // 검색할 문자열 입력
+    cout << "replace: ";
+    getline(cin, r, '\n');                     // 대치할 문자열 입력
+    int startIndex = 0;
+    while (true) {
+        int fIndex = s.find(f, startIndex);    // startIndex부터 문자열 f 검색
+        if (fIndex == -1)
+            break;                             // 문자열 s의 끝까지 변경하였음
+        s.replace(fIndex, f.length(), r);      // fIndex부터 f의 길이만큼을 r로 변경
+        startIndex = fIndex + r.length();
+    }
+    cout << s << endl;
+    return 0;
+}
+```
+
+```text
+여러 줄의 문자열을 입력하세요. 입력의 끝은 &문자입니다.
+It's now or never, come hold me tight. Kiss me my darling, be mine tonight
+Tomorrow will be too late. It's now or never, my love won't wait&
+
+find: now
+replace: Right Now
+It's Right Now or never, come hold me tight. Kiss me my darling, be mine tonight
+Tomorrow will be too late. It's Right Now or never, my love won't wait
+```
+
+- `getline(cin, s, '&')`는 세 번째 인자로 준 문자 `&`를 만날 때까지 줄바꿈을 포함한 모든 문자를 `s`에 저장한다. `&` 자체는 입력에서 꺼내지지만 `s`에 들어가지 않는다.
+- `&` 뒤에 친 Enter 키의 줄바꿈 문자는 입력 버퍼에 남아 있다. 이것을 `cin.ignore()`로 하나 버리지 않으면, 다음의 `getline(cin, f, '\n')`이 그 줄바꿈을 바로 읽어 `f`가 빈 문자열이 된다.
+- `replace(fIndex, f.length(), r)`는 `fIndex` 위치부터 `f`의 길이만큼을 `r`로 바꾼다. 다음 검색은 바꾼 문자열 `r`의 바로 뒤인 `fIndex + r.length()`부터 시작한다. `startIndex`를 `fIndex + 1`로 두면, 이 예처럼 `r`("Right Now")이 `f`("now")를 포함하지 않을 때는 문제가 없지만, `r`이 `f`를 포함하면 방금 바꾼 부분 안에서 `f`를 다시 찾아 끝없이 바꾸게 된다.
+
+### 7.6 string 연산이 하는 일과 비용
+
+`string`의 연산은 모두 간단한 기호와 함수 이름으로 쓰지만, 내부에서 하는 일의 양은 서로 다르다. 문자열의 길이를 `n`이라 하면 다음과 같이 정리할 수 있다.
+
+| 연산 | 내부에서 하는 일 | 일의 양 |
+|:----|:----|:----|
+| `s.size()`, `s.length()` | 객체가 저장해 둔 길이를 읽는다 | 길이와 무관하게 일정 |
+| `s[i]`, `s.at(i)` | `i`번째 문자의 위치를 계산한다 | 일정 |
+| `s += 'x'` | 끝에 한 글자를 덧붙이고, 공간이 모자라면 더 큰 공간으로 옮긴다 | 보통 일정, 옮길 때는 `n`에 비례 |
+| `s.insert(0, "ab")`, `s.erase(0, 2)` | 위치 뒤의 문자를 모두 밀거나 당긴다 | `n`에 비례 |
+| `s.find("ab")` | 앞에서부터 차례로 비교한다 | 단순한 구현에서 최악의 경우 `n`과 찾는 문자열 길이의 곱에 비례 |
+| `s1 + s2` | 두 문자열을 담을 새 객체를 만들어 복사한다 | 두 길이의 합에 비례 |
+
+*표 13. string 연산의 내부 동작과 일의 양*
+
+C 스트링의 `strlen()`은 널 문자를 찾을 때까지 문자를 하나씩 세므로 길이에 비례하는 시간이 걸리지만, `string`의 일반적인 구현은 길이를 멤버로 저장해 두므로 `size()`가 길이와 무관하게 바로 리턴된다. 반복문의 조건에 `strlen(s)`를 쓰면 반복할 때마다 문자열 전체를 다시 세는 반면, `s.size()`는 그런 비용이 없다.
+
+`+=`가 덧붙일 공간을 어떻게 마련하는지는 용량 `capacity()`의 변화로 볼 수 있다.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string s;
+    size_t lastCap = s.capacity();
+    cout << "처음: size=" << s.size() << " capacity=" << lastCap << endl;
+    for (int i = 0; i < 100; i++) {
+        s += 'x';                                        // 한 글자씩 덧붙인다
+        if (s.capacity() != lastCap) {                   // 용량이 바뀐 순간만 출력
+            lastCap = s.capacity();
+            cout << "size=" << s.size() << "에서 capacity=" << lastCap << endl;
+        }
+    }
+    return 0;
+}
+```
+
+```text
+처음: size=0 capacity=22
+size=23에서 capacity=47
+size=48에서 capacity=95
+size=96에서 capacity=191
+```
+
+이 구현(macOS의 libc++)에서는 빈 문자열도 22글자까지 담을 공간을 가지고 있고, 공간이 모자랄 때마다 용량을 약 두 배로 늘린다. 100글자를 덧붙이는 동안 더 큰 공간으로 옮기는 일은 세 번만 일어나고, 나머지 97번은 이미 있는 공간에 한 글자를 쓰기만 한다. 그래서 `+=`를 여러 번 해도 전체 비용은 덧붙인 글자 수에 대략 비례한다. 처음 용량과 늘리는 비율은 구현마다 다르며, 덧붙일 글자 수를 미리 알면 `s.reserve(100)`으로 공간을 한 번에 확보할 수 있다.
+
 ---
 
 <br>
@@ -754,6 +1178,15 @@ for (int i = 0; i < len; i++) {
 | `shared_ptr` | 참조 카운트로 소유권을 공유하며 마지막 소유자가 소멸할 때 자동으로 삭제되고, `make_shared`로 만드는 것이 권장된다. |
 | 스마트 vs 직접 포인터 | 현대 C++에서는 스마트 포인터(C++11)가 직접 `new`/`delete`를 대체하며, 직접 `new`/`delete`는 레거시 스타일이다. |
 | `string` 클래스 | `<string>`의 가변 크기 문자열 클래스로, `getline()`으로 한 줄을 입력받고 `find()`, `substr()`, `replace()` 같은 멤버 함수와 `+`, `==`, `<` 같은 연산자를 제공한다. |
+| 객체 배열의 생성과 소멸 | 원소는 첨자 순서대로 생성되고 역순으로 소멸하며, 초기화 목록에 없는 원소는 기본 생성자로 생성된다. |
+| delete의 오용 | `new`로 받지 않은 메모리의 `delete`, 이중 `delete`, `new[]`와 `delete`의 혼용은 정의되지 않은 동작이며, AddressSanitizer와 컴파일러 경고로 찾을 수 있다. |
+| 덧셈 문자열의 계산 | `find()`로 `+`의 위치를 찾고 `substr()`로 숫자 부분을 잘라 `stoi()`로 정수로 바꾸어 더한다. |
+| 검색과 대치 | `find()`와 `replace()`를 반복하되, 다음 검색은 바꾼 문자열의 바로 뒤에서 시작한다. |
+| 연쇄 호출 | 멤버 함수가 `*this`를 참조로 리턴하면 `p.setX(3).setY(4)`처럼 같은 객체에 이어서 호출할 수 있고, 값으로 리턴하면 둘째 호출은 복사본에 적용된다. |
+| new와 malloc()의 차이 | `new`는 타입에 맞는 크기를 할당하고 생성자를 호출하며 `delete`는 소멸자를 호출하지만, `malloc()`과 `free()`는 메모리만 다루므로 C++ 객체에는 쓰지 않는다. |
+| 객체 배열의 메모리 배치 | 원소는 `sizeof(클래스)`씩 연속으로 놓이고, `p + i`는 `i`개 원소만큼 떨어진 원소를 가리킨다. |
+| string 연산의 비용 | `size()`와 `[]`는 길이와 무관하게 일정하고, `insert()`, `erase()`, `+`는 길이에 비례하며, `+=`는 용량을 늘려 가며 덧붙인다. |
+| 객체 포인터와 const | `const Circle *p`는 가리키는 객체를 바꿀 수 없어 `const` 멤버 함수만 호출할 수 있고, `Circle *const q`는 포인터 자체를 다른 객체로 바꿀 수 없다. |
 
 ---
 
@@ -805,3 +1238,57 @@ for (int i = 0; i < len; i++) {
    `s.find("love")`는 처음 나타나는 위치인 2, `s.find("love", 3)`은 인덱스 3부터 검색하므로 두 번째 `love`의 위치인 7, `s.rfind("love")`는 마지막으로 나타나는 위치인 7, `s.substr(2, 4)`는 인덱스 2부터 4개 문자인 `"love"`이다.
 
    </details>
+
+6. **덧셈 문자열 추적:** 7.4절의 프로그램에 `10+5+`를 입력하면 출력되는 줄과 합은 무엇인가? 반복이 끝나는 이유와 함께 쓰라.
+
+   <details>
+   <summary>정답</summary>
+
+   10과 5가 한 줄씩 출력되고 합은 15이다. 첫 반복에서 `fIndex`는 2이므로 "10"을 더하고 `startIndex`가 3이 된다. 둘째 반복에서 `fIndex`는 4이므로 "5"를 더하고 `startIndex`가 5가 된다. 셋째 반복에서는 `+`가 더 없으므로 `substr(5)`를 구하는데, 문자열의 길이가 5이므로 빈 문자열이 되어 `part == ""` 조건으로 반복이 끝난다.
+
+   </details>
+
+7. **동적 객체 배열:** 3.4절의 `Circle`로 `Circle *p = new Circle[3]; delete p;`를 실행하면 어떤 문제가 생기는가?
+
+   <details>
+   <summary>정답</summary>
+
+   `new[]`로 할당한 메모리를 `delete`로 반환했으므로 정의되지 않은 동작이다. `delete`는 배열의 원소 수를 고려하지 않으므로 소멸자가 세 번 호출된다는 보장이 없고, 메모리 반환 자체도 잘못될 수 있다. `delete[] p;`로 반환해야 세 원소의 소멸자가 역순으로 호출되고 메모리가 올바르게 반환된다.
+
+   </details>
+
+8. **연쇄 호출:** 1.3절의 `Point`에서 `setY()`의 리턴 타입을 `Point`(값)로 바꾸면 `Point q; q.setX(1).setY(2).setX(5); q.show();`의 출력은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   `(1, 2)`이다. `q.setX(1)`은 `q`의 참조를 리턴하므로 `setY(2)`는 `q`에 적용되어 `q`는 (1, 2)가 된다. 그런데 `setY()`가 값을 리턴하므로 그 결과는 `q`의 복사본이고, 마지막 `setX(5)`는 이 복사본에 적용되어 `q`에는 영향을 주지 않는다.
+
+   </details>
+
+9. **포인터 연산:** `Box` 객체의 크기가 16바이트이고 `Box arr[4];`의 시작 주소가 0x1000이라 하자. `Box *p = arr + 2;`의 값과 `p - arr`의 값은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   `p`는 0x1000 + 2 × 16 = 0x1020이고, `p - arr`은 2이다. 포인터에 정수를 더하면 원소의 크기를 곱한 바이트 수만큼 주소가 움직이고, 같은 배열을 가리키는 두 포인터의 차이는 바이트 수가 아니라 원소 수로 계산된다.
+
+   </details>
+
+10. **new와 malloc:** 2.4절의 `Counter`에 `int get() const { return value; }`를 추가하고 `Counter *q = (Counter *)malloc(sizeof(Counter)); cout << q->get();`을 실행하면 100이 출력된다고 보장할 수 있는가?
+
+    <details>
+    <summary>정답</summary>
+
+    보장할 수 없다. `malloc()`은 메모리만 할당하고 생성자를 호출하지 않으므로 `value`는 100으로 초기화되지 않았고, 그 메모리에는 정해지지 않은 값이 들어 있다. 생성자가 실행되지 않은 메모리를 객체처럼 쓰는 것이므로 결과는 실행할 때마다 다를 수 있다. 생성자가 실행되게 하려면 `Counter *q = new Counter;`로 만들고 `delete q;`로 반환한다.
+
+    </details>
+
+11. **const 포인터:** `void print(const Circle *p)` 안에서 `p->getRadius()`와 `p->setRadius(3)`, `p = nullptr;` 중 컴파일되는 것을 모두 고르라. 1.4절의 `Circle`을 쓴다.
+
+    <details>
+    <summary>정답</summary>
+
+    `p->getRadius()`와 `p = nullptr;`이 컴파일된다. `p`는 `const Circle`을 가리키므로 `const` 멤버 함수인 `getRadius()`만 호출할 수 있고, 비`const` 멤버 함수 `setRadius()`는 호출할 수 없다. 포인터 변수 `p` 자체는 상수가 아니므로 다른 주소를 대입할 수 있지만, `p`는 값으로 받은 매개변수이므로 그 대입은 호출한 쪽의 포인터에 영향을 주지 않는다.
+
+    </details>
