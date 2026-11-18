@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 5
 
@@ -12,6 +12,7 @@
 > 3. Declare reference variables and use reference parameters and reference returns
 > 4. Distinguish shallow copy from deep copy and write a deep copy constructor
 > 5. Explain when the copy constructor is called implicitly
+> 6. Distinguish the cases that call the copy assignment operator from those that call the copy constructor, and write a resource-owning class following the rule of three
 
 ---
 
@@ -35,6 +36,8 @@
   - [3.2 Reference as Parameter](#32-reference-as-parameter)
   - [3.3 Reference Return](#33-reference-return)
   - [3.4 Full Reference Return Example](#34-full-reference-return-example)
+  - [3.5 Const References and Temporary Objects](#35-const-references-and-temporary-objects)
+  - [3.6 Choosing How to Pass Parameters](#36-choosing-how-to-pass-parameters)
 - [4. Copy Constructor](#4-copy-constructor)
   - [4.1 Concept](#41-concept)
   - [4.2 Default Copy Constructor](#42-default-copy-constructor)
@@ -43,13 +46,18 @@
   - [4.5 Deep Copy](#45-deep-copy)
   - [4.6 Full Deep Copy Example: Person Class](#46-full-deep-copy-example-person-class)
   - [4.7 When the Copy Constructor Is Called Implicitly](#47-when-the-copy-constructor-is-called-implicitly)
+  - [4.8 Copy Assignment Operator](#48-copy-assignment-operator)
+  - [4.9 Rule of Three](#49-rule-of-three)
 - [5. Common Mistakes](#5-common-mistakes)
   - [5.1 Returning Reference to Local Variable](#51-returning-reference-to-local-variable)
   - [5.2 Forgetting Deep Copy with Pointer Members](#52-forgetting-deep-copy-with-pointer-members)
   - [5.3 Copy Constructor Parameter Must Be a Reference](#53-copy-constructor-parameter-must-be-a-reference)
   - [5.4 Reference Declaration vs Address-of Operator](#54-reference-declaration-vs-address-of-operator)
+  - [5.5 Assignment Operator Without a Self-Assignment Check](#55-assignment-operator-without-a-self-assignment-check)
+  - [5.6 Writing Only the Copy Constructor and Forgetting the Assignment Operator](#56-writing-only-the-copy-constructor-and-forgetting-the-assignment-operator)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
+- [References](#references)
 
 ---
 
@@ -851,6 +859,68 @@ Scores: 95, 100, 78, 50, 88
 
 > **Note:** **Usefulness.** Reference return lets you build clean APIs like `array[i] = value;`. The `operator[]` of `std::vector` and `std::string` works the same way, returning a reference to the element.
 
+### 3.5 Const References and Temporary Objects
+
+Putting `const` before a reference parameter prevents the function from changing the original through that reference. References with and without `const` also differ in what they can refer to.
+
+> **Definition:** A **reference to const** is a reference declared as `const T &r = x;` through which the referenced object can be read but not modified. It can be bound not only to variables but also to unnamed temporary values such as literals and the results of expressions.
+
+A non-const reference `T &` binds only to objects that have a name and can appear on the left of an assignment, that is, to variables (lvalues). If a non-const reference were bound to a temporary value that disappears at the end of the statement, such as the literal `10` or the result of the expression `a + b`, any change the function made to that temporary would be invisible to the caller, so C++ does not allow it. A const reference makes no modification and carries no such risk, so it can also bind to temporaries. When necessary, the compiler creates a temporary object and binds the reference to it.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+void show(const string &s) { cout << "[" << s << "]" << endl; }   // const reference
+void append(string &s) { s += "!"; }                             // non-const reference
+
+int main() {
+    string word = "hello";
+    show(word);          // variable: bound directly
+    show("literal");     // string literal: a temporary string object is created and bound
+    show(word + "?");    // the result of an expression (a temporary) is bound as well
+    append(word);        // only a variable can be passed
+    // append("literal"); // compile error: a temporary cannot bind to a non-const reference
+    show(word);
+
+    const int &r = 10;   // the temporary int holding the literal lives as long as r
+    cout << r + 1 << endl;
+    return 0;
+}
+```
+
+```text
+[hello]
+[literal]
+[hello?]
+[hello!]
+11
+```
+
+- In `show("literal")`, `"literal"` is not a `string` but an array of type `const char[8]`. The compiler creates a temporary `string` object with a `string` constructor and binds `s` to that object. The temporary is destroyed at the end of the statement that contains the call to `show()`.
+- Uncommenting `append("literal");` makes Apple clang report the error "no matching function for call to 'append'" with the explanation "no known conversion from 'const char[8]' to 'string &'". A temporary `string` could be created, but that temporary cannot be bound to a non-const reference.
+- When a local const reference is bound directly to a temporary value, as in `const int &r = 10;`, the lifetime of the temporary is extended to the lifetime of the reference. Reading `r` in the next statement is therefore safe. This lifetime extension applies only when the reference is initialized directly with the temporary, not to a reference returned by a function (Section 5.1).
+
+The reason the copy constructor parameter is written as `const ClassName &` (Section 5.3) also comes from this rule. Without `const`, a new object could not be copy-constructed from a temporary object.
+
+### 3.6 Choosing How to Pass Parameters
+
+Combining the three passing methods of Sections 1 and 2 with the const reference gives four ways to declare a function parameter. There are two criteria for the choice: whether the function must change the caller's original, and whether copying the argument is expensive.
+
+| Declaration | Modifies the original | Copy cost | Accepts temporaries | Typical use |
+|:----|:----|:----|:----|:----|
+| `void f(T x)` | No | Copies the whole argument | Yes | Small built-in types such as `int`, `double`, and `char` |
+| `void f(const T &x)` | No | None | Yes | Large objects such as `string` or class objects that are only read |
+| `void f(T &x)` | Yes | None | No | Changing the caller's variable or returning results other than the return value |
+| `void f(T *x)` | Yes | None (only the address is copied) | No | When the target may be absent, so `nullptr` must be allowed |
+
+*Table 7. Comparison of parameter passing methods*
+
+Applied to the `Circle` of Section 2.1, these criteria give the following. A function that only prints the radius is declared as `void print(const Circle &c)`, which avoids the copy and guarantees that the original does not change. A function that must change the original, such as `increase()` that enlarges the radius, is declared as `void increase(Circle &c)`. Declared as `void increase(Circle c)`, as in Section 2.1, it changes only the copy and leaves the radius of the original unchanged.
+
+Call by value is not always bad. If the function must make and modify a copy of the argument anyway, it is simpler to take the parameter by value and modify that copy directly. For a type whose size is about that of a pointer or smaller, such as a single `int`, passing by reference does not reduce the copy cost.
+
 ---
 
 <br>
@@ -867,7 +937,7 @@ A **copy constructor** is a special constructor that creates a new object as a c
 | Passing an object by value | `void f(MyClass obj);` called as `f(a);` |
 | Returning an object by value | `MyClass f() { MyClass obj; return obj; }` |
 
-*Table 7. The three situations in which the copy constructor is called*
+*Table 8. The three situations in which the copy constructor is called*
 
 **Prototype:**
 
@@ -984,7 +1054,7 @@ When cpp  is destroyed → delete[] title → DOUBLE FREE! (crash)
 | Double free | Both destructors try to `delete[]` the same memory, causing a crash |
 | Dangling pointer | After one object is destroyed, the other has a pointer to freed memory |
 
-*Table 8. Problems with shallow copy*
+*Table 9. Problems with shallow copy*
 
 The textbook's `Person` example shows the same problem. If a `Person` class with a `char *name` member has no copy constructor and is copied with `Person daughter(father);`, then `daughter.changeName("Grace")` changes the name in the shared memory, so the name of `father` also becomes Grace. When the program ends, the objects are destroyed in reverse order of construction, `daughter` then `father`, and the destructor of `father` calls `delete[]` again on memory that has already been freed, so the program terminates abnormally.
 
@@ -1234,7 +1304,7 @@ Destructors run in reverse order of construction, so `bob` is destroyed first an
 
 ### 4.7 When the Copy Constructor Is Called Implicitly
 
-Even without being called explicitly in the code, the copy constructor is called automatically by the compiler in the three cases of Table 7. The following example contains all three cases.
+Even without being called explicitly in the code, the copy constructor is called automatically by the compiler in the three cases of Table 8. The following example contains all three cases.
 
 ```cpp
 #include <iostream>
@@ -1289,6 +1359,224 @@ Output (Apple clang, C++17):
 The first line ("copy constructor executed; name of the source object Kitae") is the initialization of `son`, and the second is the construction of the parameter `person` in `f(father)`. In `return mother;` of `g()` a return object is conceptually copy-constructed as well, but that line is missing from the output above.
 
 > **Note:** **Copy elision.** The compiler may construct the local object being returned directly in the caller's return-value slot and omit the copy constructor call. Elision when returning a named local object (NRVO) is permitted but optional, so it depends on the compiler and options; since C++17, elision is guaranteed when returning a temporary, as in `return Person(2, "Jane");`. Compiling the example above with the `-fno-elide-constructors` option adds the line "복사 생성자 실행. 원본 객체의 이름 Jane" to the output. A copy constructor should therefore have no side effects other than copying the object.
+
+### 4.8 Copy Assignment Operator
+
+The object assignment `c1 = c2;` of Section 2.3 is in fact an expression that calls a member function. The function called when another object of the same class is assigned to an object that already exists is the copy assignment operator.
+
+> **Definition:** The **copy assignment operator** is the member function `ClassName& operator=(const ClassName&)` that is called when another object of the same class is assigned to an object that has already been created. If a class does not declare this function, the compiler generates a default copy assignment operator that assigns the members one by one.
+
+The copy constructor and the copy assignment operator both bring over the contents of another object, but they are called at different times. The criterion is not whether the statement contains an `=` sign but whether the left object is created by that statement.
+
+| Statement | Function called | Basis of the judgment |
+|:----|:----|:----|
+| `Book b = a;` | Copy constructor | `b` is created by this statement |
+| `Book b(a);` | Copy constructor | Another notation for the same initialization |
+| `b = a;` (`b` already exists) | Copy assignment operator | `b` already exists and only its contents change |
+| `f(a);` (`void f(Book x)`) | Copy constructor | The parameter `x` is newly created |
+
+*Table 10. Statements that call the copy constructor and the copy assignment operator*
+
+The default copy assignment operator copies member by member, as the default copy constructor does. For the `Book` of Section 4.3 it does the same work as `this->title = other.title; this->price = other.price;`. When there is a pointer member, this behavior adds a third problem to the two problems of shallow copy (shared memory and double free). Because it overwrites the address of the memory that the left object pointed to before the assignment, no pointer to that memory remains, and there is no longer any way to release it.
+
+```text
+Before the assignment                 After java = cpp; (default copy assignment)
+
+ cpp   title ──▶ "C++"                 cpp   title ──▶ "C++" ◀── title  java
+ java  title ──▶ "Java"                               "Java"   ← no pointer left (leak)
+```
+
+*Figure 10. Result of the default copy assignment operator assigning a pointer member*
+
+A copy assignment operator that performs a deep copy adds two things to the work of the copy constructor. It must release the memory the left object already holds, and it must handle separately the case in which the left and right operands are the same object.
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Book {
+    char *title;
+    int price;
+public:
+    Book(const char *t, int p) {
+        title = new char[strlen(t) + 1];
+        strcpy(title, t);
+        price = p;
+    }
+    Book(const Book &other) {                       // deep copy constructor
+        title = new char[strlen(other.title) + 1];
+        strcpy(title, other.title);
+        price = other.price;
+    }
+    Book &operator=(const Book &other) {            // deep copy assignment operator
+        if (this == &other)                         // (1) do nothing on self-assignment
+            return *this;
+        char *fresh = new char[strlen(other.title) + 1];   // (2) allocate new memory
+        strcpy(fresh, other.title);                 // (3) copy the contents
+        delete[] title;                             // (4) release the old memory
+        title = fresh;                              // (5) switch to the new memory
+        price = other.price;
+        return *this;                               // (6) return a reference to the left object
+    }
+    ~Book() { delete[] title; }
+    void setTitle(const char *t) {
+        char *fresh = new char[strlen(t) + 1];
+        strcpy(fresh, t);
+        delete[] title;
+        title = fresh;
+    }
+    void show() const { cout << title << " " << price << endl; }
+};
+
+int main() {
+    Book cpp("C++", 10000), java("Java", 12000), py("Python", 9000);
+    java = cpp;               // java.operator=(cpp)
+    java.setTitle("Java 2");  // only java changes
+    cpp.show();
+    java.show();
+    py = java = cpp;          // py.operator=(java.operator=(cpp))
+    py.show();
+    Book &same = py;          // another name for py
+    py = same;                // self-assignment: py stays the same
+    py.show();
+    return 0;
+}
+```
+
+```text
+C++ 10000
+Java 2 10000
+C++ 10000
+C++ 10000
+```
+
+Each step of `operator=` does the following.
+
+- **(1) Self-assignment check:** `this` is the address of the left object and `&other` is the address of the right object. If the two addresses are equal, the operation is a self-assignment, and the function returns at once. Self-assignment arises less often from an explicit `py = py;` than through another name, as in `py = same;` after `Book &same = py;`, or in `a[i] = a[j];` when `i` and `j` are equal.
+- **(2), (3) Securing new memory:** New memory as long as the string of the right object is allocated, and the contents are copied. At this point the original memory of the left object is still intact.
+- **(4), (5) Replacement:** After the new memory has been secured, the old memory is released and the pointer is switched. If the release came first, a failed allocation would leave the object pointing to memory that had already been released. Handling the exception that reports an allocation failure is covered in Chapter 13.
+- **(6) Reference return:** Because the return type is `Book&`, the result of the assignment expression is the left object itself. The assignment operator associates from right to left, so `py = java = cpp;` becomes `py.operator=(java.operator=(cpp))`, and the reference to `java` returned by the inner call becomes the argument of the outer call.
+
+| Statement executed | `cpp` | `java` | `py` |
+|:----|:----|:----|:----|
+| Object creation | "C++" 10000 | "Java" 12000 | "Python" 9000 |
+| `java = cpp;` | "C++" 10000 | "C++" 10000 (separate memory) | "Python" 9000 |
+| `java.setTitle("Java 2");` | "C++" 10000 | "Java 2" 10000 | "Python" 9000 |
+| `py = java = cpp;` | "C++" 10000 | "C++" 10000 | "C++" 10000 |
+| `py = same;` | "C++" 10000 | "C++" 10000 | "C++" 10000 (unchanged) |
+
+*Table 11. Values held by each object during the assignments of Book objects*
+
+`cpp` remains "C++" even after `java.setTitle("Java 2")` because the assignment operator copied the string into new memory. The general rules for writing operator functions and other forms of the assignment operator are covered in Chapter 7.
+
+### 4.9 Rule of Three
+
+Stated precisely, the rule of thumb of Section 4.5 is as follows. If a class requires a user-defined destructor, a user-defined copy constructor, or a user-defined copy assignment operator, it almost certainly requires all three [1]. This is called the **rule of three**.
+
+The three functions are needed together because they all deal with the same resource. When an object owns a resource, such as the heap memory a pointer member points to, the destructor releases the resource, the copy constructor creates one more resource for the new object, and the copy assignment operator replaces the resource the object already holds with the contents of another object. If the default version handled the resource wrongly and one of the three had to be written by hand, the default versions of the other two handle the same resource in the same wrong way.
+
+| Member function | Default behavior | Problem with a pointer member | What to write by hand |
+|:----|:----|:----|:----|
+| Destructor | Does not release the memory the pointer points to | Memory leak | Release with `delete[]` |
+| Copy constructor | Copies the pointer value | Shared memory, double free | Allocate new memory and copy the contents |
+| Copy assignment operator | Assigns the pointer value | Leak of the old memory, shared memory, double free | Self-assignment check, allocation and copy of new memory, release of the old memory |
+
+*Table 12. The three member functions of the rule of three*
+
+The following `MyString` writes all three functions and prints a message whenever each function runs, showing which function each statement calls.
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class MyString {
+    char *s;
+public:
+    MyString(const char *str = "") {                   // constructor
+        s = new char[strlen(str) + 1];
+        strcpy(s, str);
+        cout << "  constructor(" << s << ")" << endl;
+    }
+    MyString(const MyString &other) {                  // copy constructor
+        s = new char[strlen(other.s) + 1];
+        strcpy(s, other.s);
+        cout << "  copy constructor(" << s << ")" << endl;
+    }
+    MyString &operator=(const MyString &other) {       // copy assignment operator
+        cout << "  assignment(" << s << " <- " << other.s << ")" << endl;
+        if (this != &other) {
+            char *fresh = new char[strlen(other.s) + 1];
+            strcpy(fresh, other.s);
+            delete[] s;
+            s = fresh;
+        }
+        return *this;
+    }
+    ~MyString() {                                      // destructor
+        cout << "  destructor(" << s << ")" << endl;
+        delete[] s;
+    }
+};
+
+void byValue(MyString) { }            // call by value
+void byRef(const MyString &) { }      // call by reference
+
+int main() {
+    cout << "[1] MyString a(\"apple\");" << endl;
+    MyString a("apple");
+    cout << "[2] MyString b = a;" << endl;
+    MyString b = a;
+    cout << "[3] MyString c; c = a;" << endl;
+    MyString c;
+    c = a;
+    cout << "[4] byValue(a);" << endl;
+    byValue(a);
+    cout << "[5] byRef(a);" << endl;
+    byRef(a);
+    cout << "[6] b = \"kiwi\";" << endl;
+    b = "kiwi";
+    cout << "[7] end of main" << endl;
+    return 0;
+}
+```
+
+```text
+[1] MyString a("apple");
+  constructor(apple)
+[2] MyString b = a;
+  copy constructor(apple)
+[3] MyString c; c = a;
+  constructor()
+  assignment( <- apple)
+[4] byValue(a);
+  copy constructor(apple)
+  destructor(apple)
+[5] byRef(a);
+[6] b = "kiwi";
+  constructor(kiwi)
+  assignment(apple <- kiwi)
+  destructor(kiwi)
+[7] end of main
+  destructor(apple)
+  destructor(kiwi)
+  destructor(apple)
+```
+
+Read step by step, the output says the following.
+
+1. `a` is created by the constructor that takes a `const char*`.
+2. `b` is created by this statement, so the copy constructor is called.
+3. `c` is first created with the default argument `""`, and in the next statement `c = a;` it is assigned to as an existing object, so the copy assignment operator is called. The `( <- apple)` in the output shows that `c` held an empty string before the assignment.
+4. Because this is a call by value, the parameter object is created by the copy constructor and destroyed when the function ends.
+5. Because this is a call by reference, no new object is created and no message is printed.
+6. The right operand is a string literal, not a `MyString`, so the compiler creates a temporary object with the constructor that takes a `const char*` and assigns that temporary to `b`. The temporary is destroyed at the end of the statement, so `destructor(kiwi)` appears right after the assignment. In this way, a constructor that can be called with one parameter is used to convert a value of another type into an object of the class.
+7. The local objects are destroyed in the reverse order of creation, `c`, `b`, `a`. `c` holds "apple", `b` holds "kiwi" from [6], and `a` holds "apple".
+
+Creation messages (constructor and copy constructor) and destruction messages are each printed 5 times. This means that all five objects created (`a`, `b`, `c`, the parameter object, and the temporary object) were destroyed exactly once each, and when testing a resource-owning class, checking that these two counts are equal helps to find leaks and double frees.
+
+> **Note:** **Forbidding copies and the rule of five.** Since C++11, a class whose resource must not be copied can declare the two functions as deleted functions, as in `MyString(const MyString&) = delete;` and `MyString& operator=(const MyString&) = delete;`, which turns any code that tries to copy into a compile error [1]. C++11 added the move constructor and the move assignment operator, and because a user-declared destructor or copy function prevents the implicit generation of the move functions, the rule of five arose: a class that needs moves must declare all five functions [1]. Move semantics are covered in Chapter 14.
 
 ---
 
@@ -1411,7 +1699,7 @@ int *ptr = &a;     // ptr stores the address of a
 | In an expression | `&variable` | Address-of operator | `int *p = &a;` |
 | In an expression | `*pointer` | Dereference operator | `cout << *p;` |
 
-*Table 9. Meanings of the `&` and `*` symbols by context*
+*Table 13. Meanings of the `&` and `*` symbols by context*
 
 **Quick rule:** If `&` appears **next to a type name** (in a declaration), it declares a reference. If it appears **before a variable name** (in an expression), it is the address-of operator.
 
@@ -1426,6 +1714,50 @@ ref = 20;           // changes a to 20 (ref is an alias)
 cout << &ref;       // prints a's address (address-of the alias = address of a)
 cout << ptr;        // prints a's address (ptr holds the address)
 ```
+
+### 5.5 Assignment Operator Without a Self-Assignment Check
+
+The following assignment operator releases the old memory first and then copies the contents of the right object. It works correctly when the left and right operands are different objects, but when they are the same object, `delete[] title;` also releases the memory that `other.title` points to, so `strlen(other.title)` on the next line reads released memory.
+
+```cpp
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+class Book {
+    char *title;
+public:
+    Book(const char *t) { title = new char[strlen(t) + 1]; strcpy(title, t); }
+    ~Book() { delete[] title; }
+    Book &operator=(const Book &other) {   // wrong implementation without a self-assignment check
+        delete[] title;                    // if other is this object, other.title is released too
+        title = new char[strlen(other.title) + 1];   // reads released memory
+        strcpy(title, other.title);
+        return *this;
+    }
+    void show() const { cout << title << endl; }
+};
+
+int main() {
+    Book b("C++");
+    Book &same = b;
+    b = same;
+    b.show();
+}
+```
+
+Reading released memory is undefined behavior, so an ordinary run may print "C++" by chance or print a garbled string. Compiling and running with the memory error detector AddressSanitizer turned on (`-fsanitize=address`) reveals the kind of error on the first line.
+
+```text
+==64263==ERROR: AddressSanitizer: heap-use-after-free on address 0x602000000930 ...
+READ of size 2 at 0x602000000930 thread T0
+```
+
+**Fix:** As in Section 4.8, filter out self-assignment first with `if (this == &other) return *this;`, and release the old memory only after allocating and copying the new memory. Securing the new memory first makes self-assignment safe even without the check, but the two methods are usually used together to avoid a useless allocation and copy for the same object.
+
+### 5.6 Writing Only the Copy Constructor and Forgetting the Assignment Operator
+
+Even when the copy constructor and the destructor are written correctly, `b = a;` calls the default copy assignment operator if no assignment operator is written. As in Figure 10, the original memory of `b` leaks, the two objects share the same memory, and the same memory is released twice when the two objects are destroyed. Testing only initialization (`Book b = a;`) does not reveal the problem, so a resource-owning class must be tested for both initialization and assignment (the `MyString` of Section 4.9).
 
 ---
 
@@ -1456,6 +1788,12 @@ cout << ptr;        // prints a's address (ptr holds the address)
 | Dangling reference | A local variable is destroyed when the function returns, so never return a reference to it. |
 | Copy constructor parameter | The parameter must be a reference, usually `const &`; a by-value declaration would need infinite recursion and is a compile error, and `const` allows copying from const objects. |
 | `&` dual meaning | In declarations it means reference, in expressions it means address-of, and the context determines the meaning. |
+| Initialization vs assignment | If the left object is created by the statement, the copy constructor is called; if an existing object is assigned to, the copy assignment operator is called. |
+| Copy assignment operator | It is declared as `ClassName& operator=(const ClassName&)`, and a deep-copy version checks for self-assignment, allocates and copies new memory, releases the old memory, and returns `*this`, in that order. |
+| Problem of the default copy assignment | It assigns only the pointer value, so the old memory of the left object leaks and shared memory and double frees result. |
+| Testing a resource-owning class | Check that the numbers of creation and destruction messages are equal and that both initialization and assignment are correct. |
+| Const reference | `const T &` is a reference that cannot modify its target; it binds not only to variables but also to temporaries such as literals and the results of expressions, while a non-const reference does not bind to temporaries. |
+| Choosing how to pass parameters | Small built-in types are taken by value, large objects that are only read by const reference, objects that must be changed by reference, and possibly absent targets by pointer. |
 
 ---
 
@@ -1514,3 +1852,55 @@ cout << ptr;        // prints a's address (ptr holds the address)
    The default copy constructor copies only the `title` pointer value, so `a.title` and `b.title` point to the same memory. When `main()` ends, `b` and then `a` are destroyed and the same memory is passed to `delete[]` twice, which is undefined behavior (usually a crash). Fix it by writing a deep copy constructor that allocates new memory and copies the string, and, following the Rule of Three, an assignment operator as well.
 
    </details>
+
+6. **Telling copy construction from assignment:** When the following code is run with the `MyString` of Section 4.9, how many times are the constructor, the copy constructor, the copy assignment operator, and the destructor called?
+
+   ```cpp
+   MyString x("one");
+   MyString y = x;
+   MyString z("two");
+   z = y;
+   y = z;
+   ```
+
+   <details>
+   <summary>Answer</summary>
+
+   The constructor is called 2 times (`x`, `z`), the copy constructor 1 time (`y`), the copy assignment operator 2 times (`z = y;`, `y = z;`), and the destructor 3 times (`z`, `y`, `x`). `MyString y = x;` creates `y` in that statement, so it is copy construction, not assignment, while `z = y;` and `y = z;` assign to existing objects. Assignment creates no new object, so the number of destructor calls equals the number of objects, 3.
+
+   </details>
+
+7. **Self-assignment:** If `if (this == &other) return *this;` is deleted from the `operator=` of Section 4.8 and the order of the remaining steps ((2)-(6)) is kept, what is the result of `py = same;` (where `same` is a reference to `py`)? Compare it with the wrong implementation of Section 5.5.
+
+   <details>
+   <summary>Answer</summary>
+
+   It works correctly. New memory is allocated and the contents of `other.title` are copied before `delete[] title;` runs, so at the moment of copying `other.title` (that is, the object's own `title`) has not been released yet. After the release, `title` points to the new memory, so the result is the same as before the self-assignment. The implementation of Section 5.5 releases first, so it reads already released memory when it copies. Without the check, however, an extra allocation and copy are done for the same contents, so the check is usually kept as well.
+
+   </details>
+
+8. **Rule of three:** An `IntArray` class allocates an array with `data = new int[n];` in its constructor and defines only the destructor `~IntArray() { delete[] data; }`. List all the problems that arise when `main()` ends after `IntArray a(3); IntArray b(5); b = a;` is executed.
+
+   <details>
+   <summary>Answer</summary>
+
+   Three problems arise. First, the default copy assignment operator assigns the address in `a.data` to `b.data`, so the pointer to the five-element array that `b` allocated at first is lost and that array leaks. Second, the two objects share one three-element array, so changing an element through one changes it for the other. Third, when `main()` ends, `b` and then `a` are destroyed, and the same array is released twice with `delete[]`, which is undefined behavior. Because the destructor had to be written by hand, the rule of three says that the copy constructor and the copy assignment operator must also be written to perform deep copies.
+
+   </details>
+
+9. **Binding of const references:** Given `void f(string &s);` and `void g(const string &s);`, which of `f("abc");`, `g("abc");`, and `string t = "x"; f(t + "y");` compile? Explain why.
+
+   <details>
+   <summary>Answer</summary>
+
+   Only `g("abc");` compiles. Both `"abc"` and `t + "y"` produce temporary `string` objects that disappear at the end of the statement. A temporary binds to a const reference but not to a non-const reference, so `f("abc");` and `f(t + "y");` are compile errors.
+
+   </details>
+
+---
+
+<br>
+
+## References
+
+1. cppreference.com, "The rule of three/five/zero," *cppreference.com*. https://en.cppreference.com/w/cpp/language/rule_of_three
