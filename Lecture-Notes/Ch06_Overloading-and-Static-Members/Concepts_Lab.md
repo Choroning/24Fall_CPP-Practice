@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lab.md) | [한국어](Concepts_Lab.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 
 > **Learning Objectives:**
 > 1. Explain the conditions under which function overloading holds and why functions that differ only in return type cannot be overloaded
@@ -17,6 +17,7 @@
 - [2. Function Overloading and Default Parameters](#2-function-overloading-and-default-parameters)
   - [2.1 Conditions for Function Overloading](#21-conditions-for-function-overloading)
   - [2.2 The Larger Value Capped by a Limit](#22-the-larger-value-capped-by-a-limit)
+  - [2.3 Choosing Between Function Overloading and Default Parameters](#23-choosing-between-function-overloading-and-default-parameters)
 - [3. Constructor Overloading](#3-constructor-overloading)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
@@ -137,6 +138,44 @@ int main() {
 - **Ambiguity when combined:** If both approaches are placed in one program, that is, if `int big(int, int)` and `int big(int, int, int = 100)` coexist, `big(3, 5)` matches both functions and becomes an ambiguous call error (Section 2.3 of the Chapter 6 lecture notes).
 - **Position of default parameters:** Default values can be given only to consecutive parameters starting from the rightmost one. A middle parameter cannot be skipped, as in `int big(int a = 0, int b, int max)`.
 
+### 2.3 Choosing Between Function Overloading and Default Parameters
+
+The two methods of Section 2.2 give the same result when only the number of arguments differs. When the **types** of the parameters differ, default parameters cannot take the place of overloading, and function overloading is needed. The following `big()` works for integers and for floating-point numbers separately.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int big(int a, int b, int max = 100) {      // integer version
+    int m = (a > b) ? a : b;
+    return (m > max) ? max : m;
+}
+
+double big(double a, double b, double max = 100.0) {   // floating-point version: overloading is needed because the types differ
+    double m = (a > b) ? a : b;
+    return (m > max) ? max : m;
+}
+
+int main() {
+    cout << big(3, 5) << ' ' << big(2.5, 1.5) << ' ' << big(300.0, 7.0) << endl;
+    return 0;
+}
+```
+
+```text
+5 2.5 100
+```
+
+`big(3, 5)` has two `int` arguments, so it matches the integer version exactly, while `big(2.5, 1.5)` and `big(300.0, 7.0)` match the floating-point version exactly. Both versions give the third parameter a default value, so function overloading and default parameters are used together. Even if functions with the same name have default values, no ambiguity arises as long as the argument types determine a single function to call. Arguments of mixed types, as in `big(3, 2.5)`, need standard conversions for both versions and cause an ambiguity error (Section 1.5 of the Chapter 6 lecture notes).
+
+| Situation | Suitable method | Reason |
+|:-----|:-----|:-----|
+| Only trailing arguments can be omitted from the same processing | Default parameters | There is one function definition, so the default value is managed in one place |
+| The parameter types differ | Function overloading | The processing code must differ by type |
+| The processing itself differs by the number of arguments | Function overloading | It cannot be expressed with a single default value |
+
+*Table 2. Criteria for choosing between function overloading and default parameters*
+
 ---
 
 <br>
@@ -216,6 +255,22 @@ int main() {
 - `grace` has no arguments, so `Person()` is called; `ashley` has two, so `Person(int, string)`; and `helen` has three, so `Person(int, string, double)`. The `"Ashley"` of `ashley(2, "Ashley")` is a string literal, but it converts to `string` and matches the second constructor.
 - The default value 20.5 is scattered across the three constructors, so changing it requires editing several places. Reducing the same behavior to a single constructor with default parameters is [HW6 Problem 1](../../Coursework/HW06_Default-Parameters-and-Static-Members/Original/Assignment.md#problem-1-week-11-lecture-slides-lab-2-2).
 
+The same three constructors can also be written with the member initializer lists of Chapter 3. Instead of assigning in the constructor body, they give the initial values at the moment the members are created.
+
+```cpp
+Person() : id(1), weight(20.5), name("Grace") { }
+Person(int id, string name) : id(id), weight(20.5), name(name) { }
+Person(int id, string name, double weight) : id(id), weight(weight), name(name) { }
+```
+
+```text
+1 20.5 Grace
+2 20.5 Ashley
+3 32.5 Helen
+```
+
+In `id(id)`, the `id` outside the parentheses is the member variable and the `id` inside them is the parameter. Only member names can appear outside the parentheses of a member initializer list, so the two are distinguished without `this->`. A member of class type such as `name` is first created as an empty string and then assigned again when assigned in the body, but in an initializer list it is created with the given value from the start. The problem of the default value 20.5 being scattered over several constructors still remains.
+
 ---
 
 <br>
@@ -228,6 +283,8 @@ int main() {
 | Overloading and default parameters | Overloads that differ only in the number of arguments can be reduced to one function with default parameters, but having both approaches together can make calls ambiguous. |
 | Position of default parameters | Default values are specified consecutively from the rightmost parameter, and the compiler fills omitted arguments with the default values. |
 | Constructor overloading | Several constructors with different parameters initialize objects in several forms, and the constructor to call is determined by the number and types of the arguments. |
+| Choosing between overloading and default parameters | Omitting trailing arguments is handled with default parameters, and different types or processing with function overloading, and the two can be used together. |
+| Member initializer lists of constructors | Initial values are given when the members are created, as in `Person(int id, string name) : id(id), name(name)`, with the member outside the parentheses and the parameter inside them. |
 
 ---
 
@@ -259,5 +316,14 @@ int main() {
    <summary>Answer</summary>
 
    There is no constructor that takes a single `int`, so no matching constructor is found and a compile error results. Adding a constructor `Person(int id)` that takes a single `int`, sets only the ID from the argument, and sets the weight and name to their defaults makes `Person tom(7);` compile.
+
+   </details>
+
+4. Given the two `big()` functions of Section 2.3, which function do `big(3, 5, 4)` and `big(3.0, 5.0, 4)` each call, and what do they return?
+
+   <details>
+   <summary>Answer</summary>
+
+   `big(3, 5, 4)` has three `int` arguments, so it calls the integer version, which returns 4 because the larger value 5 exceeds the limit 4. For `big(3.0, 5.0, 4)`, matching the integer version requires converting the first two arguments from `double` to `int`, and matching the floating-point version requires converting the third argument from `int` to `double`. The floating-point version fits the first two arguments better and the integer version fits the third argument better, so no function is better or equal for every argument, and the call is an ambiguity error.
 
    </details>

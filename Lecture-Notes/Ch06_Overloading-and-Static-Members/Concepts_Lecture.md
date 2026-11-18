@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 6
 
@@ -22,16 +22,28 @@
   - [1.2 Resolution Rules](#12-resolution-rules)
   - [1.3 Examples](#13-examples)
   - [1.4 Constructor Overloading and Destructors](#14-constructor-overloading-and-destructors)
+  - [1.5 Tracing Overload Resolution Step by Step](#15-tracing-overload-resolution-step-by-step)
+  - [1.6 How Overloaded Functions Are Told Apart: Name Mangling](#16-how-overloaded-functions-are-told-apart-name-mangling)
+  - [1.7 Declarations That Function Overloading Does Not Distinguish](#17-declarations-that-function-overloading-does-not-distinguish)
 - [2. Default Parameters](#2-default-parameters)
   - [2.1 Syntax](#21-syntax)
   - [2.2 Declaration vs Definition](#22-declaration-vs-definition)
   - [2.3 Overloading Ambiguity](#23-overloading-ambiguity)
   - [2.4 Simplifying Overloads with Default Parameters](#24-simplifying-overloads-with-default-parameters)
+  - [2.5 When Default Arguments Are Evaluated](#25-when-default-arguments-are-evaluated)
+  - [2.6 Rules for Specifying Default Arguments](#26-rules-for-specifying-default-arguments)
 - [3. Static Members](#3-static-members)
   - [3.1 Static Member Variables](#31-static-member-variables)
   - [3.2 Accessing Static Members](#32-accessing-static-members)
   - [3.3 Static Member Functions](#33-static-member-functions)
   - [3.4 Use Cases](#34-use-cases)
+  - [3.5 Three Uses of static](#35-three-uses-of-static)
+  - [3.6 Initialization and Lifetime of static Members](#36-initialization-and-lifetime-of-static-members)
+  - [3.7 A Pitfall in Counting Objects with a static Member](#37-a-pitfall-in-counting-objects-with-a-static-member)
+- [4. Common Mistakes](#4-common-mistakes)
+  - [4.1 Initializing a static Member Variable in a Constructor's Initializer List](#41-initializing-a-static-member-variable-in-a-constructors-initializer-list)
+  - [4.2 Declaring a static Member Function const](#42-declaring-a-static-member-function-const)
+  - [4.3 Defining a static Member Variable in a Header File](#43-defining-a-static-member-variable-in-a-header-file)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -231,6 +243,98 @@ The standard library `string` class also overloads its constructors as `string()
 
 Destructors, on the other hand, cannot be overloaded. A destructor cannot have parameters, so a class has exactly one.
 
+### 1.5 Tracing Overload Resolution Step by Step
+
+Applying the rules of Section 1.2 to an actual call takes three steps. First, all functions with the same name as the called name are gathered (candidate functions). Next, only the functions whose number of parameters matches and to whose parameter types each argument can be converted are kept (viable functions). Finally, among the remaining functions, the one whose conversions for each argument have the best rank (Table 2) is chosen, and if no single best function exists, the call is an ambiguity error.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void f(int n) { cout << "f(int) " << n << endl; }
+void f(double d) { cout << "f(double) " << d << endl; }
+void f(const char *s) { cout << "f(const char*) " << s << endl; }
+
+int main() {
+    f('A');        // char -> int: promotion
+    f(3.5f);       // float -> double: promotion
+    f(7);          // int: exact match
+    f("hi");       // const char[3] -> const char*: exact match (array-to-pointer conversion)
+    // f(10L);     // long -> int and long -> double are both standard conversions: ambiguous
+    return 0;
+}
+```
+
+```text
+f(int) 65
+f(double) 3.5
+f(int) 7
+f(const char*) hi
+```
+
+| Call | Argument type | `f(int)` | `f(double)` | `f(const char*)` | Result |
+|:----|:----|:----|:----|:----|:----|
+| `f('A')` | `char` | Promotion | Standard conversion | Not viable | `f(int)`, prints 65, the code of `'A'` |
+| `f(3.5f)` | `float` | Standard conversion | Promotion | Not viable | `f(double)` |
+| `f(7)` | `int` | Exact match | Standard conversion | Not viable | `f(int)` |
+| `f("hi")` | `const char[3]` | Not viable | Not viable | Exact match | `f(const char*)` |
+| `f(10L)` | `long` | Standard conversion | Standard conversion | Not viable | Ambiguity error |
+
+*Table 3. Conversion ranks of each call for the three f() functions*
+
+- In `f('A')`, converting `char` to `int` is a promotion and converting it to `double` is a standard conversion, so `f(int)`, with the better rank, is chosen. `char` is an integer type that holds a character code, so 65 is printed.
+- The argument of `f("hi")` is an array of `const char`, and the conversion of an array name to a pointer to its first element counts as an exact match. A string cannot be converted to `int` or `double`, so those two functions are dropped from the viable functions from the start.
+- The `long` of `f(10L)` converts to `int` and to `double` only through standard conversions. The two conversions have the same rank, so uncommenting the line makes Apple clang report "call to 'f' is ambiguous" and point to the two candidates `f(int)` and `f(double)`. `f(const char*)` is not viable, so it does not appear in the candidate list.
+
+> **Note:** **Null pointers and function overloading.** When `f(int)` and `f(char*)` are overloaded together, `f(0)` calls the integer version because `0` is an `int` literal, which is not what passing a pointer intends. The macro `NULL` is defined by the implementation as `0`, `0L`, or a value internal to the compiler (`__null` in Apple clang), so the same `f(NULL)` may call the integer version or, as in this environment, fail with "call to 'f' is ambiguous". C++11's `nullptr`, which converts only to pointers, is covered in Section 9.1 of Chapter 14.
+
+### 1.6 How Overloaded Functions Are Told Apart: Name Mangling
+
+In C, the function name is the very symbol name the linker looks for, so two functions with the same name cannot be defined. A C++ compiler creates symbol names that add information about the parameter types to the function name, and so distinguishes overloaded functions as different symbols. This is called **name mangling**.
+
+Putting the three `f()` functions of Section 1.5, with their bodies emptied, in one file, compiling it with Apple clang, and listing the symbols of the object file with the `nm` command gives the following lines for the three functions (the addresses depend on the environment). The second output passes through `c++filt`, which turns mangled names back into the original C++ declarations.
+
+```text
+$ nm mangle.o
+0000000000000020 T __Z1fPKc
+0000000000000010 T __Z1fd
+0000000000000000 T __Z1fi
+
+$ nm mangle.o | c++filt
+0000000000000020 T f(char const*)
+0000000000000010 T f(double)
+0000000000000000 T f(int)
+```
+
+In `__Z1fi`, `1f` stands for the name `f` of length 1, and the final `i` stands for the parameter `int`. `d` is `double`, and `PKc` is a pointer to `const char`. The three functions have the same name but different symbol names, so the linker can tell them apart. A mangled name usually does not include the return type of the function, so two functions that differ only in their return type would become the same symbol and could not be distinguished. The rule that functions differing only in return type cannot be overloaded (Section 1.1) fits this implementation as well. The specific mangling scheme differs by compiler and platform. The problem that name mangling causes when C functions and C++ functions are linked together, and `extern "C"`, are covered in Section 6 of Chapter 13.
+
+### 1.7 Declarations That Function Overloading Does Not Distinguish
+
+Some parameter lists look different but are treated by the compiler as the same types. Two such functions are not overloads but two definitions of the same function, which is a compile error.
+
+```cpp
+typedef int Int;
+void f(int n) { }
+void f(Int n) { }               // (1) a typedef name is not a new type
+void g(int n) { }
+void g(const int n) { }         // (2) const on a value parameter is not part of the signature
+void h(int a[]) { }
+void h(int *a) { }              // (3) an array parameter is a pointer parameter
+int main() { }
+```
+
+```text
+same.cpp:3:6: error: redefinition of 'f'
+same.cpp:5:6: error: redefinition of 'g'
+same.cpp:7:6: error: redefinition of 'h'
+```
+
+- **(1)** `typedef` (or `using Int = int;`) only gives another name to an existing type and does not create a new type. `f(Int)` is the same as `f(int)`.
+- **(2)** A parameter taken by value is a local variable that copies the caller's argument. Whether that copy can be changed inside the function (`const`) makes no difference to the caller, so the compiler ignores the `const` and treats the two functions as the same. On the other hand, the `const` of the object a reference or pointer refers to, as in `void g(int &r)` and `void g(const int &r)`, matters to the caller, so those are distinguished (the `const` subscript operator of Chapter 7 relies on this).
+- **(3)** As in C, an array written as a function parameter becomes a pointer to its first element, so `int a[]` and `int *a` are the same parameter.
+
+As with functions that differ only in return type (Section 1.1), these three cases also produce the same symbol name under name mangling (Section 1.6). Function overloading holds only when there is a difference the caller can distinguish, that is, when the number of parameters or their actual types differ.
+
 ---
 
 <br>
@@ -265,7 +369,7 @@ int main() {
 | Defaults must be rightmost | `void f(int a, int b = 1, int c = 2)` | `void f(int a = 1, int b, int c = 2)` |
 | Cannot skip middle defaults | `f(10)` or `f(10, 20)` or `f(10, 20, 30)` | `f(10, , 30)` |
 
-*Table 3. Declaration and call rules for default parameters*
+*Table 4. Declaration and call rules for default parameters*
 
 ```cpp
 // ERROR: default not at rightmost position
@@ -286,7 +390,7 @@ The arguments passed in a call fill the parameters in order from the left, and t
 | `g(10, 5, 20)` | `g(10, 5, 20, 0)` |
 | `g(10, 5, 20, 30)` | `g(10, 5, 20, 30)` |
 
-*Table 4. Calls to g() with default parameters and the values filled in*
+*Table 5. Calls to g() with default parameters and the values filled in*
 
 An argument must always be passed for a parameter without a default.
 
@@ -408,6 +512,73 @@ MyVector *v2 = new MyVector(1024);   // allocates an array of 1024 ints
 
 Another way to merge constructors is the C++11 **delegating constructor**. Writing `MyVector() : MyVector(100) { }` makes the parameterless constructor hand initialization over to `MyVector(int n)`.
 
+### 2.5 When Default Arguments Are Evaluated
+
+A default argument is not a value computed once and fixed when the function is defined but an expression evaluated again every time a call omits the argument. Therefore, when a default argument uses a variable, the value at the time of the call is used.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int width = 10;                        // global variable
+
+void box(int w = width) {              // the default argument is evaluated on every call
+    cout << "w=" << w << endl;
+}
+
+int main() {
+    box();          // box(width): width is 10 at this point
+    width = 30;
+    box();          // box(width): width is 30 at this point
+    box(5);         // when an argument is given, the default argument is not evaluated
+    return 0;
+}
+```
+
+```text
+w=10
+w=30
+w=5
+```
+
+As seen in Table 5, the compiler turns `box()` into the call `box(width)`. This transformation happens at each calling statement, so the second `box()` receives 30. A default argument can be any expression that can be computed at the call site, but it cannot use other parameters of the function. Using an earlier parameter as a default argument, as in `void line(int n, int m = n);`, is a compile error.
+
+### 2.6 Rules for Specifying Default Arguments
+
+Section 2.2 said that default values are written only in the declaration, but the precise rule is "a default argument for the same parameter is specified only once within a scope". A function declaration (prototype) can be written several times, so a later declaration can also add a default to an earlier parameter that does not have one yet.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+void star(int a, int b = 1);       // first declaration: the default of b is 1
+void star(int a = 5, int b);       // a redeclaration adds a default to the earlier a
+
+void star(int a, int b) {          // definition: the defaults are not written again
+    for (int i = 0; i < a * b; i++) cout << '*';
+    cout << endl;
+}
+
+int main() {
+    star();          // star(5, 1)
+    star(2);         // star(2, 1)
+    star(2, 3);      // star(2, 3)
+    return 0;
+}
+```
+
+```text
+*****
+**
+******
+```
+
+- The second declaration `void star(int a = 5, int b);` looks as if `b` had no default, but `b = 1` was already set by the first declaration, so it does not break the rule that defaults go from the right. Combined, the two declarations are the same as `star(int a = 5, int b = 1)`.
+- Writing `int b = 1` again in the definition specifies the default of the same parameter twice, and Apple clang reports "redefinition of default argument". It is an error even if the value is the same.
+- The compiler fills in omitted arguments using only the declarations visible before the calling statement. Default arguments therefore belong in the declarations of the header file that callers include, not in the definition in the implementation file. If the default is written only in the definition, other source files do not see it, and a call such as `star()` does not compile there.
+
+Splitting declarations as in this example is only to show the rule; real code gathers all the defaults in one declaration for readability.
+
 ---
 
 <br>
@@ -484,7 +655,7 @@ Objects (separate copies):
 | Accessed via class name or object | `ClassName::count` or `obj.count` |
 | Exists even with zero objects | Lifetime is the entire program |
 
-*Table 5. Key rules of static member variables*
+*Table 6. Key rules of static member variables*
 
 | Property | Non-static member | Static member |
 |:-----|:-----|:-----|
@@ -493,7 +664,7 @@ Objects (separate copies):
 | Temporal property | Created when the object is created and destroyed together with the object | Created when the program starts, exists before objects are created and after they are destroyed, and is destroyed when the program ends |
 | Sharing | Not shared; each object holds its own value | Shared by all objects of the same class |
 
-*Table 6. Comparison of non-static and static members*
+*Table 7. Comparison of non-static and static members*
 
 > **Caution:** Forgetting the definition outside the class (`int Circle::count = 0;`) causes a **link error**, not a compiler error. The declaration inside the class only announces existence; the definition allocates memory.
 
@@ -516,7 +687,7 @@ constexpr double pi = 3.14159265;   // OK: literal value known at compile time
 | `const` | No (may be runtime) | Yes | C++98 |
 | `constexpr` | **Yes** (must be compile-time) | No (only from constexpr expressions) | C++11 |
 
-*Table 7. Comparison of `const` and `constexpr`*
+*Table 8. Comparison of `const` and `constexpr`*
 
 Use `constexpr` when the value is truly a compile-time constant (array sizes, template arguments, etc.). Use `const` when you simply want to prevent modification.
 
@@ -560,7 +731,7 @@ Static members are accessed in the following three ways.
 | Object pointer | `objectPointer->staticMember` | `p->addShared(200);` |
 | Class name and scope resolution operator | `ClassName::staticMember` | `Person::addShared(50);` |
 
-*Table 8. Three ways to access static members*
+*Table 9. Three ways to access static members*
 
 Because there is only one static member per class, it can be accessed through the class name, even when no object exists. Non-static members, in contrast, exist separately in each object, so accessing them through the class name, as in `Person::money = 100;` or `Person::addMoney(200);`, is a compilation error.
 
@@ -691,7 +862,7 @@ For the same reason, using `this` in a static member function, as in `this->shar
 | Access non-static members | **No** | Yes |
 | Call without object | `ClassName::func()` | Not possible |
 
-*Table 9. Comparison of static and non-static member functions*
+*Table 10. Comparison of static and non-static member functions*
 
 ### 3.4 Use Cases
 
@@ -785,7 +956,231 @@ int main() {
 | Static array + static count | Data exists without any object and is managed entirely through the class name |
 | All functions are static | Called without objects, as in `Board::add(...)` and `Board::print()` |
 
-*Table 10. Design points of a bulletin board built only from static members*
+*Table 11. Design points of a bulletin board built only from static members*
+
+### 3.5 Three Uses of static
+
+`static` means different things depending on where it is used. The property of the storage class seen in Section 3.1, namely that the object comes into existence when the program starts or when it is first used and lasts until the program ends, is common to all uses, but the effect differs by what it is attached to.
+
+| Location | Example | Effect |
+|:----|:----|:----|
+| Local variable inside a function | `static int id = 0;` | Initialized only once, on first execution, and keeps its value after the function ends |
+| Global variable or global function at file scope | `static int total;`, `static void helper();` | The name can be used only within the source file that declares it, so it does not collide with the same name in other files |
+| Class member | `static int count;`, `static void f();` | Exists once per class rather than per object and is shared by all objects (Sections 3.1-3.3) |
+
+*Table 12. Effect of static by location*
+
+The first use can be checked as follows.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int nextId() {
+    static int id = 0;           // static local variable: initialized only once, on the first call
+    id++;
+    return id;
+}
+
+int counter() {
+    int n = 0;                   // ordinary local variable: created anew on every call
+    n++;
+    return n;
+}
+
+int main() {
+    for (int i = 0; i < 3; i++)
+        cout << "nextId()=" << nextId() << ", counter()=" << counter() << endl;
+    return 0;
+}
+```
+
+```text
+nextId()=1, counter()=1
+nextId()=2, counter()=1
+nextId()=3, counter()=1
+```
+
+The `id` of `nextId()` is initialized to 0 on the first call and does not disappear when the function ends, so it grows by 1 on every call. The `n` of `counter()` is created anew and initialized to 0 on every call, so it always returns 1. A static local variable keeps state between calls more safely than a global variable, because its name can be used only inside that function. It gives, for a single function rather than a class, the same effect as counting objects with a static member variable in Section 3.4.
+
+### 3.6 Initialization and Lifetime of static Members
+
+Section 3.1 said that a static member variable comes into existence when the program starts and is destroyed when it ends. Giving a class a static member variable of class type whose constructor and destructor print messages shows that these moments are before and after `main()`.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Logger {
+public:
+    Logger() { cout << "Logger created" << endl; }
+    ~Logger() { cout << "Logger destroyed" << endl; }
+};
+
+class App {
+public:
+    static Logger log;              // static member variable of class type: declaration
+    static const int MAX = 3;       // an integral const static member can be initialized inside the class
+    static int count;
+};
+
+Logger App::log;                    // definition: the constructor runs here
+int App::count = 0;                 // definition and initialization
+
+int main() {
+    cout << "main starts, MAX=" << App::MAX << ", count=" << App::count << endl;
+    App::count++;
+    cout << "main ends, count=" << App::count << endl;
+    return 0;
+}
+```
+
+```text
+Logger created
+main starts, MAX=3, count=0
+main ends, count=1
+Logger destroyed
+```
+
+- **When it is created:** Because of the definition `Logger App::log;`, `App::log` is created before `main()` starts, like a global object. No `App` object is ever created, yet `log` exists. It follows the same rule as the order of creation of global objects seen in Chapter 3.
+- **When it is destroyed:** It is destroyed when the program ends after `main()` returns. When there are several static objects, they are destroyed in the reverse order of creation.
+- **Initialization inside the class:** An integral `const` static member, as in `static const int MAX = 3;`, can be given a value inside the class declaration. Static members of a non-integral type or that are not `const` are initialized in the definition outside the class, or use the C++17 `inline` variables of Section 3.1.
+- **When the definition is missing:** With only `class A { public: static int n; };` and a use such as `A::n = 1;`, the code compiles, but the link step gives an undefined symbol error, `"A::n", referenced from: _main in ...` (Section 4.4 of Chapter 1). The `static int n;` inside the class is only a declaration, not a definition that allocates memory.
+
+> **Caution:** Static objects within one source file are created in the order of their definitions, but the order of creation between static objects in different source files is not specified. If the constructor of a static object in one file uses a static object in another file, that object may not have been created yet. A common remedy is to turn a static object that depends on others into a static local object inside a function (Section 3.5), so that it is created when first used.
+
+### 3.7 A Pitfall in Counting Objects with a static Member
+
+Increasing a static member in the constructor and decreasing it in the destructor, as in Section 3.4, counts the objects that are alive. However, this method is accurate only if every path that creates an object goes through that constructor. As seen in Chapter 5, passing an object by value or initializing it from another object usually calls not the ordinary constructor but the copy constructor.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    static int numOfCircles;       // number of Circle objects alive
+    int radius;
+public:
+    Circle(int r = 1) : radius(r) { numOfCircles++; }
+    ~Circle() { numOfCircles--; }
+    int getRadius() const { return radius; }
+    static int getNum() { return numOfCircles; }
+};
+
+int Circle::numOfCircles = 0;
+
+void show(Circle c) {              // call by value: the parameter c is copy-constructed
+    cout << "inside show(): " << Circle::getNum() << ", r=" << c.getRadius() << endl;
+}
+
+int main() {
+    Circle a, b(5);
+    cout << "after a, b: " << Circle::getNum() << endl;
+    show(a);
+    cout << "after show(): " << Circle::getNum() << endl;
+    {
+        Circle c = a;              // copy construction
+        cout << "after c is created: " << Circle::getNum() << endl;
+    }
+    cout << "after c is destroyed: " << Circle::getNum() << endl;
+    return 0;
+}
+```
+
+```text
+after a, b: 2
+inside show(): 2, r=1
+after show(): 1
+after c is created: 1
+after c is destroyed: 0
+```
+
+| Point in time | Objects actually alive | `numOfCircles` | Reason for the difference |
+|:----|:----|:----|:----|
+| After `a` and `b` are created | `a`, `b` (2) | 2 | Both objects are created by `Circle(int)` |
+| While `show(a)` runs | `a`, `b`, the parameter `c` (3) | 2 | The parameter is created by the compiler-generated copy constructor, which does not increase the count |
+| After `show(a)` | `a`, `b` (2) | 1 | The destructor of the parameter runs and decreases the count |
+| After `c` in the block is created | `a`, `b`, `c` (3) | 1 | It is copy construction, so the count does not increase |
+| After `c` in the block is destroyed | `a`, `b` (2) | 0 | The destructor runs and decreases the count |
+
+*Table 13. Difference between the number of objects and numOfCircles in a Circle without a copy constructor*
+
+Objects created by copying only decrease the count without increasing it, so the value keeps shrinking and becomes 0 even though 2 objects are alive. Copying more objects this way could even make it negative. The fix is to write a copy constructor that also increases the count.
+
+```cpp
+Circle(const Circle &other) : radius(other.radius) { numOfCircles++; }   // counts copy construction as well
+```
+
+```text
+after a, b: 2
+inside show(): 3, r=1
+after show(): 2
+after c is created: 3
+after c is destroyed: 2
+```
+
+With the copy constructor added, the count is 3 while the parameter is alive and 3 while `c` in the block is alive, and it returns to 2 after each is destroyed. This example shows that code counting the creation and destruction of objects is not complete with the constructor and destructor alone. When a hand-written destructor does some work, the copy constructor must be examined as well so that the work is paired for every object, which is the same principle as the rule of three of Section 4.9 of Chapter 5.
+
+---
+
+<br>
+
+## 4. Common Mistakes
+
+### 4.1 Initializing a static Member Variable in a Constructor's Initializer List
+
+```cpp
+class Circle {
+    static int count;
+public:
+    Circle() : count(0) { }       // wrong: a static member is not something to initialize per object
+};
+int Circle::count = 0;
+```
+
+```text
+error: member initializer 'count' does not name a non-static data member or base class
+```
+
+A member initializer list initializes the members of the object being created, that is, its non-static member variables and its base classes. A static member variable does not belong to an object; there is only one per class, and it has already been initialized when the program starts (Section 3.6), so it cannot appear in an initializer list. Its initial value is given in the definition outside the class, `int Circle::count = 0;`, and to change the value every time an object is created, assign it in the constructor body, as in `count++;`.
+
+### 4.2 Declaring a static Member Function const
+
+```cpp
+static int get() const { return count; }   // wrong
+```
+
+```text
+error: static member function cannot have 'const' qualifier
+```
+
+`const` at the end of a member function means "this function does not change the object `this` points to" (Section 2.5 of Chapter 3). A static member function has no `this` (Section 3.3), so there is no object to leave unchanged, and attaching `const` is meaningless and an error. Write `static int get() { return count; }`.
+
+### 4.3 Defining a static Member Variable in a Header File
+
+Putting the definition of a static member variable, `int Counter::n = 0;`, in a header file and including that header in two source files gives the following.
+
+```cpp
+// counter.h
+#ifndef COUNTER_H
+#define COUNTER_H
+class Counter {
+public:
+    static int n;
+};
+int Counter::n = 0;          // definition placed in the header
+#endif
+```
+
+```text
+$ c++ -std=c++17 a.cpp main.cpp -o app
+duplicate symbol 'Counter::n' in:
+    .../a-f2831b.o
+    .../main-248741.o
+ld: 1 duplicate symbols
+```
+
+An include guard made with `#ifndef` prevents the same header from being included twice only **within one translation unit** (Section 7 of Chapter 3). `a.cpp` and `main.cpp` are different translation units, so each includes the header once, each object file receives one definition of `Counter::n`, and the linker reports a duplicate symbol error (Section 4.4 of Chapter 1). There are two fixes. Move the definition into a single source file such as `counter.cpp`, or, since C++17, declare and define it together inside the class with `static inline int n = 0;` (Section 3.1). An `inline` variable may have the same definition in several translation units, which are merged into one, so the program fixed in the second way links without errors.
 
 ---
 
@@ -811,6 +1206,17 @@ int main() {
 | Private constructor + static members | This design prevents object creation and makes all data and functions accessible through the class name (Board pattern). |
 | `constexpr` vs `const` | `constexpr` (C++11) guarantees compile-time evaluation, while `const` only prevents modification. |
 | `inline static` variables | Since C++17, writing `inline static int x = 0;` inside the class removes the need for a separate `.cpp` definition. |
+| Steps of overload resolution | Gather the candidate functions with the same name, keep the viable functions to whose parameters the arguments can be converted, and choose the one function with the best conversion rank; if none is uniquely best, the call is an ambiguity error. |
+| Name mangling | The compiler distinguishes overloaded functions by symbol names that add the parameter types to the function name, and the return type is usually not part of the symbol name. |
+| Evaluation of default arguments | A default argument is evaluated at the time of each call that omits the argument, and an earlier parameter cannot be used as a default argument. |
+| Three uses of static | On a local variable it keeps the value between calls, on a global name it makes the name visible only within that file, and on a member it makes the member exist once per class. |
+| Declarations that are not distinguished | A typedef name, `const` on a value parameter, and the difference between array and pointer parameters do not create overloads and cause redefinition errors. |
+| Rules for specifying default arguments | The default argument of a parameter is specified only once, a later declaration can add defaults to earlier parameters, and defaults belong in the header declaration that callers see. |
+| Lifetime of static members | A static member variable defined outside the class is created before `main()` and destroyed when the program ends, and a missing definition causes a link error. |
+| static counts and copy construction | Counting that increases in the constructor and decreases in the destructor misses copy-constructed objects, so the copy constructor must also increase the count. |
+| static members and initializer lists | A static member variable is not a member of the object, so it cannot be initialized in a constructor's initializer list and is initialized in the definition outside the class. |
+| static member functions and const | A static member function has no `this`, so `const` cannot be attached to it. |
+| static member definitions in headers | An include guard prevents duplication only within one translation unit, so a static member definition in a header causes a duplicate symbol error across several source files. |
 
 ---
 
@@ -862,3 +1268,66 @@ int main() {
    A static member function is not associated with any particular object, so it has no `this` pointer, and it can be called as `ClassName::func()` even before any object has been created. A non-static member variable exists separately in each object, so it cannot be determined whose variable is meant, and it may not exist yet. Therefore using it by name alone is a compilation error, and it must be accessed through an object received as a parameter, as in `obj.data`.
 
    </details>
+
+6. **Tracing overload resolution:** Given the three `f()` functions of Section 1.5, how are `f(true)`, `f(2.0f)`, and `f(10u)` handled?
+
+   <details>
+   <summary>Answer</summary>
+
+   For `f(true)`, the promotion from `bool` to `int` ranks better than the standard conversion to `double`, so `f(int)` is called and "f(int) 1" is printed. `f(2.0f)` is the promotion from `float` to `double`, so `f(double)` is called. The `unsigned int` of `f(10u)` converts to `int` and to `double` only through standard conversions, so the two functions have the same rank and the call is an ambiguity error, like `f(10L)` in Section 1.5. Note that the conversion from `unsigned int` to `int` is not a promotion.
+
+   </details>
+
+7. **Static local variable:** If `static int id = 0;` in `nextId()` of Section 3.5 is changed to `static int id; id = 0;`, what values do the three calls return?
+
+   <details>
+   <summary>Answer</summary>
+
+   All three return 1. `static int id;` is initialized only once, but the following `id = 0;` is an assignment statement, not an initialization, so it runs on every call and resets `id` to 0. Then `id++` makes it 1, so 1 is returned every time.
+
+   </details>
+
+8. **Name mangling:** Under the mangling of Section 1.6, do `void f(int, double)` and `void f(double, int)` get the same symbol name? What about `int g(int)` and `double g(int)`, which differ only in their return type?
+
+   <details>
+   <summary>Answer</summary>
+
+   The order of the parameter types goes into the mangled name, so with Apple clang `f(int, double)` and `f(double, int)` become `__Z1fid` and `__Z1fdi`, which differ. The two functions are a normal overload. In contrast, the return type does not go into the name, so `int g(int)` and `double g(int)` would both become `__Z1gi` and could not be distinguished; the compiler reports "functions that differ only in their return type cannot be overloaded" before that point.
+
+   </details>
+
+9. **Declarations that are not distinguished:** Which of the following pairs can be defined together? (a) `void f(int)` and `void f(const int)` (b) `void f(int&)` and `void f(const int&)` (c) `void f(char*)` and `void f(char[])` (d) `void f(int)` and `void f(long)`
+
+   <details>
+   <summary>Answer</summary>
+
+   (b) and (d). In (a), `const` on a value parameter is not part of the signature, so they are the same function, and in (c) an array parameter is the same as a pointer parameter, so they are the same function. In (b) the `const` of the object the reference refers to differs, so they are distinguished, and in (d) the parameter types themselves differ.
+
+   </details>
+
+10. **When a static member is created:** In the program of Section 3.6, what happens if `Logger App::log;` is deleted and `main()` does not use `App::log`? What happens if `main()` prints the address of `App::log`?
+
+    <details>
+    <summary>Answer</summary>
+
+    If `App::log` is not used, there is no link error even without the definition, and "Logger created" and "Logger destroyed" are not printed, because the declaration inside the class alone does not create an object. If `main()` uses `App::log`, as in `&App::log`, the definition of that symbol cannot be found, and the link step gives an undefined symbol error.
+
+    </details>
+
+11. **Where default arguments go:** If the header `util.h` declares `int area(int w, int h);` and the definition in `util.cpp` is written as `int area(int w, int h = 1) { return w * h; }`, can `main.cpp` call `area(5)`? Give the fix.
+
+    <details>
+    <summary>Answer</summary>
+
+    It cannot. When translating `main.cpp`, the compiler sees only the declaration in the included `util.h`, which has no default for `h`, so there is no function that accepts a call with one argument. Move the default into the header declaration, as in `int area(int w, int h = 1);`, and delete `= 1` from the definition. Keeping it in the definition as well would specify the default of the same parameter twice and cause an error in `util.cpp`.
+
+    </details>
+
+12. **static counts and assignment:** For the `Circle` of Section 3.7 with the copy constructor added, what is `numOfCircles` after `Circle a, b; a = b;`? Does the assignment operator also need code that changes the count?
+
+    <details>
+    <summary>Answer</summary>
+
+    It is 2. `a` and `b` are created by the constructor, making it 2, and `a = b;` is an assignment that copies the value of `b` into the existing `a`, so no object is created or destroyed. The assignment operator must therefore not change the count, and the compiler-generated assignment operator keeps the count correct as it is.
+
+    </details>
