@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-18
+> **최종 수정일:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 2
 
@@ -27,17 +27,26 @@
   - [2.1 `cout`과 `<<`](#21-cout과-)
   - [2.2 `endl` vs `'\n'`](#22-endl-vs-n)
   - [2.3 `<<` 연산자 세부사항](#23--연산자-세부사항)
+  - [2.4 bool 타입](#24-bool-타입)
+  - [2.5 `<<`가 이어지는 원리와 출력 타입의 결정](#25-가-이어지는-원리와-출력-타입의-결정)
 - [3. 콘솔 입력](#3-콘솔-입력)
   - [3.1 `cin`과 `>>`](#31-cin과-)
   - [3.2 `getline`](#32-getline)
   - [3.3 `cin` vs `scanf`](#33-cin-vs-scanf)
   - [3.4 실행문 중간의 변수 선언](#34-실행문-중간의-변수-선언)
+  - [3.5 입력이 끝날 때까지 읽기](#35-입력이-끝날-때까지-읽기)
+  - [3.6 문자 하나를 입력받는 두 방법](#36-문자-하나를-입력받는-두-방법)
 - [4. 네임스페이스](#4-네임스페이스)
   - [4.1 개념](#41-개념)
   - [4.2 `using namespace std`](#42-using-namespace-std)
+  - [4.3 using 지시어가 일으키는 이름 충돌](#43-using-지시어가-일으키는-이름-충돌)
+  - [4.4 이름 공간의 중첩과 별칭](#44-이름-공간의-중첩과-별칭)
 - [5. C++ 문자열](#5-c-문자열)
   - [5.1 C 스트링](#51-c-스트링)
   - [5.2 `string` 클래스](#52-string-클래스)
+  - [5.3 C 스트링과 string 객체의 복사와 비교](#53-c-스트링과-string-객체의-복사와-비교)
+  - [5.4 C 스트링을 다룰 때의 흔한 실수](#54-c-스트링을-다룰-때의-흔한-실수)
+  - [5.5 문자열을 입력받는 네 가지 방법의 비교](#55-문자열을-입력받는-네-가지-방법의-비교)
 - [6. `auto`를 사용한 현대적 변수 선언](#6-auto를-사용한-현대적-변수-선언)
 - [7. 헤더 파일과 전처리기](#7-헤더-파일과-전처리기)
   - [7.1 전처리기의 헤더 확장](#71-전처리기의-헤더-확장)
@@ -46,6 +55,7 @@
   - [7.4 헤더 파일과 라이브러리](#74-헤더-파일과-라이브러리)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
+- [참고 문헌](#참고-문헌)
 
 ---
 
@@ -318,6 +328,75 @@ cout << (5 > 3) << endl;  // 정상, 출력: 1
 
 > **주의:** 비교 연산처럼 `<<`보다 우선순위가 낮은 연산의 결과를 출력할 때는 반드시 **괄호**로 감싸서 우선순위 문제를 방지한다: `cout << (5 > 3)`. 산술 연산(`+`, `-`, `*`, `/`)은 `<<`보다 우선순위가 높아 괄호 없이도 바르게 출력되지만, 괄호로 감싸면 의도가 분명해진다.
 
+### 2.4 bool 타입
+
+표 7의 첫 행에 나온 `bool`은 참과 거짓 두 값만 가지는 C++의 기본 타입이다. 값은 리터럴 `true`와 `false`로 쓰며, 비교 연산과 논리 연산의 결과가 `bool`이다.
+
+> **용어 정의:** **bool 타입(bool type)** 은 `true`와 `false` 두 값만 가지는 C++의 기본 타입으로, 조건식의 결과를 나타낸다. 정수와 섞어 쓰면 `true`는 1, `false`는 0으로 바뀌고, 정수를 `bool`로 바꾸면 0은 `false`, 0이 아닌 값은 `true`가 된다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    bool isAdult = true;
+    bool isEmpty = false;
+    bool fromInt = 7;                 // 0이 아닌 정수는 true로 바뀐다
+    int fromBool = true + true;       // true는 1, false는 0으로 바뀐다
+    cout << isAdult << ' ' << isEmpty << ' ' << fromInt << ' ' << fromBool << endl;
+    cout << boolalpha << isAdult << ' ' << (3 > 5) << endl;
+    cout << "sizeof(bool)=" << sizeof(bool) << endl;
+    return 0;
+}
+```
+
+```text
+1 0 1 2
+true false
+sizeof(bool)=1
+```
+
+- `bool fromInt = 7;`은 0이 아닌 정수이므로 `true`가 되고, 출력하면 `1`이다. 7이라는 값은 보존되지 않는다.
+- `true + true`는 두 `bool`이 `int` 1로 바뀌어 더해지므로 2이다.
+- `cout`은 기본적으로 `bool`을 `1`, `0`으로 출력하며, 조작자 `boolalpha`를 한 번 보내면 그 뒤로는 `true`, `false`로 출력한다. `(3 > 5)`의 괄호는 2.3절의 우선순위 문제 때문에 필요하다.
+- `bool`의 크기는 이 환경에서 1바이트이다. 참과 거짓만 저장하므로 1비트면 충분하지만, 메모리는 바이트 단위로 주소를 매기므로 보통 1바이트를 차지한다. 크기는 구현이 정한다.
+
+C 언어에는 처음에 불(Boolean) 타입이 없어 `int`의 0과 0이 아닌 값으로 참과 거짓을 나타냈고, C99에서 `_Bool` 타입과 `<stdbool.h>`의 매크로 `bool`, `true`, `false`가 추가되었다. C++에서는 `bool`, `true`, `false`가 처음부터 예약어이므로 헤더 없이 쓸 수 있다. C++에서도 `if (count)`처럼 정수를 조건으로 쓸 수 있는 것은 정수가 `bool`로 바뀌기 때문이며, 의도를 분명히 하려면 `if (count != 0)`처럼 비교식을 쓴다.
+
+### 2.5 `<<`가 이어지는 원리와 출력 타입의 결정
+
+`cout << a << b`가 왼쪽부터 차례로 출력되는 것은 `<<`가 왼쪽부터 결합하고, `cout << a`라는 식의 결과가 `cout` 자신이기 때문이다. 이 식은 `(cout << a) << b`로 해석되며, 괄호 안이 먼저 `a`를 출력한 뒤 `cout`을 결과로 내놓으면, 그 `cout`에 다시 `<< b`가 적용된다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    ostream &r = (cout << "A");      // cout << "A"의 결과는 cout 자신이다
+    r << "B" << endl;                 // r은 cout의 다른 이름
+
+    cout << 'A' + 1 << endl;          // char와 int의 덧셈: 결과는 int
+    cout << char('A' + 1) << endl;    // char로 바꾸어 출력
+
+    const char *s = "Hi";
+    cout << s << ' ' << *s << endl;   // char 포인터는 문자열을, *s는 첫 문자를 출력
+    return 0;
+}
+```
+
+```text
+AB
+66
+B
+Hi H
+```
+
+- `ostream &r = (cout << "A");`는 `cout << "A"`의 결과를 `ostream` 참조 `r`에 받는다. `r`은 `cout` 자체의 다른 이름이므로 `r << "B"`는 화면의 같은 줄에 `B`를 이어 출력하여 `AB`가 된다. `ostream`은 `cout`의 타입이며, `&`로 선언한 참조는 5장에서 다룬다. `<<`가 자기 자신을 결과로 돌려주도록 만드는 방법은 7장의 연산자 중복에서 다룬다.
+- `<<`는 출력할 값의 **타입**을 보고 출력 방법을 고른다. `'A' + 1`은 `char`가 `int`로 바뀌어 더해지므로 결과가 `int` 66이고, 정수로 출력된다. 문자 `B`를 출력하려면 `char('A' + 1)`처럼 결과를 `char`로 바꾼다.
+- `const char*` 타입의 `s`는 주소를 담은 포인터이지만, `<<`는 `char` 포인터를 C 스트링의 시작으로 보고 널 문자까지의 문자열 `Hi`를 출력한다. `*s`는 `char` 타입의 첫 문자 `H`이다. 반면 `int*` 같은 다른 포인터를 출력하면 주소 값이 16진수로 출력된다.
+
+printf의 형식 지정자는 프로그래머가 타입을 알려 주는 방식이어서, `%d`에 `double`을 넘기는 것 같은 불일치가 실행 중의 잘못된 출력으로 이어진다. `<<`는 컴파일러가 타입을 보고 출력 방법을 고르므로 이런 불일치가 생기지 않는다. 대신 위의 `'A' + 1`처럼 식의 타입이 생각과 다르면 출력도 생각과 다르므로, 식의 타입을 정확히 아는 것이 중요하다.
+
 ---
 
 <br>
@@ -372,6 +451,8 @@ cout << "합: " << a + b << endl;
 ```
 
 > **핵심:** `cin >> a >> b;`는 공백, 탭, 줄바꿈으로 구분된 두 개의 토큰을 입력에서 읽는다. 첫 번째 토큰은 `a`에, 두 번째는 `b`에 저장된다.
+
+`int` 변수에 숫자가 아닌 글자를 입력하는 경우처럼 입력이 변수의 타입과 맞지 않을 때 `cin`이 어떤 상태가 되는지는 11장의 입출력 스트림에서 다룬다.
 
 ### 3.2 `getline`
 
@@ -526,6 +607,61 @@ int timer;
 timer = 3;
 ```
 
+### 3.5 입력이 끝날 때까지 읽기
+
+`cin >> x`라는 식 자체도 값을 가진다. 읽기에 성공하면 그 식을 조건으로 썼을 때 참이 되고, 입력이 끝났거나 `x`의 타입에 맞지 않는 값이 나오면 거짓이 된다. 이 성질을 이용하면 개수를 모르는 입력을 끝까지 읽을 수 있다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    int x, sum = 0, count = 0;
+    while (cin >> x) {                // 정수를 읽는 데 성공하는 동안 반복
+        sum += x;
+        count++;
+    }
+    cout << count << "개, 합 " << sum << endl;
+    return 0;
+}
+```
+
+```text
+$ printf '10 20\n30\n' | ./readsum
+3개, 합 60
+$ printf '10 20 abc 30\n' | ./readsum
+2개, 합 30
+```
+
+- 첫 번째 실행에서 `>>`는 공백과 줄바꿈을 건너뛰며(3.1절) 10, 20, 30을 차례로 읽고, 입력의 끝(EOF)에서 읽기에 실패하여 반복이 끝난다. 키보드로 입력할 때는 macOS와 Linux에서 Ctrl+D, Windows에서 Ctrl+Z를 눌러 입력의 끝을 알린다.
+- 두 번째 실행에서는 `abc`를 정수로 읽을 수 없으므로 그 자리에서 읽기가 실패하고 반복이 끝난다. `abc` 뒤의 30은 읽히지 않는다. `cin`은 실패한 뒤 오류 상태가 되어 그 뒤의 입력도 모두 실패한다.
+
+`printf '...' |`는 앞 명령의 출력을 프로그램의 표준 입력으로 넘기는 셸의 기능으로, 키보드 대신 미리 정한 입력을 줄 때 쓴다. `cin`의 오류 상태를 확인하고 되돌리는 방법은 11장에서 다룬다.
+
+### 3.6 문자 하나를 입력받는 두 방법
+
+`char` 변수에 `>>`로 입력하면 3.1절의 규칙대로 공백 문자를 건너뛰고 공백이 아닌 첫 문자를 읽는다. 공백과 줄바꿈까지 그대로 읽어야 할 때는 멤버 함수 `cin.get()`을 쓴다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+int main() {
+    char a, b, c;
+    cin >> a >> b;                    // 공백을 건너뛰고 문자 하나씩 읽는다
+    cin.get(c);                       // 공백을 포함하여 다음 문자 하나를 그대로 읽는다
+    cout << '[' << a << "][" << b << "][" << c << ']' << endl;
+    return 0;
+}
+```
+
+```text
+$ printf 'x y z\n' | ./getc
+[x][y][ ]
+```
+
+입력 버퍼에는 `x`, 공백, `y`, 공백, `z`, 줄바꿈이 차례로 들어 있다. `cin >> a`는 `x`를 읽고, `cin >> b`는 공백을 건너뛰고 `y`를 읽는다. 다음의 `cin.get(c)`는 건너뛰지 않으므로 `y` 바로 뒤의 공백을 읽어, 세 번째 괄호 안에 빈칸이 출력된다. `z`와 줄바꿈은 버퍼에 남는다. 3.2절에서 `>>` 뒤에 남은 줄바꿈이 `getline`에 읽힌 것도 같은 원리이며, 공백을 건너뛰는 입력과 건너뛰지 않는 입력을 섞어 쓸 때는 버퍼에 남은 문자를 생각해야 한다.
+
 ---
 
 <br>
@@ -625,6 +761,78 @@ int main() {
 *표 11. 표준 라이브러리 이름을 쓰는 방법의 비교*
 
 > **참고:** **using 지시문의 사용 범위.** 작은 프로그램과 학습용 예제에서는 `using namespace std;`를 사용해도 무방하다. 대규모 프로젝트와 헤더 파일에서는 이름 충돌을 방지하기 위해 완전 한정 이름이나 선택적 `using` 선언을 선호한다.
+
+### 4.3 using 지시어가 일으키는 이름 충돌
+
+`using namespace std;`는 `std`에 있는 모든 이름을 이름 앞에 `std::`를 붙이지 않고 쓸 수 있게 한다. 이때 `std` 안에는 프로그래머가 알지 못하는 이름도 많으므로, 프로그래머가 만든 이름과 우연히 같은 이름이 있으면 충돌이 생긴다. 다음 프로그램은 전역 변수 `count`를 만들었는데, `<algorithm>`에는 원소의 개수를 세는 함수 `std::count`가 있다.
+
+```cpp
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int count = 0;                  // 전역 변수 count
+
+int main() {
+    count++;                    // 전역 count인가, std::count인가?
+    cout << count << endl;
+    return 0;
+}
+```
+
+```text
+clash.cpp:8:5: error: reference to 'count' is ambiguous
+clash.cpp:5:5: note: candidate found by name lookup is 'count'
+.../__algorithm/count.h:86:1: note: candidate found by name lookup is 'std::count'
+```
+
+using 지시어는 `std`의 이름을 현재 범위에 새로 선언하는 것이 아니라 이름을 찾을 때 `std`도 함께 찾게 할 뿐이다. 그래서 `int count = 0;`이라는 선언 자체는 오류가 아니고, `count`를 실제로 사용하는 8번 줄에서 두 후보가 함께 발견되어 모호하다는 오류가 난다 [1]. 해결 방법은 다음과 같다.
+
+- 전역 변수를 `::count`처럼 전역 범위 지정으로 가리킨다.
+- `using namespace std;` 대신 4.2절의 `using std::cout;`, `using std::endl;`처럼 필요한 이름만 가져온다.
+- 프로그래머의 이름을 `counter`처럼 표준 라이브러리와 겹치지 않는 이름으로 바꾼다.
+
+`<algorithm>`을 포함하지 않아도 다른 헤더가 내부에서 `<algorithm>`을 포함하면 같은 충돌이 생길 수 있으므로, 이 문제는 어떤 헤더를 포함했는지만으로 예측하기 어렵다. 표 11에서 대규모 프로젝트일수록 using 지시어를 피하는 이유가 이것이다.
+
+### 4.4 이름 공간의 중첩과 별칭
+
+이름 공간 안에 다른 이름 공간을 선언할 수 있으며, 그 안의 이름은 바깥 이름 공간부터 차례로 `::`로 이어 가리킨다. 같은 이름 공간은 여러 번 나누어 열 수 있다. 이름이 길어지면 `namespace 별칭 = 이름공간;`으로 짧은 다른 이름을 붙인다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+namespace company {
+    namespace graphics {               // 중첩된 이름 공간
+        void draw() { cout << "company::graphics::draw()" << endl; }
+    }
+}
+
+namespace company {                    // 같은 이름 공간을 다시 연다
+    namespace audio {
+        void play() { cout << "company::audio::play()" << endl; }
+    }
+}
+
+namespace cg = company::graphics;      // 이름 공간 별칭
+
+int main() {
+    company::graphics::draw();
+    cg::draw();                        // 별칭으로 같은 함수를 호출
+    company::audio::play();
+    return 0;
+}
+```
+
+```text
+company::graphics::draw()
+company::graphics::draw()
+company::audio::play()
+```
+
+두 번째 `namespace company`는 새 이름 공간을 만드는 것이 아니라 앞의 `company`를 다시 여는 것이므로, 두 선언은 같은 이름 공간 `company`에 `graphics`와 `audio`를 차례로 더한다. 별칭 `cg`는 새 이름 공간을 만드는 것이 아니라 `company::graphics`를 가리키는 다른 이름이므로, `cg::draw()`와 `company::graphics::draw()`는 같은 함수이다.
+
+> **참고:** **한 줄로 쓰는 중첩 선언.** C++17부터는 `namespace company::audio { }`처럼 중첩된 이름 공간을 한 줄로 선언할 수 있으며, 이 선언은 `namespace company { namespace audio { } }`와 같은 뜻이다 [1]. 위 프로그램의 두 번째 선언을 이 형태로 바꾸어도 출력은 같다.
 
 ---
 
@@ -811,6 +1019,121 @@ Falling in love with you를 부른 가수는(힌트 : 첫글자는 E)?Elvis Prid
 
 > **핵심:** `std::string`은 여기서 간략히 소개한다. 자세한 문자열 연산과 멤버 함수는 4장, 반복자는 10장에서 다룬다. 지금은 C++에서 `string`이 `char[]`보다 안전하고 편리하다는 점만 알아두면 된다.
 
+### 5.3 C 스트링과 string 객체의 복사와 비교
+
+C 스트링과 `string` 객체는 복사와 비교에서 동작이 다르다. C 스트링을 가리키는 포인터를 복사하면 주소만 복사되어 두 이름이 같은 배열을 가리키지만, `string` 객체를 복사하면 내용이 복사된 독립된 객체가 생긴다.
+
+```cpp
+#include <iostream>
+#include <string>
+#include <cstring>
+using namespace std;
+
+int main() {
+    char c1[10] = "cat";
+    char *c2 = c1;                    // 포인터 복사: 같은 배열을 가리킨다
+    c2[0] = 'b';
+    cout << c1 << ' ' << c2 << endl;
+
+    string s1 = "cat";
+    string s2 = s1;                   // string 복사: 독립된 사본
+    s2[0] = 'b';
+    cout << s1 << ' ' << s2 << endl;
+
+    string a = "apple", b = "banana", z = "Zoo";
+    cout << boolalpha << (a < b) << ' ' << (z < a) << ' ' << a.compare(b) << endl;
+    return 0;
+}
+```
+
+```text
+bat bat
+cat bat
+true true -1
+```
+
+```text
+ C 스트링                                  string 객체
+
+ c1 ┌───┬───┬───┬────┬─────┐               s1 ┌───────┐
+    │'b'│'a'│'t'│'\0'│ ... │                  │ "cat" │
+    └───┴───┴───┴────┴─────┘                  └───────┘
+      ▲                                    s2 ┌───────┐
+ c2 ──┘ (같은 배열을 가리킴)                     │ "bat" │  (별도의 내용)
+                                              └───────┘
+```
+
+*그림 5. 포인터 복사와 string 객체 복사의 차이*
+
+- `c2[0] = 'b'`는 `c1`과 같은 배열을 바꾸므로 `c1`도 `bat`이 된다. 반면 `s2`는 `s1`의 내용을 복사하여 만든 다른 객체이므로 `s2[0] = 'b'`가 `s1`에 영향을 주지 않는다. 이 차이는 5장의 얕은 복사와 깊은 복사로 이어진다. `string`은 깊은 복사를 하도록 만들어진 클래스이다.
+- `string`의 비교 연산자는 문자열을 앞 글자부터 문자 코드로 비교하는 사전 순서를 따른다. "apple"과 "banana"는 첫 글자 `a`(97)와 `b`(98)에서 순서가 정해지므로 `a < b`가 참이다. "Zoo"가 "apple"보다 작은 것은 대문자 `Z`(90)의 코드가 소문자 `a`(97)보다 작기 때문이며, 실제 사전과 다르다.
+- `compare()`는 두 문자열이 같으면 0, 호출한 쪽이 앞서면 음수, 뒤서면 양수를 리턴한다. 이 구현에서는 -1이 출력되었지만 표준이 보장하는 것은 부호뿐이다.
+
+### 5.4 C 스트링을 다룰 때의 흔한 실수
+
+**`==`로 C 스트링을 비교함.** 두 `char` 배열에 같은 문자열이 들어 있어도 `pw == input`은 거짓이다.
+
+```cpp
+char pw[10] = "C++";
+char input[10] = "C++";
+if (pw == input) cout << "== 같다" << endl;          // 배열의 주소를 비교한다
+else cout << "== 다르다" << endl;
+if (strcmp(pw, input) == 0) cout << "strcmp 같다" << endl;   // 내용을 비교한다
+```
+
+```text
+== 다르다
+strcmp 같다
+```
+
+식에 쓰인 배열 이름은 첫 원소의 주소로 바뀌므로 `pw == input`은 서로 다른 두 배열의 주소를 비교하여 언제나 거짓이다. Apple clang은 경고 옵션 없이도 "array comparison always evaluates to false"라는 경고를 낸다. C 스트링의 내용은 `strcmp()`로 비교하고, `string` 객체는 `==`로 비교한다.
+
+**배열보다 긴 문자열을 `strcpy()`로 복사함.** `char name[5];`에 `strcpy(name, "Christopher");`를 실행하면 널 문자를 포함한 12바이트가 5바이트 배열에 복사되어 배열 밖의 스택 메모리를 덮어쓴다. 이 경우처럼 복사할 길이를 컴파일할 때 알 수 있으면 Apple clang이 "'strcpy' will always overflow; destination buffer has size 5, but the source string has length 12 (including NUL byte)"라고 경고하고, AddressSanitizer로 실행하면 `stack-buffer-overflow`가 보고된다. 길이를 실행 중에 알게 되는 입력은 경고 없이 넘어가므로 더 위험하다. 크기를 신경 쓰지 않아도 되는 `string`을 쓰는 것이 가장 안전하다.
+
+### 5.5 문자열을 입력받는 네 가지 방법의 비교
+
+지금까지 본 문자열 입력 방법은 저장하는 곳(C 스트링 또는 `string`)과 입력을 멈추는 곳(공백 또는 줄 끝)에 따라 네 가지로 나뉜다. 한 프로그램에서 네 방법을 차례로 쓰고 세 줄을 입력하면, 각 방법이 입력 버퍼의 어디까지를 가져가는지 확인할 수 있다.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    char word[10], line[20];
+    string s1, s2;
+    cin >> word;                      // (1) 공백 앞까지
+    cin.ignore();                     // 남은 공백 하나를 버린다
+    cin.getline(line, 20);            // (2) 줄 끝까지, 최대 19글자
+    cin >> s1;                        // (3) 공백 앞까지, 길이 제한 없음
+    cin.ignore();                     // 남은 줄바꿈을 버린다
+    getline(cin, s2);                 // (4) 줄 끝까지, 길이 제한 없음
+    cout << '[' << word << "][" << line << "][" << s1 << "][" << s2 << ']' << endl;
+    return 0;
+}
+```
+
+```text
+$ printf 'Hello big world\nC++ Programming\nSeoul Korea\n' | ./strin
+[Hello][big world][C++][Programming]
+```
+
+1. `cin >> word`는 첫 줄의 `Hello`를 읽고 그 뒤의 공백 앞에서 멈춘다.
+2. `cin.ignore()`가 그 공백을 버린 뒤, `cin.getline(line, 20)`이 줄 끝까지의 `big world`를 읽고 줄바꿈 문자를 꺼내 버린다.
+3. `cin >> s1`은 둘째 줄의 `C++`를 읽고 공백 앞에서 멈춘다.
+4. `cin.ignore()`가 공백을 버리고, `getline(cin, s2)`가 줄 끝까지의 `Programming`을 읽는다. 셋째 줄 `Seoul Korea`는 읽히지 않고 버퍼에 남는다.
+
+| 방법 | 저장 위치 | 멈추는 곳 | 멈춘 문자의 처리 | 길이 제한 |
+|:----|:----|:----|:----|:----|
+| `cin >> word` | `char` 배열 | 공백, 탭, 줄바꿈 | 버퍼에 남긴다 | 배열 크기(C++17까지는 검사하지 않음, 5.1절) |
+| `cin.getline(buf, n)` | `char` 배열 | 줄 끝(또는 지정한 문자) | 꺼내서 버린다 | 최대 `n - 1`글자 |
+| `cin >> s` | `string` | 공백, 탭, 줄바꿈 | 버퍼에 남긴다 | 없음 |
+| `getline(cin, s)` | `string` | 줄 끝(또는 지정한 문자) | 꺼내서 버린다 | 없음 |
+
+*표 13. 문자열을 입력받는 네 가지 방법*
+
+표에서 `>>`는 멈춘 공백이나 줄바꿈을 버퍼에 남기고, `getline` 계열은 줄바꿈을 꺼내서 버린다는 차이가 3.2절의 함정을 만든다. `>>` 다음에 `getline`을 쓰면 남은 줄바꿈 때문에 빈 문자열을 읽고, `getline` 다음의 `>>`는 앞의 공백을 건너뛰므로 문제가 없다. 공백이 포함된 한 줄 전체를 길이 걱정 없이 받으려면 `getline(cin, s)`가 가장 안전하다.
+
 ---
 
 <br>
@@ -838,7 +1161,7 @@ auto it = nums.begin();   // vector<int>::iterator: auto로 훨씬 간결
 | 복잡한 타입 (반복자, 람다 등) | 의도적으로 다른 타입을 원할 때 (예: `int x = 3.14;`로 절삭) |
 | 범위 기반 for 루프: `for (auto& item : vec)` | 공개 API / 함수 시그니처 (명확성이 중요) |
 
-*표 13. `auto`와 명시적 타입의 사용 시점*
+*표 14. `auto`와 명시적 타입의 사용 시점*
 
 > **참고:** `auto`는 변수가 타입이 없거나 동적 타입이라는 뜻이 아니다. 타입은 **컴파일 시점**에 결정되며 이후 고정된다. C++은 여전히 정적 타입 언어이다.
 
@@ -860,7 +1183,7 @@ flowchart LR
     X --> C["컴파일러"]
 ```
 
-*그림 5. 전처리기가 헤더 파일을 펼쳐 확장된 소스를 만드는 과정*
+*그림 6. 전처리기가 헤더 파일을 펼쳐 확장된 소스를 만드는 과정*
 
 `iostream` 같은 표준 헤더 파일은 확장자가 없는 텍스트 파일이며, 컴파일러가 설치된 폴더 아래의 `include` 폴더에 있다. 예를 들어 Visual Studio 2017 Community에서는 `C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Tools\MSVC\14.10.25017\include`에 있다.
 
@@ -906,6 +1229,15 @@ flowchart LR
 | `auto` | 컴파일러가 초기화 값에서 타입을 추론하며(C++11), 반복자 같은 복잡한 타입에 유용하고 여전히 정적 타입이다. |
 | 헤더 파일과 라이브러리 | 헤더 파일에는 함수의 원형이 선언되어 있고, 함수의 코드는 라이브러리에 있어 링크할 때 실행 파일에 들어간다. |
 | `<>`와 `""` | `<>`는 컴파일러가 제공하는 헤더를, `""`는 개발자의 프로젝트 폴더부터 헤더를 찾는다. |
+| using 지시어의 이름 충돌 | `using namespace std;` 아래에서 프로그래머의 이름이 `std`의 이름과 같으면 그 이름을 사용하는 곳에서 모호성 오류가 나며, 범위 지정이나 선택적 using 선언으로 피한다. |
+| 이름 공간의 중첩과 별칭 | 이름 공간은 중첩할 수 있고 여러 번 나누어 열 수 있으며, `namespace x = a::b;`로 별칭을 붙인다. |
+| bool 타입 | `true`와 `false`만 가지는 기본 타입으로, 정수와 섞으면 1과 0으로 바뀌고 0이 아닌 정수는 `true`가 되며, `boolalpha`로 `true`, `false`를 출력한다. |
+| 입력이 끝날 때까지 읽기 | `while (cin >> x)`는 읽기에 성공하는 동안 반복하고, 입력의 끝이나 타입이 맞지 않는 값에서 끝난다. |
+| 복사와 비교의 차이 | C 스트링의 포인터 복사는 같은 배열을 공유하지만 `string` 복사는 독립된 사본을 만들며, `string`은 사전 순서로 비교된다. |
+| C 스트링의 흔한 실수 | `==`는 배열의 주소를 비교하므로 `strcmp()`를 쓰고, `strcpy()`는 배열의 크기를 확인하지 않아 넘침이 생길 수 있다. |
+| `<<`의 연쇄 | `cout << a`의 결과가 `cout` 자신이므로 `cout << a << b`는 `(cout << a) << b`로 차례로 출력되며, 출력 방법은 값의 타입으로 정해진다. |
+| 문자 하나의 입력 | `cin >> ch`는 공백을 건너뛰고 읽으며, `cin.get(ch)`는 공백과 줄바꿈을 포함한 다음 문자를 그대로 읽는다. |
+| 문자열 입력 방법의 비교 | `>>`는 공백 앞까지 읽고 멈춘 문자를 버퍼에 남기며, `getline` 계열은 줄 끝까지 읽고 줄바꿈을 버리고, `string`에 저장하는 방법은 길이 제한이 없다. |
 
 ---
 
@@ -957,3 +1289,56 @@ flowchart LR
    들어 있지 않다. 헤더 파일에는 `strcpy()`의 원형만 선언되어 있고, 함수의 코드는 컴파일된 바이너리로 라이브러리 파일에 들어 있다가 링크할 때 실행 파일에 들어간다. 헤더 파일은 컴파일러가 `strcpy()` 호출의 인자 개수와 타입, 리턴 타입이 맞는지 확인하는 데 필요하다.
 
    </details>
+
+6. **이름 충돌:** 4.3절의 프로그램에서 `count++;`와 `cout << count << endl;`의 `count`를 모두 `::count`로 바꾸면 컴파일되는가? 출력은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   컴파일되고 1이 출력된다. `::count`는 전역 범위에 선언된 이름만 가리키므로 using 지시어로 함께 찾게 된 `std::count`는 후보가 되지 않는다. 전역 변수 `count`는 0에서 1이 된다.
+
+   </details>
+
+7. **bool 변환:** `bool b = -1; int n = b + false; cout << boolalpha << b << ' ' << n;`의 출력은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   `true 1`이다. -1은 0이 아니므로 `b`는 `true`가 된다. `b + false`에서 `true`는 1, `false`는 0으로 바뀌므로 `n`은 1이다. `boolalpha`는 `bool` 값에만 영향을 주므로 `n`은 `1`로 출력된다.
+
+   </details>
+
+8. **입력 반복:** 3.5절의 프로그램에 `5 7 8.5 9`를 입력하면 출력은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   `3개, 합 20`이다. 5와 7을 읽은 뒤, 세 번째 읽기는 `8.5`에서 정수 부분 8을 읽고 성공한다. 네 번째 읽기는 남은 `.5`의 `.`이 정수가 될 수 없어 실패하므로 반복이 끝나고, 9는 읽히지 않는다. 합은 5 + 7 + 8 = 20이다.
+
+   </details>
+
+9. **출력 타입:** `char c = 'a'; cout << c << ' ' << c + 1 << ' ' << char(c + 1) << endl;`의 출력은 무엇인가?
+
+   <details>
+   <summary>정답</summary>
+
+   `a 98 b`이다. `c`는 `char`이므로 문자 `a`로 출력된다. `c + 1`은 `char`가 `int`로 바뀌어 더해지므로 `'a'`의 코드 97에 1을 더한 `int` 98이 되어 정수로 출력된다. `char(c + 1)`은 그 결과를 다시 `char`로 바꾸므로 문자 `b`로 출력된다.
+
+   </details>
+
+10. **문자열 입력:** 5.5절의 프로그램에 `Hi`, `C++ Programming`, `Seoul Korea`의 세 줄을 입력하면 출력은 무엇인가?
+
+    <details>
+    <summary>정답</summary>
+
+    `[Hi][C++ Programming][Seoul][Korea]`이다. `cin >> word`가 `Hi`를 읽은 뒤 버퍼에는 첫 줄의 줄바꿈이 남고, `cin.ignore()`가 그 줄바꿈을 버린다. 그래서 `cin.getline(line, 20)`은 둘째 줄 전체인 `C++ Programming`을 읽는다. 이어서 `cin >> s1`이 셋째 줄의 `Seoul`을 읽고, `cin.ignore()`가 공백을 버린 뒤 `getline(cin, s2)`가 `Korea`를 읽는다. 첫 줄에 공백이 없어도 `cin.ignore()`가 버리는 문자가 공백에서 줄바꿈으로 바뀔 뿐이다.
+
+    </details>
+
+---
+
+<br>
+
+## 참고 문헌
+
+1. cppreference.com, "Namespaces," *cppreference.com*. https://en.cppreference.com/w/cpp/language/namespace
