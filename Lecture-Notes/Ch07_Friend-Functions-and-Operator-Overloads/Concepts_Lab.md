@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lab.md) | [한국어](Concepts_Lab.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 
 > **Learning Objectives:**
 > 1. Explain why an ordinary function that modifies an object must take its parameter by reference
@@ -18,6 +18,7 @@
   - [2.1 A Reference Parameter and public Functions](#21-a-reference-parameter-and-public-functions)
   - [2.2 The Problem with Taking It by Value](#22-the-problem-with-taking-it-by-value)
   - [2.3 Turning It into a Friend Function](#23-turning-it-into-a-friend-function)
+  - [2.4 Taking a Pointer](#24-taking-a-pointer)
 - [3. From an Ordinary Function to an Operator Function](#3-from-an-ordinary-function-to-an-operator-function)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
@@ -155,6 +156,45 @@ int main() {
 - `friend void Sub(Book& b, int amount);` appears inside the class, but it does not make `Sub()` a member; it is a declaration that grants the external function `Sub()` permission to access `private` members. So `Book::` is not placed before the definition of `Sub()`.
 - A friend declaration makes an exception to encapsulation, so when `public` functions suffice, using the published interface as in Section 2.1 makes it easier to change the class's internal implementation.
 
+### 2.4 Taking a Pointer
+
+As in the call by address of Chapter 5, taking the address of the object also allows the original object to be changed.
+
+```cpp
+void Sub(Book *p, int amount) {         // takes an address and changes the original object
+    if (p == nullptr) return;           // does nothing if there is no object to point to
+    p->setPrice(p->getPrice() - amount);
+}
+
+int main() {
+    Book a("청춘", 20000, 300), b("미래", 30000, 500);
+    Sub(&a, 500);                       // passes the address of book a
+    Sub(&b, 1000);
+    Sub(nullptr, 100);                  // a call without a target is also safe
+    a.show();
+    b.show();
+}
+```
+
+```text
+청춘 19500원 300 페이지
+미래 29000원 500 페이지
+```
+
+- The caller passes an address, as in `&a`, so the code itself shows that `Sub()` may change `a`. In the reference version, `Sub(a, 500)` looks the same as a call by value, so the call alone does not tell them apart.
+- Inside the function, member functions are called with `->` instead of `.`.
+- A pointer may be `nullptr`, so it must be checked before being dereferenced. A reference is always bound to some object, so no such check is needed.
+
+| Parameter | Call | Change to the original object | Call without a target |
+|:-----|:-----|:-----|:-----|
+| `Book b` | `Sub(a, 500)` | Not possible (only the copy changes) | Not possible |
+| `Book& b` | `Sub(a, 500)` | Possible | Not possible |
+| `Book *p` | `Sub(&a, 500)` | Possible | Possible with `Sub(nullptr, 500)` |
+
+*Table 2. Differences by parameter form of Sub()*
+
+In this problem, where the target object must always exist, the reference version is the simplest. The pointer version suits cases where the target may be absent, for example when `nullptr` is passed after a failed search.
+
 ---
 
 <br>
@@ -168,7 +208,7 @@ int main() {
 | Member function | `X& operator-=(int n);` | `a.operator-=(500)` |
 | Friend function | `friend X& operator-=(X& x, int n);` | `operator-=(a, 500)` |
 
-*Table 2. Two ways to implement an operator function*
+*Table 3. Two ways to implement an operator function*
 
 `X` in the table is an arbitrary class. An ordinary function that modifies an object, like the `Sub()` of Section 2.3, can be turned into such an operator function, and how to implement compound assignment operators as member and friend functions is covered in Section 3.3 of the Chapter 7 lecture notes. Implementing `+=` and `-=` of `Book` as member functions is [HW7 Problem 1](../../Coursework/HW07_Operator-Overloading/Original/Assignment.md#problem-1-week-12-lecture-slides-lab-2-2).
 
@@ -186,6 +226,7 @@ int main() {
 | public interface | An ordinary function cannot access `private` members directly, so it goes through the get/set functions the class provides. |
 | Friend function | A `friend` declaration inside a class only grants an external function access to `private` members and does not make that function a member. |
 | Operator function | A function named `operator` followed by the operator symbol, implemented as a member or friend function; the operator's precedence and number of operands cannot be changed. |
+| Pointer parameter | Taking the address of an object also changes the original object; the call shows `&`, and `nullptr` is allowed at the cost of a check before dereferencing. |
 
 ---
 
@@ -217,5 +258,14 @@ int main() {
    <summary>Answer</summary>
 
    The member function takes one parameter (`int amount`), and the friend function takes two (`Book& b`, `int amount`). For a member function, the left operand `a` is the object that called the function, the object `this` points to, so only the right operand is received as a parameter. A friend function is not a member and has no `this`, so it receives both operands as parameters.
+
+   </details>
+
+4. If `if (p == nullptr) return;` is deleted from `Sub(Book *p, int amount)` of Section 2.4 and `Sub(nullptr, 100);` is called, what happens?
+
+   <details>
+   <summary>Answer</summary>
+
+   `p->getPrice()` dereferences a null pointer, which is undefined behavior, and the program usually terminates abnormally. A pointer parameter can receive `nullptr`, so it must be checked before dereferencing, or, if the function always needs a target, it should be changed to a reference parameter.
 
    </details>
