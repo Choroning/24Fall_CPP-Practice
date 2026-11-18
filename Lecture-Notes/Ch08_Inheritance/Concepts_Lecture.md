@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 8
 
@@ -23,24 +23,40 @@
   - [1.2 Syntax](#12-syntax)
   - [1.3 Inherited Members](#13-inherited-members)
   - [1.4 Inheritance and Object Pointers](#14-inheritance-and-object-pointers)
+  - [1.5 An Example of Simplifying Classes Through Inheritance](#15-an-example-of-simplifying-classes-through-inheritance)
+  - [1.6 IS-A and HAS-A Relationships](#16-is-a-and-has-a-relationships)
+  - [1.7 Memory Layout of Derived Class Objects](#17-memory-layout-of-derived-class-objects)
 - [2. Access Control with Inheritance](#2-access-control-with-inheritance)
   - [2.1 `public` Inheritance](#21-public-inheritance)
   - [2.2 `protected` Inheritance](#22-protected-inheritance)
   - [2.3 `private` Inheritance](#23-private-inheritance)
   - [2.4 Access Table](#24-access-table)
+  - [2.5 Scope of Access to protected Members](#25-scope-of-access-to-protected-members)
+  - [2.6 Tracing Access Specifiers in Nested Inheritance](#26-tracing-access-specifiers-in-nested-inheritance)
 - [3. Constructor and Destructor in Inheritance](#3-constructor-and-destructor-in-inheritance)
   - [3.1 Constructor Chain](#31-constructor-chain)
   - [3.2 Destructor Chain](#32-destructor-chain)
   - [3.3 Example with Output Trace](#33-example-with-output-trace)
   - [3.4 Constructors and Destructors in Multilevel Inheritance](#34-constructors-and-destructors-in-multilevel-inheritance)
+  - [3.5 When the Base Class Has No Default Constructor](#35-when-the-base-class-has-no-default-constructor)
+  - [3.6 Order of Construction and Destruction with Member Objects](#36-order-of-construction-and-destruction-with-member-objects)
 - [4. Member Function Overriding](#4-member-function-overriding)
   - [4.1 Overriding](#41-overriding)
   - [4.2 Calling the Base Version](#42-calling-the-base-version)
+  - [4.3 Name Hiding and the using Declaration](#43-name-hiding-and-the-using-declaration)
 - [5. Multiple Inheritance](#5-multiple-inheritance)
+  - [5.1 Using Multiple Inheritance: A Calculator](#51-using-multiple-inheritance-a-calculator)
+  - [5.2 Construction Order and Name Ambiguity in Multiple Inheritance](#52-construction-order-and-name-ambiguity-in-multiple-inheritance)
+  - [5.3 Object Layout and Constructor Calls in Virtual Inheritance](#53-object-layout-and-constructor-calls-in-virtual-inheritance)
+  - [5.4 What Virtual Inheritance Adds to an Object](#54-what-virtual-inheritance-adds-to-an-object)
 - [6. Modern Inheritance Features (C++11)](#6-modern-inheritance-features-c11)
   - [6.1 The `final` Keyword](#61-the-final-keyword)
   - [6.2 The `override` Keyword](#62-the-override-keyword)
   - [6.3 Inheriting Constructors with `using`](#63-inheriting-constructors-with-using)
+- [7. Common Mistakes](#7-common-mistakes)
+  - [7.1 Initializing a Base Class Member Directly in a Derived Class Constructor](#71-initializing-a-base-class-member-directly-in-a-derived-class-constructor)
+  - [7.2 Upcasting an Object That Uses private or protected Inheritance](#72-upcasting-an-object-that-uses-private-or-protected-inheritance)
+  - [7.3 Putting virtual on Only One Side of the Diamond](#73-putting-virtual-on-only-one-side-of-the-diamond)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -230,6 +246,123 @@ pBase ──▶  │ x, y                 │  Point part: accessible through pB
 
 > **Caution:** If a downcast pointer actually points to a base class object rather than a derived class object, accessing a derived class member is undefined behavior. Use downcasting only when you know the actual type of the object the pointer points to.
 
+### 1.5 An Example of Simplifying Classes Through Inheritance
+
+If a student (`Student`), a working student (`StudentWorker`), a researcher (`Researcher`), and a professor (`Professor`) are each written as independent classes, all four classes contain their own copies of speaking, eating, walking, and sleeping. On top of these, the student also studies, the working student studies and works, the researcher does research, and the professor does research and teaches. The same functions are repeated four times, so changing the implementation of walking requires changes in four places.
+
+Writing the common functions only once in a `Person` class and organizing the classes by inheritance gives the following.
+
+```mermaid
+classDiagram
+    Person <|-- Student
+    Person <|-- Researcher
+    Student <|-- StudentWorker
+    Researcher <|-- Professor
+    class Person {
+        speak()
+        eat()
+        walk()
+        sleep()
+    }
+    class Student {
+        study()
+    }
+    class StudentWorker {
+        work()
+    }
+    class Researcher {
+        research()
+    }
+    class Professor {
+        teach()
+    }
+```
+
+*Figure 3. Class hierarchy organized by inheritance with the common functions gathered in Person*
+
+Each class keeps only the one function that is its own. `StudentWorker` inherits from `Student`, so it has studying together with the speaking, eating, walking, and sleeping that `Student` inherited from `Person`. The implementation of walking exists only in `Person`, so changing that one place is reflected in all five classes. In this way, inheritance removes duplication between classes and organizes them into a hierarchy that runs from the general (`Person`) to the specific (`Professor`).
+
+### 1.6 IS-A and HAS-A Relationships
+
+The criterion for deciding whether to use inheritance is whether the relationship between the two classes can be stated as "the derived class is a kind of the base class". A student is a kind of person, so it is natural for `Student` to inherit from `Person`. Such a relationship is called an **IS-A relationship**.
+
+A car, on the other hand, is not a kind of engine but has an engine. That relationship is a **HAS-A relationship**, and it is expressed not by inheritance but by **composition**, which keeps an object of the other class as a member variable.
+
+```cpp
+class Engine { /* ... */ };
+class Car : public Engine { };    // inappropriate: a car is not a kind of engine
+class Car2 { Engine engine; };    // appropriate: a car has an engine
+```
+
+If `Car` inherits from `Engine`, all the public member functions of `Engine` become public members of `Car`, and a `Car` object can even be pointed to by an `Engine *` through the upcasting of Section 1.4. This lets a car be treated as an engine, which contradicts the meaning of the design. If the only goal is code reuse, composition is the safer choice, and the order of construction and destruction of member objects is covered in Section 3.6.
+
+### 1.7 Memory Layout of Derived Class Objects
+
+An object of a derived class contains a whole object of the base class inside it. This contained part is called the **base class subobject**; in single inheritance it is usually placed at the very front of the derived class object, followed by the members the derived class adds. Checking Figure 2 with actual sizes and positions gives the following.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Point {
+public:
+    int x = 1, y = 2;
+};
+
+class ColorPoint : public Point {
+public:
+    int color = 3;
+};
+
+class A { public: int a = 10; };
+class B { public: int b = 20; };
+class C : public A, public B { public: int c = 30; };
+
+int main() {
+    ColorPoint cp;
+    Point *pp = &cp;                                   // upcasting
+    cout << "sizeof(Point)=" << sizeof(Point) << ", sizeof(ColorPoint)=" << sizeof(ColorPoint) << endl;
+    cout << "&cp == pp ? " << ((void *)&cp == (void *)pp) << endl;
+    cout << "position of color: +" << (char *)&cp.color - (char *)&cp << endl;
+
+    C obj;
+    A *pa = &obj;
+    B *pb = &obj;                                      // upcasting to the second base class
+    cout << "sizeof(C)=" << sizeof(C) << endl;
+    cout << "pa - &obj: +" << (char *)pa - (char *)&obj
+         << ", pb - &obj: +" << (char *)pb - (char *)&obj << endl;
+    cout << "pa->a=" << pa->a << ", pb->b=" << pb->b << endl;
+    return 0;
+}
+```
+
+```text
+sizeof(Point)=8, sizeof(ColorPoint)=12
+&cp == pp ? 1
+position of color: +8
+sizeof(C)=12
+pa - &obj: +0, pb - &obj: +4
+pa->a=10, pb->b=20
+```
+
+```text
+ ColorPoint cp (12 bytes)              C obj (12 bytes)
+   +0 ┌──────────┐ ◀── &cp, pp          +0 ┌──────────┐ ◀── &obj, pa
+      │ x = 1    │  Point part             │ a = 10   │  A part
+   +4 │ y = 2    │                      +4 ├──────────┤ ◀── pb
+   +8 ├──────────┤                         │ b = 20   │  B part
+      │ color = 3│  ColorPoint part     +8 ├──────────┤
+      └──────────┘                         │ c = 30   │  C part
+                                           └──────────┘
+```
+
+*Figure 4. Layout of derived class objects in single and multiple inheritance*
+
+- **Single inheritance:** The size of `ColorPoint`, 12 bytes, is the 8 bytes of the members of `Point` plus the 4 bytes of `color`. The `Point` part is at the front, so the address of the upcast `pp` equals `&cp`, and what `pp` can reach is the `Point` part in the first 8 bytes (Section 1.4). `color` lies after it, at byte 8.
+- **Multiple inheritance:** A `C` object holds the `A` part, the `B` part, and the members `C` adds, in the order of the inheritance list. `A *pa = &obj;` points to the `A` part at the front, so its address equals `&obj`, but for `B *pb = &obj;` the compiler adjusts the address to point to the `B` part 4 bytes later. That is why `pb->b` correctly reads 20. The explanation that upcasting "views the same address as a different type" holds only in single inheritance; in multiple inheritance the pointer value itself can change.
+
+This layout resembles placing another structure as the first member of a structure in C. In C++, however, the compiler knows the position of the base class part and adjusts the address automatically when upcasting, so the programmer does not need to compute that position. The byte positions above were measured with Apple clang on macOS, and the exact layout of base class parts and members is not fully specified by the standard, so it may differ by implementation.
+
 ---
 
 <br>
@@ -300,6 +433,122 @@ When inheritance is nested over several levels, the inheritance type of each lev
 
 > **Key Point:** Regardless of the inheritance type, `private` members of the base class are **never** directly accessible from the derived class. Only `public` inheritance preserves the IS-A relationship.
 
+### 2.5 Scope of Access to protected Members
+
+A `protected` member can be accessed from member functions of a derived class but not from functions outside the class. The following example changes the coordinates `x` and `y` of `Point` to `protected` and adds `equals()`, which compares two points, to the derived class `ColorPoint`.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Point {
+protected:
+    int x, y;                         // coordinates of a point (x, y)
+public:
+    void set(int x, int y) { this->x = x; this->y = y; }
+    void showPoint() { cout << "(" << x << "," << y << ")" << endl; }
+};
+
+class ColorPoint : public Point {
+    string color;
+public:
+    void setColor(string color) { this->color = color; }
+    void showColorPoint() { cout << color << ":"; showPoint(); }
+    bool equals(ColorPoint p) {
+        return x == p.x && y == p.y && color == p.color;   // (1) protected members of another object p of the same class
+    }
+};
+
+int main() {
+    Point p;
+    p.set(2, 3);
+    // p.x = 5;                       // (2) error: main() cannot access protected members of Point
+    p.showPoint();
+
+    ColorPoint cp, cp2;
+    // cp.x = 10;                     // (3) error: the same holds through a derived class object
+    cp.set(3, 4);
+    cp.setColor("Red");
+    cp2.set(3, 4);
+    cp2.setColor("Red");
+    cp.showColorPoint();
+    cout << (cp.equals(cp2) ? "true" : "false") << endl;
+    return 0;
+}
+```
+
+```text
+(2,3)
+Red:(3,4)
+true
+```
+
+- **(1)** `equals()` is a member function of `ColorPoint`, so it can access not only `x` and `y` of its own object but also `p.x` and `p.y` of another `ColorPoint` object `p` received as a parameter. Access rights are granted per class, not per object. `cp` and `cp2` have the same coordinates and color, so `true` is printed.
+- **(2)** `main()` is neither a member of `Point` nor a member of a derived class, so it cannot access `p.x`. Uncommenting the line makes Apple clang report "'x' is a protected member of 'Point'".
+- **(3)** Accessing through the derived class object `cp` gives the same error, because the accessing code is still `main()`. To change the coordinates from outside, the public member function `set()` must be called.
+
+| Where the access occurs | private member | protected member | public member |
+|:----|:----|:----|:----|
+| Member function of the same class | Allowed | Allowed | Allowed |
+| Member function of a derived class | Not allowed | Allowed | Allowed |
+| Function outside the class (`main()` etc.) | Not allowed | Not allowed | Allowed |
+
+*Table 9. Accessibility by access specifier and by where the access occurs*
+
+### 2.6 Tracing Access Specifiers in Nested Inheritance
+
+As seen in Section 2.4, when inheritance is nested over several levels, the inheritance type of each level applies in turn. In the following code, `Derived` inherits `Base` privately, and `GrandDerived` again inherits `Derived` privately.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Base {
+    int a;
+protected:
+    void setA(int a) { this->a = a; }
+public:
+    void showA() { cout << a; }
+};
+
+class Derived : private Base {          // setA() and showA() of Base become private inside Derived
+    int b;
+protected:
+    void setB(int b) { this->b = b; }
+public:
+    void showB() {
+        setA(5);                        // (1) allowed: a private member of Derived itself
+        showA();                        // (2) allowed
+        cout << b;
+    }
+};
+
+class GrandDerived : private Derived {
+    int c;
+protected:
+    void setAB(int x) {
+        setA(x);                        // (3) error: a member that became private inside Derived
+        showA();                        // (4) error
+        setB(x);                        // (5) allowed: a protected member of Derived
+    }
+};
+
+int main() { }
+```
+
+```text
+nest.cpp:28:9: error: 'setA' is a private member of 'Base'
+nest.cpp:29:9: error: 'showA' is a private member of 'Base'
+```
+
+The trace takes two steps.
+
+1. Through `Derived : private Base`, the protected member `setA()` and the public member `showA()` of `Base` become private members inside `Derived`. Private members can be accessed from the member functions of that class itself, so (1) and (2) in `Derived::showB()` are fine.
+2. In `GrandDerived : private Derived`, among the members of `Derived` that `GrandDerived` inherits, `setA()` and `showA()` are already private members of `Derived`, so they cannot be accessed from the member functions of `GrandDerived` either. That is why (3) and (4) are errors. `setB()` is a protected member of `Derived`, so it can be accessed from the derived class `GrandDerived`, and (5) is fine.
+
+If `Derived` inherited with `public Base`, `setA()` would remain protected inside `Derived`, and (3) would also become valid. The error message calls them private members of `Base` because the access is blocked by the private inheritance of `Base`.
+
 ---
 
 <br>
@@ -338,7 +587,7 @@ Derived d(10, 20);
 | Explicit call `Derived(args) : Base(args)` | The specified base constructor is called |
 | Base has no default constructor and derived does not call one | **Compile error** |
 
-*Table 9. Base class constructor called by a derived class constructor*
+*Table 10. Base class constructor called by a derived class constructor*
 
 If a derived class constructor does not specify a base class constructor, the compiler implicitly inserts a call to the base class's default constructor (`: A()`) into that constructor. The same applies to derived class constructors with parameters.
 
@@ -386,7 +635,7 @@ public:
 | First | Base constructor | Derived destructor |
 | Second | Derived constructor | Base destructor |
 
-*Table 10. Execution order of constructors and destructors*
+*Table 11. Execution order of constructors and destructors*
 
 ### 3.3 Example with Output Trace
 
@@ -551,6 +800,93 @@ IP=192.0.0.1
 
 Inside the `htv` object, `size` in the TV part is 32, `videoIn` in the WideTV part is `true`, and `ipAddr` in the SmartTV part is `"192.0.0.1"`. `boolalpha` is a manipulator that makes `bool` values print as `true` and `false` instead of 1 and 0.
 
+### 3.5 When the Base Class Has No Default Constructor
+
+The last row of Table 10 looks as follows in actual code. `A` has only a constructor with a parameter, so the compiler does not generate the default constructor `A()`.
+
+```cpp
+class A {
+public:
+    A(int x) { }                  // only a constructor with a parameter: no default constructor A()
+};
+
+class B : public A {
+public:
+    B() { }                       // the compiler tries to make this B() : A(), but A() does not exist
+};
+
+int main() { B b; }
+```
+
+```text
+nodef.cpp:8:5: error: constructor for 'B' must explicitly initialize the base class 'A' which does not have a default constructor
+```
+
+`B()` does not specify a base class constructor, so the compiler tries to insert a call to `A()`, but `A()` does not exist and a compile error results. There are two fixes. The derived class constructor can call `A(int)` explicitly, as in `B() : A(0) { }`, or a default constructor `A() { }` can be added to `A`. The first fix is usually better because it leaves the base class unchanged.
+
+### 3.6 Order of Construction and Destruction with Member Objects
+
+When a derived class has an object of another class as a member variable (the composition of Section 1.6), construction follows these three steps.
+
+1. The constructor of the base class
+2. The constructors of the member objects (in the **order of declaration** in the class)
+3. The body of the derived class constructor
+
+Destruction follows exactly the reverse of this order.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Engine {
+public:
+    Engine() { cout << "Engine created" << endl; }
+    ~Engine() { cout << "Engine destroyed" << endl; }
+};
+
+class Wheel {
+public:
+    Wheel() { cout << "Wheel created" << endl; }
+    ~Wheel() { cout << "Wheel destroyed" << endl; }
+};
+
+class Vehicle {
+public:
+    Vehicle() { cout << "Vehicle created" << endl; }
+    ~Vehicle() { cout << "Vehicle destroyed" << endl; }
+};
+
+class Car : public Vehicle {
+    Wheel wheel;                  // order of declaration: wheel before engine
+    Engine engine;
+public:
+    Car() : engine(), wheel() {   // the order of the initializer list does not change the order of execution
+        cout << "Car created" << endl;
+    }
+    ~Car() { cout << "Car destroyed" << endl; }
+};
+
+int main() {
+    Car c;
+    cout << "---" << endl;
+    return 0;
+}
+```
+
+```text
+Vehicle created
+Wheel created
+Engine created
+Car created
+---
+Car destroyed
+Engine destroyed
+Wheel destroyed
+Vehicle destroyed
+```
+
+The member initializer list of `Car()` lists `engine()` before `wheel()`, but the member objects are created in the order of declaration in the class, `wheel` and then `engine`. When the order of the initializer list differs from the order of declaration, compiling with `-Wall` makes Apple clang warn "field 'engine' will be initialized after field 'wheel'". The difference becomes a bug when the initial value of one member depends on the value of another, so it is good practice to write the initializer list in the order of declaration. Destruction runs in the reverse order of construction: the body of the `Car` destructor, `engine`, `wheel`, and `Vehicle`.
+
 ---
 
 <br>
@@ -584,7 +920,7 @@ int main() {
 | Called through derived object | The derived version is invoked |
 | Base version is still present | It exists but is hidden from direct access |
 
-*Table 11. Behavior when a derived class redefines a function of the same name*
+*Table 12. Behavior when a derived class redefines a function of the same name*
 
 > **Caution:** **Redefinition and overriding.** The textbook calls redefining a non-virtual function with the same form in a derived class **function redefinition**, and uses **overriding** for redefining a virtual function, covered in [Chapter 9](../Ch09_Virtual-Functions-and-Abstract-Classes/Concepts_Lecture.md). With redefinition, the function to call is decided by the declared type of the pointer or object, so if a base class pointer points to a `Derived` object as in Section 1.4 and calls `show()`, `Base::show()` runs. Also, name hiding happens by name alone regardless of parameters, so if the derived class has a function with the same name, base class functions of that name with different parameters cannot be called directly through a derived class object either.
 
@@ -608,6 +944,59 @@ You can also call it from outside the class on a derived object.
 Derived d;
 d.Base::show();   // calls Base::show() directly
 ```
+
+### 4.3 Name Hiding and the using Declaration
+
+As seen in the caution box of Section 4.1, once a derived class declares even one function with the same name as a function in the base class, all base class functions with that name are hidden, regardless of their parameters. This is called **name hiding**.
+
+Name hiding arises from the order in which the compiler looks up function names. When compiling `d.print(7)`, the compiler first looks for the name `print` in the scope of `Derived`. If it finds the name there, it does not look further into the scope of the base class, and it performs overload resolution (Chapter 6) only among the functions it found.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    void print() { cout << "Base::print()" << endl; }
+    void print(int n) { cout << "Base::print(int) " << n << endl; }
+};
+
+class Derived : public Base {
+public:
+    void print() { cout << "Derived::print()" << endl; }   // hides both print functions of Base
+};
+
+class Derived2 : public Base {
+public:
+    using Base::print;                                     // brings print of Base into the scope of Derived2
+    void print() { cout << "Derived2::print()" << endl; }
+};
+
+int main() {
+    Derived d;
+    d.print();
+    // d.print(7);           // error: the print() found in the scope of Derived takes no arguments
+    d.Base::print(7);        // calling directly with the scope resolution operator works
+
+    Derived2 d2;
+    d2.print();              // Derived2::print()
+    d2.print(7);             // Base::print(int), made visible by the using declaration
+    return 0;
+}
+```
+
+```text
+Derived::print()
+Base::print(int) 7
+Derived2::print()
+Base::print(int) 7
+```
+
+- In `Derived`, the lookup of `print` ends at `Derived::print()`, so `Base::print(int)` is not a candidate. Uncommenting `d.print(7)` makes Apple clang report "too many arguments to function call, expected 0, have 1". This shows that the compiler did not consider the existence of `print(int)` at all.
+- When the base class is specified with the scope resolution operator, as in `d.Base::print(7)`, the name is looked up in the scope of `Base`, so the call works (Section 4.2).
+- `using Base::print;` in `Derived2` is a **using-declaration**, which brings the functions named `print` from `Base` into the scope of `Derived2`. Then `print()` (its own) and `print(int)` (from `Base`) are candidates together in the scope of `Derived2`, and one is chosen by the arguments, as in function overloading. For `print()` with the same parameters, the derived class version takes precedence.
+
+`using Base::Base;` in Section 6.3 is the same using-declaration, which has the special meaning of inheriting the base class constructors when the name is a constructor.
 
 ---
 
@@ -652,7 +1041,7 @@ classDiagram
     note for C "C has TWO copies of Base members"
 ```
 
-*Figure 3. Diamond-shaped multiple inheritance*
+*Figure 5. Diamond-shaped multiple inheritance*
 
 Accessing a member of `Base` through a `C` object is then ambiguous between the two copies, so it is a compile error.
 
@@ -665,6 +1054,261 @@ class C : public A, public B { };   // only ONE copy of Base
 ```
 
 > **Key Point:** Multiple inheritance adds complexity and can cause ambiguity. It is discouraged in most practical situations, and composition or single inheritance is preferred when possible.
+
+### 5.1 Using Multiple Inheritance: A Calculator
+
+Multiple inheritance makes it easy to build a class that gathers the functions of several existing classes. The following example builds the calculator `Calculator` by inheriting from both `Adder`, which only adds, and `Subtractor`, which only subtracts.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Adder {
+protected:
+    int add(int a, int b) { return a + b; }
+};
+
+class Subtractor {
+protected:
+    int minus(int a, int b) { return a - b; }
+};
+
+class Calculator : public Adder, public Subtractor {   // multiple inheritance
+public:
+    int calc(char op, int a, int b);
+};
+
+int Calculator::calc(char op, int a, int b) {
+    int res = 0;
+    switch (op) {
+        case '+': res = add(a, b); break;     // Adder::add()
+        case '-': res = minus(a, b); break;   // Subtractor::minus()
+    }
+    return res;
+}
+
+int main() {
+    Calculator handCalculator;
+    cout << "2 + 4 = " << handCalculator.calc('+', 2, 4) << endl;
+    cout << "100 - 8 = " << handCalculator.calc('-', 100, 8) << endl;
+    return 0;
+}
+```
+
+```text
+2 + 4 = 6
+100 - 8 = 92
+```
+
+`add()` and `minus()` are protected members of their base classes, so they can be called inside `calc()`, a member function of the derived class `Calculator`, but `main()` cannot call them directly, as in `handCalculator.add(2, 4)`. Only `calc()` is exposed to the outside, and the detailed functions that add and subtract are hidden by their access specifiers.
+
+### 5.2 Construction Order and Name Ambiguity in Multiple Inheritance
+
+In multiple inheritance, the base class constructors run in the **order written in the inheritance list** of the derived class declaration, and the destructors run in the reverse order. If two base classes have members with the same name, using that name through a derived class object is ambiguous, so one must be chosen with the scope resolution operator.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class MP3 {
+public:
+    MP3() { cout << "MP3 created" << endl; }
+    ~MP3() { cout << "MP3 destroyed" << endl; }
+    void play() { cout << "playing music" << endl; }
+    void stop() { cout << "MP3 stopped" << endl; }
+};
+
+class MobilePhone {
+public:
+    MobilePhone() { cout << "MobilePhone created" << endl; }
+    ~MobilePhone() { cout << "MobilePhone destroyed" << endl; }
+    void sendCall() { cout << "placing a call" << endl; }
+    void stop() { cout << "call ended" << endl; }
+};
+
+class MusicPhone : public MP3, public MobilePhone {   // order of the inheritance list: MP3, MobilePhone
+public:
+    MusicPhone() { cout << "MusicPhone created" << endl; }
+    ~MusicPhone() { cout << "MusicPhone destroyed" << endl; }
+    void dial() {
+        play();          // MP3::play()
+        sendCall();      // MobilePhone::sendCall()
+    }
+};
+
+int main() {
+    MusicPhone hanPhone;
+    hanPhone.dial();
+    // hanPhone.stop();         // error: ambiguous between MP3::stop() and MobilePhone::stop()
+    hanPhone.MP3::stop();       // choose one with the scope resolution operator
+    hanPhone.MobilePhone::stop();
+    return 0;
+}
+```
+
+```text
+MP3 created
+MobilePhone created
+MusicPhone created
+playing music
+placing a call
+MP3 stopped
+call ended
+MusicPhone destroyed
+MobilePhone destroyed
+MP3 destroyed
+```
+
+- The inheritance list is `public MP3, public MobilePhone`, so the objects are created in the order `MP3`, `MobilePhone`, `MusicPhone`, and destroyed in the reverse order. The order in which base classes are written in the member initializer list of the constructor does not change this order.
+- `play()` and `sendCall()` exist in only one base class each, so they can be called as they are inside `dial()`.
+- `stop()` exists in both base classes. Uncommenting `hanPhone.stop()` makes Apple clang report "member 'stop' found in multiple base classes of different types". The compiler does not choose between two functions by name alone, so the base class must be specified, as in `hanPhone.MP3::stop()`.
+
+### 5.3 Object Layout and Constructor Calls in Virtual Inheritance
+
+Making the diamond problem (Figure 5) concrete with input/output classes gives the following. `BaseIO` holds the input/output mode `mode`, the input class `In` and the output class `Out` each inherit from `BaseIO`, and the input/output class `InOut` inherits from both `In` and `Out`. First, inheriting without `virtual` creates two `BaseIO` objects inside an `InOut` object.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class BaseIO {
+public:
+    int mode;
+    BaseIO(int m = 0) : mode(m) { cout << "BaseIO(" << m << ") created" << endl; }
+};
+
+class In : public BaseIO {               // no virtual
+public:
+    In() : BaseIO(1) { cout << "In created" << endl; }
+};
+
+class Out : public BaseIO {              // no virtual
+public:
+    Out() : BaseIO(2) { cout << "Out created" << endl; }
+};
+
+class InOut : public In, public Out {
+public:
+    InOut() { cout << "InOut created" << endl; }
+};
+
+int main() {
+    InOut ioObj;
+    // ioObj.mode = 5;                   // error: ambiguous which of the two BaseIO objects owns mode
+    cout << "In::mode=" << ioObj.In::mode << " Out::mode=" << ioObj.Out::mode << endl;
+    cout << "sizeof(BaseIO)=" << sizeof(BaseIO) << " sizeof(InOut)=" << sizeof(InOut) << endl;
+    return 0;
+}
+```
+
+```text
+BaseIO(1) created
+In created
+BaseIO(2) created
+Out created
+InOut created
+In::mode=1 Out::mode=2
+sizeof(BaseIO)=4 sizeof(InOut)=8
+```
+
+The constructor of `BaseIO` runs twice, and the `mode` reached through `In` (1) and the `mode` reached through `Out` (2) hold different values. The size of `InOut`, 8 bytes, shows that it contains two 4-byte `int mode` members (in an environment where `int` is 4 bytes). Uncommenting `ioObj.mode = 5;` makes Apple clang report "non-static member 'mode' found in multiple base-class subobjects of type 'BaseIO'".
+
+If `In` and `Out` inherit `BaseIO` virtually, only one `BaseIO` is created. In the following input/output classes, each class has its own member (`readPos`, `writePos`, `safe`) and a constructor that prints a creation message.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class BaseIO {
+public:
+    int mode;
+    BaseIO(int m = 0) : mode(m) { cout << "BaseIO(" << m << ") created" << endl; }
+};
+
+class In : virtual public BaseIO {       // In inherits BaseIO virtually
+public:
+    int readPos = 0;
+    In() : BaseIO(1) { cout << "In created" << endl; }
+};
+
+class Out : virtual public BaseIO {      // Out inherits BaseIO virtually
+public:
+    int writePos = 0;
+    Out() : BaseIO(2) { cout << "Out created" << endl; }
+};
+
+class InOut : public In, public Out {
+public:
+    bool safe = false;
+    InOut() : BaseIO(3) { cout << "InOut created" << endl; }   // the most derived class constructs the virtual base class
+};
+
+int main() {
+    InOut ioObj;
+    ioObj.readPos = 10;
+    ioObj.writePos = 20;
+    ioObj.safe = true;
+    ioObj.mode = 5;                      // only one BaseIO exists, so this is not ambiguous
+    cout << "mode=" << ioObj.mode << " In::mode=" << ioObj.In::mode
+         << " Out::mode=" << ioObj.Out::mode << endl;
+    return 0;
+}
+```
+
+```text
+BaseIO(3) created
+In created
+Out created
+InOut created
+mode=5 In::mode=5 Out::mode=5
+```
+
+```text
+ioObj (InOut object)
+  In part       readPos  = 10
+  Out part      writePos = 20
+  InOut part    safe     = true
+  BaseIO part   mode     = 5      ← the single BaseIO shared by In and Out
+```
+
+*Figure 6. Layout of an InOut object that uses virtual inheritance*
+
+- **BaseIO is created only once.** `BaseIO(...) created` is printed only once, and `ioObj.mode`, `ioObj.In::mode`, and `ioObj.Out::mode` all refer to the same variable, 5. That is why `ioObj.mode = 5;` is not ambiguous.
+- **The most derived class constructs the virtual base class.** The initializer lists of `In()` and `Out()` contain `BaseIO(1)` and `BaseIO(2)`, but both are ignored when an `InOut` object is created, and the `BaseIO(3)` specified by `InOut()` is called. Because there is only one `BaseIO`, letting either `In` or `Out` construct it would ignore the other's argument and make the result depend on the order of the inheritance list, so C++ gives that responsibility to the lowest class that actually creates the object (`InOut`). If `InOut()` does not specify a `BaseIO` constructor, the default constructor of `BaseIO` is called.
+- **The virtual base class is created first.** Even though the inheritance list is `In, Out`, the virtual base class `BaseIO` is created first, followed by `In`, `Out`, and `InOut`.
+
+### 5.4 What Virtual Inheritance Adds to an Object
+
+Virtual inheritance merges the common base class into one, but in exchange the object grows a little. Keeping only the members of the input/output classes of Section 5.3 and comparing the sizes of the two approaches gives the following.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class BaseIO { public: int mode = 0; };
+class In1 : public BaseIO { public: int readPos = 0; };
+class Out1 : public BaseIO { public: int writePos = 0; };
+class InOut1 : public In1, public Out1 { };                 // no virtual inheritance
+
+class In2 : virtual public BaseIO { public: int readPos = 0; };
+class Out2 : virtual public BaseIO { public: int writePos = 0; };
+class InOut2 : public In2, public Out2 { };                 // virtual inheritance
+
+int main() {
+    cout << "no virtual inheritance: sizeof(InOut1)=" << sizeof(InOut1) << endl;
+    cout << "virtual inheritance:    sizeof(InOut2)=" << sizeof(InOut2) << endl;
+    return 0;
+}
+```
+
+```text
+no virtual inheritance: sizeof(InOut1)=16
+virtual inheritance:    sizeof(InOut2)=32
+```
+
+`InOut1`, without virtual inheritance, is 16 bytes for four `int`s (`mode` and `readPos` of `In1`, `mode` and `writePos` of `Out1`). `InOut2`, with virtual inheritance, has only one `mode`, so the number of `int`s drops to three, yet it is larger at 32 bytes. The position of the shared `BaseIO` part differs from object to object (for example, between an `In2` object created alone and the `In2` part inside an `InOut2`), so common implementations put a hidden pointer used to find the shared part into the `In2` part and into the `Out2` part, and each of these pointers takes 8 bytes in a 64-bit environment. The size and the implementation method differ by compiler.
+
+Because of this hidden information, accessing a member of a virtual base class takes one extra step, and the object grows. Virtual inheritance is used only when the diamond problem must be solved, not for multiple inheritance without a common base class (the `Calculator` of Section 5.1).
 
 ---
 
@@ -710,7 +1354,7 @@ public:
 | `class MyClass final { };` | No class can inherit from `MyClass` |
 | `void func() final;` | No derived class can override `func()` |
 
-*Table 12. Usage and effect of the `final` specifier*
+*Table 13. Usage and effect of the `final` specifier*
 
 `final` is useful for:
 - **Safety:** It prevents unintended extension of a critical class.
@@ -792,6 +1436,55 @@ public:
 
 <br>
 
+## 7. Common Mistakes
+
+### 7.1 Initializing a Base Class Member Directly in a Derived Class Constructor
+
+```cpp
+class Base {
+protected:
+    int x;
+public:
+    Base(int x = 0) : x(x) { }
+};
+
+class Derived : public Base {
+public:
+    Derived(int v) : x(v) { }      // wrong: initializes a base class member directly
+};
+```
+
+```text
+error: member initializer 'x' does not name a non-static data member or base class
+```
+
+`x` is a protected member that `Derived` can access, but a member initializer list can name only the members the class declares itself, its direct base classes, and the virtual base classes of Section 5.3. Base class members are initialized by the base class constructor, so the value is passed to the base class constructor, as in `Derived(int v) : Base(v) { }`. The constructor body could assign it with `x = v;`, but then `x` is first initialized to 0 by `Base()` and assigned again afterward.
+
+### 7.2 Upcasting an Object That Uses private or protected Inheritance
+
+```cpp
+class Hidden : private Base { };
+
+int main() {
+    Hidden h;
+    Base *p = &h;                  // wrong: upcasting to a private base class
+}
+```
+
+```text
+error: cannot cast 'Hidden' to its private base class 'Base'
+```
+
+The upcasting of Section 1.4 works without a cast because, in public inheritance, the derived class keeps the public interface of the base class as it is. In private or protected inheritance, the public members of the base class are hidden from the outside, so upcasting is also forbidden to keep outside code from reaching those members through a `Base *`. To express an IS-A relationship (Section 1.6), use public inheritance.
+
+### 7.3 Putting virtual on Only One Side of the Diamond
+
+If, in the input/output classes of Section 5.3, only `In` inherits with `virtual public BaseIO` while `Out` inherits with `public BaseIO`, an `InOut` object contains two `BaseIO` objects: one virtual `BaseIO` shared through `In` and one ordinary `BaseIO` of `Out`. Running `ioObj.In::mode = 5;` in `main()` and then printing the two `mode` members gives 5 for `In::mode` and 2 for `Out::mode`, which confirms that the two variables are separate. In this case an unqualified `ioObj.mode` is again an ambiguity error. To merge the common base class into one, every intermediate class that inherits from it must inherit with `virtual`.
+
+---
+
+<br>
+
 ## Summary
 
 | Concept | Key Summary |
@@ -814,6 +1507,16 @@ public:
 | `final` (C++11) | `class X final` prevents inheritance and `void f() final` prevents overriding, enabling compiler optimizations. |
 | `override` (C++11) | It marks an intent to override a base virtual function and catches signature mismatches at compile time. |
 | Inheriting constructors (C++11) | `using Base::Base;` inherits the base class constructors, so manual forwarding constructors are unnecessary. |
+| Simplification through inheritance | Writing a function repeated in several classes only once in a base class removes the duplication and turns the classes into a hierarchy that runs from the general to the specific. |
+| IS-A and HAS-A | If the derived class is a kind of the base class, use inheritance; if one object has another, use composition with a member object. |
+| Scope of protected access | Access rights are per class, so a member function of a derived class can access the protected members of another object of the same class, while functions outside the class cannot. |
+| Access specifiers in nested inheritance | The inheritance type of each level applies in turn, so a member made private by private inheritance cannot be accessed in the next derived class. |
+| Construction order with member objects | The base class, the member objects in declaration order, and the body of the derived class constructor are created in that order and destroyed in the reverse order, and the order of the initializer list does not change it. |
+| Name hiding | If a derived class has even one function with a given name, all base class functions with that name are hidden, and `using Base::f;` makes them visible again. |
+| Construction order and ambiguity in multiple inheritance | Base classes are created in the order of the inheritance list, and when two base classes have the same name, one is chosen with the scope resolution operator, as in `obj.A::f()`. |
+| Construction of a virtual base class | A virtual base class is created only once and first, and its constructor is specified by the most derived class. |
+| Layout of derived class objects | A derived class object contains a base class subobject, which in single inheritance is usually at the front so the upcast address is the same, while in multiple inheritance upcasting to the second base class changes the address. |
+| Cost of virtual inheritance | Virtual inheritance merges the common base class into one but adds hidden information for finding the shared part, making objects larger, so it is used only when there is a diamond problem. |
 
 ---
 
@@ -910,3 +1613,66 @@ public:
    It prints `Base::show()`. For a non-virtual function, the function to call is decided by the declared type of the pointer, so even though `p` points to a `Derived` object, `Base::show()` is called because `p` is a `Base *`. Calling `Derived::show()` according to the actual type of the object requires the virtual functions of Chapter 9.
 
    </details>
+
+6. **Member objects and construction order:** If the member declarations of `Car` in Section 3.6 are changed to `Engine engine; Wheel wheel;` and the initializer list is left as it is, in what order are the creation messages of `Car c;` printed?
+
+   <details>
+   <summary>Answer</summary>
+
+   The order is Vehicle created, Engine created, Wheel created, Car created. The base class `Vehicle` is created first, the member objects are created in the order of declaration in the class, `engine` then `wheel`, and finally the body of the `Car` constructor runs. In this case the order of the initializer list matches the order of declaration, so the warning about the order also disappears.
+
+   </details>
+
+7. **Name hiding:** Without adding `using Base::print;` to `Derived` in Section 4.3, give two ways to make `d.print(7)` compile.
+
+   <details>
+   <summary>Answer</summary>
+
+   First, the caller specifies the base class function directly with the scope resolution operator, as in `d.Base::print(7)`. Second, `Derived` defines a function with the same parameter that calls the base class function, as in `void print(int n) { Base::print(n); }`. Then `print(int)` can be found in the scope of `Derived`, so `d.print(7)` compiles.
+
+   </details>
+
+8. **Constructor of a virtual base class:** In the virtual inheritance version of Section 5.3, if `InOut()` is changed to `InOut() { cout << "InOut created" << endl; }`, what is the first line of output and what is the value of `mode` before `ioObj.mode = 5;`?
+
+   <details>
+   <summary>Answer</summary>
+
+   The first line is `BaseIO(0) created`, and `mode` is 0. The virtual base class `BaseIO` is constructed by the most derived class, `InOut`, and since `InOut()` does not specify a `BaseIO` constructor, the default constructor is called, that is, `BaseIO(int m = 0)` with the default argument 0. The `BaseIO(1)` and `BaseIO(2)` of `In()` and `Out()` are ignored in this case.
+
+   </details>
+
+9. **Object layout:** With a 4-byte `int`, give `sizeof(Q)` for `class P { public: int x; }; class Q : public P { public: int y; int z; };`, and where `p` points for `Q q; P *p = &q;`.
+
+   <details>
+   <summary>Answer</summary>
+
+   In common implementations, `sizeof(Q)` is 12 bytes, the 4 bytes of the `P` part plus the 8 bytes of `y` and `z`. With single inheritance the `P` part is at the front of `q`, so `p` points to the same address as `q`, that is, to the start of the `P` part.
+
+   </details>
+
+10. **Upcasting in multiple inheritance:** For `C obj;` of Section 1.7, why does the address of `B *pb = &obj;` differ from `&obj`? If it is converted back with `C *pc = static_cast<C *>(pb);`, which address does `pc` point to?
+
+    <details>
+    <summary>Answer</summary>
+
+    Inside a `C` object, the `B` part lies after the `A` part, at byte 4, so the compiler adds 4 to the address when upcasting so that the `B*` points to the `B` part. `static_cast<C *>(pb)` subtracts 4 in the opposite direction, so `pc` again points to the start of `obj`, `&obj`. This downcast is correct only when `pb` actually points to the `B` part of a `C` object.
+
+    </details>
+
+11. **Size with virtual inheritance:** Explain why `InOut2` in Section 5.4 is larger than `InOut1` even though it has only three `int`s. What is the criterion for deciding to use virtual inheritance?
+
+    <details>
+    <summary>Answer</summary>
+
+    The position of the `BaseIO` part, the virtual base class, varies from object to object, so common implementations place one hidden pointer used to find the shared part in the `In2` part and in the `Out2` part. In a 64-bit environment these pointers take 8 bytes each, so `InOut2`, with one fewer `int`, grows to 32 bytes. Virtual inheritance is used only when a common base class inherited along two paths in a diamond structure must be merged into one, and not for multiple inheritance without a common base class.
+
+    </details>
+
+12. **IS-A and HAS-A:** A `Stack` class is to be built by reusing the storage of `DynArray`, which has the public member functions `get(i)` and `put(i, v)` that read and write an element at any position. Which design is more suitable, `class Stack : public DynArray` or `class Stack { DynArray arr; ... };`? Give the reason.
+
+    <details>
+    <summary>Answer</summary>
+
+    Composition (`DynArray arr;`) is more suitable. A stack is not a kind of array but is implemented using an array, so the relationship is HAS-A. With public inheritance, all public member functions of `DynArray`, including `get()` and `put()`, become part of the public interface of `Stack`, allowing access at arbitrary positions that bypasses the rule of a stack (insert and remove only at the top), and a stack could even be treated as an array through an upcast to `DynArray*`. With composition, `Stack` decides exactly which functions to expose.
+
+    </details>
