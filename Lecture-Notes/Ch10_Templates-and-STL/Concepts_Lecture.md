@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 10
 
@@ -26,6 +26,7 @@
   - [1.5 Overloading Template Functions with Ordinary Functions](#15-overloading-template-functions-with-ordinary-functions)
   - [1.6 Examples](#16-examples)
   - [1.7 Advantages and Disadvantages of Templates](#17-advantages-and-disadvantages-of-templates)
+  - [1.8 Template Argument Deduction and Instantiation Errors](#18-template-argument-deduction-and-instantiation-errors)
 - [2. Class Templates](#2-class-templates)
   - [2.1 Syntax](#21-syntax)
   - [2.2 Instantiation](#22-instantiation)
@@ -288,6 +289,49 @@ Templates let you reuse function and class code, which raises the productivity a
 
 This programming technique, which makes use of generic functions and generic classes, is the generic programming of Section 1.1. C++ provides the STL (Section 3) for it, and many other languages such as Java and C# also support generics.
 
+### 1.8 Template Argument Deduction and Instantiation Errors
+
+The process by which the compiler determines `T` from the arguments in the implicit instantiation of Section 1.3 is called **template argument deduction**. Deduction follows two rules.
+
+1. When the same template parameter `T` is used for several parameters, the types deduced from each argument must be exactly the same.
+2. During deduction, conversions such as converting `int` to `double` are not considered. Conversions happen only after `T` has been determined, when the arguments are matched to the parameters as for an ordinary function.
+
+Checking these rules with `myswap()`, whose two parameters are both of type `T`, gives the following.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+template <class T>
+void myswap(T &a, T &b) {            // both parameters are of type T
+    T tmp = a;
+    a = b;
+    b = tmp;
+}
+
+int main() {
+    int s = 4, u = 9;
+    double t = 5;
+    myswap(s, u);                    // T = int
+    cout << s << ' ' << u << endl;
+    // myswap(s, t);                 // error: T cannot be decided as either int or double
+    // myswap<double>(s, t);         // error: the int variable s cannot bind to a double&
+    cout << t << endl;
+    return 0;
+}
+```
+
+```text
+9 4
+5
+```
+
+- In `myswap(s, u)`, both arguments are `int`, so `T = int` is deduced, `myswap<int>(int&, int&)` is instantiated, and the values of `s` and `u` are swapped.
+- In `myswap(s, t)`, `int` is deduced from the first argument and `double` from the second, which violates rule 1. Uncommenting the line makes Apple clang report "no matching function for call to 'myswap'" with the explanation "candidate template ignored: deduced conflicting types for parameter 'T' ('int' vs. 'double')". Following rule 2, the compiler does not try to fit `s` by converting it to `double`.
+- Specifying `T`, as in `myswap<double>(s, t)`, removes the deduction step, but the function becomes `myswap<double>(double&, double&)`. The `int` variable `s` cannot bind to a `double&`, so the error "no known conversion from 'int' to 'double &'" results. Because the parameter is a reference, there is also no way to create a temporary `double` and bind to it (Section 3.5 of Chapter 5).
+
+Swapping values of different types is questionable in meaning as well, so this error is a mistake the template prevents. On the other hand, when values of different types are to be passed together to a template that takes its parameters by value, such as the `bigger()` of Section 2.3, either specify `T` to allow the conversion, as in `bigger<double>(3, 7.5)`, or split the template parameter into `T1` and `T2`, as in Section 1.4. The note box of Section 10.2 summarizes these fixes.
+
 ---
 
 <br>
@@ -519,7 +563,7 @@ v.back();       // 50: last element
 
 *Table 1. vector element access methods and bounds checking*
 
-> **Note:** **Tip.** Use `at()` during debugging; use `[]` in performance-critical code after you have verified the index is valid.
+Use `at()` during debugging; use `[]` in performance-critical code after you have verified the index is valid.
 
 ### 4.3 Modifiers
 
@@ -595,7 +639,7 @@ Figure 4 shows the state in the code above after `reserve(100)` and two insertio
 
 *Table 3. vector size and capacity methods*
 
-> **Note:** **Performance Tip.** If you know the number of elements in advance, call `reserve()` before the loop. This avoids repeated reallocations (each reallocation copies or moves all existing elements to the new storage).
+If you know the number of elements in advance, call `reserve()` before the loop. This avoids repeated reallocations (each reallocation copies or moves all existing elements to the new storage).
 
 ### 4.5 2D vector
 
@@ -657,7 +701,7 @@ for (const int& x : v) {
 }
 ```
 
-> **Note:** **Best Practice.** Use `for (const auto& x : v)` for read-only access and `for (auto& x : v)` when you need to modify elements.
+Use `for (const auto& x : v)` for read-only access and `for (auto& x : v)` when you need to modify elements.
 
 ### 4.7 Passing to Functions
 
@@ -755,7 +799,7 @@ Max: 50
 
 *Table 4. Comparison of std::string and C-style strings*
 
-> **Note:** **Recommendation.** Always prefer `std::string` over C-style strings in C++ code.
+In C++ code, `std::string` is used rather than C-style strings unless there is a specific reason not to.
 
 ### 5.2 Construction and Concatenation
 
@@ -1405,7 +1449,7 @@ The name lambda comes from lambda expressions in lambda calculus, which express 
 - **Return type:** written as `-> type`; if omitted, the compiler deduces it from the `return` statement.
 - **Function body:** the code that the lambda executes.
 
-A lambda can be called immediately by appending arguments to its definition. The type of a lambda is an unnamed type known only to the compiler, so declare a variable with `auto` to store a lambda.
+A lambda can be called immediately by appending arguments to its definition. The type of a lambda is an unnamed type known only to the compiler, so declare a variable with `auto` to store a lambda. `std::function`, which holds different lambdas in one type, `mutable`, and init captures are covered in Section 8 of Chapter 14.
 
 ```cpp
 [](int x, int y) { cout << "Sum: " << x + y << endl; }(2, 3);   // defined and called at once, Sum: 5
@@ -1423,7 +1467,7 @@ The third argument of `for_each()` can also be an ordinary function instead of a
 
 ### 8.4 Structured Bindings (C++17)
 
-> **Note:** **C++17.** This feature requires C++17 or later.
+This feature requires C++17 or later.
 
 Structured bindings allow you to decompose a pair, tuple, or struct into named variables.
 
@@ -1452,7 +1496,7 @@ auto [px, py] = pt;
 
 ### 8.5 std::optional (C++17)
 
-> **Note:** **C++17.** This feature requires C++17 or later.
+This feature requires C++17 or later.
 
 `std::optional<T>` represents a value that may or may not be present. It is a safe alternative to using special sentinel values (like `-1` or `nullptr`).
 
@@ -1485,7 +1529,7 @@ int main() {
 
 ### 8.6 Concepts (C++20)
 
-> **Note:** **C++20.** This feature requires C++20 or later.
+This feature requires C++20 or later.
 
 Concepts constrain template parameters, providing clear error messages when a type does not meet requirements.
 
@@ -1516,7 +1560,7 @@ gcd(12, 8);     // OK: int is integral
 
 ### 8.7 std::ranges (C++20)
 
-> **Note:** **C++20.** This feature requires C++20 or later.
+This feature requires C++20 or later.
 
 The Ranges library provides a cleaner way to work with sequences, eliminating the need to pass `begin()` and `end()` separately.
 
@@ -1546,7 +1590,7 @@ auto result = v | views::filter([](int x) { return x > 2; })
 
 ### 8.8 std::print (C++23)
 
-> **Note:** **C++23.** This feature requires C++23 or later.
+This feature requires C++23 or later.
 
 `std::print` brings Python-like formatted output to C++.
 
@@ -1558,7 +1602,7 @@ std::print("x = {}, y = {}\n", 3, 4);         // x = 3, y = 4
 std::println("No need for \\n with println");  // adds newline automatically
 ```
 
-> **Note:** The standard libraries of recent GCC, Clang, and MSVC support `std::print`, but many coding test judges do not yet support C++23 features.
+The standard libraries of recent GCC, Clang, and MSVC support `std::print`, but many coding test judges do not yet support C++23 features.
 
 ### 8.9 C++26 Preview
 
@@ -1587,7 +1631,7 @@ void process(int* ptr)
 }
 ```
 
-> **Note:** To use a value parameter (`a`, `b`) in a postcondition, that parameter must be declared `const`. Otherwise the function body could change the parameter, and the postcondition would check the changed value instead of the original argument. Also, integer division keeps only the quotient, so writing the postcondition as `r * b == a` would be violated for arguments that do not divide evenly, such as 7 / 2. The code above adds the remainder so that the condition holds for all arguments.
+To use a value parameter (`a`, `b`) in a postcondition, that parameter must be declared `const`. Otherwise the function body could change the parameter, and the postcondition would check the changed value instead of the original argument. Also, integer division keeps only the quotient, so writing the postcondition as `r * b == a` would be violated for arguments that do not divide evenly, such as 7 / 2. The code above adds the remainder so that the condition holds for all arguments.
 
 | Feature | Old (`assert`) | New (Contracts) |
 |:--------|:--------------|:----------------|
@@ -1599,7 +1643,7 @@ void process(int* ptr)
 
 *Table 12. Comparison of assert and contracts*
 
-> **Key Point:** One reason contracts are needed is that C++20 modules do not export macros. Code that imports a module must include `<cassert>` itself to use `assert()`, whereas contracts are a language feature without this restriction and they state the conditions a function requires in its declaration. `contract_assert` is the standardized replacement for `assert()`.
+One reason contracts are needed is that C++20 modules do not export macros. Code that imports a module must include `<cassert>` itself to use `assert()`, whereas contracts are a language feature without this restriction and they state the conditions a function requires in its declaration. `contract_assert` is the standardized replacement for `assert()`.
 
 #### New Containers and Libraries
 
@@ -2163,6 +2207,7 @@ for (const auto& x : names) {
 | Iterator invalidation | `insert` and `erase` on a vector invalidate iterators, so update the iterator with the return value of `erase()`. |
 | `map[]` creates entries | Check existence with `find()` or `count()`, not with `[]`, which creates an entry. |
 | Copy vs reference in for | `for(auto x:v)` traverses by copy, `for(auto& x:v)` by reference, and `for(const auto& x:v)` by read-only reference. |
+| Template argument deduction | Arguments that use the same `T` must deduce exactly the same type, and no conversions are made during deduction, so when the types differ, specify `T` or split the template parameters. |
 
 ---
 
@@ -2230,6 +2275,15 @@ for (const auto& x : names) {
    <summary>Answer</summary>
 
    The link step fails with an "undefined reference" error because it cannot find member functions such as `MyTemplate<int>::getData()`. `main.cpp` sees only the declarations in the header, so it generates only the calls, and `MyTemplate.cpp` has the definitions but never uses them with `int`, so it does not generate the code for `MyTemplate<int>`. Fix it by moving the member function definitions into the header, or by adding the explicit instantiation `template class MyTemplate<int>;` to `MyTemplate.cpp`.
+
+   </details>
+
+6. **Template argument deduction:** With the `myswap()` of Section 1.8, what happens when `double x = 1.5, y = 2.5; myswap(x, y);` and `char c = 'a'; int n = 98; myswap(c, n);` are compiled?
+
+   <details>
+   <summary>Answer</summary>
+
+   In `myswap(x, y)`, both arguments are `double`, so `T = double` is deduced and the code compiles; running it makes `x` 2.5 and `y` 1.5. In `myswap(c, n)`, `char` is deduced from the first argument and `int` from the second, and the types differ, so it is a compile error. The promotion from `char` to `int` is not considered during deduction.
 
    </details>
 
