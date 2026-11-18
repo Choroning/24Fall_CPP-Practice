@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lab.md) | [한국어](Concepts_Lab.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 
 > **Learning Objectives:**
 > 1. Write a derived class that overrides pure virtual functions to fit the execution flow defined by an abstract class
@@ -281,6 +281,27 @@ pop 성공 0
 - **Delivering results through a reference parameter:** `pop(int& n)` returns the popped value through a reference parameter and success through the return value (Section 4 of the Chapter 5 lab).
 - **Virtual destructor:** Because `AbstractStack` has a virtual destructor, deleting an `IntStack` object through an `AbstractStack*` calls `IntStack`'s destructor and releases `p`.
 
+`IntStack` allocates memory with `new int[capacity]` in its constructor and releases it in its destructor, but it does not define a copy constructor or an assignment operator. The `main()` above does not copy the object, so there is no problem, but copying an `IntStack` object as follows causes exactly the shallow copy problem of Section 4.3 of Chapter 5.
+
+```cpp
+int main() {
+    IntStack a(2);
+    a.push(7);
+    IntStack b = a;                     // default copy constructor: b.p and a.p point to the same memory
+    b.push(9);                          // writes 9 into a's memory
+    int n;
+    a.pop(n);
+    cout << n << endl;
+    return 0;                           // b and a are destroyed in that order, calling delete[] twice on the same memory
+}
+```
+
+```text
+7
+```
+
+`b` copies the `capacity`, `tos`, and `p` of `a` as they are, so the two stacks share one array. `b.push(9)` writes 9 into slot 1 of the shared array and changes only `b.tos` to 2. `a.tos` is still 1, so `a.pop(n)` removes the 7 in slot 0. The output looks normal, but when `main()` ends, the destructors of `b` and `a` call `delete[]` twice on the same array, which is undefined behavior. On macOS the program terminates abnormally, and running it with AddressSanitizer reports `attempting double-free`. Following the rule of three (Section 4.9 of Chapter 5), `IntStack` should either get a copy constructor and an assignment operator that perform deep copies or, if copying is not needed, forbid copying by declaring the two functions with `= delete` (Section 4.4 of Chapter 14).
+
 ---
 
 <br>
@@ -294,6 +315,7 @@ pop 성공 0
 | Turning a class abstract | Changing a virtual function that returned a meaningless value into a pure virtual function with `= 0` prevents object creation and forces derived classes to implement it. |
 | Virtual destructor | To `delete` a derived object through a base class pointer, the base class destructor must be virtual. |
 | Implementing an interface | An abstract class defines only what is to be done, and a derived class implements it with a concrete storage method such as a dynamic array. |
+| Copying an implementation class with dynamic memory | A class like `IntStack` that allocates in its constructor and releases in its destructor shares its array and suffers a double free when copied, so following the rule of three, the copy functions are written or deleted. |
 
 ---
 

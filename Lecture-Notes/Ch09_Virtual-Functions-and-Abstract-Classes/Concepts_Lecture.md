@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 9
 
@@ -12,6 +12,7 @@
 > 3. Explain why virtual destructors are needed and declare them correctly
 > 4. Define an abstract class with pure virtual functions and implement concrete classes that inherit from it
 > 5. Write polymorphic programs with arrays of base class pointers and virtual functions
+> 6. Distinguish the conditions for dynamic binding from the cases in which it does not occur (inside constructors, pass by value, scope resolution), and use abstract classes as interfaces
 
 ---
 
@@ -20,6 +21,7 @@
 - [1. Upcasting and Downcasting](#1-upcasting-and-downcasting)
   - [1.1 Upcasting](#11-upcasting)
   - [1.2 Downcasting](#12-downcasting)
+  - [1.3 Checking the Actual Type with dynamic_cast](#13-checking-the-actual-type-with-dynamic_cast)
 - [2. Virtual Functions](#2-virtual-functions)
   - [2.1 The Need for Virtual Functions](#21-the-need-for-virtual-functions)
   - [2.2 Problem Without virtual](#22-problem-without-virtual)
@@ -31,6 +33,8 @@
   - [2.8 Inheritance of Virtual Functions](#28-inheritance-of-virtual-functions)
   - [2.9 The final Specifier](#29-the-final-specifier)
   - [2.10 Calling a Base Class Virtual Function with the Scope Resolution Operator](#210-calling-a-base-class-virtual-function-with-the-scope-resolution-operator)
+  - [2.11 Conditions for Dynamic Binding](#211-conditions-for-dynamic-binding)
+  - [2.12 Tracing Calls Through the vtable](#212-tracing-calls-through-the-vtable)
 - [3. Virtual Destructors](#3-virtual-destructors)
   - [3.1 Problem](#31-problem)
   - [3.2 Complete Example: The Memory Leak](#32-complete-example-the-memory-leak)
@@ -40,16 +44,20 @@
   - [4.2 Abstract Class](#42-abstract-class)
   - [4.3 Concrete Class](#43-concrete-class)
   - [4.4 Abstract Class Implementation Examples](#44-abstract-class-implementation-examples)
+  - [4.5 Abstract Classes as Interfaces](#45-abstract-classes-as-interfaces)
 - [5. Polymorphism](#5-polymorphism)
   - [5.1 Concept](#51-concept)
   - [5.2 Complete Shape Hierarchy Example](#52-complete-shape-hierarchy-example)
   - [5.3 Complete Converter Example](#53-complete-converter-example)
+  - [5.4 Shapes Managed in a Linked List](#54-shapes-managed-in-a-linked-list)
 - [6. Common Mistakes](#6-common-mistakes)
   - [6.1 Forgetting Virtual Destructor](#61-forgetting-virtual-destructor)
   - [6.2 Trying to Instantiate an Abstract Class](#62-trying-to-instantiate-an-abstract-class)
   - [6.3 Forgetting to Override All Pure Virtual Functions](#63-forgetting-to-override-all-pure-virtual-functions)
   - [6.4 Object Slicing](#64-object-slicing)
   - [6.5 Overriding vs Overloading vs Hiding](#65-overriding-vs-overloading-vs-hiding)
+  - [6.6 Object Slicing in Assignments and Arrays](#66-object-slicing-in-assignments-and-arrays)
+  - [6.7 Overriding That Fails Because of const or Parameters](#67-overriding-that-fails-because-of-const-or-parameters)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -114,6 +122,70 @@ if (dp == nullptr) {
 ```
 
 > **Caution:** Downcasting with `static_cast` or C-style casts bypasses runtime checks. If the actual object is not the derived type, accessing derived members causes **undefined behavior**.
+
+### 1.3 Checking the Actual Type with dynamic_cast
+
+The `dynamic_cast` of Section 1.2 checks at run time the actual type of the object a base class pointer points to. The following example gathers shapes of several kinds in a `Shape*` array, picks out only the ones that are `Circle`, and calls a member function that exists only in `Circle`.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() const { cout << "Shape" << endl; }
+    virtual ~Shape() { }
+};
+class Circle : public Shape {
+    int radius;
+public:
+    Circle(int r) : radius(r) { }
+    void draw() const override { cout << "Circle" << endl; }
+    int getRadius() const { return radius; }
+};
+class Rect : public Shape {
+public:
+    void draw() const override { cout << "Rect" << endl; }
+};
+
+int main() {
+    Shape *shapes[3] = { new Circle(5), new Rect(), new Circle(7) };
+    int sum = 0;
+    for (int i = 0; i < 3; i++) {
+        Circle *c = dynamic_cast<Circle *>(shapes[i]);   // its address if it actually is a Circle, otherwise nullptr
+        if (c != nullptr) {
+            cout << i << ": Circle, radius=" << c->getRadius() << endl;
+            sum += c->getRadius();
+        } else {
+            cout << i << ": not a Circle" << endl;
+        }
+    }
+    cout << "sum of radii: " << sum << endl;
+    for (int i = 0; i < 3; i++) delete shapes[i];
+    return 0;
+}
+```
+
+```text
+0: Circle, radius=5
+1: not a Circle
+2: Circle, radius=7
+sum of radii: 12
+```
+
+| `i` | Object `shapes[i]` points to | `dynamic_cast<Circle *>(shapes[i])` | Branch taken |
+|:----|:----|:----|:----|
+| 0 | `Circle(5)` | The address of that `Circle` | Adds radius 5 |
+| 1 | `Rect` | `nullptr` | Prints "not a Circle" |
+| 2 | `Circle(7)` | The address of that `Circle` | Adds radius 7 |
+
+*Table 1. The value dynamic_cast returns for each element*
+
+- `dynamic_cast<Circle *>(p)` returns the address converted to `Circle*` if `p` actually points to a `Circle` object (or an object derived from `Circle`), and `nullptr` otherwise. So comparing the return value with `nullptr` alone tells the actual type. Doing the same with `static_cast` or a C-style cast would also convert element 1 to `Circle*`, and calling `getRadius()` would then be undefined behavior.
+- Checking the type at run time requires type information in the object, and that information is attached only to objects of classes with virtual functions (the vptr of Section 2.5). Using `dynamic_cast` on a pointer to `class B { public: int x; };`, which has no virtual function, makes Apple clang report the compile error "'B' is not polymorphic". A single virtual destructor is enough to make a class polymorphic.
+- `dynamic_cast<Circle &>(*p)`, which converts to a reference, cannot return `nullptr` on failure, so it throws a `std::bad_cast` exception. How to handle exceptions is covered in Chapter 13.
+
+When code that checks types one by one with `dynamic_cast` grows, those checks must be changed every time a new derived class is added. Where possible, behavior that depends on the actual type is made a virtual function and left to the dynamic binding of Section 2, and `dynamic_cast` is limited to places that truly need a feature found only in a derived class.
 
 ---
 
@@ -605,6 +677,161 @@ Output:
 
 `pShape->draw()` runs `Circle::draw()` through dynamic binding, and the `Shape::draw()` inside it prints `--Shape--` first through static binding. `pShape->Shape::draw()` is statically bound from the start, so it prints only `--Shape--`.
 
+### 2.11 Conditions for Dynamic Binding
+
+Gathering Sections 2.3-2.10, a virtual function call is dynamically bound only when all three of the following conditions hold.
+
+1. The function called is a virtual function (declared `virtual` in the base class).
+2. The object is called through a **pointer or reference** of the base class type. Calling by name alone inside a member function counts, because it is a pointer call through `this->` (the `paint()` of Section 2.8).
+3. The call does not use the scope resolution operator (Section 2.10).
+
+If even one condition is missing, the compiler chooses the function by the declared type.
+
+| Form of the call | Function executed when `f()` of `Base` is virtual | Reason |
+|:----|:----|:----|
+| `Base *p = &d; p->f();` | `Derived::f()` | Virtual function call through a pointer |
+| `Base &r = d; r.f();` | `Derived::f()` | Virtual function call through a reference |
+| `Base b = d; b.f();` | `Base::f()` | `b` is a `Base` object (slicing, Section 6.4) |
+| `p->Base::f();` | `Base::f()` | The scope resolution operator means static binding |
+| `f();` inside the constructor of `Base` | `Base::f()` | The object under construction is still a `Base` (explained below) |
+
+*Table 2. Binding of virtual functions by form of the call*
+
+The last row deserves particular attention. As seen in Section 3 of Chapter 8, a derived class object is constructed starting from its base class part, and while the base class constructor runs, the members of the derived class have not been initialized yet. If a derived class function ran at this point, it would use uninitialized members, so C++ treats a virtual function call inside a constructor or destructor as a call to the function of the class to which that constructor or destructor belongs.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    Base() { cout << "Base constructor: "; whoAmI(); }       // during construction, Base's function is called
+    virtual ~Base() { cout << "Base destructor: "; whoAmI(); }
+    virtual void whoAmI() { cout << "Base" << endl; }
+    void call() { whoAmI(); }                          // dynamic binding after construction is finished
+};
+
+class Derived : public Base {
+    int *data;
+public:
+    Derived() : data(new int(7)) { cout << "Derived constructor: "; whoAmI(); }
+    ~Derived() { cout << "Derived destructor: "; whoAmI(); delete data; }
+    void whoAmI() override { cout << "Derived, *data=" << *data << endl; }
+};
+
+int main() {
+    Derived d;
+    cout << "call(): "; d.call();
+    return 0;
+}
+```
+
+```text
+Base constructor: Base
+Derived constructor: Derived, *data=7
+call(): Derived, *data=7
+Derived destructor: Derived, *data=7
+Base destructor: Base
+```
+
+- **`whoAmI()` inside the `Base` constructor:** At this moment `data` has not been allocated yet. Had `Derived::whoAmI()` run here, it would have dereferenced the uninitialized pointer `data`. In fact `Base::whoAmI()` runs and "Base" is printed.
+- **`whoAmI()` inside `call()`:** After the object has been constructed, the call is dynamically bound as in Section 2.8, and `Derived::whoAmI()` runs.
+- **`whoAmI()` inside the `Base` destructor:** Destruction proceeds from the derived class, so when the destructor of `Base` runs, the `Derived` part has already been destroyed and `data` has been released. So `Base::whoAmI()` runs here as well.
+
+In terms of the vtable model of Section 2.5, in the usual implementations that use vtables the compiler makes the vptr of the object point to the vtable of the class whose constructor is running, and switches it to the vtable of the next level each time a constructor finishes. Initialization that must behave differently for each derived class is therefore not left to a virtual function call inside the base class constructor but handled directly in the derived class constructor.
+
+> **Note:** **Default arguments of virtual functions.** If an overriding function changes the value of a default argument, the function executed is chosen by dynamic binding, but the default argument is chosen by the declared type of the pointer. With `virtual void show(int n = 1)` in `Base` and `void show(int n = 2) override` in `Derived`, `Base *p = &d; p->show();` runs `Derived::show()` with the argument 1 and prints "Derived 1", while `d.show();` prints "Derived 2". To avoid confusion, do not change default arguments in overriding functions.
+
+### 2.12 Tracing Calls Through the vtable
+
+Tracing actual calls one by one with the vtable model of Section 2.5 shows concretely how dynamic binding chooses a function. In the following three classes, `Base` has the virtual functions `f()` and `g()` and the non-virtual function `h()`, `Mid` overrides only `f()`, and `Leaf` overrides only `g()`.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Base {
+public:
+    virtual void f() { cout << "Base::f" << endl; }
+    virtual void g() { cout << "Base::g" << endl; }
+    void h() { cout << "Base::h" << endl; }          // not a virtual function
+    virtual ~Base() { }
+};
+
+class Mid : public Base {
+public:
+    void f() override { cout << "Mid::f" << endl; }   // overrides only f
+};
+
+class Leaf : public Mid {
+public:
+    void g() override { cout << "Leaf::g" << endl; }  // overrides only g
+};
+
+int main() {
+    Base b; Mid m; Leaf l;
+    Base *objs[3] = { &b, &m, &l };
+    for (int i = 0; i < 3; i++) {
+        objs[i]->f();
+        objs[i]->g();
+        objs[i]->h();
+    }
+    return 0;
+}
+```
+
+```text
+Base::f
+Base::g
+Base::h
+Mid::f
+Base::g
+Base::h
+Mid::f
+Leaf::g
+Base::h
+```
+
+In the usual implementations that use vtables, each class's vtable has one slot per virtual function, and derived classes keep the slot order set in the base class. A derived class replaces only the slots of the functions it overrides with its own functions and inherits the contents of the other slots from the base class. A virtual destructor also has slots in the vtable, but their number and position differ by implementation, so the table below lists only the slots of `f()` and `g()`.
+
+| vtable | Slot 0: `f()` | Slot 1: `g()` |
+|:----|:----|:----|
+| vtable of `Base` | `Base::f` | `Base::g` |
+| vtable of `Mid` | `Mid::f` (overridden) | `Base::g` (inherited) |
+| vtable of `Leaf` | `Mid::f` (inherited) | `Leaf::g` (overridden) |
+
+*Table 3. Functions in the vtable slots of the three classes*
+
+The single call `objs[2]->g()` runs in the following order.
+
+1. At compile time, the compiler already knows that the type of `objs[2]` is `Base*` and that `g()` is in slot 1 among the virtual functions of `Base`. So it generates code that says "read the vptr of the object pointed to, and call the function in slot 1 of that vtable".
+2. At run time, `objs[2]` points to `l` (a `Leaf` object), so the vptr inside the object points to the vtable of `Leaf`.
+3. Slot 1 of the vtable of `Leaf` holds `Leaf::g`, so `Leaf::g` is called.
+
+In the same way, `objs[2]->f()` reads slot 0 of the vtable of `Leaf`, and since `Leaf` does not override `f()`, that slot holds `Mid::f`, inherited from `Mid`. What Section 2.8 described as "without overriding, the function of the nearest base class is called" appears in the vtable as this inheritance of slots. The non-virtual function `h()`, on the other hand, has no slot in the vtable and is fixed as `Base::h` at compile time from the pointer type `Base*` alone, so `Base::h` is printed for all three objects.
+
+The size of objects confirms that the vptr actually is inside the object.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Plain { int x; public: void f() { } int get() const { return x; } };
+class Virt { int x; public: virtual void f() { } virtual ~Virt() { } int get() const { return x; } };
+
+int main() {
+    cout << "sizeof(Plain)=" << sizeof(Plain) << ", sizeof(Virt)=" << sizeof(Virt)
+         << ", sizeof(void*)=" << sizeof(void *) << endl;
+    return 0;
+}
+```
+
+```text
+sizeof(Plain)=4, sizeof(Virt)=16, sizeof(void*)=8
+```
+
+`Plain`, which has only one `int`, is 4 bytes, but `Virt`, which has virtual functions, is 16 bytes. In usual implementations, the vptr, 8 bytes, the size of a pointer in a 64-bit environment, goes at the front of the object, the `int` follows it, and empty space is added so that the size of the whole object is a multiple of the pointer size (the alignment of Section 2.6 of Chapter 3). However many virtual functions there are, each object grows by only one vptr; the number of virtual functions affects only the size of the vtable, of which there is one per class. The exact size and layout depend on the implementation.
+
 ---
 
 <br>
@@ -894,6 +1121,67 @@ Enter two integers>> 5 3
 Calculated value: 2
 ```
 
+### 4.5 Abstract Classes as Interfaces
+
+An abstract class in which every member function is pure virtual and which has no member variables defines only a promise, "objects of this class have these functions", with no implementation. Such a class is called an **interface**, and because C++ has no separate keyword for interfaces, it is expressed with an abstract class. One class can inherit several interfaces through multiple inheritance and implement them all, and since interfaces have no member variables, there is little room for the diamond problem of Section 5.3 of Chapter 8.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Printable {                                  // interface: only pure virtual functions
+public:
+    virtual void print() const = 0;
+    virtual ~Printable() { }
+};
+
+class Comparable {                                 // interface
+public:
+    virtual bool lessThan(const Comparable &other) const = 0;
+    virtual ~Comparable() { }
+};
+
+class Score : public Printable, public Comparable {   // concrete class implementing two interfaces
+    string name;
+    int value;
+public:
+    Score(string n, int v) : name(n), value(v) { }
+    void print() const override { cout << name << ":" << value << endl; }
+    bool lessThan(const Comparable &other) const override {
+        const Score &o = dynamic_cast<const Score &>(other);   // assumes that only Score objects are compared
+        return value < o.value;
+    }
+};
+
+void printAll(const Printable *items[], int n) {   // knowing Printable is enough to print
+    for (int i = 0; i < n; i++)
+        items[i]->print();
+}
+
+int main() {
+    Score a("Kim", 82), b("Lee", 95);
+    const Printable *list[] = { &a, &b };
+    printAll(list, 2);
+    const Comparable &ca = a;
+    cout << boolalpha << ca.lessThan(b) << endl;   // 82 < 95
+    return 0;
+}
+```
+
+```text
+Kim:82
+Lee:95
+true
+```
+
+- `printAll()` knows nothing about `Score` and uses only `print()` of `Printable`. Even if another class implementing `Printable` is written later, `printAll()` needs no change. This is the open-closed principle of Section 5.2 applied at the level of interfaces.
+- A `Score` object can be pointed to both by a `Printable *` and by a `Comparable &`. Through each pointer and reference, only the functions declared in that interface can be called (Section 1.1).
+- The parameter of `lessThan()` is a `Comparable`, so reaching the `value` of the actual `Score` requires converting it to `Score` with the `dynamic_cast` of Section 1.2. A failed `dynamic_cast` on a reference throws a `std::bad_cast` exception, and exception handling is covered in Chapter 13.
+- Both interfaces have virtual destructors, so deleting a dynamic object through a `Printable *` or a `Comparable *` also runs the destructor of `Score` correctly (Section 3).
+
+> **Note:** **Pure virtual destructor.** To make a class abstract when it has no other function to leave unimplemented, the destructor can be declared as a pure virtual function, as in `virtual ~Abstract() = 0;`. However, a derived class destructor always calls the base class destructor when it finishes, so a pure virtual destructor must also have a definition, such as `Abstract::~Abstract() { }`. Without the definition, the code compiles, but at link time the linker used by Apple clang reports an undefined symbol error, `"Abstract::~Abstract()", referenced from: Concrete::~Concrete()`.
+
 ---
 
 <br>
@@ -1099,6 +1387,101 @@ Output:
 
 Adding a new unit conversion (e.g., `InchToCm`) requires only writing a new derived class. The `main()` loop logic needs no modification.
 
+### 5.4 Shapes Managed in a Linked List
+
+A typical structure that uses polymorphism gathers derived objects of several kinds through base class pointers and manages them together. The following example links shapes into a linked list and draws them one after another.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+    Shape *next;                       // pointer to the next shape
+protected:
+    virtual void draw();
+public:
+    Shape() { next = NULL; }
+    virtual ~Shape() { }
+    void paint();
+    Shape *add(Shape *p);
+    Shape *getNext() { return next; }
+};
+
+void Shape::paint() { draw(); }        // this->draw(): draw() of the actual object runs
+void Shape::draw() { cout << "--Shape--" << endl; }
+Shape *Shape::add(Shape *p) {          // links p after this shape and returns p
+    this->next = p;
+    return p;
+}
+
+class Circle : public Shape {
+protected:
+    virtual void draw() { cout << "Circle" << endl; }
+};
+class Rect : public Shape {
+protected:
+    virtual void draw() { cout << "Rectangle" << endl; }
+};
+class Line : public Shape {
+protected:
+    virtual void draw() { cout << "Line" << endl; }
+};
+
+int main() {
+    Shape *pStart = NULL;
+    Shape *pLast;
+    pStart = new Circle();             // first create a circle
+    pLast = pStart;
+    pLast = pLast->add(new Rect());    // create a rectangle object
+    pLast = pLast->add(new Circle());  // create a circle object
+    pLast = pLast->add(new Line());    // create a line object
+    pLast = pLast->add(new Rect());    // create a rectangle object
+
+    Shape *p = pStart;                 // draw all the shapes currently linked
+    while (p != NULL) {
+        p->paint();
+        p = p->getNext();
+    }
+
+    p = pStart;                        // delete all the shapes currently linked
+    while (p != NULL) {
+        Shape *q = p->getNext();       // remember the address of the next shape
+        delete p;                      // calls the virtual destructor of the base class
+        p = q;                         // store the address of the next shape in p
+    }
+    return 0;
+}
+```
+
+```text
+Circle
+Rectangle
+Circle
+Line
+Rectangle
+```
+
+```text
+pStart                                                                pLast
+  │                                                                     │
+  ▼                                                                     ▼
+┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐   ┌────────┐
+│ Circle │──▶│ Rect   │──▶│ Circle │──▶│ Line   │──▶│ Rect   │──▶ NULL
+└────────┘   └────────┘   └────────┘   └────────┘   └────────┘
+  next         next         next         next         next
+```
+
+*Figure 4. Links between the shape objects created by main()*
+
+The example shows the role of the base class in four steps.
+
+1. **Presenting the interface:** `Shape` is not a class for creating objects but a base class for inheritance. Through the virtual function `draw()` it shows the form of the function that derived classes implement.
+2. **Overriding:** `Circle`, `Rect`, and `Line` each override `draw()` in their own way. Dynamic binding guarantees that each class's own `draw()` runs no matter how it is called.
+3. **Executing dynamic binding:** `p->paint()` calls the non-virtual function `Shape::paint()`, and the `draw()` inside it is `this->draw()`, so it is dynamically bound to the `draw()` of the actual object `p` points to (Section 2.8).
+4. **Using base class pointers:** `pStart`, `pLast`, and `p` are all `Shape *`. The loop that follows the list calls only `paint()` and `getNext()`, without needing to know the actual type of each object.
+
+`add()` links the shape it receives to its own `next` and returns that shape. `pLast = pLast->add(new Rect());` attaches the new shape to the end of the list and makes `pLast` point to the new end, so the same statement can be repeated to keep attaching shapes. The last loop stores `p->getNext()` in `q` before `delete p;`, because after the deletion the `next` of the object `p` pointed to can no longer be read. The destructor of `Shape` is virtual, so `delete p;` runs the destructor of the actual object first.
+
 ---
 
 <br>
@@ -1229,7 +1612,7 @@ These three concepts are frequently confused. They have very different meanings:
 | **Effect** | Dynamic binding calls the correct version at runtime | Compiler picks based on argument types at compile time | Base version is hidden; only derived version is visible |
 | **virtual required** | Yes | No | No (redefining a non-virtual function with the same prototype is hiding, not overriding) |
 
-*Table 1. Comparison of overriding, overloading, and hiding*
+*Table 4. Comparison of overriding, overloading, and hiding*
 
 ```cpp
 class Base {
@@ -1265,6 +1648,95 @@ int main() {
 
 > **Caution:** Hiding is almost always a bug. If you intend to override, use `virtual` in the base and `override` in the derived. If the compiler says `override` does not match anything, you might be hiding instead of overriding.
 
+### 6.6 Object Slicing in Assignments and Arrays
+
+The slicing of Section 6.4 does not occur only with function parameters. It occurs anywhere a derived object initializes or is assigned to an **object** of the base class type.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() const { cout << "Shape" << endl; }
+    virtual ~Shape() { }
+};
+
+class Circle : public Shape {
+    int radius = 5;
+public:
+    void draw() const override { cout << "Circle r=" << radius << endl; }
+};
+
+int main() {
+    Circle c;
+    Shape s = c;                 // (1) copy initialization: only the Shape part is copied
+    s.draw();
+
+    Shape arr[2] = { c, Circle() };   // (2) array of the base class type: each element is sliced
+    arr[0].draw();
+
+    Shape *ptrs[2] = { &c, &arr[1] }; // (3) array of pointers: no slicing
+    ptrs[0]->draw();
+    ptrs[1]->draw();
+
+    const Shape &ref = c;        // (4) reference: no slicing
+    ref.draw();
+    return 0;
+}
+```
+
+```text
+Shape
+Shape
+Circle r=5
+Shape
+Circle r=5
+```
+
+- **(1)** `Shape s = c;` creates `s` with the copy constructor of `Shape`. The copy constructor's parameter `const Shape &` refers to the `Shape` part of `c`, so `radius` is not copied and `s` is a `Shape` object through and through. That is why `s.draw()` runs `Shape::draw()`.
+- **(2)** Every element of the array is an object of type `Shape`, so each element is sliced even when it is initialized with a `Circle` object. To gather several kinds of shapes in one array, gather base class **pointers**, as in Section 5.4.
+- **(3)** `ptrs[0]` points to `c`, so `Circle::draw()` runs. `ptrs[1]` points to `arr[1]`, which has already been sliced, so `Shape::draw()` runs even through the pointer. A pointer only avoids causing slicing; it cannot restore an object that has already been cut.
+- **(4)** A reference is another name for `c` itself, so dynamic binding runs `Circle::draw()`.
+
+A sliced object behaves differently without any compile or run-time error, so slicing is hard to find. Objects of a class meant for polymorphic use are handled only through pointers or references, never stored in value variables or value arrays of the base class type.
+
+### 6.7 Overriding That Fails Because of const or Parameters
+
+Among the success conditions of Section 2.7, the one most easily missed is the `const` at the end of a member function. `const` is part of the function prototype, so omitting it while trying to override `virtual void draw() const` of the base class creates a different function with only the same name.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Shape {
+public:
+    virtual void draw() const { cout << "Shape" << endl; }
+    virtual ~Shape() { }
+};
+
+class Circle : public Shape {
+public:
+    void draw() { cout << "Circle" << endl; }     // const omitted: not an override
+};
+
+int main() {
+    Circle c;
+    Shape *p = &c;
+    p->draw();
+    return 0;
+}
+```
+
+```text
+ovfail.cpp:12:10: warning: 'Circle::draw' hides overloaded virtual function [-Woverloaded-virtual]
+Shape
+```
+
+`Circle::draw()` has no `const`, so it does not override `Shape::draw() const` but hides it (the hiding of Section 6.5). `p->draw()` calls the virtual function of `Shape`, and in the vtable of `Circle` that slot is still `Shape::draw`, so "Shape" is printed. Apple clang warns about the hiding when compiling with `-Wall`, but without noticing the warning, the problem shows only in the output.
+
+Attaching `override` to the function turns this mistake into a compile error. Changing it to `void draw() override` gives the error "non-virtual member function marked 'override' hides virtual member function", which immediately reports that the base class has no virtual function with the same prototype. Different parameter types (`draw(int)` versus `draw(double)`) make overriding fail in the same way, so, as Section 2.6 recommends, attach `override` to every overriding function.
+
 ---
 
 <br>
@@ -1291,6 +1763,15 @@ int main() {
 | Polymorphism | Polymorphism handles multiple implementations through one interface, with a base class pointer calling the derived class function that matches the actual object. |
 | Object slicing | Passing a derived object by value to a base class parameter slices off the derived part, so objects should be passed by pointer or reference. |
 | Overriding vs Hiding | Overriding redefines a base class virtual function with the same prototype and is dynamically bound, while hiding is a same-name function that is not an override, hides the base class function, and is statically bound. |
+| Conditions for dynamic binding | Dynamic binding occurs only when a virtual function is called through a base class pointer or reference without the scope resolution operator. |
+| Virtual functions in constructors and destructors | During construction and destruction the object is treated as an object of the class to which the constructor or destructor belongs, so a virtual function called inside the base class constructor runs the base class function. |
+| Interface | An abstract class with only pure virtual functions and a virtual destructor, which defines only a promise of functions without implementation; one class can implement several interfaces. |
+| Linked list of shapes | Different derived objects are linked through base class pointers, and the virtual function call inside the non-virtual `paint()` runs each object's `draw()`. |
+| Slicing in assignments and arrays | Initializing or assigning an object or array element of the base class type from a derived object cuts off the derived part, so objects must be handled through pointers or references. |
+| Checking with dynamic_cast | `dynamic_cast<D*>(p)` returns the address only when `p` actually points to a `D` object and `nullptr` otherwise, and it can be used only with polymorphic classes that have virtual functions. |
+| Tracing calls through the vtable | A virtual function call invokes the function in the slot, fixed at compile time, of the vtable pointed to by the object's vptr, and slots that are not overridden inherit the base class functions. |
+| vptr and object size | With virtual functions, each object gains one vptr and grows in size, and the number of virtual functions affects only the size of the vtable. |
+| const mismatch and overriding | If the `const` at the end of a member function or the parameters differ, the result is hiding, not overriding, and `override` reveals it as a compile error. |
 
 ---
 
@@ -1381,5 +1862,59 @@ int main() {
    `draw()` inside `Circle::draw()` is the same as `this->draw()`, and `draw()` is virtual, so dynamic binding calls `Circle::draw()` itself again. This becomes infinite recursion with no termination condition, and the program eventually terminates abnormally with a stack overflow. To run the base class version, static binding must be requested with the scope resolution operator, as in `Shape::draw()`.
 
    </details>
+
+6. **Virtual function inside a constructor:** If the call to `whoAmI()` in the `Base` constructor of Section 2.11 is moved to the end of the body of the `Derived` constructor, what is the first line printed by `Derived d;`? Explain why.
+
+   <details>
+   <summary>Answer</summary>
+
+   `Derived, *data=7` is printed. When the body of the `Derived` constructor runs, the base class part and the initialization of `data` are both finished, and at this point the object is treated as a `Derived`, so `whoAmI()` is called as `Derived::whoAmI()`. The first output of the original code was "Base" because the call was located in the constructor of `Base`.
+
+   </details>
+
+7. **Identifying slicing:** When `Circle` publicly inherits from `Shape` and `draw()` is virtual, which of the following run `Circle::draw()`? (a) `Shape s = Circle(); s.draw();` (b) `Circle c; Shape &r = c; r.draw();` (c) `Circle c; Shape *p = &c; p->Shape::draw();` (d) `Shape *p = new Circle(); p->draw();`
+
+   <details>
+   <summary>Answer</summary>
+
+   (b) and (d). In (a), `s` is a sliced `Shape` object, so `Shape::draw()` runs. (c) is called with the scope resolution operator, so it is statically bound and `Shape::draw()` runs. (b) is a virtual function call through a reference and (d) through a pointer, so both are dynamically bound and run `Circle::draw()`.
+
+   </details>
+
+8. **Deleting the linked list:** What goes wrong if the deletion loop of Section 5.4 is changed to `while (p != NULL) { delete p; p = p->getNext(); }`?
+
+   <details>
+   <summary>Answer</summary>
+
+   After the object is released by `delete p;`, `p->getNext()` reads the `next` of the released object, which is undefined behavior. The run may happen to finish, but the result is not guaranteed. As in the original code, the address of the next shape must be saved in `q` before the deletion.
+
+   </details>
+
+9. **vtable trace:** If `class Tip : public Leaf { public: void f() override { cout << "Tip::f" << endl; } };` is added to the classes of Section 2.12 and `Base *p = new Tip; p->f(); p->g(); p->h();` is run, what is printed? What do slots 0 and 1 of the vtable of `Tip` hold?
+
+   <details>
+   <summary>Answer</summary>
+
+   `Tip::f`, `Leaf::g`, and `Base::h` are printed in turn. Slot 0 (`f()`) of the vtable of `Tip` holds the overriding `Tip::f`, and slot 1 (`g()`) holds `Leaf::g`, inherited from `Leaf`. `h()` is not a virtual function, so `Base::h` is called according to the pointer type `Base*`.
+
+   </details>
+
+10. **dynamic_cast:** If `new Shape()` is added as a fourth element of the array of Section 1.3, what are the result of `dynamic_cast<Circle *>` and the output? What does `dynamic_cast<Shape *>(shapes[1])` return?
+
+    <details>
+    <summary>Answer</summary>
+
+    The fourth element is actually a `Shape` object, not a `Circle`, so `dynamic_cast<Circle *>` returns `nullptr` and "not a Circle" is printed. The sum of radii remains 12. `dynamic_cast<Shape *>(shapes[1])` converts a pointer to a `Rect` object into a pointer to its base class, which is an upcast, so it always succeeds and returns the address of the same object.
+
+    </details>
+
+11. **Failed overriding:** If `Circle::draw()` in Section 6.7 is changed to `void draw() const`, what does `p->draw()` print now? What goes into the `draw()` slot of the vtable of `Circle` in that case?
+
+    <details>
+    <summary>Answer</summary>
+
+    "Circle" is printed. With `const` added, the prototype matches `Shape::draw() const` and overriding holds, so the `draw()` slot in the vtable of `Circle` becomes `Circle::draw`. `p->draw()` follows the vptr of the `Circle` object `p` points to and calls the function in that slot, so `Circle::draw` runs. The hiding warning also disappears.
+
+    </details>
 
 ---
