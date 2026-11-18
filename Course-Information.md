@@ -2,7 +2,7 @@
 
 [Repository Guide](README.md) | [English](Course-Information.md) | [한국어](Course-Information.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 
 ## Table of Contents
 
@@ -122,6 +122,7 @@
 - Assignments 1-8 of the linked lab course Computer Language and Training Ⅱ (`DCCS104-03`) were given in weeks 4, 5, 6, 9, 10, 11, 12, and 13, respectively, and are in `HW01`-`HW08` in `Coursework`.
 - The weekly lab decks of Computer Language and Training Ⅱ are covered in the lab notes (`Concepts_Lab`) of units `Ch02`-`Ch09` according to the textbook chapter each deck is linked to. Week 1 (the first part of textbook Chapter 2) and weeks 2-3 (C++ basics review) are in the Chapter 2 lab note, week 4 and the access control and destructors of week 5 in Chapter 3, the object pointers and object arrays of week 5 and weeks 6-7 in Chapter 4, weeks 9-10 in Chapter 5, week 11 in Chapter 6, weeks 12-13 in Chapter 7, week 14 in Chapter 8, and week 15 in Chapter 9. Theory in the decks that duplicates the textbook is linked to each chapter's lecture notes, problems submitted as assignments to `HW01`-`HW08`, and problems identical to the textbook lab problems to each chapter's exercises.
 - The textbook chapter numbers, Chapters 1-10, correspond to `Ch01`-`Ch10` in this repository, and the lab code numbers in `Coursework` (`Lab03`-`Lab10`) follow the same chapter numbers. The units are listed in the [`Lecture-Notes` index](Lecture-Notes/README.md).
+- `Ch11`-`Ch14` are supplementary units on C++ topics that the course did not cover, so they do not correspond to any week in the schedule above.
 
 ---
 
@@ -137,5 +138,6 @@
 | Lab Decks | Weekly lab decks of Computer Language and Training Ⅱ (weeks 1-7 and 9-15) |
 | Lecture Videos | Videos of the week 5 makeup class on 10/1 (inline functions and C++ structures in Chapter 3), the first period of the week 5 makeup class on 10/2, the week 6 makeup class on 10/9, and the week 7 worked examples of copy constructors in Chapter 5 |
 | Other | Answers to the odd-numbered theory exercises of the textbook, the theory homework submission template, and the old version of the Fall 2024 Computer Language 2 Time Table |
+| Supplementary-Unit Reference | ISO/IEC JTC 1/SC 22/WG 21, *Working Draft, Standard for Programming Language C++*, Document N4659, Mar. 2017. |
 
 - The syllabus states that the main textbook would be announced after the semester begins, and the course used 명품 C++ Programming (revised edition) as the textbook. The short source line `명품 C++ Programming, 황기태, Ch N` in the header of the notes refers to this textbook.

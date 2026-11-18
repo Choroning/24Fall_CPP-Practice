@@ -24,7 +24,7 @@ This repository archives lecture notes and coursework for the Computer Language 
 
 - `Lecture-Notes/` holds a lecture note for each chapter; Chapters 1-10 also hold exercises made up of the lab problems and the textbook theory problems, with their solutions, and Chapters 2-9 hold lab notes for Computer Language and Training Ⅱ.
 - `Coursework/` holds the solutions and explanations of the Computer Language and Training Ⅱ assignments (`HW01`-`HW08`) and the C++ code that solves the lab problems of Chapters 3-10 (`Lab03`-`Lab10`).
-- Units follow the textbook's chapter numbers (`Ch01`-`Ch10`), and every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
+- Units follow the textbook's chapter numbers (`Ch01`-`Ch13`), with a topic outside the textbook in `Ch14`, and `Ch11`-`Ch14` are supplementary units on C++ topics that the course did not cover. Every document comes as an English (`.md`) and Korean (`.ko.md`) pair.
 
 > **🤖 Use of Generative AI Tools**
 > This course restricts the use of generative AI tools; this repository uses [Claude Code](https://claude.ai/download) for documentation.
