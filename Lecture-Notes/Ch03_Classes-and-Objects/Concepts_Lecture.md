@@ -2,7 +2,7 @@
 
 [Repository Guide](../../README.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **Last Updated:** 2026-11-18
+> **Last Updated:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -27,6 +27,9 @@
   - [2.2 Member Variables](#22-member-variables)
   - [2.3 Member Functions](#23-member-functions)
   - [2.4 Access Specifiers](#24-access-specifiers)
+  - [2.5 const Member Functions](#25-const-member-functions)
+  - [2.6 Memory Layout and Size of Objects](#26-memory-layout-and-size-of-objects)
+  - [2.7 The Unit and Timing of Access Control](#27-the-unit-and-timing-of-access-control)
 - [3. Object Creation and Usage](#3-object-creation-and-usage)
   - [3.1 Declaration](#31-declaration)
   - [3.2 Object Arrays](#32-object-arrays)
@@ -38,6 +41,10 @@
   - [4.5 Default Constructor](#45-default-constructor)
   - [4.6 Destructor](#46-destructor)
   - [4.7 Execution Order](#47-execution-order)
+  - [4.8 Errors Caused by the Order of Member Initialization](#48-errors-caused-by-the-order-of-member-initialization)
+  - [4.9 When Objects of Each Kind Are Created and Destroyed](#49-when-objects-of-each-kind-are-created-and-destroyed)
+  - [4.10 Kinds of Constructors and the Member Functions the Compiler Generates](#410-kinds-of-constructors-and-the-member-functions-the-compiler-generates)
+  - [4.11 Invariants Maintained by Constructors and Member Functions](#411-invariants-maintained-by-constructors-and-member-functions)
 - [5. Inline Functions](#5-inline-functions)
 - [6. C++ Struct](#6-c-struct)
 - [7. Header and Source File Separation](#7-header-and-source-file-separation)
@@ -51,6 +58,7 @@
   - [9.3 No Default Constructor After Defining Another Constructor](#93-no-default-constructor-after-defining-another-constructor)
   - [9.4 Calling the Constructor Like a Regular Function](#94-calling-the-constructor-like-a-regular-function)
   - [9.5 Confusing Class Definition with Object Creation](#95-confusing-class-definition-with-object-creation)
+  - [9.6 Omitting the Class Name When Defining a Member Function Outside the Class](#96-omitting-the-class-name-when-defining-a-member-function-outside-the-class)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
 
@@ -373,6 +381,131 @@ int main() {
 }
 ```
 
+### 2.5 const Member Functions
+
+Some member functions only read member variables, like `getArea()`, while others change them, like `setRadius()`. Putting `const` at the end of the prototype of a function that only reads makes the compiler check that the function does not change member variables, and allows the function to be called even on objects declared `const`.
+
+> **Definition:** A **const member function** is a member function declared with `const` at the end of its prototype, as in `double getArea() const;`, promising not to change the member variables of the object inside the function.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r) { radius = r; }
+    double getArea() const { return 3.14 * radius * radius; }   // const member function: does not change members
+    void setRadius(int r) { radius = r; }                       // function that changes a member
+};
+
+int main() {
+    const Circle unit(1);           // const object
+    cout << unit.getArea() << endl; // a const member function can be called
+    // unit.setRadius(2);           // error: a non-const member function cannot be called on a const object
+    return 0;
+}
+```
+
+```text
+3.14
+```
+
+- An object created with `const Circle unit(1);` must not change after it is created, so the compiler allows only `const` member functions to be called on it. Uncommenting `unit.setRadius(2);` makes Apple clang report "'this' argument to member function 'setRadius' has type 'const Circle', but function is not marked const".
+- Trying to change a member inside a `const` member function, as in `radius = 3;`, gives the error "cannot assign to non-static data member within const member function". This is because `this` inside a `const` member function has the type `const Circle *` (Chapter 4).
+- `const` objects arise far more often as const reference parameters (`void print(const Circle &c)`, Chapter 5) than as directly declared objects. Calling `c.getArea()` inside such a function requires `getArea()` to be a `const` member function, so member functions that do not change member variables are best declared `const` from the start.
+
+### 2.6 Memory Layout and Size of Objects
+
+When objects are created from a class, the only things placed in memory separately for each object are the **member variables**. The code of the member functions exists only once per class and is shared by all objects; no copy of a function goes into an object. Which object's member variables a member function works on is decided by the address of that object passed when the member function is called, that is, by the `this` of Chapter 4.
+
+```cpp
+#include <iostream>
+#include <cstddef>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r = 1) : radius(r) { }
+    double getArea() const { return 3.14 * radius * radius; }
+};
+
+struct Box {
+    char tag;        // 1 byte
+    int width;       // 4 bytes
+    double height;   // 8 bytes
+};
+
+int main() {
+    Circle arr[2];
+    cout << "sizeof(int)=" << sizeof(int) << ", sizeof(Circle)=" << sizeof(Circle) << endl;
+    cout << "&arr[1] - &arr[0] = " << (char *)&arr[1] - (char *)&arr[0] << " bytes" << endl;
+    cout << "sizeof(Box)=" << sizeof(Box) << ", offsets: tag=" << offsetof(Box, tag)
+         << " width=" << offsetof(Box, width) << " height=" << offsetof(Box, height) << endl;
+    return 0;
+}
+```
+
+```text
+sizeof(int)=4, sizeof(Circle)=4
+&arr[1] - &arr[0] = 4 bytes
+sizeof(Box)=16, offsets: tag=0 width=4 height=8
+```
+
+The size of `Circle`, which has a single `int` member, is 4 bytes, the same as `int`. Having a constructor and `getArea()` does not increase the size. The addresses of the two array elements `arr[0]` and `arr[1]` also differ by 4 bytes, so the objects occupy only the space of their member variables and lie next to one another.
+
+```text
+ Circle arr[2]                      code area (one per class)
+┌──────────────┐                  ┌──────────────────────┐
+│ arr[0]       │                  │ Circle::Circle(int)  │
+│  radius = 1  │  4 bytes         │ Circle::getArea()    │
+├──────────────┤                  └──────────────────────┘
+│ arr[1]       │                    shared by both objects
+│  radius = 1  │  4 bytes
+└──────────────┘
+```
+
+*Figure 2. Layout of a Circle object array and the code of its member functions*
+
+`Box` has 1 + 4 + 8 = 13 bytes of members, but its size is 16 bytes. Looking at where each member starts with `offsetof` shows `tag` at 0, `width` at 4, and `height` at 8. The compiler inserted 3 bytes of empty space (padding) after `tag` so that the CPU reads an `int` at an address that is a multiple of 4 and a `double` at an address that is a multiple of 8. This alignment rule is the same as for C structures, and the exact sizes and alignments may differ by platform (the values above are for Apple clang on macOS arm64). Declaring members from the largest type down often reduces the empty space.
+
+### 2.7 The Unit and Timing of Access Control
+
+Access specifiers apply **per class**. Whether a member function can access a `private` member is decided by the class the function belongs to, regardless of whether the object being accessed is `this` or another object. A member function can therefore also access the `private` members of another object of the same class received as a parameter.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;                                    // private
+public:
+    Circle(int r) : radius(r) { }
+    bool isBigger(const Circle &other) const {
+        return radius > other.radius;              // private member of another object of the same class
+    }
+};
+
+int main() {
+    Circle a(5), b(3);
+    cout << boolalpha << a.isBigger(b) << endl;
+    // cout << a.radius << endl;                   // error: main() cannot access a private member
+    return 0;
+}
+```
+
+```text
+true
+```
+
+- Inside `a.isBigger(b)`, `radius` is `this->radius`, that is, the radius of `a`, 5, and `other.radius` is the radius of `b`, 3. `isBigger()` is a member function of `Circle`, so it can read the `private` member of `b` as well, and since 5 > 3, `true` is printed. `boolalpha` makes `bool` values print as `true` and `false` instead of `1` and `0`.
+- Uncommenting `a.radius` in `main()` makes Apple clang report "'radius' is a private member of 'Circle'", because `main()` is not a member of `Circle`.
+
+Access control is checked **only at compile time**. The compiler checks whether the place where a name is used has the right to access that member and refuses to compile if it does not; it is not a mechanism that protects memory at run time. `private` members are still in the memory of the object, as in the figure of Section 2.6, and are included in the size measured by `sizeof`. The purpose of access specifiers is not security against malicious access but keeping the code that uses a class from depending on its internal implementation, so that wrong uses are stopped at the compile step and the internal implementation can change without changing the code that uses it (the encapsulation of Section 1.1).
+
+In a C structure, all members are public, so every piece of code that uses the structure depends directly on its members (Section 1.3). Changing the name or representation of a member requires finding and fixing all the code that uses the structure. When a C++ class keeps its member variables `private` and lets them be handled only through public member functions, the range of code to fix is limited to the member functions of that class.
+
 ---
 
 <br>
@@ -690,7 +823,7 @@ graph LR
     end
 ```
 
-*Figure 2. Construction and destruction order of local objects a and b*
+*Figure 3. Construction and destruction order of local objects a and b*
 
 Objects are classified as local or global by where they are declared.
 
@@ -754,7 +887,163 @@ main() ends       mainPizza destroyed → mainDonut destroyed
 Program ends      globalPizza destroyed → globalDonut destroyed
 ```
 
-*Figure 3. Construction and destruction of global and local objects*
+*Figure 4. Construction and destruction of global and local objects*
+
+### 4.8 Errors Caused by the Order of Member Initialization
+
+As seen in Section 4.4, the members in a member initializer list are initialized in the order in which they are declared in the class, not in the order written in the list. When the initial value of one member is computed from another member, this rule can cause errors.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Square {
+    int area;                     // declared first: initialized first
+    int side;
+public:
+    Square(int s) : side(s), area(side * side) { }   // wrong: side is not yet initialized when area is
+    void show() { cout << "side=" << side << " area=" << area << endl; }
+};
+
+int main() {
+    Square sq(4);
+    sq.show();
+    return 0;
+}
+```
+
+`side(s)` is written first in the list, but `area` is declared first, so `area(side * side)` runs first. At that moment `side` has no value yet, so `area` receives an indeterminate value, and the printed `area` may differ from run to run. Compiling with `-Wall` makes Apple clang give the following warnings.
+
+```text
+order.cpp:8:21: warning: field 'side' will be initialized after field 'area' [-Wreorder-ctor]
+order.cpp:8:35: warning: field 'side' is uninitialized when used here [-Wuninitialized]
+```
+
+Changing the declaration order to `int side; int area;` initializes `side` to 4 first and makes `area` 16, printing `side=4 area=16`. Another way is to compute from the parameter, as in `area(s * s)`, so that no member depends on another. Writing initializer lists in the same order as the declarations and keeping compiler warnings on finds such errors in advance.
+
+### 4.9 When Objects of Each Kind Are Created and Destroyed
+
+Adding static local objects inside functions and dynamic objects created with `new` to the local and global objects of Section 4.7, all in one program, allows the moments of creation and destruction to be compared at a glance. `Tracer` prints its name in its constructor and destructor.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Tracer {
+    string name;
+public:
+    Tracer(string n) : name(n) { cout << "  created " << name << endl; }
+    ~Tracer() { cout << "  destroyed " << name << endl; }
+};
+
+Tracer g("global");                       // global object: created before main()
+
+void f() {
+    static Tracer s("static local");      // created only once, on the first call
+    Tracer local("local of f");             // created on every call, destroyed on return
+}
+
+int main() {
+    cout << "main starts" << endl;
+    f();
+    f();
+    Tracer *p = new Tracer("dynamic");      // created when new runs
+    {
+        Tracer block("block local");
+    }                                    // destroyed when the block ends
+    delete p;                            // destroyed when delete runs
+    cout << "main ends" << endl;
+    return 0;
+}
+```
+
+```text
+  created global
+main starts
+  created static local
+  created local of f
+  destroyed local of f
+  created local of f
+  destroyed local of f
+  created dynamic
+  created block local
+  destroyed block local
+  destroyed dynamic
+main ends
+  destroyed static local
+  destroyed global
+```
+
+| Object | When it is created | When it is destroyed |
+|:----|:----|:----|
+| Global object `g` | Before `main()` starts | After `main()` ends, when the program ends |
+| Static local object `s` | Only once, when its declaration first runs (the first call to `f()`) | After `main()` ends, before the global object (reverse order of creation) |
+| Local object `local` | Each time its declaration runs (each call to `f()`) | Each time the function returns |
+| Local object `block` in a block | When the declaration inside the block runs | At the closing brace `}` of the block |
+| Dynamic object `*p` | When `new` runs | When `delete` runs (Chapter 4) |
+
+*Table 5. When objects of each kind are created and destroyed*
+
+- `f()` is called twice, but `static local` is created only once. The second call skips the declaration and uses the existing object. This object does not disappear when `f()` returns and is destroyed after `main()` ends.
+- When the program ends, the static local object and the global object are destroyed in the reverse order of creation. `global` was created first and `static local` later, so `static local` is destroyed first.
+- A dynamic object is destroyed the moment `delete` runs, regardless of scope. If `delete p;` is omitted, `destroyed dynamic` is never printed, because, unlike for global or local objects, the compiler does not decide when it is destroyed.
+
+### 4.10 Kinds of Constructors and the Member Functions the Compiler Generates
+
+Gathering the constructors seen so far and the copy constructor covered in Chapter 5 gives the following. Some are generated by the compiler when the class does not declare them, and some are not.
+
+| Kind | Form | Condition under which the compiler generates it |
+|:----|:----|:----|
+| Default constructor | `Circle()` | Only when no constructor is declared at all (Section 4.5) |
+| Constructor with parameters | `Circle(int r)` | Never generated |
+| Delegating constructor | `Circle() : Circle(1) { }` | Never generated (a way of writing that hands initialization to another constructor, Section 4.3) |
+| Copy constructor | `Circle(const Circle &c)` | If not declared, a version that copies member by member is generated (Chapter 5) |
+| Destructor | `~Circle()` | If not declared, a default destructor with an empty body is generated (Section 4.6) |
+
+*Table 6. Kinds of constructors and destructors and the conditions for automatic generation*
+
+Which constructor is called is decided by the arguments of the statement that creates the object. `Circle a;` calls the default constructor, `Circle b(5);` calls `Circle(int)`, and `Circle c = b;` calls the copy constructor. The reason the last statement is an initialization, not an assignment, despite its `=` is covered in Chapter 5.
+
+> **Note:** **`= default`.** To keep a compiler-generated default constructor after declaring a constructor with parameters, C++11 lets you request that version explicitly with `Circle() = default;`. This constructor does not initialize members of built-in types, so it is used together with initial values in the member declarations, such as `int radius = 1;`, as in (3) of Section 4.4. The rules of `= default` and `= delete` are covered in Section 4.4 of Chapter 14.
+
+### 4.11 Invariants Maintained by Constructors and Member Functions
+
+The practical effect of encapsulation (Section 1.1) is that it can guarantee that an object is always in a valid state. A condition that must always hold while an object is alive is called an **invariant**. The condition of `Circle` that its radius must be at least 1 can be maintained by keeping the member variable `private` and applying the same check in every path that changes the value (the constructor and `setRadius()`).
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;                                  // invariant: radius is always at least 1
+public:
+    Circle(int r) { setRadius(r); }              // the constructor goes through the same check
+    void setRadius(int r) {
+        if (r < 1) {
+            cout << "  invalid radius " << r << ", changed to 1" << endl;
+            r = 1;
+        }
+        radius = r;
+    }
+    int getRadius() const { return radius; }
+};
+
+int main() {
+    Circle a(5), b(-3);
+    a.setRadius(0);
+    cout << a.getRadius() << ' ' << b.getRadius() << endl;
+    return 0;
+}
+```
+
+```text
+  invalid radius -3, changed to 1
+  invalid radius 0, changed to 1
+1 1
+```
+
+The constructor calls `setRadius()` instead of assigning directly, so the same check applies both when the object is created and when its value changes later. Both `b(-3)` and `a.setRadius(0)` are corrected to 1. `radius` is `private`, so code outside the class has no way to bypass the check, as in `a.radius = -5;`. With a C structure, any code could put a wrong value directly into a member, so maintaining the same condition would require checks everywhere the structure is used (Section 1.3). To report the creation of an object itself as a failure instead of correcting the wrong value, use the exceptions of Chapter 13.
 
 ---
 
@@ -828,7 +1117,7 @@ In C++, `struct` is the same as `class` in every respect, including inheritance,
 | Can have constructors/destructors | Yes | Yes |
 | Can use inheritance | Yes | Yes |
 
-*Table 5. Comparison of C++ struct and class*
+*Table 7. Comparison of C++ struct and class*
 
 ```cpp
 struct Point {
@@ -929,7 +1218,7 @@ flowchart LR
     O2 -->|link| E
 ```
 
-*Figure 4. Building an executable from separated header and cpp files*
+*Figure 5. Building an executable from separated header and cpp files*
 
 **Include guards** prevent the same header from being included multiple times. If a `Circle.h` without a guard is included more than once in one source file, the `Circle` class is declared twice and a compile error occurs (Visual C++'s `error C2011: 'Circle': 'class' type redefinition`, GCC's `redefinition of 'class Circle'`). With the conditional compilation starting with `#ifndef CIRCLE_H`, `CIRCLE_H` is defined and the class declaration is included only at the first include, and the contents are skipped at later includes. The conditional compilation constant is best named after the class to avoid collisions with other constants.
 
@@ -938,7 +1227,7 @@ flowchart LR
 | Traditional | `#ifndef CIRCLE_H` / `#define CIRCLE_H` / `#endif` |
 | Modern | `#pragma once` (widely supported, simpler) |
 
-*Table 6. Ways to write include guards*
+*Table 8. Ways to write include guards*
 
 > **Note:** **Support for `#pragma once`.** `#pragma once` is not part of the C++ standard but is supported by all major compilers (GCC, Clang, MSVC).
 
@@ -1010,6 +1299,34 @@ int main() {
 Enter two numbers>>5 -20
 -15
 ```
+
+It can be checked what actually happens without an include guard. Including a `Circle.h` without a guard twice in one source file makes Apple clang report `./Circle.h:1:7: error: redefinition of 'Circle'`. The preprocessor copies the contents of the header twice, so the compiler sees code that declares the same class twice.
+
+Some errors cannot be prevented even with an include guard. Defining a member function inside a header file but outside the class, and including that header in two source files, gives the following.
+
+```cpp
+// Circle2.h
+#ifndef CIRCLE_H
+#define CIRCLE_H
+class Circle {
+    int radius;
+public:
+    Circle(int r);
+    int getRadius();
+};
+int Circle::getRadius() { return radius; }   // definition in the header, outside the class
+#endif
+```
+
+```text
+$ c++ -std=c++17 Circle2.cpp main2.cpp -o m2
+duplicate symbol 'Circle::getRadius()' in:
+    .../main2-724ee7.o
+    .../Circle2-e1a384.o
+ld: 1 duplicate symbols
+```
+
+An include guard prevents duplication only within one translation unit. `Circle2.cpp` and `main2.cpp` each include the header once, so each object file receives one definition of `Circle::getRadius()`, and it becomes a duplicate symbol at link time (Section 4.4 of Chapter 1). This is why member function definitions are put in the cpp file. If a definition must be in the header, define it inside the class declaration (the automatic inline functions of Section 5) or put `inline` before the definition. Inline functions are allowed to have the same definition in several translation units.
 
 ---
 
@@ -1282,6 +1599,19 @@ public:
 Circle c(5);    // NOW an object is created and memory is allocated
 ```
 
+### 9.6 Omitting the Class Name When Defining a Member Function Outside the Class
+
+```cpp
+class Circle { int radius; public: double getArea(); };
+double getArea() { return 3.14 * radius * radius; }   // wrong: Circle:: is missing
+```
+
+```text
+noscope.cpp:2:34: error: use of undeclared identifier 'radius'
+```
+
+Written as just `double getArea()`, the compiler treats it not as a member function of `Circle` but as the definition of a global function with the same name. A global function has no member called `radius`, so the error "undeclared identifier" results. When defining a member function outside the class, state the class it belongs to with the scope resolution operator `::`, as in `double Circle::getArea() { ... }`. Had the function not used `radius`, it would have compiled, but the class's `getArea()` would remain undefined, and a link error would occur as soon as it was called.
+
 ---
 
 <br>
@@ -1309,6 +1639,13 @@ Circle c(5);    // NOW an object is created and memory is allocated
 | Inline functions | A function declared `inline` or defined inside the class may have its calls replaced with its body by the compiler, at the cost of larger code. |
 | C++ `struct` | A struct is the same as a class except that the default access is `public`, and it exists for compatibility with C. |
 | File separation | Declarations go in `.h` and definitions in `.cpp`, and include guards prevent duplicate inclusion. |
+| const member function | A member function with `const` at the end of its prototype cannot change member variables and can be called on `const` objects and on objects received by const reference. |
+| Order of member initialization | Members are initialized in the order of declaration in the class, not in the order of the initializer list, so the declaration order matters when an initial value is computed from another member. |
+| Memory layout of objects | Objects hold only member variables while the code of member functions exists once per class, and empty space for alignment may be inserted between members. |
+| When objects are created and destroyed | Global objects are created before `main()`, static local objects when first executed, local objects at each declaration, and dynamic objects are created and destroyed when `new` and `delete` run. |
+| Kinds of constructors | The default constructor is generated automatically only when no constructor is declared, and the copy constructor and destructor are generated by the compiler when not declared. |
+| Member function definitions in headers | An include guard prevents duplication only within one translation unit, so a member function defined in a header outside the class causes a duplicate symbol error across several source files, which `inline` or a cpp file resolves. |
+| Invariant | A condition that must always hold while an object is alive, maintained by keeping member variables `private` and applying the same check in the constructor and in the member functions that change values. |
 
 ---
 
@@ -1368,3 +1705,66 @@ Circle c(5);    // NOW an object is created and memory is allocated
    The declaration of the `Circle` class is included twice, causing a class redefinition compile error. At the first include, `CIRCLE_H` is not yet defined, so `#define CIRCLE_H` and the class declaration are included; at the second include, `CIRCLE_H` is already defined, so everything from `#ifndef` to `#endif` is skipped.
 
    </details>
+
+6. **const member function:** What happens if `void show() { cout << radius << endl; }` is added to the `Circle` of Section 2.5 and `void print(const Circle &c) { c.show(); }` is written? Also give the fix.
+
+   <details>
+   <summary>Answer</summary>
+
+   A compile error occurs. `c` is a const reference, so only `const` member functions can be called through `c`, and `show()` is not declared `const`. `show()` only reads a member variable, so declaring it as `void show() const { cout << radius << endl; }` makes the code compile.
+
+   </details>
+
+7. **Order of member initialization:** In `class P { int b; int a; public: P() : a(1), b(a + 1) { } };`, are the values of `a` and `b` determined after `P p;` is created?
+
+   <details>
+   <summary>Answer</summary>
+
+   `a` is determined as 1, but `b` is not. Members are initialized in the declaration order, `b` then `a`, so `a` is not yet initialized when `b(a + 1)` runs. `b` therefore receives an indeterminate value plus 1. Changing the declaration order to `int a; int b;` makes `a` 1 and `b` 2.
+
+   </details>
+
+8. **Size of an object:** For `class P { int x; int y; public: void set(int a, int b); int sum(); };` with a 4-byte `int`, what is `sizeof(P)`? What happens if 10 more member functions are added?
+
+   <details>
+   <summary>Answer</summary>
+
+   It is 8 bytes. The object holds only the member variables `x` and `y`, and both `int`s lie at positions that are multiples of 4, so there is no empty space either. Member functions do not go into the object, so adding 10 more leaves `sizeof(P)` at 8 bytes (virtual functions, covered in Chapter 9, are an exception).
+
+   </details>
+
+9. **When objects are created and destroyed:** If the `main()` of Section 4.9 is changed to call `f();` three times, how many times are "created static local" and "created local of f" printed? When is "destroyed static local" printed?
+
+   <details>
+   <summary>Answer</summary>
+
+   "created static local" is printed once and "created local of f" three times. A static local object is created only once, when its declaration first runs, while a local object is created on each call and destroyed on each return. "destroyed static local" is printed when the program ends after `main ends` is printed, before "destroyed global".
+
+   </details>
+
+10. **Access per class:** If the global function `bool same(const Circle &x, const Circle &y) { return x.radius == y.radius; }` is added to the `Circle` of Section 2.7, does it compile? What about the member function `bool same(const Circle &y) const { return radius == y.radius; }`?
+
+    <details>
+    <summary>Answer</summary>
+
+    The global function does not compile. `same()` is not a member of `Circle`, so both `x.radius` and `y.radius` are errors for accessing a private member. The member function version compiles. Access rights are granted per class, so a member function of `Circle` can also access the `private` member of another `Circle` object `y` received as a parameter. Giving a global function access requires the friend declaration of Chapter 7.
+
+    </details>
+
+11. **Include guards and duplicate definitions:** Explain why a duplicate symbol error occurs even though the `Circle2.h` of Section 7 has an include guard, and give two ways to fix it by changing the header file.
+
+    <details>
+    <summary>Answer</summary>
+
+    An include guard prevents the same header from being included twice only within one translation unit. `Circle2.cpp` and `main2.cpp` are different translation units, so each includes the header, each object file receives one definition of `Circle::getRadius()`, and the linker reports a duplicate symbol. To fix it within the header, either move the definition inside the class declaration to make it an automatic inline function, or put `inline` before the definition, as in `inline int Circle::getRadius() { return radius; }`.
+
+    </details>
+
+12. **Automatic generation of constructors:** For `class T { int v; public: T(int x) : v(x) { } };`, which of `T a(1);`, `T b;`, and `T c = a;` does not compile, and why?
+
+    <details>
+    <summary>Answer</summary>
+
+    Only `T b;` does not compile. Because the constructor with a parameter `T(int)` is declared, the compiler does not generate a default constructor, and there is no constructor that creates an object without arguments. `T a(1);` calls `T(int)`, and `T c = a;` calls the copy constructor that the compiler generates even without a declaration, so both compile. To allow `T b;`, add a default constructor such as `T() : v(0) { }`.
+
+    </details>

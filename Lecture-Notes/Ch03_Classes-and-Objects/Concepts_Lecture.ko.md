@@ -2,7 +2,7 @@
 
 [레포지토리 안내](../../README.ko.md) | [English](Concepts_Lecture.md) | [한국어](Concepts_Lecture.ko.md)
 
-> **최종 수정일:** 2026-11-18
+> **최종 수정일:** 2026-11-19
 >
 > 명품 C++ Programming, 황기태, Ch 3
 
@@ -27,6 +27,9 @@
   - [2.2 멤버 변수](#22-멤버-변수)
   - [2.3 멤버 함수](#23-멤버-함수)
   - [2.4 접근 지정자](#24-접근-지정자)
+  - [2.5 const 멤버 함수](#25-const-멤버-함수)
+  - [2.6 객체의 메모리 배치와 크기](#26-객체의-메모리-배치와-크기)
+  - [2.7 접근 제어의 단위와 검사 시점](#27-접근-제어의-단위와-검사-시점)
 - [3. 객체 생성과 사용](#3-객체-생성과-사용)
   - [3.1 선언](#31-선언)
   - [3.2 객체 배열](#32-객체-배열)
@@ -38,6 +41,10 @@
   - [4.5 기본 생성자](#45-기본-생성자)
   - [4.6 소멸자](#46-소멸자)
   - [4.7 실행 순서](#47-실행-순서)
+  - [4.8 멤버 초기화 순서가 만드는 오류](#48-멤버-초기화-순서가-만드는-오류)
+  - [4.9 객체의 종류에 따른 생성과 소멸 시점](#49-객체의-종류에-따른-생성과-소멸-시점)
+  - [4.10 생성자의 종류와 컴파일러가 만드는 멤버 함수](#410-생성자의-종류와-컴파일러가-만드는-멤버-함수)
+  - [4.11 생성자와 멤버 함수로 지키는 불변 조건](#411-생성자와-멤버-함수로-지키는-불변-조건)
 - [5. 인라인 함수](#5-인라인-함수)
 - [6. C++ 구조체](#6-c-구조체)
 - [7. 헤더 파일과 소스 파일 분리](#7-헤더-파일과-소스-파일-분리)
@@ -51,6 +58,7 @@
   - [9.3 다른 생성자를 정의한 후 기본 생성자가 사라짐](#93-다른-생성자를-정의한-후-기본-생성자가-사라짐)
   - [9.4 생성자를 일반 함수처럼 호출](#94-생성자를-일반-함수처럼-호출)
   - [9.5 클래스 정의와 객체 생성을 혼동](#95-클래스-정의와-객체-생성을-혼동)
+  - [9.6 클래스 밖에서 멤버 함수를 정의할 때 클래스 이름을 빠뜨림](#96-클래스-밖에서-멤버-함수를-정의할-때-클래스-이름을-빠뜨림)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
 
@@ -373,6 +381,131 @@ int main() {
 }
 ```
 
+### 2.5 const 멤버 함수
+
+멤버 함수 중에는 `getArea()`처럼 멤버 변수를 읽기만 하는 함수와 `setRadius()`처럼 멤버 변수를 바꾸는 함수가 있다. 읽기만 하는 함수의 원형 끝에 `const`를 붙이면, 컴파일러가 그 함수 안에서 멤버 변수를 바꾸지 않는지 검사하고, `const`로 선언된 객체에 대해서도 그 함수를 호출할 수 있게 한다.
+
+> **용어 정의:** **const 멤버 함수(const member function)** 는 `double getArea() const;`처럼 원형 끝에 `const`를 붙여, 함수 안에서 그 객체의 멤버 변수를 바꾸지 않겠다고 선언한 멤버 함수이다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r) { radius = r; }
+    double getArea() const { return 3.14 * radius * radius; }   // const 멤버 함수: 멤버를 바꾸지 않는다
+    void setRadius(int r) { radius = r; }                       // 멤버를 바꾸는 함수
+};
+
+int main() {
+    const Circle unit(1);           // const 객체
+    cout << unit.getArea() << endl; // const 멤버 함수는 호출할 수 있다
+    // unit.setRadius(2);           // 오류: const 객체에 비const 멤버 함수를 호출할 수 없다
+    return 0;
+}
+```
+
+```text
+3.14
+```
+
+- `const Circle unit(1);`로 만든 객체는 생성된 뒤 바뀌면 안 되므로, 컴파일러는 이 객체에 대해 `const` 멤버 함수만 호출하게 한다. 주석을 풀어 `unit.setRadius(2);`를 쓰면 Apple clang은 "'this' argument to member function 'setRadius' has type 'const Circle', but function is not marked const"라는 오류를 낸다.
+- `const` 멤버 함수 안에서 `radius = 3;`처럼 멤버를 바꾸려 하면 "cannot assign to non-static data member within const member function"이라는 오류가 난다. `const` 멤버 함수 안의 `this`는 `const Circle *` 타입이기 때문이다(4장).
+- `const` 객체는 직접 선언하는 경우보다 5장의 const 참조 매개변수(`void print(const Circle &c)`)로 받는 경우가 훨씬 많다. 그 함수 안에서 `c.getArea()`를 호출하려면 `getArea()`가 `const` 멤버 함수여야 하므로, 멤버 변수를 바꾸지 않는 멤버 함수는 처음부터 `const`로 선언하는 것이 좋다.
+
+### 2.6 객체의 메모리 배치와 크기
+
+클래스로 객체를 만들 때 메모리에 객체마다 따로 놓이는 것은 **멤버 변수**뿐이다. 멤버 함수의 코드는 클래스에 하나만 있어 모든 객체가 함께 쓰며, 객체 안에 함수의 복사본이 들어가지 않는다. 어느 객체의 멤버 변수를 다룰지는 멤버 함수를 호출할 때 넘어가는 그 객체의 주소, 곧 4장의 `this`로 정해진다.
+
+```cpp
+#include <iostream>
+#include <cstddef>
+using namespace std;
+
+class Circle {
+    int radius;
+public:
+    Circle(int r = 1) : radius(r) { }
+    double getArea() const { return 3.14 * radius * radius; }
+};
+
+struct Box {
+    char tag;        // 1바이트
+    int width;       // 4바이트
+    double height;   // 8바이트
+};
+
+int main() {
+    Circle arr[2];
+    cout << "sizeof(int)=" << sizeof(int) << ", sizeof(Circle)=" << sizeof(Circle) << endl;
+    cout << "&arr[1] - &arr[0] = " << (char *)&arr[1] - (char *)&arr[0] << " bytes" << endl;
+    cout << "sizeof(Box)=" << sizeof(Box) << ", offsets: tag=" << offsetof(Box, tag)
+         << " width=" << offsetof(Box, width) << " height=" << offsetof(Box, height) << endl;
+    return 0;
+}
+```
+
+```text
+sizeof(int)=4, sizeof(Circle)=4
+&arr[1] - &arr[0] = 4 bytes
+sizeof(Box)=16, offsets: tag=0 width=4 height=8
+```
+
+`int` 멤버 하나만 가진 `Circle`의 크기는 `int`와 같은 4바이트이다. 생성자와 `getArea()`가 있어도 크기는 늘지 않는다. 배열의 두 원소 `arr[0]`, `arr[1]`의 주소 차이도 4바이트이므로, 객체들이 멤버 변수만큼의 공간을 차지하며 연속으로 놓인다.
+
+```text
+ Circle arr[2]                      코드 영역 (클래스에 하나)
+┌──────────────┐                  ┌──────────────────────┐
+│ arr[0]       │                  │ Circle::Circle(int)  │
+│  radius = 1  │  4바이트          │ Circle::getArea()    │
+├──────────────┤                  └──────────────────────┘
+│ arr[1]       │                    두 객체가 함께 사용
+│  radius = 1  │  4바이트
+└──────────────┘
+```
+
+*그림 2. Circle 객체 배열과 멤버 함수 코드의 배치*
+
+`Box`는 1 + 4 + 8 = 13바이트의 멤버를 가지지만 크기는 16바이트이다. `offsetof`로 각 멤버의 시작 위치를 보면 `tag`는 0, `width`는 4, `height`는 8이다. CPU가 `int`를 4의 배수 주소에서, `double`을 8의 배수 주소에서 읽도록 정렬하기 위해, 컴파일러가 `tag` 뒤에 3바이트의 빈 공간(padding)을 넣었기 때문이다. 이 정렬 규칙은 C의 구조체와 같으며, 정확한 크기와 정렬은 플랫폼에 따라 다를 수 있다(위의 값은 macOS arm64의 Apple clang 기준이다). 멤버를 큰 타입부터 선언하면 빈 공간이 줄어드는 경우가 많다.
+
+### 2.7 접근 제어의 단위와 검사 시점
+
+접근 지정자는 **클래스 단위**로 적용된다. 어떤 멤버 함수가 `private` 멤버에 접근할 수 있는지는 그 함수가 어느 클래스의 멤버인지로 정해지며, 접근하려는 객체가 `this`인지 다른 객체인지는 따지지 않는다. 따라서 멤버 함수는 매개변수로 받은 같은 클래스의 다른 객체의 `private` 멤버에도 접근할 수 있다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;                                    // private
+public:
+    Circle(int r) : radius(r) { }
+    bool isBigger(const Circle &other) const {
+        return radius > other.radius;              // 같은 클래스의 다른 객체의 private 멤버
+    }
+};
+
+int main() {
+    Circle a(5), b(3);
+    cout << boolalpha << a.isBigger(b) << endl;
+    // cout << a.radius << endl;                   // 오류: main()은 private 멤버에 접근할 수 없다
+    return 0;
+}
+```
+
+```text
+true
+```
+
+- `a.isBigger(b)` 안에서 `radius`는 `this->radius`, 곧 `a`의 반지름 5이고, `other.radius`는 `b`의 반지름 3이다. `isBigger()`가 `Circle`의 멤버 함수이므로 `b`의 `private` 멤버도 읽을 수 있고, 5 > 3이므로 `true`가 출력된다. `boolalpha`는 `bool` 값을 `1`, `0` 대신 `true`, `false`로 출력하게 한다.
+- 주석을 풀어 `main()`에서 `a.radius`를 쓰면 Apple clang은 "'radius' is a private member of 'Circle'"이라는 오류를 낸다. `main()`은 `Circle`의 멤버가 아니기 때문이다.
+
+접근 제어는 **컴파일 시간에만** 검사된다. 컴파일러는 이름을 쓰는 위치가 그 멤버에 접근할 권한이 있는지를 검사하여 권한이 없으면 컴파일을 거부할 뿐이고, 실행 중에 메모리를 보호하는 장치는 아니다. `private` 멤버도 2.6절의 그림처럼 객체 안의 메모리에 그대로 있으며, `sizeof`로 잰 객체의 크기에 포함된다. 접근 지정자의 목적은 악의적인 접근을 막는 보안이 아니라, 클래스를 사용하는 코드가 내부 구현에 의존하지 않도록 하여 잘못된 사용을 컴파일 단계에서 막고, 내부 구현을 바꾸어도 사용하는 코드를 고치지 않아도 되게 하는 것이다(1.1절의 캡슐화).
+
+C의 구조체는 모든 멤버가 공개되어 있어, 구조체를 사용하는 모든 코드가 멤버에 직접 의존한다(1.3절). 구조체의 멤버 이름이나 표현 방식을 바꾸면 그 구조체를 쓰는 코드를 모두 찾아 고쳐야 한다. C++ 클래스에서 멤버 변수를 `private`으로 두고 공개 멤버 함수로만 다루게 하면, 고쳐야 할 범위가 그 클래스의 멤버 함수로 한정된다.
+
 ---
 
 <br>
@@ -690,7 +823,7 @@ graph LR
     end
 ```
 
-*그림 2. 지역 객체 a, b의 생성 순서와 소멸 순서*
+*그림 3. 지역 객체 a, b의 생성 순서와 소멸 순서*
 
 객체는 선언된 위치에 따라 지역 객체와 전역 객체로 나뉜다.
 
@@ -754,7 +887,163 @@ main() 종료      mainPizza 소멸 → mainDonut 소멸
 프로그램 종료    globalPizza 소멸 → globalDonut 소멸
 ```
 
-*그림 3. 전역 객체와 지역 객체의 생성과 소멸 과정*
+*그림 4. 전역 객체와 지역 객체의 생성과 소멸 과정*
+
+### 4.8 멤버 초기화 순서가 만드는 오류
+
+4.4절에서 본 것처럼 멤버 초기화 리스트의 멤버는 리스트에 쓴 순서가 아니라 클래스에 선언된 순서대로 초기화된다. 한 멤버의 초깃값을 다른 멤버로 계산하면 이 규칙 때문에 오류가 생길 수 있다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Square {
+    int area;                     // 먼저 선언됨: 먼저 초기화된다
+    int side;
+public:
+    Square(int s) : side(s), area(side * side) { }   // 잘못: area를 초기화할 때 side는 아직 초기화 전
+    void show() { cout << "side=" << side << " area=" << area << endl; }
+};
+
+int main() {
+    Square sq(4);
+    sq.show();
+    return 0;
+}
+```
+
+리스트에는 `side(s)`가 먼저 적혀 있지만 `area`가 먼저 선언되었으므로 `area(side * side)`가 먼저 실행된다. 이 순간 `side`에는 아직 값이 들어가지 않았으므로 `area`에는 정해지지 않은 값이 들어가며, 출력되는 `area`는 실행할 때마다 다를 수 있다. Apple clang은 `-Wall`로 컴파일하면 다음 경고를 낸다.
+
+```text
+order.cpp:8:21: warning: field 'side' will be initialized after field 'area' [-Wreorder-ctor]
+order.cpp:8:35: warning: field 'side' is uninitialized when used here [-Wuninitialized]
+```
+
+선언 순서를 `int side; int area;`로 바꾸면 `side`가 먼저 4로 초기화되고 `area`가 16이 되어 `side=4 area=16`이 출력된다. 다른 멤버에 의존하지 않도록 `area(s * s)`처럼 매개변수로 계산하는 방법도 있다. 초기화 리스트는 선언 순서와 같은 순서로 쓰고, 컴파일러의 경고를 켜 두면 이런 오류를 미리 찾을 수 있다.
+
+### 4.9 객체의 종류에 따른 생성과 소멸 시점
+
+4.7절의 지역 객체와 전역 객체에 더해, 함수 안의 static 지역 객체와 `new`로 만드는 동적 객체까지 한 프로그램에 모으면 생성과 소멸의 시점을 한눈에 비교할 수 있다. `Tracer`는 생성자와 소멸자에서 자기 이름을 출력한다.
+
+```cpp
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Tracer {
+    string name;
+public:
+    Tracer(string n) : name(n) { cout << "  생성 " << name << endl; }
+    ~Tracer() { cout << "  소멸 " << name << endl; }
+};
+
+Tracer g("전역");                       // 전역 객체: main() 전에 생성
+
+void f() {
+    static Tracer s("static 지역");      // 처음 호출될 때 한 번만 생성
+    Tracer local("f의 지역");             // 호출될 때마다 생성, 리턴할 때 소멸
+}
+
+int main() {
+    cout << "main 시작" << endl;
+    f();
+    f();
+    Tracer *p = new Tracer("동적");      // new가 실행될 때 생성
+    {
+        Tracer block("블록 지역");
+    }                                    // 블록이 끝날 때 소멸
+    delete p;                            // delete가 실행될 때 소멸
+    cout << "main 끝" << endl;
+    return 0;
+}
+```
+
+```text
+  생성 전역
+main 시작
+  생성 static 지역
+  생성 f의 지역
+  소멸 f의 지역
+  생성 f의 지역
+  소멸 f의 지역
+  생성 동적
+  생성 블록 지역
+  소멸 블록 지역
+  소멸 동적
+main 끝
+  소멸 static 지역
+  소멸 전역
+```
+
+| 객체 | 생성 시점 | 소멸 시점 |
+|:----|:----|:----|
+| 전역 객체 `g` | `main()`이 시작하기 전 | `main()`이 끝난 뒤, 프로그램이 끝날 때 |
+| static 지역 객체 `s` | 그 선언문이 처음 실행될 때(첫 번째 `f()` 호출) 한 번만 | `main()`이 끝난 뒤, 전역 객체보다 먼저(생성의 역순) |
+| 지역 객체 `local` | 선언문이 실행될 때마다(`f()`를 호출할 때마다) | 함수가 리턴할 때마다 |
+| 블록 안의 지역 객체 `block` | 블록 안의 선언문이 실행될 때 | 블록의 닫는 중괄호 `}` |
+| 동적 객체 `*p` | `new`가 실행될 때 | `delete`가 실행될 때(4장) |
+
+*표 5. 객체의 종류에 따른 생성과 소멸 시점*
+
+- `f()`를 두 번 호출했지만 `static 지역`은 한 번만 생성된다. 두 번째 호출에서는 선언문을 건너뛰고 이미 있는 객체를 쓴다. 이 객체는 `f()`가 리턴해도 사라지지 않고, `main()`이 끝난 뒤에 소멸한다.
+- 프로그램이 끝날 때 static 지역 객체와 전역 객체는 생성의 역순으로 소멸한다. `전역`이 먼저 생성되고 `static 지역`이 나중에 생성되었으므로 `static 지역`이 먼저 소멸한다.
+- 동적 객체는 스코프와 관계없이 `delete`를 실행하는 순간 소멸한다. `delete p;`를 빠뜨리면 `소멸 동적`은 끝까지 출력되지 않는다. 전역 객체나 지역 객체와 달리 컴파일러가 소멸 시점을 정해 주지 않기 때문이다.
+
+### 4.10 생성자의 종류와 컴파일러가 만드는 멤버 함수
+
+지금까지 본 생성자와 5장에서 다룰 복사 생성자를 모으면 다음과 같다. 클래스가 직접 선언하지 않으면 컴파일러가 만들어 주는 것도 있고, 만들어 주지 않는 것도 있다.
+
+| 종류 | 형태 | 컴파일러가 자동으로 만드는 조건 |
+|:----|:----|:----|
+| 기본 생성자 | `Circle()` | 생성자를 하나도 선언하지 않았을 때만(4.5절) |
+| 매개변수가 있는 생성자 | `Circle(int r)` | 만들지 않음 |
+| 위임 생성자 | `Circle() : Circle(1) { }` | 만들지 않음 (다른 생성자에 초기화를 맡기는 작성 방법, 4.3절) |
+| 복사 생성자 | `Circle(const Circle &c)` | 선언하지 않으면 멤버 단위로 복사하는 버전을 만든다(5장) |
+| 소멸자 | `~Circle()` | 선언하지 않으면 본문이 비어 있는 디폴트 소멸자를 만든다(4.6절) |
+
+*표 6. 생성자와 소멸자의 종류와 자동 생성 조건*
+
+어느 생성자가 호출되는지는 객체를 만드는 문장의 인자로 정해진다. `Circle a;`는 기본 생성자를, `Circle b(5);`는 `Circle(int)`를, `Circle c = b;`는 복사 생성자를 호출한다. 마지막 문장에 `=`가 있지만 대입이 아니라 초기화인 이유는 5장에서 다룬다.
+
+> **참고:** **`= default`.** 매개변수가 있는 생성자를 선언한 뒤에도 컴파일러가 만드는 기본 생성자가 필요하면, C++11부터 `Circle() = default;`로 그 버전을 명시적으로 요청할 수 있다. 이 생성자는 기본 타입 멤버를 초기화하지 않으므로, 4.4절의 (3)처럼 `int radius = 1;`과 같이 선언부에서 초깃값을 주는 방법과 함께 쓴다. `= default`와 `= delete`의 규칙은 14장 4.4절에서 다룬다.
+
+### 4.11 생성자와 멤버 함수로 지키는 불변 조건
+
+캡슐화(1.1절)의 실제 효과는 객체가 언제나 올바른 상태에 있도록 보장할 수 있다는 데 있다. 객체가 살아 있는 동안 항상 참이어야 하는 조건을 **불변 조건(invariant)** 이라고 한다. 반지름이 1 이상이어야 한다는 `Circle`의 조건은 멤버 변수를 `private`으로 두고, 값을 바꾸는 모든 통로(생성자와 `setRadius()`)에서 같은 검사를 하면 지킬 수 있다.
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Circle {
+    int radius;                                  // 불변 조건: radius는 언제나 1 이상
+public:
+    Circle(int r) { setRadius(r); }              // 생성자도 같은 검사를 거친다
+    void setRadius(int r) {
+        if (r < 1) {
+            cout << "  잘못된 반지름 " << r << ", 1로 바꿈" << endl;
+            r = 1;
+        }
+        radius = r;
+    }
+    int getRadius() const { return radius; }
+};
+
+int main() {
+    Circle a(5), b(-3);
+    a.setRadius(0);
+    cout << a.getRadius() << ' ' << b.getRadius() << endl;
+    return 0;
+}
+```
+
+```text
+  잘못된 반지름 -3, 1로 바꿈
+  잘못된 반지름 0, 1로 바꿈
+1 1
+```
+
+생성자가 직접 대입하지 않고 `setRadius()`를 호출하므로, 객체를 만들 때와 나중에 값을 바꿀 때 같은 검사가 적용된다. `b(-3)`과 `a.setRadius(0)`은 모두 1로 고쳐진다. `radius`가 `private`이므로 클래스 밖의 코드가 `a.radius = -5;`처럼 검사를 건너뛸 길이 없다. C의 구조체였다면 어느 코드든 멤버에 직접 잘못된 값을 넣을 수 있으므로, 같은 조건을 지키려면 구조체를 쓰는 모든 곳에서 검사해야 한다(1.3절). 잘못된 값을 고쳐 넣는 대신 객체의 생성 자체를 실패로 알리려면 13장의 예외를 쓴다.
 
 ---
 
@@ -828,7 +1117,7 @@ C++에서 `struct`는 상속, 멤버, 접근 지정 등 모든 면에서 `class`
 | 생성자/소멸자 가능 | 가능 | 가능 |
 | 상속 가능 | 가능 | 가능 |
 
-*표 5. C++ struct와 class의 비교*
+*표 7. C++ struct와 class의 비교*
 
 ```cpp
 struct Point {
@@ -929,7 +1218,7 @@ flowchart LR
     O2 -->|링킹| E
 ```
 
-*그림 4. 분리된 헤더 파일과 cpp 파일이 실행 파일로 만들어지는 과정*
+*그림 5. 분리된 헤더 파일과 cpp 파일이 실행 파일로 만들어지는 과정*
 
 **인클루드 가드(include guard)** 는 같은 헤더가 여러 번 포함되는 것을 방지한다. 가드가 없는 `Circle.h`를 한 소스 파일에서 두 번 이상 include하면 `Circle` 클래스가 두 번 선언되어 컴파일 오류가 발생한다(Visual C++의 `error C2011: 'Circle': 'class' 형식 재정의`, GCC의 `redefinition of 'class Circle'`). `#ifndef CIRCLE_H`로 시작하는 조건 컴파일 문을 쓰면 첫 번째 include에서만 `CIRCLE_H`가 정의되면서 클래스 선언이 포함되고, 그 뒤의 include에서는 내용이 건너뛰어진다. 조건 컴파일 상수는 다른 상수와 충돌하지 않도록 클래스 이름으로 짓는 것이 좋다.
 
@@ -938,7 +1227,7 @@ flowchart LR
 | 전통적 방법 | `#ifndef CIRCLE_H` / `#define CIRCLE_H` / `#endif` |
 | 현대적 방법 | `#pragma once` (널리 지원, 간결) |
 
-*표 6. 인클루드 가드를 작성하는 방법*
+*표 8. 인클루드 가드를 작성하는 방법*
 
 > **참고:** **`#pragma once`의 지원.** `#pragma once`는 C++ 표준은 아니지만 주요 컴파일러(GCC, Clang, MSVC) 모두 지원한다.
 
@@ -1010,6 +1299,34 @@ int main() {
 두 개의 수를 입력하세요>>5 -20
 -15
 ```
+
+인클루드 가드가 없으면 실제로 어떤 일이 생기는지 확인할 수 있다. 가드가 없는 `Circle.h`를 한 소스 파일에서 두 번 include하면 Apple clang은 `./Circle.h:1:7: error: redefinition of 'Circle'`이라는 오류를 낸다. 전처리기가 헤더의 내용을 두 번 복사하므로 컴파일러에게는 같은 클래스를 두 번 선언한 코드로 보이기 때문이다.
+
+인클루드 가드로도 막을 수 없는 오류가 있다. 멤버 함수를 헤더 파일 안에서 클래스 밖에 정의하고, 그 헤더를 두 소스 파일이 포함하면 다음과 같다.
+
+```cpp
+// Circle2.h
+#ifndef CIRCLE_H
+#define CIRCLE_H
+class Circle {
+    int radius;
+public:
+    Circle(int r);
+    int getRadius();
+};
+int Circle::getRadius() { return radius; }   // 헤더 안, 클래스 밖의 정의
+#endif
+```
+
+```text
+$ c++ -std=c++17 Circle2.cpp main2.cpp -o m2
+duplicate symbol 'Circle::getRadius()' in:
+    .../main2-724ee7.o
+    .../Circle2-e1a384.o
+ld: 1 duplicate symbols
+```
+
+인클루드 가드는 한 번역 단위 안에서의 중복만 막는다. `Circle2.cpp`와 `main2.cpp`는 각자 헤더를 한 번씩 포함하므로, 두 목적 파일에 `Circle::getRadius()`의 정의가 하나씩 들어가 링크할 때 중복 기호가 된다(1장 4.4절). 이것이 멤버 함수의 정의를 cpp 파일에 두는 이유이다. 헤더에 정의를 두어야 한다면 클래스 선언 안에 정의하거나(5절의 자동 인라인 함수), 정의 앞에 `inline`을 붙인다. 인라인 함수는 여러 번역 단위에 같은 정의가 있어도 되도록 허용되어 있다.
 
 ---
 
@@ -1282,6 +1599,19 @@ public:
 Circle c(5);    // 이제서야 객체가 생성되고 메모리가 할당됨
 ```
 
+### 9.6 클래스 밖에서 멤버 함수를 정의할 때 클래스 이름을 빠뜨림
+
+```cpp
+class Circle { int radius; public: double getArea(); };
+double getArea() { return 3.14 * radius * radius; }   // 잘못: Circle::이 없음
+```
+
+```text
+noscope.cpp:2:34: error: use of undeclared identifier 'radius'
+```
+
+`double getArea()`라고만 쓰면 컴파일러는 이것을 `Circle`의 멤버 함수가 아니라 이름이 같은 전역 함수의 정의로 본다. 전역 함수에는 `radius`라는 멤버가 없으므로 "선언되지 않은 식별자"라는 오류가 난다. 멤버 함수를 클래스 밖에서 정의할 때는 `double Circle::getArea() { ... }`처럼 범위 지정 연산자 `::`로 소속 클래스를 밝힌다. 이 오류를 고치지 않고 `radius`를 쓰지 않는 함수였다면 컴파일은 되지만, 클래스의 `getArea()`는 정의되지 않은 채 남아 호출하는 순간 링크 오류가 난다.
+
 ---
 
 <br>
@@ -1309,6 +1639,13 @@ Circle c(5);    // 이제서야 객체가 생성되고 메모리가 할당됨
 | 인라인 함수 | `inline`으로 선언하거나 클래스 내부에 정의한 함수로, 컴파일러가 호출을 본문으로 대체할 수 있으며 코드 크기가 커진다. |
 | C++ `struct` | `class`와 같지만 기본 접근 지정이 `public`이며, C와의 호환성을 위해 존재한다. |
 | 파일 분리 | `.h`에 선언, `.cpp`에 정의를 두고, 인클루드 가드로 중복 include를 막는다. |
+| const 멤버 함수 | 원형 끝에 `const`를 붙인 멤버 함수는 멤버 변수를 바꿀 수 없고, `const` 객체와 const 참조로 받은 객체에 대해서도 호출할 수 있다. |
+| 멤버 초기화 순서 | 멤버는 초기화 리스트의 순서가 아니라 클래스에 선언된 순서대로 초기화되므로, 다른 멤버로 초깃값을 계산할 때는 선언 순서에 유의한다. |
+| 객체의 메모리 배치 | 객체에는 멤버 변수만 들어가고 멤버 함수의 코드는 클래스에 하나만 있으며, 멤버 사이에는 정렬을 위한 빈 공간이 들어갈 수 있다. |
+| 객체의 생성과 소멸 시점 | 전역 객체는 `main()` 전에, static 지역 객체는 처음 실행될 때, 지역 객체는 선언문마다 생성되고, 동적 객체는 `new`와 `delete`가 실행될 때 생성되고 소멸한다. |
+| 생성자의 종류 | 기본 생성자는 생성자를 하나도 선언하지 않을 때만 자동으로 만들어지고, 복사 생성자와 소멸자는 선언하지 않으면 컴파일러가 만든다. |
+| 헤더의 멤버 함수 정의 | 인클루드 가드는 한 번역 단위 안의 중복만 막으므로, 헤더에서 클래스 밖에 정의한 멤버 함수는 여러 소스 파일에서 중복 기호 오류를 내며 `inline`이나 cpp 파일로 해결한다. |
+| 불변 조건 | 객체가 살아 있는 동안 항상 참이어야 하는 조건으로, 멤버 변수를 `private`으로 두고 생성자와 값을 바꾸는 멤버 함수에서 같은 검사를 하여 지킨다. |
 
 ---
 
@@ -1368,3 +1705,66 @@ Circle c(5);    // 이제서야 객체가 생성되고 메모리가 할당됨
    `Circle` 클래스의 선언이 두 번 포함되어 클래스 재정의 컴파일 오류가 발생한다. 첫 번째 include에서는 `CIRCLE_H`가 정의되어 있지 않으므로 `#define CIRCLE_H`와 클래스 선언이 포함되고, 두 번째 include에서는 `CIRCLE_H`가 이미 정의되어 있으므로 `#ifndef`부터 `#endif`까지의 내용이 건너뛰어진다.
 
    </details>
+
+6. **const 멤버 함수:** 2.5절의 `Circle`에 `void show() { cout << radius << endl; }`를 추가하고 `void print(const Circle &c) { c.show(); }`를 작성하면 어떻게 되는가? 고치는 방법도 쓰라.
+
+   <details>
+   <summary>정답</summary>
+
+   컴파일 오류가 난다. `c`는 const 참조이므로 `c`를 통해서는 `const` 멤버 함수만 호출할 수 있는데, `show()`는 `const`로 선언되지 않았다. `show()`는 멤버 변수를 읽기만 하므로 `void show() const { cout << radius << endl; }`로 선언하면 컴파일된다.
+
+   </details>
+
+7. **멤버 초기화 순서:** `class P { int b; int a; public: P() : a(1), b(a + 1) { } };`에서 `P p;`를 만든 뒤 `a`와 `b`의 값은 정해지는가?
+
+   <details>
+   <summary>정답</summary>
+
+   `a`는 1로 정해지지만 `b`는 정해지지 않는다. 멤버는 선언 순서인 `b`, `a`의 순서로 초기화되므로, `b(a + 1)`이 실행될 때 `a`는 아직 초기화되지 않았다. 따라서 `b`에는 정해지지 않은 값에 1을 더한 값이 들어간다. 선언 순서를 `int a; int b;`로 바꾸면 `a`가 1, `b`가 2가 된다.
+
+   </details>
+
+8. **객체의 크기:** `class P { int x; int y; public: void set(int a, int b); int sum(); };`에서 `int`가 4바이트일 때 `sizeof(P)`는 얼마인가? 멤버 함수를 10개 더 추가하면 어떻게 되는가?
+
+   <details>
+   <summary>정답</summary>
+
+   8바이트이다. 객체에는 멤버 변수 `x`, `y`만 들어가고, 두 `int`는 모두 4의 배수 위치에 놓이므로 빈 공간도 없다. 멤버 함수는 객체 안에 들어가지 않으므로 10개를 더 추가해도 `sizeof(P)`는 8바이트 그대로이다(가상함수는 9장에서 다루는 예외이다).
+
+   </details>
+
+9. **생성과 소멸 시점:** 4.9절의 `main()`에서 `f();`를 세 번 호출하도록 바꾸면 "생성 static 지역"과 "생성 f의 지역"은 각각 몇 번 출력되는가? "소멸 static 지역"은 언제 출력되는가?
+
+   <details>
+   <summary>정답</summary>
+
+   "생성 static 지역"은 1번, "생성 f의 지역"은 3번 출력된다. static 지역 객체는 선언문이 처음 실행될 때 한 번만 생성되고, 지역 객체는 호출할 때마다 생성되어 리턴할 때 소멸한다. "소멸 static 지역"은 `main 끝`이 출력된 뒤 프로그램이 끝날 때, "소멸 전역"보다 먼저 출력된다.
+
+   </details>
+
+10. **클래스 단위의 접근:** 2.7절의 `Circle`에 전역 함수 `bool same(const Circle &x, const Circle &y) { return x.radius == y.radius; }`를 추가하면 컴파일되는가? 멤버 함수 `bool same(const Circle &y) const { return radius == y.radius; }`는 어떤가?
+
+    <details>
+    <summary>정답</summary>
+
+    전역 함수는 컴파일되지 않는다. `same()`이 `Circle`의 멤버가 아니므로 `x.radius`와 `y.radius`가 모두 private 멤버 접근 오류가 된다. 멤버 함수 버전은 컴파일된다. 접근 권한은 클래스 단위로 주어지므로 `Circle`의 멤버 함수는 매개변수로 받은 다른 `Circle` 객체 `y`의 `private` 멤버에도 접근할 수 있다. 전역 함수에 접근 권한을 주려면 7장의 프렌드 선언이 필요하다.
+
+    </details>
+
+11. **인클루드 가드와 중복 정의:** 7절의 `Circle2.h`에 인클루드 가드가 있는데도 중복 기호 오류가 나는 이유를 설명하고, 헤더 파일을 고쳐 해결하는 방법 두 가지를 쓰라.
+
+    <details>
+    <summary>정답</summary>
+
+    인클루드 가드는 한 번역 단위 안에서 같은 헤더가 두 번 포함되는 것만 막는다. `Circle2.cpp`와 `main2.cpp`는 서로 다른 번역 단위이므로 각자 헤더를 포함하여 두 목적 파일에 `Circle::getRadius()`의 정의가 하나씩 들어가고, 링커가 이를 중복 기호로 보고한다. 헤더 안에서 고치려면 정의를 클래스 선언 안으로 옮겨 자동 인라인 함수로 만들거나, 정의 앞에 `inline`을 붙여 `inline int Circle::getRadius() { return radius; }`로 쓴다.
+
+    </details>
+
+12. **생성자의 자동 생성:** `class T { int v; public: T(int x) : v(x) { } };`에 대해 `T a(1);`, `T b;`, `T c = a;` 가운데 컴파일되지 않는 문장과 그 이유를 쓰라.
+
+    <details>
+    <summary>정답</summary>
+
+    `T b;`만 컴파일되지 않는다. 매개변수가 있는 생성자 `T(int)`를 선언했으므로 컴파일러는 기본 생성자를 만들지 않고, 인자 없이 객체를 만들 생성자가 없다. `T a(1);`은 `T(int)`를 호출하고, `T c = a;`는 선언하지 않아도 컴파일러가 만드는 복사 생성자를 호출하므로 컴파일된다. `T b;`를 허용하려면 `T() : v(0) { }`처럼 기본 생성자를 추가한다.
+
+    </details>
