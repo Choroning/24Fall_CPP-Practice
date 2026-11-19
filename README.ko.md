@@ -1,4 +1,4 @@
-# [2024학년도 가을학기] C++프로그래밍
+# [2024학년도 가을학기] C++ 프로그래밍
 
 ![Last Commit](https://img.shields.io/github/last-commit/Choroning/24Fall_CPP-Practice)
 ![Languages](https://img.shields.io/github/languages/top/Choroning/24Fall_CPP-Practice)
