@@ -74,7 +74,6 @@
   - [8.6 Concepts (C++20)](#86-concepts-c20)
   - [8.7 std::ranges (C++20)](#87-stdranges-c20)
   - [8.8 std::print (C++23)](#88-stdprint-c23)
-  - [8.9 C++26 Preview](#89-c26-preview)
 - [9. Practical Patterns for Coding Tests](#9-practical-patterns-for-coding-tests)
   - [9.1 Reading Input Until EOF](#91-reading-input-until-eof)
   - [9.2 Sorting Custom Objects](#92-sorting-custom-objects)
@@ -93,7 +92,6 @@
   - [11.4 Range-based for: Copy vs Reference](#114-range-based-for-copy-vs-reference)
 - [Summary](#summary)
 - [Self-Check Questions](#self-check-questions)
-- [References](#references)
 
 ---
 
@@ -1604,123 +1602,6 @@ std::println("No need for \\n with println");  // adds newline automatically
 
 The standard libraries of recent GCC, Clang, and MSVC support `std::print`, but many coding test judges do not yet support C++23 features.
 
-### 8.9 C++26 Preview
-
-> **Note:** **C++26.** C++26 is the standard targeted for publication in 2026, and compiler support varies by feature. The information below is for awareness only.
-
-C++26 adds features such as contracts, new containers and libraries, wider `constexpr` support, and the asynchronous execution framework `std::execution` [1].
-
-#### Contracts (`pre`, `post`, `contract_assert`)
-
-Contracts are the headline feature of C++26: they express the checks that the old `assert()` macro performed as language-level preconditions and postconditions.
-
-```cpp
-// C++26 Contracts syntax (supported only by some recent compilers)
-int divide(const int a, const int b)
-    pre(b != 0)                     // precondition: b must not be zero
-    post(r: r * b + a % b == a)     // postcondition: result * b + remainder == a
-{
-    return a / b;
-}
-
-void process(int* ptr)
-    pre(ptr != nullptr)             // precondition: pointer must be valid
-{
-    contract_assert(*ptr > 0);      // runtime assertion (replaces assert())
-    // ...
-}
-```
-
-To use a value parameter (`a`, `b`) in a postcondition, that parameter must be declared `const`. Otherwise the function body could change the parameter, and the postcondition would check the changed value instead of the original argument. Also, integer division keeps only the quotient, so writing the postcondition as `r * b == a` would be violated for arguments that do not divide evenly, such as 7 / 2. The code above adds the remainder so that the condition holds for all arguments.
-
-| Feature | Old (`assert`) | New (Contracts) |
-|:--------|:--------------|:----------------|
-| Syntax | Macro (`#include <cassert>`) | Language keyword |
-| Scope | Runtime only | Compile-time + runtime |
-| Module boundaries | Macros are not exported, so each importer must include `<cassert>` itself | No such restriction because it is a language feature |
-| Precondition | Manual check inside function | `pre(condition)` in signature |
-| Postcondition | Not supported | `post(result: condition)` |
-
-*Table 12. Comparison of assert and contracts*
-
-One reason contracts are needed is that C++20 modules do not export macros. Code that imports a module must include `<cassert>` itself to use `assert()`, whereas contracts are a language feature without this restriction and they state the conditions a function requires in its declaration. `contract_assert` is the standardized replacement for `assert()`.
-
-#### New Containers and Libraries
-
-| Header | Description |
-|:-------|:------------|
-| `<inplace_vector>` | A variable-size vector with fixed capacity. It stores its elements inside the object itself, so there is no heap allocation or reallocation, and it combines array performance with the vector interface |
-| `<hive>` | A high-performance container that allocates elements in bulk blocks, marks erased slots with a skipfield so that iteration skips them, and reuses those slots for later insertions. Insertion and erasure do not invalidate pointers or iterators to other elements |
-| `<debugging>` | Standardized debugging utilities. They check whether a debugger is attached (`is_debugger_present`) and trigger a breakpoint from the program (`breakpoint`, `breakpoint_if_debugging`) |
-| `<simd>` | Unified SIMD (Single Instruction, Multiple Data) interface across CPU architectures (AVX, SSE, NEON, etc.) |
-| `<linalg>` | Linear algebra operations using `<mdspan>` (matrix and vector multiplication, transformations, etc.) |
-| `<hazard_pointer>` | A safe memory reclamation technique for lock-free data structures that keeps an object from being reclaimed while another thread is reading it. The protecting objects are managed in RAII style |
-| `<rcu>` | Read-Copy-Update: a synchronization technique in which readers read data without locks, writers modify a copy and swap it in atomically, and the old data is reclaimed after the existing readers finish |
-
-*Table 13. Headers added in C++26*
-
-#### `constexpr` Everywhere
-
-Since C++20, `std::vector` and `std::string` can be used inside `constexpr` functions, and in C++26 most standard containers, such as `deque`, `list`, `map`, and `set`, also become usable in `constexpr` contexts in the same way. In every standard, memory allocated during constant evaluation must be freed before that evaluation ends, so containers are built and used inside `constexpr` functions, which return only the computed result.
-
-The following code compiles with `-std=c++20` or later. In C++17 a `vector` variable cannot appear inside a `constexpr` function, so it fails to compile.
-
-```cpp
-#include <array>
-#include <vector>
-
-// C++20: build and use a vector inside a constexpr function, return only the result
-constexpr int sum_of_squares(int n) {
-    std::vector<int> v;
-    for (int i = 1; i <= n; ++i)
-        v.push_back(i * i);              // Allocation during constant evaluation
-    int sum = 0;
-    for (int x : v) sum += x;
-    return sum;                          // v's memory is freed before returning
-}
-static_assert(sum_of_squares(3) == 14);  // Checked at compile time
-
-// constexpr std::vector<int> bad = {1, 4, 9};       // Error: allocated memory would remain
-constexpr std::array<int, 3> squares = {1, 4, 9};    // Fine for a type that does not allocate
-```
-
-In C++26, `map`, `set`, `deque`, and others are used in the same way.
-
-```cpp
-// C++26: map used inside a constexpr function
-#include <map>
-#include <string_view>
-
-constexpr int total_score() {
-    std::map<std::string_view, int> scores = {{"Alice", 95}, {"Bob", 87}};
-    int sum = 0;
-    for (const auto& [name, score] : scores) sum += score;
-    return sum;                          // 182
-}
-static_assert(total_score() == 182);
-
-// Even exceptions become constexpr
-// constexpr functions can now throw and catch at compile time
-```
-
-> **Caution:** A declaration like `bad` above, which leaves a container holding allocated memory in a `constexpr` variable, does not compile even in C++26. `constexpr std::map<std::string, int> scores = {...};` is an error for the same reason, so to keep a result as a constant, store it in a type that does not allocate, such as `std::array`. Support for C++26 `constexpr` containers arrives at different times in different compilers and standard libraries.
-
-#### `std::execution` (Async Scheduling)
-
-It is a comprehensive asynchronous programming framework with senders, receivers, and schedulers.
-
-```cpp
-// C++26: std::execution (conceptual, syntax may evolve)
-#include <execution>
-
-auto work = std::execution::just(42)
-          | std::execution::then([](int x) { return x * 2; })
-          | std::execution::then([](int x) { return x + 1; });
-// Schedules: 42 → 84 → 85
-```
-
-> **Note:** NVIDIA provides an open-source reference implementation, stdexec [2].
-
 ---
 
 <br>
@@ -1877,7 +1758,7 @@ cout << q.front() << endl;   // 20
 | Access | `top()` | `front()`, `back()` |
 | Order | LIFO | FIFO |
 
-*Table 14. Comparison of stack and queue operations*
+*Table 12. Comparison of stack and queue operations*
 
 ### 9.6 priority_queue for Top-K Problems
 
@@ -2286,12 +2167,3 @@ for (const auto& x : names) {
    In `myswap(x, y)`, both arguments are `double`, so `T = double` is deduced and the code compiles; running it makes `x` 2.5 and `y` 1.5. In `myswap(c, n)`, `char` is deduced from the first argument and `int` from the second, and the types differ, so it is a compile error. The promotion from `char` to `int` is not considered during deduction.
 
    </details>
-
----
-
-<br>
-
-## References
-
-1. cppreference.com, "C++26," *cppreference.com*. https://en.cppreference.com/w/cpp/26
-2. NVIDIA, "stdexec," *GitHub*. https://github.com/NVIDIA/stdexec

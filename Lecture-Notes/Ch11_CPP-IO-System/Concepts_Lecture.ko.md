@@ -685,13 +685,7 @@ Kim.....|
 | `fixed`, `scientific` | 실수 표기를 바꿈 (`floatfield`) | `<ios>` |
 | `defaultfloat` (C++11) | `floatfield`를 지워 일반 표기로 되돌림 | `<ios>` |
 | `left`, `right`, `internal` | 정렬을 바꿈 (`adjustfield`) | `<ios>` |
-| `showbase`, `noshowbase` | 진법 접두사를 켬, 끔 | `<ios>` |
-| `showpoint`, `noshowpoint` | 소수점 표시를 켬, 끔 | `<ios>` |
-| `showpos`, `noshowpos` | `+` 기호를 켬, 끔 | `<ios>` |
-| `uppercase`, `nouppercase` | 대문자 출력을 켬, 끔 | `<ios>` |
-| `boolalpha`, `noboolalpha` | `bool`의 단어 입출력을 켬, 끔 | `<ios>` |
-| `skipws`, `noskipws` | 공백 건너뛰기를 켬, 끔 | `<ios>` |
-| `unitbuf`, `nounitbuf` | 출력마다 플러시를 켬, 끔 | `<ios>` |
+| `showbase`, `showpoint`, `showpos`, `uppercase`, `boolalpha`, `skipws`, `unitbuf`와 앞에 `no`를 붙인 짝(`noshowbase` 등) | 표 15에서 이름이 같은 플래그를 켬, 끔 | `<ios>` |
 | `setw(n)` | 다음 출력의 필드 폭을 `n`으로 | `<iomanip>` |
 | `setfill(c)` | 채움 문자를 `c`로 | `<iomanip>` |
 | `setprecision(n)` | 정밀도를 `n`으로 | `<iomanip>` |

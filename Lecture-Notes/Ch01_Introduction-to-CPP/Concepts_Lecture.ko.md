@@ -191,10 +191,7 @@ C++ 언어의 역사
                3방향 비교 (<=>)
 2023    C++23: std::print, deducing this, std::expected,
                std::flat_map, 다차원 첨자 연산자
-2026    C++26: 계약(contracts: pre/post/contract_assert),
-               <debugging>, <inplace_vector>, <hive>, <simd>,
-               <linalg>, constexpr 컨테이너 (map, set, deque, ...),
-               std::execution (비동기 스케줄링)
+2026    C++26: 계약(contracts), constexpr 컨테이너, std::execution
 ──────────────────────────────────────────────────────────────
 ```
 

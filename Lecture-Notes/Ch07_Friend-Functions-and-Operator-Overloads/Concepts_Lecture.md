@@ -51,8 +51,6 @@
 - [6. Subscript Operator](#6-subscript-operator)
 - [7. Complete Runnable Examples](#7-complete-runnable-examples)
   - [7.1 Complete Vector2D Class](#71-complete-vector2d-class)
-  - [7.2 Prefix vs Postfix Output Trace](#72-prefix-vs-postfix-output-trace)
-  - [7.3 Why operator<< Must Be a Friend](#73-why-operator-must-be-a-friend)
 - [8. Common Mistakes](#8-common-mistakes)
   - [8.1 Forgetting the `(int)` Dummy Parameter for Postfix](#81-forgetting-the-int-dummy-parameter-for-postfix)
   - [8.2 Returning by Value When a Reference Should Be Returned](#82-returning-by-value-when-a-reference-should-be-returned)
@@ -1199,130 +1197,6 @@ Equal!
 (1,2) + (3,4) + (5,4) = (9, 10)
 ```
 
-### 7.2 Prefix vs Postfix Output Trace
-
-A program that shows the difference between `++x` and `x++` with output at each step is as follows.
-
-```cpp
-#include <iostream>
-using namespace std;
-
-class Counter {
-    int value;
-public:
-    Counter(int v = 0) : value(v) {}
-
-    // Prefix ++obj
-    Counter& operator++() {
-        value++;
-        return *this;
-    }
-
-    // Postfix obj++
-    Counter operator++(int) {
-        Counter old = *this;
-        value++;
-        return old;
-    }
-
-    friend ostream& operator<<(ostream &out, const Counter &c) {
-        out << c.value;
-        return out;
-    }
-};
-
-int main() {
-    Counter x(5);
-    cout << "Initial:  x = " << x << endl;
-
-    Counter a = ++x;   // x becomes 6, a gets 6
-    cout << "After a = ++x:  x = " << x << ", a = " << a << endl;
-
-    Counter b = x++;   // b gets 6 (old x), then x becomes 7
-    cout << "After b = x++:  x = " << x << ", b = " << b << endl;
-
-    // Chaining: prefix returns reference, so this works
-    cout << "++x = " << ++x << endl;   // x becomes 8, prints 8
-
-    return 0;
-}
-```
-
-**Expected output:**
-
-```text
-Initial:  x = 5
-After a = ++x:  x = 6, a = 6
-After b = x++:  x = 7, b = 6
-++x = 8
-```
-
-### 7.3 Why operator<< Must Be a Friend
-
-An example that shows **why** `operator<<` cannot be a member function, and what happens if you try, is as follows.
-
-```cpp
-#include <iostream>
-using namespace std;
-
-class Point {
-    int x, y;
-public:
-    Point(int x = 0, int y = 0) : x(x), y(y) {}
-
-    // WRONG: operator<< as a member function
-    // If this were a member, the syntax would be:
-    //     point << cout;    // Left operand is *this (Point), right is ostream
-    // This is backwards! Nobody writes  point << cout.
-    //
-    // ostream& operator<<(ostream &out) {    // DO NOT DO THIS
-    //     out << "(" << x << ", " << y << ")";
-    //     return out;
-    // }
-
-    // CORRECT: operator<< as a friend function
-    // Left operand is ostream (not Point), so it cannot be a Point member.
-    friend ostream& operator<<(ostream &out, const Point &p) {
-        out << "(" << p.x << ", " << p.y << ")";
-        return out;
-    }
-};
-
-int main() {
-    Point p(3, 7);
-
-    // Natural syntax: works because operator<< is a friend
-    cout << "Point: " << p << endl;       // Point: (3, 7)
-
-    // If it were a member function, you would have to write:
-    // p << cout;   // Ugly, unnatural, and breaks chaining!
-
-    // Chaining works because we return ostream&
-    Point a(1, 2), b(3, 4);
-    cout << a << " and " << b << endl;    // (1, 2) and (3, 4)
-
-    return 0;
-}
-```
-
-**Expected output:**
-
-```text
-Point: (3, 7)
-(1, 2) and (3, 4)
-```
-
-**Reasons it must be a friend rather than a member:**
-
-| If member function... | If friend function... |
-|:----------------------|:----------------------|
-| Syntax: `point << cout;` (backwards!) | Syntax: `cout << point;` (natural!) |
-| Left operand is `Point` (`*this`) | Left operand is `ostream` (first parameter) |
-| Cannot follow other output: `cout << "Point: " << point;` is a compile error | Chains correctly: `cout << "Point: " << point << endl;` |
-| Breaks convention that every C++ programmer expects | Follows the standard convention |
-
-*Table 17. Stream output operator<< as a member and as a friend*
-
 ---
 
 <br>
@@ -1396,7 +1270,7 @@ The following operators **cannot** be overloaded.
 | `sizeof` | Size of object/type |
 | `typeid` | Runtime type identification |
 
-*Table 18. Operators that cannot be overloaded*
+*Table 17. Operators that cannot be overloaded*
 
 Attempting to overload any of these will produce a compiler error.
 

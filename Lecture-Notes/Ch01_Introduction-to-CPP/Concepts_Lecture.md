@@ -191,10 +191,7 @@ Timeline of C++
                comparison (<=>)
 2023    C++23: std::print, deducing this, std::expected,
                std::flat_map, multidimensional subscript operator
-2026    C++26: contracts (pre/post/contract_assert), <debugging>,
-               <inplace_vector>, <hive>, <simd>, <linalg>,
-               constexpr containers (map, set, deque, ...),
-               std::execution (async scheduling)
+2026    C++26: contracts, constexpr containers, std::execution
 ──────────────────────────────────────────────────────────────
 ```
 

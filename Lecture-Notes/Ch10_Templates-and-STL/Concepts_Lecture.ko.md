@@ -74,7 +74,6 @@
   - [8.6 Concepts (C++20)](#86-concepts-c20)
   - [8.7 std::ranges (C++20)](#87-stdranges-c20)
   - [8.8 std::print (C++23)](#88-stdprint-c23)
-  - [8.9 C++26 미리보기](#89-c26-미리보기)
 - [9. 코딩 테스트를 위한 실전 패턴](#9-코딩-테스트를-위한-실전-패턴)
   - [9.1 EOF까지 입력 읽기](#91-eof까지-입력-읽기)
   - [9.2 사용자 정의 객체 정렬](#92-사용자-정의-객체-정렬)
@@ -93,7 +92,6 @@
   - [11.4 범위 기반 for: 복사 vs 참조](#114-범위-기반-for-복사-vs-참조)
 - [요약](#요약)
 - [점검 문제](#점검-문제)
-- [참고 문헌](#참고-문헌)
 
 ---
 
@@ -1604,123 +1602,6 @@ std::println("No need for \\n with println");  // 자동으로 개행 추가
 
 최신 GCC, Clang, MSVC의 표준 라이브러리는 `std::print`를 지원하지만, 많은 코딩 테스트 채점 환경은 아직 C++23 기능을 지원하지 않는다.
 
-### 8.9 C++26 미리보기
-
-> **참고:** **C++26.** C++26은 2026년 발행을 목표로 하는 표준이며, 기능마다 컴파일러의 지원 상황이 다르다. 아래 내용은 참고용이다.
-
-C++26은 계약, 새 컨테이너와 라이브러리, 넓어진 `constexpr` 지원, 비동기 실행 프레임워크 `std::execution` 같은 기능을 추가한다 [1].
-
-#### 계약 (Contracts: `pre`, `post`, `contract_assert`)
-
-C++26의 핵심 기능으로, 기존의 `assert()` 매크로가 하던 검사를 언어 차원의 선제 조건과 후속 조건으로 표현한다.
-
-```cpp
-// C++26 계약 문법 (일부 최신 컴파일러만 지원)
-int divide(const int a, const int b)
-    pre(b != 0)                     // 선제 조건: b는 0이 아니어야 함
-    post(r: r * b + a % b == a)     // 후속 조건: 결과 * b + 나머지 == a
-{
-    return a / b;
-}
-
-void process(int* ptr)
-    pre(ptr != nullptr)             // 선제 조건: 포인터가 유효해야 함
-{
-    contract_assert(*ptr > 0);      // 런타임 단언 (assert() 대체)
-    // ...
-}
-```
-
-후속 조건에서 값으로 받은 매개변수(`a`, `b`)를 사용하려면 그 매개변수를 `const`로 선언해야 한다. 함수 본문이 매개변수를 바꾸면 후속 조건이 원래 인자가 아닌 바뀐 값을 검사하게 되기 때문이다. 또 정수 나눗셈은 몫만 남기므로, 후속 조건을 `r * b == a`로 쓰면 7 / 2처럼 나누어떨어지지 않는 인자에서 위반이 된다. 위 코드는 나머지를 더해 모든 인자에서 성립하게 했다.
-
-| 특성 | 기존 (`assert`) | 새로운 방식 (Contracts) |
-|:----|:--------------|:-------------------|
-| 문법 | 매크로 (`#include <cassert>`) | 언어 키워드 |
-| 범위 | 런타임만 | 컴파일 타임 + 런타임 |
-| 모듈 경계 | 매크로는 export되지 않으므로 가져오는 쪽에서 `<cassert>`를 다시 포함해야 함 | 언어 기능이므로 이런 제약이 없음 |
-| 선제 조건 | 함수 내부에서 수동 검사 | 시그니처에 `pre(조건)` |
-| 후속 조건 | 미지원 | `post(결과: 조건)` |
-
-*표 12. assert와 계약의 비교*
-
-계약이 필요한 이유 중 하나는 C++20 모듈이 매크로를 내보내지(export) 않는다는 점이다. 모듈을 가져오는 쪽에서 `assert()`를 쓰려면 `<cassert>`를 직접 포함해야 하지만, 계약은 언어 기능이라 이런 제약이 없고 함수가 요구하는 조건을 선언에 드러낸다. `contract_assert`는 `assert()`를 대체하는 표준화된 방법이다.
-
-#### 새로운 컨테이너와 라이브러리
-
-| 헤더 | 설명 |
-|:----|:----|
-| `<inplace_vector>` | 용량이 고정된 가변 크기 벡터. 원소를 객체 안에 직접 저장하므로 힙 할당과 재할당이 없고, 배열의 성능과 vector 인터페이스를 결합한다 |
-| `<hive>` | 원소를 블록 단위로 대량 할당하고, 삭제된 자리를 건너뛰기 필드(skipfield)로 표시하여 순회할 때 건너뛰며 이후 삽입에 재사용하는 고성능 컨테이너. 삽입과 삭제가 다른 원소의 포인터와 반복자를 무효화하지 않는다 |
-| `<debugging>` | 표준화된 디버깅 유틸리티. 디버거가 연결되어 있는지 확인하고(`is_debugger_present`), 프로그램에서 중단점(breakpoint)을 발생시킨다(`breakpoint`, `breakpoint_if_debugging`) |
-| `<simd>` | CPU 아키텍처(AVX, SSE, NEON 등)에 걸친 통합 SIMD(단일 명령, 다중 데이터) 인터페이스 |
-| `<linalg>` | `<mdspan>`을 활용한 선형대수 연산(행렬과 벡터의 곱셈, 변환 등) |
-| `<hazard_pointer>` | 잠금 없는(lock-free) 자료 구조에서 다른 스레드가 읽고 있는 객체가 회수되지 않도록 보호하는 안전한 메모리 회수 기법. 보호 객체는 RAII 방식으로 관리된다 |
-| `<rcu>` | Read-Copy-Update: 읽는 쪽은 잠금 없이 데이터를 읽고, 쓰는 쪽은 사본을 고쳐 원자적으로 교체한 뒤 기존 읽기가 끝나면 옛 데이터를 회수하는 동기화 기법 |
-
-*표 13. C++26에 추가되는 헤더*
-
-#### `constexpr` 전면 확대
-
-C++20부터 `std::vector`와 `std::string`은 `constexpr` 함수 안에서 쓸 수 있고, C++26에서는 `deque`, `list`, `map`, `set` 같은 대부분의 표준 컨테이너도 같은 방식으로 `constexpr` 문맥에서 쓸 수 있게 된다. 어느 표준에서나 상수 평가 중에 할당한 메모리는 그 평가가 끝나기 전에 해제되어야 하므로, 컨테이너는 `constexpr` 함수 안에서 만들어 쓰고 계산 결과만 리턴한다.
-
-다음 코드는 `-std=c++20` 이상에서 컴파일된다. C++17에서는 `constexpr` 함수 안에 `vector` 변수를 둘 수 없어 오류가 난다.
-
-```cpp
-#include <array>
-#include <vector>
-
-// C++20: vector를 constexpr 함수 안에서 만들어 쓰고 결과만 리턴
-constexpr int sum_of_squares(int n) {
-    std::vector<int> v;
-    for (int i = 1; i <= n; ++i)
-        v.push_back(i * i);              // 상수 평가 중의 할당
-    int sum = 0;
-    for (int x : v) sum += x;
-    return sum;                          // 리턴하기 전에 v의 메모리 해제
-}
-static_assert(sum_of_squares(3) == 14);  // 컴파일 타임에 검사
-
-// constexpr std::vector<int> bad = {1, 4, 9};       // 오류: 할당한 메모리가 남음
-constexpr std::array<int, 3> squares = {1, 4, 9};    // 할당하지 않는 타입은 가능
-```
-
-C++26에서는 `map`, `set`, `deque` 등도 같은 방식으로 쓴다.
-
-```cpp
-// C++26: map도 constexpr 함수 안에서 사용
-#include <map>
-#include <string_view>
-
-constexpr int total_score() {
-    std::map<std::string_view, int> scores = {{"Alice", 95}, {"Bob", 87}};
-    int sum = 0;
-    for (const auto& [name, score] : scores) sum += score;
-    return sum;                          // 182
-}
-static_assert(total_score() == 182);
-
-// 예외까지 constexpr화
-// constexpr 함수에서 컴파일 타임에 throw/catch 가능
-```
-
-> **주의:** 위의 `bad`처럼 할당한 메모리를 가진 컨테이너를 `constexpr` 변수로 남기는 선언은 C++26에서도 컴파일되지 않는다. `constexpr std::map<std::string, int> scores = {...};`도 같은 이유로 오류이므로, 결과를 상수로 남기려면 `std::array`처럼 할당하지 않는 타입에 담는다. C++26의 `constexpr` 컨테이너는 컴파일러와 표준 라이브러리마다 지원 시점이 다르다.
-
-#### `std::execution` (비동기 스케줄링)
-
-센더(sender), 리시버(receiver), 스케줄러를 포함하는 포괄적인 비동기 프로그래밍 프레임워크이다.
-
-```cpp
-// C++26: std::execution (개념적, 문법은 변경될 수 있음)
-#include <execution>
-
-auto work = std::execution::just(42)
-          | std::execution::then([](int x) { return x * 2; })
-          | std::execution::then([](int x) { return x + 1; });
-// 스케줄: 42 → 84 → 85
-```
-
-> **참고:** NVIDIA가 오픈 소스 참조 구현인 stdexec를 제공한다 [2].
-
 ---
 
 <br>
@@ -1877,7 +1758,7 @@ cout << q.front() << endl;   // 20
 | 접근 | `top()` | `front()`, `back()` |
 | 순서 | LIFO | FIFO |
 
-*표 14. stack과 queue의 연산 비교*
+*표 12. stack과 queue의 연산 비교*
 
 ### 9.6 priority_queue로 Top-K 문제
 
@@ -2286,12 +2167,3 @@ for (const auto& x : names) {
    `myswap(x, y)`는 두 인자가 모두 `double`이므로 `T = double`로 추론되어 컴파일되고, 실행하면 `x`는 2.5, `y`는 1.5가 된다. `myswap(c, n)`은 첫 인자에서 `char`, 둘째 인자에서 `int`가 추론되어 타입이 다르므로 컴파일 오류이다. `char`를 `int`로 바꾸는 형 승격은 추론 중에 고려되지 않는다.
 
    </details>
-
----
-
-<br>
-
-## 참고 문헌
-
-1. cppreference.com, "C++26," *cppreference.com*. https://en.cppreference.com/w/cpp/26
-2. NVIDIA, "stdexec," *GitHub*. https://github.com/NVIDIA/stdexec

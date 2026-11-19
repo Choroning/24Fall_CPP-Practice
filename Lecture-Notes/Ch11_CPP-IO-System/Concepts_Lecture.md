@@ -685,13 +685,7 @@ Manipulators without parameters are declared in `<ios>`, `<istream>`, and `<ostr
 | `fixed`, `scientific` | Changes the floating-point notation (`floatfield`) | `<ios>` |
 | `defaultfloat` (C++11) | Clears `floatfield` to return to general notation | `<ios>` |
 | `left`, `right`, `internal` | Changes the alignment (`adjustfield`) | `<ios>` |
-| `showbase`, `noshowbase` | Turns the base prefix on, off | `<ios>` |
-| `showpoint`, `noshowpoint` | Turns the decimal-point display on, off | `<ios>` |
-| `showpos`, `noshowpos` | Turns the `+` sign on, off | `<ios>` |
-| `uppercase`, `nouppercase` | Turns uppercase output on, off | `<ios>` |
-| `boolalpha`, `noboolalpha` | Turns word I/O of `bool` on, off | `<ios>` |
-| `skipws`, `noskipws` | Turns whitespace skipping on, off | `<ios>` |
-| `unitbuf`, `nounitbuf` | Turns flushing after every output on, off | `<ios>` |
+| `showbase`, `showpoint`, `showpos`, `uppercase`, `boolalpha`, `skipws`, `unitbuf` and their `no` forms (`noshowbase` and so on) | Turns the flag of the same name in Table 15 on, off | `<ios>` |
 | `setw(n)` | Sets the field width of the next output to `n` | `<iomanip>` |
 | `setfill(c)` | Sets the fill character to `c` | `<iomanip>` |
 | `setprecision(n)` | Sets the precision to `n` | `<iomanip>` |

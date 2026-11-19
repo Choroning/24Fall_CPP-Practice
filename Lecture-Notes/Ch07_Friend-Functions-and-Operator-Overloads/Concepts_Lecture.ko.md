@@ -51,8 +51,6 @@
 - [6. 첨자 연산자](#6-첨자-연산자)
 - [7. 완전한 실행 가능 예제](#7-완전한-실행-가능-예제)
   - [7.1 완전한 Vector2D 클래스](#71-완전한-vector2d-클래스)
-  - [7.2 전위 vs 후위 출력 추적](#72-전위-vs-후위-출력-추적)
-  - [7.3 operator<<가 프렌드여야 하는 이유](#73-operator가-프렌드여야-하는-이유)
 - [8. 흔한 실수](#8-흔한-실수)
   - [8.1 후위에서 `(int)` 더미 매개변수를 빠뜨림](#81-후위에서-int-더미-매개변수를-빠뜨림)
   - [8.2 참조로 리턴해야 할 때 값으로 리턴](#82-참조로-리턴해야-할-때-값으로-리턴)
@@ -1199,130 +1197,6 @@ int main() {
 (1,2) + (3,4) + (5,4) = (9, 10)
 ```
 
-### 7.2 전위 vs 후위 출력 추적
-
-각 단계의 출력으로 `++x`와 `x++`의 차이를 보여 주는 프로그램은 다음과 같다.
-
-```cpp
-#include <iostream>
-using namespace std;
-
-class Counter {
-    int value;
-public:
-    Counter(int v = 0) : value(v) {}
-
-    // 전위 ++obj
-    Counter& operator++() {
-        value++;
-        return *this;
-    }
-
-    // 후위 obj++
-    Counter operator++(int) {
-        Counter old = *this;
-        value++;
-        return old;
-    }
-
-    friend ostream& operator<<(ostream &out, const Counter &c) {
-        out << c.value;
-        return out;
-    }
-};
-
-int main() {
-    Counter x(5);
-    cout << "초기값:  x = " << x << endl;
-
-    Counter a = ++x;   // x가 6이 되고, a에 6 대입
-    cout << "a = ++x 후:  x = " << x << ", a = " << a << endl;
-
-    Counter b = x++;   // b에 6(이전 x) 대입, 그 후 x가 7이 됨
-    cout << "b = x++ 후:  x = " << x << ", b = " << b << endl;
-
-    // 연쇄: 전위는 참조를 반환하므로 가능
-    cout << "++x = " << ++x << endl;   // x가 8이 되고, 8 출력
-
-    return 0;
-}
-```
-
-**예상 출력:**
-
-```text
-초기값:  x = 5
-a = ++x 후:  x = 6, a = 6
-b = x++ 후:  x = 7, b = 6
-++x = 8
-```
-
-### 7.3 operator<<가 프렌드여야 하는 이유
-
-`operator<<`가 **왜** 멤버 함수가 될 수 없는지, 만약 시도하면 어떻게 되는지 보여 주는 예제는 다음과 같다.
-
-```cpp
-#include <iostream>
-using namespace std;
-
-class Point {
-    int x, y;
-public:
-    Point(int x = 0, int y = 0) : x(x), y(y) {}
-
-    // 잘못된 방법: operator<<를 멤버 함수로 구현
-    // 멤버라면 구문이 이렇게 된다:
-    //     point << cout;    // 좌측 피연산자가 *this(Point), 우측이 ostream
-    // 이건 거꾸로다! 아무도 point << cout 이라고 쓰지 않는다.
-    //
-    // ostream& operator<<(ostream &out) {    // 이렇게 하지 말 것
-    //     out << "(" << x << ", " << y << ")";
-    //     return out;
-    // }
-
-    // 올바른 방법: operator<<를 프렌드 함수로 구현
-    // 좌측 피연산자가 ostream(Point가 아님)이므로 Point의 멤버가 될 수 없다.
-    friend ostream& operator<<(ostream &out, const Point &p) {
-        out << "(" << p.x << ", " << p.y << ")";
-        return out;
-    }
-};
-
-int main() {
-    Point p(3, 7);
-
-    // 자연스러운 구문: operator<<가 프렌드이므로 동작
-    cout << "Point: " << p << endl;       // Point: (3, 7)
-
-    // 멤버 함수였다면 이렇게 써야 한다:
-    // p << cout;   // 보기 흉하고, 부자연스럽고, 연쇄도 깨진다!
-
-    // ostream&를 반환하므로 연쇄가 동작
-    Point a(1, 2), b(3, 4);
-    cout << a << " and " << b << endl;    // (1, 2) and (3, 4)
-
-    return 0;
-}
-```
-
-**예상 출력:**
-
-```text
-Point: (3, 7)
-(1, 2) and (3, 4)
-```
-
-**멤버가 아니라 프렌드여야 하는 이유:**
-
-| 멤버 함수라면... | 프렌드 함수라면... |
-|:---------------|:----------------|
-| 구문: `point << cout;` (거꾸로!) | 구문: `cout << point;` (자연스럽다!) |
-| 좌측 피연산자가 `Point` (`*this`) | 좌측 피연산자가 `ostream` (첫 번째 매개변수) |
-| 다른 출력과 이어 쓸 수 없음: `cout << "Point: " << point;`는 컴파일 오류 | 연쇄 가능: `cout << "Point: " << point << endl;` |
-| 모든 C++ 프로그래머가 기대하는 관례를 위반 | 표준 관례를 따름 |
-
-*표 17. 스트림 출력용 operator<<를 멤버와 프렌드로 구현했을 때의 비교*
-
 ---
 
 <br>
@@ -1396,7 +1270,7 @@ Vector2D& operator+=(const Vector2D &rhs) {
 | `sizeof` | 객체/타입 크기 |
 | `typeid` | 런타임 타입 식별 |
 
-*표 18. 중복할 수 없는 연산자*
+*표 17. 중복할 수 없는 연산자*
 
 이들 중 하나를 중복하려고 하면 컴파일러 오류가 발생한다.
 
